@@ -13,7 +13,7 @@ function fmt(s: number) {
   return `${m}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 }
 
-export default function LearnClient({ course, initialLesson, locked = false }: { course: Course; initialLesson?: string; locked?: boolean }) {
+export default function LearnClient({ course, initialLesson, locked = false, videoUrls = {} }: { course: Course; initialLesson?: string; locked?: boolean; videoUrls?: Record<string, string> }) {
   const flat: Lesson[] = useMemo(() => course.sections.flatMap((s) => s.lessons), [course]);
   const accessible = (l: Lesson) => !locked || l.isPreview;
 
@@ -96,7 +96,9 @@ export default function LearnClient({ course, initialLesson, locked = false }: {
         {/* Player */}
         <div className="relative bg-ink aspect-video flex items-center justify-center text-white">
           <svg className="absolute inset-0 w-full h-full opacity-[.08]" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#fff" strokeWidth="1"><circle cx="100" cy="60" r="50" /><circle cx="100" cy="60" r="32" /></g></svg>
-          {accessible(current) ? (
+          {accessible(current) && videoUrls[current.id] ? (
+            <iframe src={videoUrls[current.id]} className="absolute inset-0 w-full h-full border-0" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
+          ) : accessible(current) ? (
             <>
               <button onClick={() => setPlaying((p) => !p)} className="z-10 w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur flex items-center justify-center cursor-pointer transition">
                 {playing ? (

@@ -1,6 +1,7 @@
 import { notFound } from "next/navigation";
 import { getCourseBySlug } from "@/lib/courses";
 import { isEnrolled } from "@/lib/enroll";
+import { bunnyEmbedUrl, isBunnyConfigured } from "@/lib/bunny";
 import LearnClient from "@/components/LearnClient";
 
 export default async function LearnPage({
@@ -17,5 +18,14 @@ export default async function LearnPage({
 
   // Khóa bài non-preview nếu khóa trả phí và user chưa ghi danh.
   const enrolled = course.price === 0 ? true : await isEnrolled(slug);
-  return <LearnClient course={course} initialLesson={lesson} locked={!enrolled} />;
+
+  // URL nhúng video Bunny (server-side, kèm token nếu bật) cho từng bài có video_id.
+  const videoUrls: Record<string, string> = {};
+  if (isBunnyConfigured()) {
+    for (const s of course.sections)
+      for (const l of s.lessons)
+        if (l.videoId) videoUrls[l.id] = bunnyEmbedUrl(l.videoId);
+  }
+
+  return <LearnClient course={course} initialLesson={lesson} locked={!enrolled} videoUrls={videoUrls} />;
 }
