@@ -2,7 +2,8 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import Hero from "@/components/Hero";
 import CourseCard from "@/components/CourseCard";
-import { COURSES, POSTS } from "@/lib/mock";
+import { POSTS } from "@/lib/mock";
+import { getCourses } from "@/lib/courses";
 
 const features = [
   { t: "Video bài bản", d: "Bài giảng HD theo lộ trình, học mọi lúc trên web và điện thoại.", p: "M3 5h18v14H3z M10 9l5 3-5 3z" },
@@ -11,8 +12,8 @@ const features = [
   { t: "Lộ trình rõ ràng", d: "Theo dõi tiến độ, biết chính xác nên học gì tiếp theo.", p: "M4 7l5-2 6 2 5-2v12l-5 2-6-2-5 2z" },
 ];
 
-export default function Home() {
-  const featured = COURSES.slice(0, 6);
+export default async function Home() {
+  const featured = (await getCourses()).slice(0, 6);
   return (
     <>
       {/* Hero (theo bộ nhận diện) */}

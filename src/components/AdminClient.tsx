@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { COURSES } from "@/lib/mock";
 import { formatVND } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
+import CourseManager from "@/components/admin/CourseManager";
 
 interface Stats { students: number; revenue: number; orders: { id: string; course_slug: string; amount: number }[]; }
 
@@ -16,7 +17,6 @@ const NAV: [Tab, string, string][] = [
 
 export default function AdminClient() {
   const [tab, setTab] = useState<Tab>("overview");
-  const [showForm, setShowForm] = useState(false);
   const [stats, setStats] = useState<Stats | null>(null);
 
   useEffect(() => {
@@ -81,42 +81,7 @@ export default function AdminClient() {
             </div>
           )}
 
-          {tab === "courses" && (
-            <div>
-              <div className="flex items-center justify-between mb-4">
-                <h2 className="font-bold text-lg">Quản lý khóa học</h2>
-                <button onClick={() => setShowForm(!showForm)} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">+ Thêm khóa học</button>
-              </div>
-              {showForm && (
-                <div className="rounded-card border border-border bg-bg-soft p-5 mb-4 grid sm:grid-cols-2 gap-3">
-                  <input className="auth-input bg-surface" placeholder="Tên khóa học" />
-                  <input className="auth-input bg-surface" placeholder="Giá (VND)" />
-                  <input className="auth-input bg-surface sm:col-span-2" placeholder="Mô tả ngắn" />
-                  <div className="sm:col-span-2 flex gap-2">
-                    <button className="rounded-full bg-ink text-white font-semibold text-sm px-4 py-2 cursor-pointer">Lưu khóa học</button>
-                    <button onClick={() => setShowForm(false)} className="rounded-full border border-border-strong text-sm px-4 py-2 cursor-pointer">Hủy</button>
-                  </div>
-                </div>
-              )}
-              <div className="rounded-card border border-border bg-surface overflow-hidden">
-                <table className="w-full text-sm">
-                  <thead><tr className="bg-bg-soft text-ink-3 text-left text-xs uppercase tracking-wide">
-                    <th className="px-4 py-3 font-semibold">Khóa học</th><th className="px-4 py-3 font-semibold">Giá</th><th className="px-4 py-3 font-semibold hidden sm:table-cell">Học viên</th><th className="px-4 py-3 font-semibold"></th>
-                  </tr></thead>
-                  <tbody>
-                    {COURSES.map((c) => (
-                      <tr key={c.id} className="border-t border-border">
-                        <td className="px-4 py-3 font-medium">{c.title}</td>
-                        <td className="px-4 py-3">{formatVND(c.price)}</td>
-                        <td className="px-4 py-3 hidden sm:table-cell text-ink-2">{c.students.toLocaleString("vi-VN")}</td>
-                        <td className="px-4 py-3 text-right"><button className="text-accent font-semibold cursor-pointer hover:underline">Sửa</button></td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          )}
+          {tab === "courses" && <CourseManager />}
 
           {tab === "community" && (
             <div className="rounded-card border border-border bg-surface p-5">

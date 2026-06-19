@@ -1,9 +1,11 @@
 import type { MetadataRoute } from "next";
-import { COURSES, BLOG } from "@/lib/mock";
+import { BLOG } from "@/lib/mock";
+import { getCourses } from "@/lib/courses";
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://vieaiedu.vn";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
+  const COURSES = await getCourses();
   const staticRoutes = ["", "/courses", "/community", "/blog"].map((p) => ({
     url: `${BASE}${p}`,
     changeFrequency: "weekly" as const,

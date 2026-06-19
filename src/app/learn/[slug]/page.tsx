@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { getCourse } from "@/lib/mock";
+import { getCourseBySlug } from "@/lib/courses";
 import { isEnrolled } from "@/lib/enroll";
 import LearnClient from "@/components/LearnClient";
 
@@ -12,7 +12,7 @@ export default async function LearnPage({
 }) {
   const { slug } = await params;
   const { lesson } = await searchParams;
-  const course = getCourse(slug);
+  const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
   // Khóa bài non-preview nếu khóa trả phí và user chưa ghi danh.

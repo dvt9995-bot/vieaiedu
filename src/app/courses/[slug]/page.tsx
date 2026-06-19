@@ -1,18 +1,14 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { COURSES, getCourse } from "@/lib/mock";
+import { getCourseBySlug } from "@/lib/courses";
 import { LEVEL_LABEL } from "@/lib/types";
 import { formatDuration } from "@/lib/format";
 import CoursePurchase from "@/components/CoursePurchase";
 
-export function generateStaticParams() {
-  return COURSES.map((c) => ({ slug: c.slug }));
-}
-
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
-  const c = getCourse(slug);
+  const c = await getCourseBySlug(slug);
   if (!c) return { title: "Không tìm thấy khóa học" };
   return { title: c.title, description: c.subtitle };
 }
@@ -25,7 +21,7 @@ function fmtSec(s: number) {
 
 export default async function CourseDetail({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const course = getCourse(slug);
+  const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
   // JSON-LD cho SEO
