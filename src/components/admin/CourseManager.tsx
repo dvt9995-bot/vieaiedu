@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { formatVND } from "@/lib/format";
+import LessonManager from "./LessonManager";
 
 interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; }
 type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string };
@@ -12,6 +13,7 @@ export default function CourseManager() {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
   const [msg, setMsg] = useState("");
+  const [managing, setManaging] = useState<string | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -96,6 +98,7 @@ export default function CourseManager() {
                 <td className="px-4 py-3">{formatVND(c.price)}</td>
                 <td className="px-4 py-3 hidden sm:table-cell"><span className={`text-xs font-semibold ${c.status === "published" ? "text-success" : "text-ink-3"}`}>{c.status === "published" ? "Công khai" : "Nháp"}</span></td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <button onClick={() => setManaging(c.id)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">Bài học</button>
                   <button onClick={() => setForm({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, status: c.status })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
                   <button onClick={() => del(c.id)} className="text-ink-3 font-semibold cursor-pointer hover:text-accent">Xóa</button>
                 </td>
@@ -104,6 +107,8 @@ export default function CourseManager() {
           </tbody>
         </table>
       </div>
+
+      {managing && <LessonManager courseId={managing} onClose={() => setManaging(null)} />}
     </div>
   );
 }
