@@ -1,26 +1,72 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* ============ VIE AI EDU — Design tokens (theo Bộ nhận diện thương hiệu v1.0) ============ */
+@theme {
+  --color-bg: #ffffff;                 /* Trắng — nền chủ đạo */
+  --color-bg-soft: #f5f6f8;            /* Nền phụ khuyến nghị */
+  --color-surface: #ffffff;
+  --color-border: #e7e9ee;
+  --color-border-strong: #d6d9e0;
+  --color-ink: #202124;               /* Chữ chính */
+  --color-ink-2: #565b66;
+  --color-ink-3: #6b7280;   /* đậm hơn để đạt tương phản ≥4.5:1 trên nền trắng */
+  --color-accent: #e41e26;            /* Đỏ Việt Nam — nhận diện chính, CTA */
+  --color-accent-weak: #fdecec;
+  --color-accent-700: #c01820;
+  --color-gold: #f4b400;              /* Vàng trí tuệ — điểm nhấn, ngôi sao */
+  --color-success: #15803d;   /* đậm hơn cho chữ nhỏ đạt tương phản */
+
+  --font-sans: var(--font-body), ui-sans-serif, system-ui, sans-serif;
+  --font-display: var(--font-display), var(--font-body), system-ui, sans-serif;
+
+  --radius-card: 14px;
+  --radius-sm: 10px;
+
+  --shadow-soft: 0 1px 2px rgba(11,12,14,.04), 0 8px 24px rgba(11,12,14,.05);
+  --shadow-lg: 0 2px 4px rgba(11,12,14,.05), 0 18px 48px rgba(11,12,14,.10);
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+/* Base trong @layer để KHÔNG đè lên utilities text-*/font-* của Tailwind */
+@layer base {
+  * { box-sizing: border-box; }
+  html { -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; scroll-behavior: smooth; }
+  body {
+    background: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-sans);
+    line-height: 1.6;
   }
+  a { color: inherit; text-decoration: none; }
+  h1, h2, h3, h4, h5 { font-family: var(--font-display); font-weight: 800; }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* tiện ích chung */
+.container-x { max-width: 1120px; margin: 0 auto; padding-left: 24px; padding-right: 24px; }
+
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity .7s cubic-bezier(.22,1,.36,1), transform .7s cubic-bezier(.22,1,.36,1); }
+.reveal.in { opacity: 1; transform: none; }
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal { opacity: 1; transform: none; transition: none; }
+  html { scroll-behavior: auto; }
+}
+
+/* scrollbar tinh tế */
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-thumb { background: #d6d8dd; border-radius: 999px; border: 3px solid #fff; }
+
+/* input cho auth modal */
+.auth-input {
+  width: 100%;
+  padding: .72rem .9rem;
+  border: 1px solid var(--color-border-strong);
+  border-radius: 10px;
+  font-family: inherit;
+  font-size: .95rem;
+  outline: none;
+  transition: border-color .2s, box-shadow .2s;
+}
+.auth-input:focus {
+  border-color: var(--color-accent);
+  box-shadow: 0 0 0 3px var(--color-accent-weak);
 }
