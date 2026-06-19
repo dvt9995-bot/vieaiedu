@@ -9,6 +9,7 @@ export async function middleware(request: NextRequest) {
   if (!url || !key) return response; // chưa cấu hình -> bỏ qua
 
   const supabase = createServerClient(url, key, {
+    cookieOptions: { maxAge: 60 * 60 * 24 * 365, path: "/", sameSite: "lax" },
     cookies: {
       getAll: () => request.cookies.getAll(),
       setAll: (toSet) => {

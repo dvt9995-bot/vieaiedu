@@ -11,6 +11,7 @@ export async function createClient() {
   if (!url || !key) return null;
   const cookieStore = await cookies();
   return createServerClient(url, key, {
+    cookieOptions: { maxAge: 60 * 60 * 24 * 365, path: "/", sameSite: "lax" },
     cookies: {
       getAll: () => cookieStore.getAll(),
       setAll: (toSet) => {
