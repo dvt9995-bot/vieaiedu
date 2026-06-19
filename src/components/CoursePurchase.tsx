@@ -15,10 +15,20 @@ export default function CoursePurchase({ course }: { course: Course }) {
   const [busy, setBusy] = useState(false);
   const [qr, setQr] = useState<Qr | null>(null);
   const [msg, setMsg] = useState("");
+  const [coupon, setCoupon] = useState("");
+  const [discount, setDiscount] = useState(0);
+  const [couponMsg, setCouponMsg] = useState("");
   const poll = useRef<ReturnType<typeof setInterval> | null>(null);
   const free = course.price === 0;
 
   useEffect(() => () => { if (poll.current) clearInterval(poll.current); }, []);
+
+  async function applyCoupon() {
+    if (!coupon.trim()) return;
+    const r = await fetch("/api/coupon", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: coupon }) }).then((x) => x.json()).catch(() => ({}));
+    if (r.valid) { setDiscount(r.percentOff); setCouponMsg(`Đã áp mã: giảm ${r.percentOff}%`); }
+    else { setDiscount(0); setCouponMsg("Mã không hợp lệ hoặc đã hết hạn"); }
+  }
 
   async function onBuy() {
     setBusy(true); setMsg("");
@@ -31,7 +41,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
       }
       const res = await fetch("/api/checkout", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: course.slug }),
+        body: JSON.stringify({ slug: course.slug, couponCode: coupon }),
       });
       if (res.status === 401) return open("login");
       const data = await res.json();
@@ -60,9 +70,22 @@ export default function CoursePurchase({ course }: { course: Course }) {
       </div>
       <div className="p-5">
         <div className="flex items-baseline gap-2 mb-4">
-          <span className="text-3xl font-extrabold tracking-tight">{formatVND(course.price)}</span>
-          {course.comparePrice && <span className="text-ink-3 line-through">{formatVND(course.comparePrice)}</span>}
+          <span className="text-3xl font-extrabold tracking-tight">{formatVND(discount > 0 ? Math.round(course.price * (1 - discount / 100)) : course.price)}</span>
+          {discount > 0 ? <span className="text-ink-3 line-through">{formatVND(course.price)}</span>
+            : course.comparePrice && <span className="text-ink-3 line-through">{formatVND(course.comparePrice)}</span>}
+          {discount > 0 && <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">-{discount}%</span>}
         </div>
+
+        {!free && (
+          <div className="mb-3">
+            <div className="flex gap-2">
+              <input value={coupon} onChange={(e) => setCoupon(e.target.value.toUpperCase())} placeholder="Mã giảm giá" className="flex-1 min-w-0 px-3 py-2 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent uppercase" />
+              <button onClick={applyCoupon} className="rounded-lg border border-border-strong hover:border-accent text-sm font-semibold px-3.5 cursor-pointer">Áp dụng</button>
+            </div>
+            {couponMsg && <p className={`text-xs mt-1.5 ${discount > 0 ? "text-success" : "text-accent"}`}>{couponMsg}</p>}
+          </div>
+        )}
+
         <button onClick={onBuy} disabled={busy} className="w-full rounded-full bg-accent hover:bg-accent-700 disabled:opacity-60 text-white font-semibold py-3.5 cursor-pointer transition-colors">
           {busy ? "Đang xử lý…" : free ? "Học miễn phí ngay" : "Mua khóa học"}
         </button>

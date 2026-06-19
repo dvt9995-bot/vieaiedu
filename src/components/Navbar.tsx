@@ -4,11 +4,13 @@ import { useEffect, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/app/auth/actions";
+import NotificationBell from "./NotificationBell";
 
 const links = [
   { href: "/courses", label: "Khóa học" },
   { href: "/community", label: "Cộng đồng" },
   { href: "/blog", label: "Blog" },
+  { href: "/wishlist", label: "Yêu thích" },
   { href: "/dashboard", label: "Học của tôi" },
 ];
 
@@ -54,6 +56,7 @@ export default function Navbar() {
         <div className="flex items-center gap-2">
           {email ? (
             <>
+              <NotificationBell />
               <Link href="/dashboard" className="hidden sm:flex items-center gap-2 text-sm font-semibold text-ink-2 hover:text-ink px-2 py-1">
                 <span className="w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold uppercase">{email[0]}</span>
                 <span className="max-w-[140px] truncate">{email}</span>

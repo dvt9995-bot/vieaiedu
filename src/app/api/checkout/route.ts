@@ -1,12 +1,13 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
-import { getCourse } from "@/lib/mock";
+import { getCourseBySlug } from "@/lib/courses";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
+import { validateCoupon } from "@/lib/coupon";
 
 // Tạo đơn hàng cho 1 khóa và trả về QR SePay để thanh toán.
 export async function POST(req: Request) {
-  const { slug } = await req.json().catch(() => ({ slug: "" }));
-  const course = getCourse(slug);
+  const { slug, couponCode } = await req.json().catch(() => ({ slug: "" }));
+  const course = await getCourseBySlug(slug);
   if (!course) return NextResponse.json({ error: "Không tìm thấy khóa học" }, { status: 404 });
 
   const supabase = await createClient();
@@ -21,10 +22,14 @@ export async function POST(req: Request) {
 
   if (course.price === 0) return NextResponse.json({ error: "Khóa miễn phí — dùng nút Học miễn phí" }, { status: 400 });
 
+  // Áp mã giảm giá (validate server-side)
+  const percentOff = couponCode ? await validateCoupon(couponCode) : 0;
+  const amount = Math.round(course.price * (1 - percentOff / 100));
+
   // Tạo order pending
   const { data: order, error } = await supabase
     .from("orders")
-    .insert({ user_id: user.id, course_slug: slug, amount: course.price, status: "pending" })
+    .insert({ user_id: user.id, course_slug: slug, amount, status: "pending" })
     .select("id").single();
   if (error || !order) return NextResponse.json({ error: error?.message ?? "Lỗi tạo đơn" }, { status: 500 });
 
@@ -33,8 +38,9 @@ export async function POST(req: Request) {
 
   return NextResponse.json({
     orderId: order.id,
-    amount: course.price,
+    amount,
     code,
-    qrUrl: sepayQrUrl(course.price, code),
+    qrUrl: sepayQrUrl(amount, code),
+    percentOff,
   });
 }

@@ -45,11 +45,19 @@ export async function POST(req: Request) {
     { onConflict: "user_id,course_slug" }
   );
 
+  const course = getCourse(order.course_slug);
+  // Thông báo trong app
+  await admin.from("notifications").insert({
+    user_id: order.user_id,
+    title: "Thanh toán thành công 🎉",
+    body: `Bạn đã sở hữu khóa "${course?.title ?? order.course_slug}". Vào học ngay!`,
+    href: `/learn/${order.course_slug}`,
+  }).then(() => {}, () => {});
+
   // Gửi biên lai qua email (nếu đã cấu hình Resend)
   try {
     const { data: u } = await admin.auth.admin.getUserById(order.user_id);
     const email = u.user?.email;
-    const course = getCourse(order.course_slug);
     if (email && course) await sendOrderReceipt(email, course.title, order.amount);
   } catch {}
 

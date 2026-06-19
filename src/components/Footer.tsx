@@ -3,7 +3,7 @@ import Newsletter from "./Newsletter";
 
 const cols = [
   { h: "Sản phẩm", links: [["Khóa học", "/courses"], ["Cộng đồng", "/community"], ["Blog", "/blog"]] },
-  { h: "Tài nguyên", links: [["Lộ trình học", "/blog/lo-trinh-hoc-ai-2026"], ["Hướng dẫn", "/blog"], ["Xác thực chứng chỉ", "/certificate/demo"]] },
+  { h: "Tài nguyên", links: [["Lộ trình học", "/blog/lo-trinh-hoc-ai-2026"], ["Bảng xếp hạng", "/leaderboard"], ["Yêu thích", "/wishlist"]] },
   { h: "Hỗ trợ", links: [["Điều khoản", "/terms"], ["Bảo mật", "/privacy"], ["Liên hệ", "mailto:hello@vieaiedu.vn"]] },
 ];
 

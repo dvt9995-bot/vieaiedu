@@ -1,4 +1,5 @@
 import Link from "next/link";
+import CertPrintButton from "@/components/CertPrintButton";
 
 export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
@@ -57,8 +58,8 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
         </div>
       </div>
 
-      <div className="flex justify-center gap-3 mt-6">
-        <button className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-6 py-3 cursor-pointer transition-colors">⬇ Tải PDF</button>
+      <div className="flex justify-center gap-3 mt-6 no-print">
+        <CertPrintButton />
         <Link href="/courses" className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold px-6 py-3 transition-colors">Khóa học khác</Link>
       </div>
       <p className="text-center text-ink-3 text-sm mt-6">Xác thực công khai tại vieaiedu.vn/certificate/{cert.code}</p>
