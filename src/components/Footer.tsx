@@ -1,9 +1,10 @@
 import Link from "next/link";
+import Newsletter from "./Newsletter";
 
 const cols = [
   { h: "Sản phẩm", links: [["Khóa học", "/courses"], ["Cộng đồng", "/community"], ["Blog", "/blog"]] },
   { h: "Tài nguyên", links: [["Lộ trình học", "/blog/lo-trinh-hoc-ai-2026"], ["Hướng dẫn", "/blog"], ["Xác thực chứng chỉ", "/certificate/demo"]] },
-  { h: "Hỗ trợ", links: [["Trung tâm trợ giúp", "#"], ["Điều khoản", "#"], ["Liên hệ", "#"]] },
+  { h: "Hỗ trợ", links: [["Điều khoản", "/terms"], ["Bảo mật", "/privacy"], ["Liên hệ", "mailto:hello@vieaiedu.vn"]] },
 ];
 
 export default function Footer() {
@@ -18,6 +19,7 @@ export default function Footer() {
               Nền tảng học AI dành cho người Việt — khóa học, dự án và cộng đồng trong một nơi.
             </p>
             <p className="text-sm mt-2 font-semibold text-ink-2">Kiến tạo tri thức – Dẫn lối tương lai.</p>
+            <div className="mt-5 max-w-[280px]"><Newsletter /></div>
           </div>
           {cols.map((c) => (
             <div key={c.h}>

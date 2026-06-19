@@ -5,6 +5,8 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthModalProvider from "@/components/AuthModal";
 import PWARegister from "@/components/PWARegister";
+import { Analytics } from "@vercel/analytics/react";
+import { GoogleAnalytics } from "@next/third-parties/google";
 
 // Bộ nhận diện VIE AI EDU: tiêu đề Be Vietnam Pro, nội dung Montserrat
 const beVietnam = Be_Vietnam_Pro({
@@ -57,6 +59,8 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Footer />
         </AuthModalProvider>
         <PWARegister />
+        <Analytics />
+        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
       </body>
     </html>
   );

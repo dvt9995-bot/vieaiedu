@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { getCourse } from "@/lib/mock";
+import { sendOrderReceipt } from "@/lib/email";
 
 // Webhook SePay gọi khi có giao dịch chuyển khoản tới.
 // Cấu hình tại SePay: URL = https://vieaiedu.vn/api/sepay/webhook
@@ -42,6 +44,14 @@ export async function POST(req: Request) {
     { user_id: order.user_id, course_slug: order.course_slug },
     { onConflict: "user_id,course_slug" }
   );
+
+  // Gửi biên lai qua email (nếu đã cấu hình Resend)
+  try {
+    const { data: u } = await admin.auth.admin.getUserById(order.user_id);
+    const email = u.user?.email;
+    const course = getCourse(order.course_slug);
+    if (email && course) await sendOrderReceipt(email, course.title, order.amount);
+  } catch {}
 
   return NextResponse.json({ success: true, matched: true, order: order.id });
 }
