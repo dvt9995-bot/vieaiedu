@@ -9,21 +9,27 @@ export default function CoursesBrowser({ courses }: { courses: Course[] }) {
   const [cat, setCat] = useState("all");
   const [level, setLevel] = useState("all");
   const [price, setPrice] = useState("all");
+  const [sort, setSort] = useState("popular");
 
   const cats = useMemo(() => ["all", ...Array.from(new Set(courses.map((c) => c.category)))], [courses]);
 
-  const filtered = useMemo(
-    () =>
-      courses.filter((c) => {
-        if (q && !`${c.title} ${c.subtitle}`.toLowerCase().includes(q.toLowerCase())) return false;
-        if (cat !== "all" && c.category !== cat) return false;
-        if (level !== "all" && c.level !== level) return false;
-        if (price === "free" && c.price !== 0) return false;
-        if (price === "paid" && c.price === 0) return false;
-        return true;
-      }),
-    [courses, q, cat, level, price]
-  );
+  const filtered = useMemo(() => {
+    const list = courses.filter((c) => {
+      if (q && !`${c.title} ${c.subtitle}`.toLowerCase().includes(q.toLowerCase())) return false;
+      if (cat !== "all" && c.category !== cat) return false;
+      if (level !== "all" && c.level !== level) return false;
+      if (price === "free" && c.price !== 0) return false;
+      if (price === "paid" && c.price === 0) return false;
+      return true;
+    });
+    const cmp: Record<string, (a: Course, b: Course) => number> = {
+      popular: (a, b) => b.students - a.students,
+      rating: (a, b) => b.rating - a.rating,
+      "price-asc": (a, b) => a.price - b.price,
+      "price-desc": (a, b) => b.price - a.price,
+    };
+    return [...list].sort(cmp[sort] ?? (() => 0));
+  }, [courses, q, cat, level, price, sort]);
 
   const selectCls =
     "appearance-none cursor-pointer rounded-xl border border-border-strong bg-surface pl-3.5 pr-9 py-2.5 text-sm font-medium text-ink outline-none focus:border-accent transition-colors bg-[length:16px] bg-no-repeat bg-[right_0.7rem_center]";
@@ -52,6 +58,12 @@ export default function CoursesBrowser({ courses }: { courses: Course[] }) {
           <option value="all">Tất cả giá</option>
           <option value="free">Miễn phí</option>
           <option value="paid">Trả phí</option>
+        </select>
+        <select value={sort} onChange={(e) => setSort(e.target.value)} className={selectCls} style={{ backgroundImage: chevron }} aria-label="Sắp xếp">
+          <option value="popular">Phổ biến nhất</option>
+          <option value="rating">Đánh giá cao</option>
+          <option value="price-asc">Giá thấp → cao</option>
+          <option value="price-desc">Giá cao → thấp</option>
         </select>
       </div>
 

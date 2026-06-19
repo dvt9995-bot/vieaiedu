@@ -31,6 +31,13 @@ export const metadata: Metadata = {
     description: "Khóa học AI thực chiến, dự án thực hành và cộng đồng học viên.",
     type: "website",
     locale: "vi_VN",
+    images: [{ url: "/og.png", width: 1200, height: 630, alt: "VIE AI EDU" }],
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "VIE AI EDU — Nền tảng học AI thực chiến",
+    description: "Khóa học AI thực chiến, dự án thực hành và cộng đồng học viên.",
+    images: ["/og.png"],
   },
 };
 
