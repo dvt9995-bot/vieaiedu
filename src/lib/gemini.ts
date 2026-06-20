@@ -10,7 +10,7 @@ interface Rewritten { title: string; excerpt: string; body: string; }
 export async function rewriteArticle(input: { title: string; summary: string; sourceName: string }): Promise<Rewritten | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
-  const model = (await getConfig("gemini_model")) || "gemini-2.0-flash";
+  const model = (await getConfig("gemini_model")) || "gemini-2.5-flash";
   const prompt = `Bạn là biên tập viên của VIE AI EDU — nền tảng học AI cho người Việt. Viết lại tin tức AI dưới đây thành một bài blog tiếng Việt hấp dẫn, dễ hiểu, chuẩn SEO, KHÔNG sao chép nguyên văn.
 
 Tiêu đề gốc: ${input.title}

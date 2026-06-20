@@ -38,6 +38,7 @@ export const CONFIG_KEYS = {
   resend_from: "RESEND_FROM",
   gemini_api_key: "GEMINI_API_KEY",
   gemini_model: "",
+  blog_feeds: "",
   ga_id: "NEXT_PUBLIC_GA_ID",
   fb_pixel_id: "",
   tiktok_pixel_id: "",

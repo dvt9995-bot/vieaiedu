@@ -10,9 +10,19 @@ export default function BlogManager() {
   const [loading, setLoading] = useState(true);
   const [edit, setEdit] = useState<(typeof empty & { id?: string }) | null>(null);
   const [msg, setMsg] = useState("");
+  const [feeds, setFeeds] = useState("");
+  const [showFeeds, setShowFeeds] = useState(false);
 
   async function load() { setLoading(true); const r = await fetch("/api/admin/blog").then((x) => x.json()).catch(() => ({ posts: [] })); setPosts(r.posts || []); setLoading(false); }
-  useEffect(() => { load(); }, []);
+  useEffect(() => {
+    load();
+    fetch("/api/admin/settings").then((r) => r.json()).then((d) => setFeeds(d.settings?.blog_feeds || "")).catch(() => {});
+  }, []);
+
+  async function saveFeeds() {
+    const r = await fetch("/api/admin/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ values: { blog_feeds: feeds } }) }).then((x) => x.json());
+    toast(r.ok ? "Đã lưu nguồn tin" : r.error || "Lỗi", r.ok ? "success" : "error");
+  }
 
   async function save() {
     if (!edit?.title.trim()) return setMsg("Cần tiêu đề");
@@ -74,11 +84,26 @@ export default function BlogManager() {
     <div>
       <div className="flex items-center justify-between mb-4 gap-3 flex-wrap">
         <h2 className="font-bold text-lg">Quản lý Blog <span className="text-ink-3 font-normal">({posts.length})</span></h2>
-        <div className="flex gap-2">
+        <div className="flex gap-2 flex-wrap">
+          <button onClick={() => setShowFeeds((s) => !s)} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">🛰 Nguồn tin</button>
           <button onClick={() => { setEdit({ ...empty }); setMsg(""); }} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">+ Thêm bài viết</button>
           <button onClick={autoGen} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">📰 Tạo tự động ngay</button>
         </div>
       </div>
+
+      {showFeeds && (
+        <div className="rounded-card border border-border bg-surface p-5 mb-4">
+          <h3 className="font-semibold mb-1">Nguồn tìm bài (RSS)</h3>
+          <p className="text-ink-3 text-xs mb-3">Mỗi dòng một nguồn, dạng <code className="bg-bg-soft px-1 rounded">link_rss | Tên nguồn</code>. Hệ thống đã có sẵn TechCrunch, VentureBeat, The Verge, MIT, Google AI, WIRED — thêm vào đây để mở rộng.</p>
+          <textarea
+            value={feeds} onChange={(e) => setFeeds(e.target.value)}
+            placeholder={"https://example.com/feed | Tên nguồn\nhttps://blog.openai.com/rss | OpenAI"}
+            className="w-full min-h-[120px] font-mono text-xs px-3 py-2.5 rounded-lg border border-border-strong bg-surface outline-none focus:border-accent"
+          />
+          <button onClick={saveFeeds} className="mt-2 rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2 cursor-pointer transition-colors">Lưu nguồn tin</button>
+        </div>
+      )}
+
       {msg && <p className="text-sm text-ink-2 mb-3">{msg}</p>}
       <div className="rounded-card border border-border bg-surface overflow-hidden">
         {loading ? <p className="p-6 text-center text-ink-3">Đang tải…</p>
