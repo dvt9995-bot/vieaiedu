@@ -10,10 +10,11 @@ export const maxDuration = 60;
 const DEFAULT_FEEDS: { url: string; name: string }[] = [
   { url: "https://techcrunch.com/category/artificial-intelligence/feed/", name: "TechCrunch" },
   { url: "https://venturebeat.com/category/ai/feed/", name: "VentureBeat" },
-  { url: "https://www.theverge.com/rss/index.xml", name: "The Verge" },
+  { url: "https://www.theverge.com/rss/ai/index.xml", name: "The Verge" },
   { url: "https://www.technologyreview.com/topic/artificial-intelligence/feed", name: "MIT Tech Review" },
   { url: "https://blog.google/technology/ai/rss/", name: "Google AI" },
-  { url: "https://www.wired.com/feed/tag/ai/latest/rss", name: "WIRED" },
+  { url: "https://the-decoder.com/feed/", name: "The Decoder" },
+  { url: "https://www.artificialintelligence-news.com/feed/", name: "AI News" },
 ];
 
 interface Item { title: string; link: string; summary: string; source: string; ts: number; }
