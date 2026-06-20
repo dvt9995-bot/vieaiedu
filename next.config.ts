@@ -12,7 +12,7 @@ const nextConfig: NextConfig = {
 
 export default withSentryConfig(nextConfig, {
   org: "magic-ai-ua",
-  project: "javascript-nextjs",
+  project: "javascript-nextjs-tt",
   silent: !process.env.CI,
   widenClientFileUpload: true,
   // Token lấy từ SENTRY_AUTH_TOKEN (env). Không có token → bỏ qua upload, vẫn build.
