@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
 import { getCourseBySlug } from "@/lib/courses";
+import { walletChange } from "@/lib/wallet";
 
 // Cron hằng ngày: nhắc học + email marketing tự động (bỏ giỏ, nhắc người mới).
 export async function GET(req: Request) {
@@ -54,5 +55,15 @@ export async function GET(req: Request) {
     await admin.from("profiles").update({ nudged_at: iso(now) }).eq("id", p.id);
   }
 
-  return NextResponse.json({ ok: true, reminded, abandoned, nudged });
+  // 4) Hoàn số dư ví cho đơn bỏ dở > 48h (đánh dấu hết hạn)
+  let refunded = 0;
+  const { data: stale } = await admin.from("orders").select("id, user_id").eq("status", "pending").gt("wallet_used", 0).lt("created_at", iso(now - 48 * 3600_000)).limit(100);
+  for (const o of stale || []) {
+    const { data: txs } = await admin.from("wallet_transactions").select("kind, amount").eq("ref_order", o.id);
+    for (const t of txs || []) if ((t.amount as number) < 0) await walletChange(o.user_id as string, t.kind as "credit" | "real", -(t.amount as number), "Hoàn số dư đơn hết hạn", o.id as string);
+    await admin.from("orders").update({ status: "expired" }).eq("id", o.id);
+    refunded++;
+  }
+
+  return NextResponse.json({ ok: true, reminded, abandoned, nudged, refunded });
 }

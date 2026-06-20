@@ -5,6 +5,7 @@ import { sendOrderReceipt } from "@/lib/email";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
+import { walletChange } from "@/lib/wallet";
 
 // Webhook SePay gọi khi có giao dịch chuyển khoản tới.
 // Cấu hình tại SePay: URL = https://vieaiedu.vn/api/sepay/webhook
@@ -50,6 +51,22 @@ export async function POST(req: Request) {
 
   const course = await getCourseBySlug(order.course_slug);
   const courseTitle = course?.title ?? order.course_slug;
+
+  // Hoa hồng giới thiệu: người được giới thiệu mua đơn THẬT → cộng % vào ví hoa hồng người giới thiệu
+  try {
+    const { data: buyer } = await admin.from("profiles").select("referred_by, full_name").eq("id", order.user_id).maybeSingle();
+    const refId = buyer?.referred_by as string | undefined;
+    if (refId && order.amount > 0) {
+      const pct = parseInt(await getConfig("referral_commission_pct")) || 0;
+      if (pct > 0) {
+        const commission = Math.round((order.amount as number) * pct / 100);
+        if (commission > 0) {
+          await walletChange(refId, "real", commission, `Hoa hồng giới thiệu (${pct}%) từ đơn của ${buyer?.full_name || "học viên"}`, order.id);
+          await notify({ userId: refId, type: "transactional", title: `💸 Bạn nhận ${commission.toLocaleString("vi-VN")}đ hoa hồng`, body: `Người bạn giới thiệu vừa mua khóa học. Hoa hồng đã cộng vào ví của bạn.`, href: "/account" });
+        }
+      }
+    }
+  } catch {}
 
   // Cảnh báo admin: đơn mới (luôn) + ghi danh lỗi (critical)
   await notifyAdmins("💰 Đơn hàng mới", `${courseTitle} · ${formatVND(order.amount)}`, "/admin");

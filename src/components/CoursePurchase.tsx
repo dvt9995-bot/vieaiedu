@@ -22,10 +22,15 @@ export default function CoursePurchase({ course }: { course: Course }) {
   const [coupon, setCoupon] = useState("");
   const [discount, setDiscount] = useState(0);
   const [couponMsg, setCouponMsg] = useState("");
+  const [wallet, setWallet] = useState(0);
+  const [useWallet, setUseWallet] = useState(true);
   const poll = useRef<ReturnType<typeof setInterval> | null>(null);
   const free = course.price === 0;
 
   useEffect(() => () => { if (poll.current) clearInterval(poll.current); }, []);
+
+  // Số dư ví (để giảm trừ khi mua)
+  useEffect(() => { if (!free) fetch("/api/wallet").then((r) => r.json()).then((d) => setWallet(d.total || 0)).catch(() => {}); }, [free]);
 
   // Tải trạng thái yêu thích (DB nếu đăng nhập, ngược lại localStorage)
   useEffect(() => { favoritesCached().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);
@@ -61,7 +66,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
       }
       const res = await fetch("/api/checkout", {
         method: "POST", headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ slug: course.slug, couponCode: coupon }),
+        body: JSON.stringify({ slug: course.slug, couponCode: coupon, useWallet }),
       });
       if (res.status === 401) return open("login");
       const data = await res.json();
@@ -106,6 +111,21 @@ export default function CoursePurchase({ course }: { course: Course }) {
             {couponMsg && <p className={`text-xs mt-1.5 ${discount > 0 ? "text-success" : "text-accent"}`}>{couponMsg}</p>}
           </div>
         )}
+
+        {/* Dùng số dư ví */}
+        {!free && wallet > 0 && (() => {
+          const price = discount > 0 ? Math.round(course.price * (1 - discount / 100)) : course.price;
+          const used = useWallet ? Math.min(wallet, price) : 0;
+          return (
+            <label className="flex items-start gap-2.5 mb-3 p-3 rounded-lg border border-border bg-bg-soft cursor-pointer">
+              <input type="checkbox" checked={useWallet} onChange={(e) => setUseWallet(e.target.checked)} className="mt-0.5" />
+              <span className="text-sm">
+                Dùng số dư ví <b className="text-accent">{formatVND(wallet)}</b>
+                {useWallet && <span className="block text-ink-3 text-xs mt-0.5">Trừ {formatVND(used)} · còn phải trả <b className="text-ink">{formatVND(price - used)}</b></span>}
+              </span>
+            </label>
+          );
+        })()}
 
         <button onClick={onBuy} disabled={busy} className="w-full rounded-full bg-accent hover:bg-accent-700 disabled:opacity-60 text-white font-semibold py-3.5 cursor-pointer transition-colors">
           {busy ? "Đang xử lý…" : free ? "Học miễn phí ngay" : "Mua khóa học"}
