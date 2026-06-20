@@ -74,7 +74,6 @@ export default async function Home() {
           {news.length === 0 ? (
             <p className="text-ink-3">Sắp có tin tức mới…</p>
           ) : (
-            {/* Mobile: 3 hàng × 2 bài, cuộn ngang · Desktop: lưới 3 cột */}
             <div className="grid gap-4 grid-flow-col grid-rows-3 auto-cols-[47%] scroll-x snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0 md:gap-5 md:grid-flow-row md:grid-rows-none md:auto-cols-auto md:grid-cols-3 md:overflow-visible">
               {news.map((b) => (
                 <Link key={b.slug} href={`/blog/${b.slug}`} className="snap-start flex flex-col rounded-card border border-border bg-surface overflow-hidden h-full transition-all hover:border-border-strong hover:shadow-soft md:hover:-translate-y-1">
