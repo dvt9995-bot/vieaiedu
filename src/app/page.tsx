@@ -1,12 +1,28 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import Hero from "@/components/Hero";
 import CourseCard from "@/components/CourseCard";
+import JsonLd from "@/components/JsonLd";
 import { getCourses } from "@/lib/courses";
 import { getBlogPosts } from "@/lib/blog";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
 export const revalidate = 300;
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+
+const BASE = "https://vieaiedu.vn";
+const orgLd = {
+  "@context": "https://schema.org", "@type": "Organization",
+  name: "VIE AI EDU", url: BASE, logo: `${BASE}/logo.png`,
+  description: "Cộng đồng & nền tảng học AI dành cho người Việt.",
+  slogan: "Kiến tạo tri thức – Dẫn lối tương lai",
+};
+const siteLd = {
+  "@context": "https://schema.org", "@type": "WebSite",
+  name: "VIE AI EDU", url: BASE,
+  potentialAction: { "@type": "SearchAction", target: `${BASE}/search?q={search_term_string}`, "query-input": "required name=search_term_string" },
+};
 
 interface FeedPost { id: string; body: string; author_name: string; author_id: string; likes: number; comments: number; created_at: string; image_url: string | null; }
 
@@ -25,6 +41,7 @@ export default async function Home() {
 
   return (
     <>
+      <JsonLd data={[orgLd, siteLd]} />
       <Hero />
 
       {/* Khóa học miễn phí */}

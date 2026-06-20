@@ -11,7 +11,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const c = await getCourseBySlug(slug);
   if (!c) return { title: "Không tìm thấy khóa học" };
-  return { title: c.title, description: c.subtitle };
+  return {
+    title: c.title, description: c.subtitle,
+    alternates: { canonical: `/courses/${slug}` },
+    openGraph: { title: c.title, description: c.subtitle, images: c.thumb ? [c.thumb] : undefined },
+  };
 }
 
 function fmtSec(s: number) {

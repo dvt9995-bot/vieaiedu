@@ -4,6 +4,7 @@ import { notFound } from "next/navigation";
 import { getBlogPostBySlug, getRelatedPosts } from "@/lib/blog";
 import { mdToHtml } from "@/lib/md";
 import ShareButtons from "@/components/ShareButtons";
+import JsonLd from "@/components/JsonLd";
 
 export const revalidate = 600;
 
@@ -11,7 +12,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const b = await getBlogPostBySlug(slug);
   if (!b) return { title: "Không tìm thấy bài viết" };
-  return { title: b.title, description: b.excerpt, openGraph: { title: b.title, description: b.excerpt, images: b.cover ? [b.cover] : undefined } };
+  return {
+    title: b.title, description: b.excerpt,
+    alternates: { canonical: `/blog/${slug}` },
+    openGraph: { type: "article", title: b.title, description: b.excerpt, images: b.cover ? [b.cover] : undefined },
+  };
 }
 
 export default async function BlogDetail({ params }: { params: Promise<{ slug: string }> }) {
@@ -21,8 +26,19 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
   const related = await getRelatedPosts(slug, 3);
   const gallery = (b.images || []).slice(1); // ảnh phụ (bỏ ảnh bìa)
 
+  const articleLd = {
+    "@context": "https://schema.org", "@type": "BlogPosting",
+    headline: b.title, description: b.excerpt,
+    image: b.cover ? [b.cover] : undefined,
+    datePublished: b.date, inLanguage: "vi-VN",
+    mainEntityOfPage: `https://vieaiedu.vn/blog/${b.slug}`,
+    author: { "@type": "Organization", name: b.sourceName ? `VIE AI EDU (nguồn: ${b.sourceName})` : "VIE AI EDU" },
+    publisher: { "@type": "Organization", name: "VIE AI EDU", logo: { "@type": "ImageObject", url: "https://vieaiedu.vn/logo.png" } },
+  };
+
   return (
     <article className="container-x py-12 max-w-[720px]">
+      <JsonLd data={articleLd} />
       <Link href="/blog" className="text-ink-3 text-sm hover:text-ink">← Tất cả bài viết</Link>
       <div className="text-ink-3 text-sm mt-6 mb-3">{b.date} · {b.readMin} phút đọc{b.sourceName && ` · ${b.sourceName}`}</div>
       <h1 className="text-[clamp(1.8rem,4vw,2.8rem)] font-extrabold tracking-tight leading-tight">{b.title}</h1>

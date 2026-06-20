@@ -5,6 +5,7 @@ import { getCourses } from "@/lib/courses";
 export const metadata: Metadata = {
   title: "Khóa học AI",
   description: "Danh sách khóa học AI: nhập môn, prompt engineering, chatbot, dữ liệu, sáng tạo.",
+  alternates: { canonical: "/courses" },
 };
 
 export default async function CoursesPage() {

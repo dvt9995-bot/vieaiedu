@@ -5,6 +5,7 @@ import BlogBrowser from "@/components/BlogBrowser";
 export const metadata: Metadata = {
   title: "Tin tức & kiến thức AI",
   description: "Tin tức AI nổi bật, hướng dẫn và kinh nghiệm — cập nhật hằng ngày bởi VIE AI EDU.",
+  alternates: { canonical: "/blog" },
 };
 
 export const revalidate = 600;

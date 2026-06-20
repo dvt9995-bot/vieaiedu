@@ -4,7 +4,7 @@ import CourseCard from "@/components/CourseCard";
 import { getCourses } from "@/lib/courses";
 import { getBlogPosts } from "@/lib/blog";
 
-export const metadata: Metadata = { title: "Tìm kiếm" };
+export const metadata: Metadata = { title: "Tìm kiếm", robots: { index: false, follow: true } };
 export const dynamic = "force-dynamic";
 
 const norm = (s: string) => (s || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").replace(/đ/g, "d");
