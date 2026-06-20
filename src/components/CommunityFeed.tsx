@@ -7,6 +7,7 @@ import PostComments from "./PostComments";
 import FilterMenu from "./FilterMenu";
 import { track } from "@/lib/analytics";
 import { compressImage } from "@/lib/image";
+import Avatar from "./Avatar";
 import { TOPICS } from "@/lib/topics";
 import {
   loadPosts, createPost, togglePostLike, uploadCommunityImage,
@@ -159,7 +160,7 @@ export default function CommunityFeed() {
             <div key={p.id} className="bg-surface border border-border rounded-card p-[18px]">
               <div className="flex items-center gap-2.5 mb-3">
                 <Link href={p.authorId ? `/u/${p.authorId}` : "#"} className="flex items-center gap-2.5 group">
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: p.avatarColor }}>{p.author[0]}</div>
+                  <Avatar src={p.avatar} name={p.author} size={40} />
                   <div>
                     <div className="flex items-center gap-2">
                       <b className="text-sm group-hover:text-accent transition-colors">{p.author}</b>

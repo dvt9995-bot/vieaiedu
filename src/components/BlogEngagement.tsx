@@ -1,11 +1,12 @@
 "use client";
 import { useEffect, useState } from "react";
 import { useAuthModal } from "./AuthModal";
+import Avatar from "./Avatar";
 import { toast } from "./Toaster";
 import { track } from "@/lib/analytics";
 import { createClient } from "@/lib/supabase/client";
 
-interface Comment { id: string; body: string; created_at: string; author: string }
+interface Comment { id: string; body: string; created_at: string; author: string; avatar?: string }
 
 export default function BlogEngagement({ postId }: { postId: string }) {
   const { open } = useAuthModal();
@@ -17,8 +18,8 @@ export default function BlogEngagement({ postId }: { postId: string }) {
 
   async function loadComments() {
     const c = createClient(); if (!c) return;
-    const { data } = await c.from("blog_comments").select("id, body, created_at, profiles(full_name)").eq("post_id", postId).order("created_at");
-    setComments((data || []).map((x) => ({ id: x.id as string, body: x.body as string, created_at: x.created_at as string, author: (x as { profiles?: { full_name?: string } }).profiles?.full_name || "Học viên" })));
+    const { data } = await c.from("blog_comments").select("id, body, created_at, profiles(full_name, avatar_url)").eq("post_id", postId).order("created_at");
+    setComments((data || []).map((x) => { const pr = (x as { profiles?: { full_name?: string; avatar_url?: string } }).profiles; return { id: x.id as string, body: x.body as string, created_at: x.created_at as string, author: pr?.full_name || "Học viên", avatar: pr?.avatar_url || undefined }; }));
   }
 
   useEffect(() => {
@@ -70,7 +71,7 @@ export default function BlogEngagement({ postId }: { postId: string }) {
         <div className="space-y-3">
           {comments.map((cm) => (
             <div key={cm.id} className="flex gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-accent text-white grid place-items-center font-bold text-xs shrink-0">{cm.author[0]}</div>
+              <Avatar src={cm.avatar} name={cm.author} size={32} />
               <div className="bg-bg-soft rounded-2xl px-3.5 py-2 flex-1">
                 <div className="text-sm font-semibold">{cm.author} <span className="text-ink-3 font-normal text-xs">· {new Date(cm.created_at).toLocaleDateString("vi-VN")}</span></div>
                 <p className="text-ink-2 text-sm">{cm.body}</p>

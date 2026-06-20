@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Reveal from "@/components/Reveal";
 import Hero from "@/components/Hero";
 import CourseCard from "@/components/CourseCard";
+import Avatar from "@/components/Avatar";
 import JsonLd from "@/components/JsonLd";
 import { getCourses } from "@/lib/courses";
 import { getBlogPosts } from "@/lib/blog";
@@ -24,7 +25,7 @@ const siteLd = {
   potentialAction: { "@type": "SearchAction", target: `${BASE}/search?q={search_term_string}`, "query-input": "required name=search_term_string" },
 };
 
-interface FeedPost { id: string; body: string; author_name: string; author_id: string; likes: number; comments: number; created_at: string; image_url: string | null; }
+interface FeedPost { id: string; body: string; author_name: string; author_id: string; author_avatar: string | null; likes: number; comments: number; created_at: string; image_url: string | null; }
 
 async function featuredPosts(): Promise<FeedPost[]> {
   if (!isSupabaseConfigured()) return [];
@@ -116,7 +117,7 @@ export default async function Home() {
                 <Reveal key={p.id} delay={i * 50}>
                   <div className="rounded-card border border-border bg-surface p-5 h-full flex flex-col">
                     <div className="flex items-center gap-2.5 mb-3">
-                      <Link href={`/u/${p.author_id}`} className="w-9 h-9 rounded-full bg-accent text-white grid place-items-center font-bold text-sm shrink-0">{(p.author_name || "H")[0]}</Link>
+                      <Link href={`/u/${p.author_id}`}><Avatar src={p.author_avatar} name={p.author_name || "H"} size={36} /></Link>
                       <div>
                         <Link href={`/u/${p.author_id}`} className="text-sm font-semibold hover:text-accent">{p.author_name || "Học viên"}</Link>
                         <div className="text-ink-3 text-xs">{new Date(p.created_at).toLocaleDateString("vi-VN")}</div>

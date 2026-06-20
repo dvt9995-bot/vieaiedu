@@ -104,7 +104,7 @@ export async function toggleFavorite(slug: string, on: boolean) {
 
 // ---------- COMMUNITY ----------
 export interface DBPost {
-  id: string; authorId?: string; author: string; avatarColor: string; time: string; body: string;
+  id: string; authorId?: string; author: string; avatar?: string; avatarColor: string; time: string; body: string;
   image?: string; courseSlug?: string; likes: number; comments: number; owned: number; role?: string;
   tags?: string[]; views?: number;
 }
@@ -118,6 +118,7 @@ export async function loadPosts(): Promise<DBPost[]> {
       id: p.id as string,
       authorId: (p.author_id as string) || undefined,
       author: (p.author_name as string) || "Học viên",
+      avatar: (p.author_avatar as string) || undefined,
       avatarColor: COLORS[i % 3],
       time: new Date(p.created_at as string).toLocaleDateString("vi-VN"),
       body: p.body as string,
@@ -171,12 +172,12 @@ export async function togglePostLike(postId: string, on: boolean) {
   else await s.c.from("post_likes").delete().eq("post_id", postId).eq("user_id", s.uid);
 }
 
-export interface DBComment { id: string; body: string; author: string; time: string; }
+export interface DBComment { id: string; body: string; author: string; avatar?: string; time: string; }
 export async function loadComments(postId: string): Promise<DBComment[]> {
   const c = createClient();
   if (!c) return [];
-  const { data } = await c.from("comments").select("id, body, created_at, profiles(full_name)").eq("post_id", postId).order("created_at");
-  return (data || []).map((x) => ({ id: x.id as string, body: x.body as string, author: (x as { profiles?: { full_name?: string } }).profiles?.full_name || "Học viên", time: new Date(x.created_at as string).toLocaleDateString("vi-VN") }));
+  const { data } = await c.from("comments").select("id, body, created_at, profiles(full_name, avatar_url)").eq("post_id", postId).order("created_at");
+  return (data || []).map((x) => { const pr = (x as { profiles?: { full_name?: string; avatar_url?: string } }).profiles; return { id: x.id as string, body: x.body as string, author: pr?.full_name || "Học viên", avatar: pr?.avatar_url || undefined, time: new Date(x.created_at as string).toLocaleDateString("vi-VN") }; });
 }
 export async function addComment(postId: string, body: string): Promise<boolean> {
   const s = await sb();

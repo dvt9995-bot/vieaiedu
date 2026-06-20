@@ -4,12 +4,13 @@ import { notFound } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import PostComments from "@/components/PostComments";
 import ShareButtons from "@/components/ShareButtons";
+import Avatar from "@/components/Avatar";
 
 export const dynamic = "force-dynamic";
 
 interface Post {
   id: string; body: string; image: string | null; course_slug: string | null; created_at: string;
-  tags: string[]; views: number; author_id: string; author_name: string; author_role: string;
+  tags: string[]; views: number; author_id: string; author_name: string; author_avatar: string | null; author_role: string;
   likes: number; comments: number;
 }
 
@@ -39,7 +40,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
       <Link href="/community" className="text-ink-3 text-sm hover:text-ink">← Về cộng đồng</Link>
       <div className="rounded-card border border-border bg-surface p-6 mt-4">
         <div className="flex items-center gap-3 mb-4">
-          <Link href={`/u/${p.author_id}`} className="w-11 h-11 rounded-full bg-accent text-white grid place-items-center font-bold">{(p.author_name || "H")[0]}</Link>
+          <Link href={`/u/${p.author_id}`}><Avatar src={p.author_avatar} name={p.author_name || "H"} size={44} /></Link>
           <div>
             <Link href={`/u/${p.author_id}`} className="font-semibold hover:text-accent">{p.author_name}</Link>
             <div className="text-ink-3 text-xs">{new Date(p.created_at).toLocaleDateString("vi-VN")} · 👁 {p.views} lượt xem</div>

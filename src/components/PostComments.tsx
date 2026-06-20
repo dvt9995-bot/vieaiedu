@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import { loadComments, addComment, type DBComment } from "@/lib/db";
+import Avatar from "./Avatar";
 
 export default function PostComments({ postId }: { postId: string }) {
   const { open } = useAuthModal();
@@ -21,7 +22,10 @@ export default function PostComments({ postId }: { postId: string }) {
         <button onClick={send} className="text-accent font-semibold text-sm cursor-pointer">Gửi</button>
       </div>
       {(items || []).map((c) => (
-        <div key={c.id} className="flex gap-2 py-1.5 text-sm"><b className="text-ink">{c.author}</b><span className="text-ink-2">{c.body}</span></div>
+        <div key={c.id} className="flex items-start gap-2 py-1.5 text-sm">
+          <Avatar src={c.avatar} name={c.author} size={26} className="mt-0.5" />
+          <div><b className="text-ink">{c.author}</b> <span className="text-ink-2">{c.body}</span></div>
+        </div>
       ))}
       {items && items.length === 0 && <p className="text-ink-3 text-sm py-1">Chưa có bình luận.</p>}
     </div>

@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import Avatar from "@/components/Avatar";
 
 export const metadata: Metadata = {
   title: "Bảng xếp hạng học viên",
@@ -30,8 +32,8 @@ export default async function LeaderboardPage() {
           {rows.map((r, i) => (
             <li key={r.user_id} className={`flex items-center gap-4 rounded-card border p-4 ${i < 3 ? "border-gold/40 bg-gold/5" : "border-border bg-surface"}`}>
               <div className="w-8 text-center font-extrabold text-lg">{medal[i] || i + 1}</div>
-              <div className="w-10 h-10 rounded-full bg-accent flex items-center justify-center text-white font-bold">{(r.full_name || "H")[0]}</div>
-              <div className="flex-1 font-semibold">{r.full_name || "Học viên"}</div>
+              <Link href={`/u/${r.user_id}`}><Avatar src={r.avatar_url} name={r.full_name || "H"} size={40} /></Link>
+              <Link href={`/u/${r.user_id}`} className="flex-1 font-semibold hover:text-accent">{r.full_name || "Học viên"}</Link>
               <div className="text-ink-2 text-sm"><b className="text-ink">{r.completed}</b> bài</div>
             </li>
           ))}

@@ -6,6 +6,7 @@ import { useAuthModal } from "./AuthModal";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/app/auth/actions";
 import NotificationBell from "./NotificationBell";
+import Avatar from "./Avatar";
 import { track } from "@/lib/analytics";
 
 // Điều hướng công khai (hướng cộng đồng), gọn gàng
@@ -29,6 +30,7 @@ export default function Navbar() {
   const [menu, setMenu] = useState(false);
   const [dropdown, setDropdown] = useState(false);
   const [email, setEmail] = useState<string | null>(null);
+  const [avatar, setAvatar] = useState<string | null>(null);
   const ddRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
@@ -38,10 +40,12 @@ export default function Navbar() {
     const onClick = (e: MouseEvent) => { if (ddRef.current && !ddRef.current.contains(e.target as Node)) setDropdown(false); };
     document.addEventListener("click", onClick);
     const supabase = createClient();
+    const loadAvatar = (id?: string) => { if (id && supabase) supabase.from("profiles").select("avatar_url").eq("id", id).maybeSingle().then(({ data }) => setAvatar((data?.avatar_url as string) || null)); };
     if (supabase) {
-      supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
+      supabase.auth.getUser().then(({ data }) => { setEmail(data.user?.email ?? null); loadAvatar(data.user?.id); });
       const { data: sub } = supabase.auth.onAuthStateChange((e, s) => {
         setEmail(s?.user?.email ?? null);
+        if (s?.user?.id) loadAvatar(s.user.id); else setAvatar(null);
         if (e === "SIGNED_IN") {
           let intent: string | null = null;
           try { intent = sessionStorage.getItem("vie:auth"); sessionStorage.removeItem("vie:auth"); } catch {}
@@ -78,7 +82,7 @@ export default function Navbar() {
               <NotificationBell />
               <div className="relative hidden sm:block" ref={ddRef}>
                 <button onClick={() => setDropdown((d) => !d)} className="flex items-center gap-2 rounded-full hover:bg-bg-soft pl-1 pr-2.5 py-1 cursor-pointer transition-colors">
-                  <span className="w-8 h-8 rounded-full bg-accent text-white flex items-center justify-center text-sm font-bold uppercase">{email[0]}</span>
+                  <Avatar src={avatar} name={email} size={32} />
                   <svg viewBox="0 0 24 24" className={`w-4 h-4 fill-none stroke-ink-3 transition-transform ${dropdown ? "rotate-180" : ""}`} strokeWidth="2" strokeLinecap="round"><path d="M6 9l6 6 6-6" /></svg>
                 </button>
                 {dropdown && (
