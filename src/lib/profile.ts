@@ -40,8 +40,8 @@ export async function uploadAvatar(file: File): Promise<string | null> {
   if (!user) return null;
   const ext = file.name.split(".").pop() || "jpg";
   const path = `${user.id}/${Date.now()}.${ext}`;
-  const { error } = await c.storage.from("avatars").upload(path, file, { upsert: true });
-  if (error) return null;
+  const { error } = await c.storage.from("avatars").upload(path, file, { upsert: true, contentType: file.type || "image/jpeg" });
+  if (error) { console.error("uploadAvatar:", error.message); return null; }
   return c.storage.from("avatars").getPublicUrl(path).data.publicUrl;
 }
 

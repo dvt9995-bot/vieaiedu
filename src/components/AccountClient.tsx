@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import StudentCard from "@/components/StudentCard";
+import { compressImage } from "@/lib/image";
 import { toast } from "@/components/Toaster";
 import {
   getMyProfile, updateMyProfile, uploadAvatar, changeEmail, changePassword, type MyProfile,
@@ -30,7 +31,7 @@ export default function AccountClient() {
   }
   async function onAvatar(file: File) {
     setMsg("Đang tải ảnh…"); toast("Đang tải ảnh lên…", "info");
-    const url = await uploadAvatar(file);
+    const url = await uploadAvatar(await compressImage(file, 512, 0.9));
     if (!url) { setMsg("Tải ảnh thất bại."); return toast("Tải ảnh thất bại", "error"); }
     set("avatar_url", url);
     await updateMyProfile({ avatar_url: url });

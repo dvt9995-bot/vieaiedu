@@ -6,6 +6,7 @@ import { toast } from "./Toaster";
 import PostComments from "./PostComments";
 import FilterMenu from "./FilterMenu";
 import { track } from "@/lib/analytics";
+import { compressImage } from "@/lib/image";
 import { TOPICS } from "@/lib/topics";
 import {
   loadPosts, createPost, togglePostLike, uploadCommunityImage,
@@ -62,7 +63,11 @@ export default function CommunityFeed() {
     if (!isConfigured() || !uid) return open("login");
     setBusy(true);
     let imageUrl: string | null = null;
-    if (file) imageUrl = await uploadCommunityImage(file);
+    if (file) {
+      const compressed = await compressImage(file);
+      imageUrl = await uploadCommunityImage(compressed);
+      if (!imageUrl) { setBusy(false); toast("Tải ảnh thất bại — ảnh quá lớn hoặc lỗi mạng, vui lòng thử lại", "error"); return; }
+    }
     const ok = await createPost(text.trim(), imageUrl, null, tags);
     setBusy(false);
     if (!ok) { toast("Đăng bài thất bại", "error"); return open("login"); }

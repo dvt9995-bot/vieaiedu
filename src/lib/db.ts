@@ -147,8 +147,8 @@ export async function uploadCommunityImage(file: File): Promise<string | null> {
   if (!s) return null;
   const ext = file.name.split(".").pop() || "jpg";
   const path = `${s.uid}/${Date.now()}.${ext}`;
-  const { error } = await s.c.storage.from("community").upload(path, file, { upsert: true });
-  if (error) return null;
+  const { error } = await s.c.storage.from("community").upload(path, file, { upsert: true, contentType: file.type || "image/jpeg" });
+  if (error) { console.error("uploadCommunityImage:", error.message); return null; }
   return s.c.storage.from("community").getPublicUrl(path).data.publicUrl;
 }
 
