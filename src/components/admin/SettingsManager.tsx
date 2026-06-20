@@ -9,6 +9,7 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?]
   { title: "🔌 Tích hợp & API key", note: "Để trống = dùng giá trị mặc định trong env.", fields: [
     ["bunny_library_id", "Bunny Library ID"], ["bunny_api_key", "Bunny Stream API key", true], ["bunny_token_key", "Bunny Token key (chống tải trộm)", true],
     ["resend_api_key", "Resend API key", true], ["resend_from", "Email gửi (From)"],
+    ["gemini_api_key", "Google Gemini API key (blog tự động)", true],
   ]},
   { title: "📈 Tracking & Pixel", fields: [
     ["ga_id", "Google Analytics 4 ID (G-XXXX)"], ["fb_pixel_id", "Facebook Pixel ID"], ["tiktok_pixel_id", "TikTok Pixel ID"],
@@ -30,6 +31,12 @@ export default function SettingsManager() {
     setMsg("Đang lưu…");
     const r = await fetch("/api/admin/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ values: s }) }).then((x) => x.json());
     setMsg(r.ok ? "✓ Đã lưu. Thay đổi áp dụng ngay (không cần deploy)." : r.error || "Lỗi");
+  }
+
+  async function genBlog() {
+    setMsg("Đang tạo bài blog từ tin AI mới nhất… (có thể mất ~30s)");
+    const r = await fetch("/api/cron/blog").then((x) => x.json()).catch(() => ({}));
+    setMsg(r.skipped ? r.skipped : r.created != null ? `✓ Đã tạo ${r.created} bài blog mới.` : r.error || "Lỗi");
   }
 
   if (!loaded) return <p className="text-ink-3">Đang tải…</p>;
@@ -61,8 +68,9 @@ export default function SettingsManager() {
           </div>
         ))}
       </div>
-      <div className="flex items-center gap-3 mt-5">
+      <div className="flex items-center gap-3 mt-5 flex-wrap">
         <button onClick={save} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-6 py-2.5 cursor-pointer transition-colors">Lưu tất cả</button>
+        <button onClick={genBlog} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold px-5 py-2.5 cursor-pointer transition-colors">📰 Tạo bài blog ngay</button>
         {msg && <span className="text-sm text-ink-2">{msg}</span>}
       </div>
     </div>
