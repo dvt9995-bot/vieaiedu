@@ -4,10 +4,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { BLOG } from "@/lib/mock";
 import type { BlogPost } from "@/lib/types";
 
-interface FullBlog extends BlogPost { cover?: string; images?: string[]; sourceUrl?: string; sourceName?: string; }
+interface FullBlog extends BlogPost { id?: string; cover?: string; images?: string[]; sourceUrl?: string; sourceName?: string; }
 
 function map(r: Record<string, unknown>): FullBlog {
   return {
+    id: r.id as string,
     slug: r.slug as string,
     title: r.title as string,
     excerpt: (r.excerpt as string) || "",

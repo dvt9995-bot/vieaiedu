@@ -5,6 +5,7 @@ import { getBlogPostBySlug, getRelatedPosts } from "@/lib/blog";
 import { mdToHtml } from "@/lib/md";
 import ShareButtons from "@/components/ShareButtons";
 import JsonLd from "@/components/JsonLd";
+import BlogEngagement from "@/components/BlogEngagement";
 
 export const revalidate = 600;
 
@@ -58,25 +59,16 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
       ) : (
         <div className="aspect-video bg-bg-soft border border-border rounded-card my-8" />
       )}
-      <div className="prose-vie text-ink-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: mdToHtml(b.body) }} />
-
-      {/* Thư viện ảnh từ nguồn */}
-      {gallery.length > 0 && (
-        <div className="mt-8">
-          <h2 className="text-lg font-bold mb-3">Hình ảnh từ bài gốc</h2>
-          <div className="grid grid-cols-2 gap-3">
-            {gallery.map((img, i) => (
-              /* eslint-disable-next-line @next/next/no-img-element */
-              <img key={i} src={img} alt={`${b.title} ${i + 1}`} loading="lazy" className="w-full rounded-lg border border-border object-cover aspect-video" />
-            ))}
-          </div>
-        </div>
-      )}
+      {/* Thân bài: ảnh nguồn được chèn xen kẽ đúng mạch nội dung */}
+      <div className="prose-vie text-ink-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: mdToHtml(b.body, gallery) }} />
 
       <div className="flex items-center justify-between gap-3 mt-8 pt-5 border-t border-border flex-wrap">
         <span className="text-ink-3 text-sm">Thấy hữu ích? Chia sẻ cho mọi người:</span>
         <ShareButtons path={`/blog/${b.slug}`} />
       </div>
+
+      {/* Thích + bình luận */}
+      {b.id && <BlogEngagement postId={b.id} />}
 
       {/* Tin liên quan */}
       {related.length > 0 && (
