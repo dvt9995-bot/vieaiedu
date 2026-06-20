@@ -1,7 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
-import FilterChips from "./FilterChips";
+import FilterMenu from "./FilterMenu";
 
 export interface BlogItem { slug: string; title: string; excerpt: string; date: string; cover?: string; sourceName?: string; }
 
@@ -18,8 +18,11 @@ export default function BlogBrowser({ posts }: { posts: BlogItem[] }) {
 
   return (
     <>
-      {/* Lọc nguồn */}
-      <FilterChips className="mb-7" value={src} onChange={setSrc} options={sources.map((s) => ({ value: s, label: s }))} />
+      {/* Lọc nguồn (phễu) */}
+      <div className="flex items-center justify-between mb-7">
+        <span className="text-ink-3 text-sm">{src === "Tất cả" ? "Tất cả nguồn" : `Nguồn: ${src}`}</span>
+        <FilterMenu align="right" groups={[{ key: "src", label: "Nguồn tin", value: src, onChange: setSrc, options: sources.map((s) => ({ value: s, label: s })) }]} />
+      </div>
 
       {filtered.length === 0 ? (
         <p className="text-ink-3 py-10 text-center">Chưa có bài viết.</p>

@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useAuthModal } from "./AuthModal";
 import { toast } from "./Toaster";
 import PostComments from "./PostComments";
-import FilterChips from "./FilterChips";
+import FilterMenu from "./FilterMenu";
 import { TOPICS } from "@/lib/topics";
 import {
   loadPosts, createPost, togglePostLike, uploadCommunityImage,
@@ -95,13 +95,14 @@ export default function CommunityFeed() {
         </div>
       )}
 
-      {/* Lọc chủ đề */}
-      <FilterChips
-        className="mb-4"
-        value={filter}
-        onChange={setFilter}
-        options={[{ value: "", label: "Tất cả" }, ...TOPICS.map((t) => ({ value: t, label: t }))]}
-      />
+      {/* Lọc chủ đề (phễu) */}
+      <div className="flex items-center justify-between mb-4">
+        <span className="text-ink-3 text-sm">{filter ? `Chủ đề: #${filter}` : "Tất cả bài viết"}</span>
+        <FilterMenu
+          align="right"
+          groups={[{ key: "topic", label: "Chủ đề", value: filter, onChange: setFilter, options: [{ value: "", label: "Tất cả" }, ...TOPICS.map((t) => ({ value: t, label: t }))] }]}
+        />
+      </div>
 
       <div className="flex flex-col gap-4">
         {/* Compose */}
