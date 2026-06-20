@@ -1,4 +1,6 @@
+import { unstable_cache } from "next/cache";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { BLOG } from "@/lib/mock";
 import type { BlogPost } from "@/lib/types";
 
@@ -24,14 +26,19 @@ export async function getRelatedPosts(slug: string, n = 3): Promise<FullBlog[]> 
   return all.filter((b) => b.slug !== slug).slice(0, n);
 }
 
-export async function getBlogPosts(): Promise<FullBlog[]> {
-  if (isSupabaseConfigured()) {
-    const supabase = await createClient();
-    const { data } = await supabase!.from("blog_posts").select("*").eq("published", true).order("published_at", { ascending: false }).limit(60);
-    if (data && data.length) return data.map(map);
-  }
-  return BLOG.map((b) => ({ ...b }));
-}
+// Cache danh sách blog 10 phút (tag "blog" để làm mới khi admin sửa / cron đăng).
+export const getBlogPosts = unstable_cache(
+  async (): Promise<FullBlog[]> => {
+    const admin = createAdminClient();
+    if (admin) {
+      const { data } = await admin.from("blog_posts").select("*").eq("published", true).order("published_at", { ascending: false }).limit(60);
+      if (data && data.length) return data.map(map);
+    }
+    return BLOG.map((b) => ({ ...b }));
+  },
+  ["blog-posts"],
+  { revalidate: 600, tags: ["blog"] },
+);
 
 export async function getBlogPostBySlug(slug: string): Promise<FullBlog | undefined> {
   if (isSupabaseConfigured()) {

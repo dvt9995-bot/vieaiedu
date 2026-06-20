@@ -4,6 +4,7 @@ import { rewriteArticle, isGeminiConfigured, geminiHealthCheck } from "@/lib/gem
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
+import { revalidateTag } from "next/cache";
 
 export const maxDuration = 60;
 
@@ -157,6 +158,7 @@ export async function GET(req: Request) {
       if (!error) { created.push(rw.title); seenTitle.add(norm(rw.title)); }
     }
 
+    if (created.length) revalidateTag("blog", "max");
     // Thông báo kết quả cho admin
     if (created.length === 0)
       await notifyAdmins("🔴 Blog: không tạo được bài", `Có ${fresh.length} tin nhưng viết lại đều lỗi. Có thể lỗi/hết hạn mức Gemini.`, "/admin", { email: true });

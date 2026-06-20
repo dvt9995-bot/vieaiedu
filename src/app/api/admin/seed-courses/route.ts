@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { COURSES } from "@/lib/mock";
@@ -36,5 +37,6 @@ export async function POST() {
     }
     inserted++;
   }
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true, inserted });
 }

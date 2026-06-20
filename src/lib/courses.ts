@@ -1,4 +1,5 @@
-import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { unstable_cache } from "next/cache";
+import { createAdminClient } from "@/lib/supabase/admin";
 import { COURSES as MOCK } from "@/lib/mock";
 import type { Course, Level } from "@/lib/types";
 
@@ -49,11 +50,11 @@ function mapCourse(c: Row): Course {
   };
 }
 
+// Dùng service role (không cookie) để có thể cache. Catalog là dữ liệu công khai.
 async function fromDB(): Promise<Course[] | null> {
-  if (!isSupabaseConfigured()) return null;
-  const supabase = await createClient();
-  if (!supabase) return null;
-  const { data, error } = await supabase
+  const admin = createAdminClient();
+  if (!admin) return null;
+  const { data, error } = await admin
     .from("courses")
     .select("*, sections(*, lessons(*))")
     .eq("status", "published")
@@ -62,12 +63,17 @@ async function fromDB(): Promise<Course[] | null> {
   return data.map(mapCourse);
 }
 
+// Cache toàn bộ catalog 5 phút (tag "courses" để admin sửa là làm mới ngay).
+const cachedCourses = unstable_cache(
+  async (): Promise<Course[]> => (await fromDB()) ?? MOCK,
+  ["courses-all"],
+  { revalidate: 300, tags: ["courses"] },
+);
+
 export async function getCourses(): Promise<Course[]> {
-  return (await fromDB()) ?? MOCK;
+  return cachedCourses();
 }
 
 export async function getCourseBySlug(slug: string): Promise<Course | undefined> {
-  const all = await fromDB();
-  if (all) return all.find((c) => c.slug === slug);
-  return MOCK.find((c) => c.slug === slug);
+  return (await cachedCourses()).find((c) => c.slug === slug);
 }

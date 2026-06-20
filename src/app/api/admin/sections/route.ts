@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 
@@ -21,6 +22,7 @@ export async function PATCH(req: Request) {
   if (position !== undefined) patch.position = position;
   const { error } = await admin.from("sections").update(patch).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }
 
@@ -30,5 +32,6 @@ export async function DELETE(req: Request) {
   const id = new URL(req.url).searchParams.get("id");
   const { error } = await admin.from("sections").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }

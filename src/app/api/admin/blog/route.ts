@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 
@@ -25,6 +26,7 @@ export async function POST(req: Request) {
     published: b.published !== false, published_at: new Date().toISOString(),
   });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("blog", "max");
   return NextResponse.json({ ok: true, slug });
 }
 
@@ -37,6 +39,7 @@ export async function PATCH(req: Request) {
   for (const k of ["title", "excerpt", "body", "cover_url", "published", "slug"]) if (rest[k] !== undefined) patch[k] = rest[k];
   const { error } = await admin.from("blog_posts").update(patch).eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("blog", "max");
   return NextResponse.json({ ok: true });
 }
 
@@ -45,5 +48,6 @@ export async function DELETE(req: Request) {
   const admin = createAdminClient()!;
   const id = new URL(req.url).searchParams.get("id");
   await admin.from("blog_posts").delete().eq("id", id);
+  revalidateTag("blog", "max");
   return NextResponse.json({ ok: true });
 }

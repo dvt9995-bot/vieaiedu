@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { generateSeoMeta } from "@/lib/gemini";
@@ -32,6 +33,7 @@ export async function POST(req: Request) {
     const meta = await generateSeoMeta({ name: body.title, context: body.subtitle || body.description });
     if (meta) await admin.from("courses").update({ seo_title: meta.seo_title, seo_description: meta.seo_description }).eq("id", data.id);
   } catch {}
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true, id: data.id });
 }
 
@@ -42,6 +44,7 @@ export async function PATCH(req: Request) {
   if (!body.id) return NextResponse.json({ error: "Thiếu id" }, { status: 400 });
   const { error } = await admin.from("courses").update(pick(body)).eq("id", body.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }
 
@@ -52,5 +55,6 @@ export async function DELETE(req: Request) {
   if (!id) return NextResponse.json({ error: "Thiếu id" }, { status: 400 });
   const { error } = await admin.from("courses").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }

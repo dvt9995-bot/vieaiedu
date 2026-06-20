@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { generateSeoMeta, isGeminiConfigured } from "@/lib/gemini";
@@ -26,5 +27,6 @@ export async function POST(req: Request) {
     const { error } = await admin.from("courses").update({ seo_title: meta.seo_title, seo_description: meta.seo_description }).eq("id", c.id);
     if (!error) updated++;
   }
+  if (updated) revalidateTag("courses", "max");
   return NextResponse.json({ updated, total: courses.length });
 }

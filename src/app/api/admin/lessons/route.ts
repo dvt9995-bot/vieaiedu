@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 
@@ -31,6 +32,7 @@ export async function POST(req: Request) {
   if (!body.section_id || !body.course_id || !body.title) return NextResponse.json({ error: "Thiếu dữ liệu" }, { status: 400 });
   const { data, error } = await admin.from("lessons").insert({ course_id: body.course_id, ...pick(body) }).select("id").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true, id: data.id });
 }
 
@@ -41,6 +43,7 @@ export async function PATCH(req: Request) {
   if (!body.id) return NextResponse.json({ error: "Thiếu id" }, { status: 400 });
   const { error } = await admin.from("lessons").update(pick(body)).eq("id", body.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }
 
@@ -50,5 +53,6 @@ export async function DELETE(req: Request) {
   const id = new URL(req.url).searchParams.get("id");
   const { error } = await admin.from("lessons").delete().eq("id", id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }
