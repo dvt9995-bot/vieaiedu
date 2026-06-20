@@ -22,6 +22,7 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?]
     ["signup_credit", "Tặng người mới (đ khuyến mãi)"],
     ["referral_reward_credit", "Thưởng người giới thiệu khi có bạn đăng ký (đ)"],
     ["referral_commission_pct", "Hoa hồng giới thiệu khi bạn mua khóa thật (%)"],
+    ["min_withdraw", "Số tiền rút tối thiểu (đ)"],
   ]},
 ];
 

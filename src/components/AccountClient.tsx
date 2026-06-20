@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import StudentCard from "@/components/StudentCard";
+import WalletWithdraw from "@/components/WalletWithdraw";
 import { toast } from "@/components/Toaster";
 import {
   getMyProfile, updateMyProfile, uploadAvatar, changeEmail, changePassword, type MyProfile,
@@ -114,8 +115,10 @@ export default function AccountClient() {
                 <div className="text-ink-3 text-xs mt-0.5">Số dư hoa hồng · dùng mua khóa học</div>
               </div>
             </div>
-            <p className="text-ink-3 text-xs mt-3">Số dư được trừ tự động khi mua khóa học (ưu tiên khuyến mãi trước). Không quy đổi tiền mặt.</p>
+            <p className="text-ink-3 text-xs mt-3">Số dư khuyến mãi: chỉ mua khóa, không rút. Số dư hoa hồng: có thể rút về tài khoản ngân hàng.</p>
           </section>
+
+          <WalletWithdraw />
 
           {/* Mời bạn bè (referral) */}
           <section className="rounded-card border border-accent/25 bg-accent-weak p-6">

@@ -9,5 +9,6 @@ export async function GET() {
   const b = await getBalances(user.id);
   const admin = createAdminClient();
   const { data: txns } = admin ? await admin.from("wallet_transactions").select("kind, amount, reason, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(20) : { data: [] };
-  return NextResponse.json({ credit: b.credit, real: b.real, total: b.credit + b.real, txns: txns || [] });
+  const { data: withdrawals } = admin ? await admin.from("withdrawals").select("amount, status, created_at").eq("user_id", user.id).order("created_at", { ascending: false }).limit(10) : { data: [] };
+  return NextResponse.json({ credit: b.credit, real: b.real, total: b.credit + b.real, txns: txns || [], withdrawals: withdrawals || [] });
 }

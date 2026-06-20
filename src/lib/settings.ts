@@ -48,4 +48,5 @@ export const CONFIG_KEYS = {
   signup_credit: "",
   referral_reward_credit: "",
   referral_commission_pct: "",
+  min_withdraw: "",
 } as const;

@@ -7,15 +7,17 @@ import CouponManager from "@/components/admin/CouponManager";
 import SettingsManager from "@/components/admin/SettingsManager";
 import BlogManager from "@/components/admin/BlogManager";
 import CommunityModerator from "@/components/admin/CommunityModerator";
+import WithdrawManager from "@/components/admin/WithdrawManager";
 import BroadcastForm from "@/components/admin/BroadcastForm";
 
-type Tab = "overview" | "courses" | "blog" | "users" | "coupons" | "community" | "broadcast" | "settings";
+type Tab = "overview" | "courses" | "blog" | "users" | "coupons" | "withdraw" | "community" | "broadcast" | "settings";
 const NAV: [Tab, string, string][] = [
   ["overview", "Tổng quan", "▦"],
   ["courses", "Khóa học", "▤"],
   ["blog", "Blog", "📰"],
   ["users", "Học viên", "◍"],
   ["coupons", "Mã giảm giá", "%"],
+  ["withdraw", "Rút tiền", "💸"],
   ["community", "Cộng đồng", "◫"],
   ["broadcast", "Thông báo", "🔔"],
   ["settings", "Cài đặt", "⚙"],
@@ -49,6 +51,7 @@ export default function AdminClient() {
           {tab === "blog" && <BlogManager />}
           {tab === "users" && <UserManager />}
           {tab === "coupons" && <CouponManager />}
+          {tab === "withdraw" && <WithdrawManager />}
           {tab === "broadcast" && <BroadcastForm />}
           {tab === "settings" && <SettingsManager />}
           {tab === "community" && <CommunityModerator />}
