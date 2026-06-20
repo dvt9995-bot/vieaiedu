@@ -35,9 +35,9 @@ async function featuredPosts(): Promise<FeedPost[]> {
 
 export default async function Home() {
   const [courses, posts, blog] = await Promise.all([getCourses(), featuredPosts(), getBlogPosts()]);
-  const free = courses.filter((c) => c.price === 0).slice(0, 3);
-  const freeList = free.length ? free : courses.slice(0, 3);
-  const news = blog.slice(0, 3);
+  const free = courses.filter((c) => c.price === 0).slice(0, 8);
+  const freeList = free.length ? free : courses.slice(0, 8);
+  const news = blog.slice(0, 6);
 
   return (
     <>
@@ -54,8 +54,9 @@ export default async function Home() {
             </div>
             <Link href="/courses" className="text-sm font-semibold text-ink-2 hover:text-accent shrink-0">Tất cả →</Link>
           </div>
-          <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {freeList.map((c, i) => (<Reveal key={c.id} delay={i * 50}><CourseCard course={c} /></Reveal>))}
+          {/* Mobile: 2 hàng cuộn ngang · Desktop: lưới 3 cột */}
+          <div className="grid gap-4 grid-flow-col grid-rows-2 auto-cols-[47%] scroll-x snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0 md:gap-5 md:grid-flow-row md:grid-rows-none md:auto-cols-auto md:grid-cols-3 md:overflow-visible">
+            {freeList.map((c) => (<div key={c.id} className="snap-start"><CourseCard course={c} /></div>))}
           </div>
         </div>
       </section>
@@ -73,23 +74,22 @@ export default async function Home() {
           {news.length === 0 ? (
             <p className="text-ink-3">Sắp có tin tức mới…</p>
           ) : (
-            <div className="grid gap-5 grid-cols-1 md:grid-cols-3">
-              {news.map((b, i) => (
-                <Reveal key={b.slug} delay={i * 50}>
-                  <Link href={`/blog/${b.slug}`} className="block rounded-card border border-border bg-surface overflow-hidden h-full transition-all hover:border-border-strong hover:shadow-soft hover:-translate-y-1">
-                    <div className="aspect-video bg-bg-soft overflow-hidden">
-                      {b.cover ? (
-                        /* eslint-disable-next-line @next/next/no-img-element */
-                        <img src={b.cover} alt={b.title} className="w-full h-full object-cover" />
-                      ) : <div className="w-full h-full grid place-items-center text-ink-3">📰</div>}
-                    </div>
-                    <div className="p-4">
-                      <div className="text-ink-3 text-xs mb-1.5">{b.date}{b.sourceName ? ` · ${b.sourceName}` : ""}</div>
-                      <h3 className="font-bold leading-snug line-clamp-2">{b.title}</h3>
-                      <p className="text-ink-2 text-sm mt-1.5 line-clamp-2">{b.excerpt}</p>
-                    </div>
-                  </Link>
-                </Reveal>
+            {/* Mobile: 3 hàng × 2 bài, cuộn ngang · Desktop: lưới 3 cột */}
+            <div className="grid gap-4 grid-flow-col grid-rows-3 auto-cols-[47%] scroll-x snap-x snap-mandatory pb-3 -mx-4 px-4 md:mx-0 md:px-0 md:pb-0 md:gap-5 md:grid-flow-row md:grid-rows-none md:auto-cols-auto md:grid-cols-3 md:overflow-visible">
+              {news.map((b) => (
+                <Link key={b.slug} href={`/blog/${b.slug}`} className="snap-start flex flex-col rounded-card border border-border bg-surface overflow-hidden h-full transition-all hover:border-border-strong hover:shadow-soft md:hover:-translate-y-1">
+                  <div className="aspect-video bg-bg-soft overflow-hidden">
+                    {b.cover ? (
+                      /* eslint-disable-next-line @next/next/no-img-element */
+                      <img src={b.cover} alt={b.title} className="w-full h-full object-cover" />
+                    ) : <div className="w-full h-full grid place-items-center text-ink-3">📰</div>}
+                  </div>
+                  <div className="p-3 md:p-4 min-w-0 flex-1">
+                    <div className="text-ink-3 text-[.68rem] md:text-xs mb-1 line-clamp-1">{b.date}{b.sourceName ? ` · ${b.sourceName}` : ""}</div>
+                    <h3 className="font-bold text-[.82rem] md:text-base leading-snug line-clamp-3 md:line-clamp-2">{b.title}</h3>
+                    <p className="text-ink-2 text-sm mt-1.5 line-clamp-2 hidden md:block">{b.excerpt}</p>
+                  </div>
+                </Link>
               ))}
             </div>
           )}

@@ -61,7 +61,7 @@ export default function CoursesBrowser({ courses }: { courses: Course[] }) {
       {filtered.length === 0 ? (
         <div className="text-center py-20 text-ink-3">Không tìm thấy khóa học phù hợp.</div>
       ) : (
-        <div className="grid gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="grid gap-3 sm:gap-[22px] grid-cols-2 lg:grid-cols-3">
           {filtered.map((c) => <CourseCard key={c.id} course={c} />)}
         </div>
       )}
