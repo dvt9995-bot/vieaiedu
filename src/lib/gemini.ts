@@ -70,6 +70,8 @@ Tiêu đề gốc: ${input.title}
 Tóm tắt nguồn (${input.sourceName}): ${input.summary}
 
 Yêu cầu:
+- BẮT BUỘC: "title", "excerpt" và "body" PHẢI hoàn toàn bằng TIẾNG VIỆT (dịch cả tên riêng/thuật ngữ khi tự nhiên, giữ tên sản phẩm gốc nếu cần). TUYỆT ĐỐI không để tiêu đề tiếng Anh.
+- Tiêu đề tiếng Việt hấp dẫn, chuẩn SEO, tối đa ~70 ký tự.
 - Giọng văn chuyên nghiệp, gần gũi, truyền cảm hứng học AI.
 - Bài dài 350–550 từ, dùng Markdown: 2–4 mục \\n## tiêu đề phụ, có gạch đầu dòng khi hợp lý.
 - Mở đầu hook, kết bài gợi mở liên hệ tới việc học/ứng dụng AI.
