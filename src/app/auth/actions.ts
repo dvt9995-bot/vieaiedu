@@ -2,6 +2,7 @@
 import { redirect } from "next/navigation";
 import { headers } from "next/headers";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 type Result = { error?: string };
 
@@ -19,12 +20,21 @@ export async function signIn(_prev: Result, formData: FormData): Promise<Result>
 export async function signUp(_prev: Result, formData: FormData): Promise<Result> {
   if (!isSupabaseConfigured()) return { error: "Chưa cấu hình Supabase." };
   const supabase = await createClient();
-  const { error } = await supabase!.auth.signUp({
-    email: String(formData.get("email")),
-    password: String(formData.get("password")),
+  const email = String(formData.get("email"));
+  const password = String(formData.get("password"));
+  const { data, error } = await supabase!.auth.signUp({
+    email, password,
     options: { data: { full_name: String(formData.get("full_name") || "") } },
   });
   if (error) return { error: error.message };
+
+  // Tự xác nhận email (service role) để đăng nhập được ngay — bỏ rào cản verify mail.
+  const admin = createAdminClient();
+  if (admin && data.user) {
+    await admin.auth.admin.updateUserById(data.user.id, { email_confirm: true }).catch(() => {});
+  }
+  // Tạo phiên đăng nhập ngay
+  await supabase!.auth.signInWithPassword({ email, password });
   redirect("/dashboard");
 }
 
