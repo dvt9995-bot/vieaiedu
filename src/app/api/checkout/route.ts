@@ -40,7 +40,7 @@ export async function POST(req: Request) {
     orderId: order.id,
     amount,
     code,
-    qrUrl: sepayQrUrl(amount, code),
+    qrUrl: await sepayQrUrl(amount, code),
     percentOff,
   });
 }

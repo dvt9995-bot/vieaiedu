@@ -1,38 +1,25 @@
 "use client";
-import { useEffect, useState } from "react";
-import { COURSES } from "@/lib/mock";
-import { formatVND } from "@/lib/format";
-import { createClient } from "@/lib/supabase/client";
+import { useState } from "react";
+import Dashboard from "@/components/admin/Dashboard";
 import CourseManager from "@/components/admin/CourseManager";
+import UserManager from "@/components/admin/UserManager";
+import CouponManager from "@/components/admin/CouponManager";
+import SettingsManager from "@/components/admin/SettingsManager";
 import BroadcastForm from "@/components/admin/BroadcastForm";
 
-interface Stats { students: number; revenue: number; orders: { id: string; course_slug: string; amount: number }[]; }
-
-type Tab = "overview" | "courses" | "community" | "revenue" | "broadcast";
+type Tab = "overview" | "courses" | "users" | "coupons" | "community" | "broadcast" | "settings";
 const NAV: [Tab, string, string][] = [
   ["overview", "Tổng quan", "▦"],
   ["courses", "Khóa học", "▤"],
+  ["users", "Học viên", "◍"],
+  ["coupons", "Mã giảm giá", "%"],
   ["community", "Cộng đồng", "◫"],
-  ["revenue", "Doanh thu", "₫"],
   ["broadcast", "Thông báo", "🔔"],
+  ["settings", "Cài đặt", "⚙"],
 ];
 
 export default function AdminClient() {
   const [tab, setTab] = useState<Tab>("overview");
-  const [stats, setStats] = useState<Stats | null>(null);
-
-  useEffect(() => {
-    const supabase = createClient();
-    if (!supabase) return;
-    (async () => {
-      const [{ count: students }, paid] = await Promise.all([
-        supabase.from("enrollments").select("*", { count: "exact", head: true }),
-        supabase.from("orders").select("id, course_slug, amount").eq("status", "paid").order("paid_at", { ascending: false }).limit(10),
-      ]);
-      const orders = paid.data ?? [];
-      setStats({ students: students ?? 0, revenue: orders.reduce((s, o) => s + (o.amount as number), 0), orders });
-    })();
-  }, []);
 
   return (
     <div className="container-x py-8">
@@ -45,76 +32,25 @@ export default function AdminClient() {
       </div>
 
       <div className="grid md:grid-cols-[200px_1fr] gap-6 items-start">
-        {/* Sidebar */}
-        <nav className="rounded-card border border-border bg-surface p-2 md:sticky md:top-24">
+        <nav className="rounded-card border border-border bg-surface p-2 md:sticky md:top-24 flex md:block overflow-x-auto">
           {NAV.map(([t, label, icon]) => (
-            <button key={t} onClick={() => setTab(t)} className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2 hover:bg-bg-soft"}`}>
+            <button key={t} onClick={() => setTab(t)} className={`w-full text-left flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium cursor-pointer transition-colors whitespace-nowrap ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2 hover:bg-bg-soft"}`}>
               <span className="w-5 text-center">{icon}</span>{label}
             </button>
           ))}
         </nav>
 
-        {/* Content */}
         <div>
-          {tab === "overview" && (
-            <div>
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
-                {[
-                  ["Doanh thu", stats ? formatVND(stats.revenue) : "128tr", stats ? "thật" : "+12%"],
-                  ["Học viên", stats ? String(stats.students) : "8.420", stats ? "thật" : "+340"],
-                  ["Khóa học", String(COURSES.length), ""],
-                  ["Tỉ lệ hoàn thành", "63%", "+4%"],
-                ].map(([l, v, d]) => (
-                  <div key={l} className="rounded-card border border-border bg-surface p-5">
-                    <div className="text-ink-3 text-xs">{l}</div>
-                    <div className="text-2xl font-extrabold tracking-tight mt-1">{v}</div>
-                    {d && <div className="text-success text-xs font-semibold mt-0.5">{d}</div>}
-                  </div>
-                ))}
-              </div>
-              <div className="rounded-card border border-border bg-surface p-5">
-                <div className="text-sm font-semibold mb-3">Lượt đăng ký 7 ngày qua</div>
-                <div className="flex items-end gap-2 h-32">
-                  {[42, 64, 50, 78, 60, 94, 72].map((h, i) => (
-                    <div key={i} className="flex-1 bg-accent/85 rounded-t" style={{ height: `${h}%` }} />
-                  ))}
-                </div>
-              </div>
-            </div>
-          )}
-
+          {tab === "overview" && <Dashboard />}
           {tab === "courses" && <CourseManager />}
+          {tab === "users" && <UserManager />}
+          {tab === "coupons" && <CouponManager />}
           {tab === "broadcast" && <BroadcastForm />}
-
+          {tab === "settings" && <SettingsManager />}
           {tab === "community" && (
             <div className="rounded-card border border-border bg-surface p-5">
               <h2 className="font-bold text-lg mb-4">Duyệt bài cộng đồng</h2>
-              {["Bài chia sẻ pipeline RAG — Thu Hà", "Câu hỏi về lộ trình — Quốc Bảo"].map((t) => (
-                <div key={t} className="flex items-center justify-between py-3 border-b border-border last:border-0">
-                  <span className="text-ink-2 text-sm">{t}</span>
-                  <div className="flex gap-2">
-                    <button className="text-success text-sm font-semibold cursor-pointer">Duyệt</button>
-                    <button className="text-accent text-sm font-semibold cursor-pointer">Ẩn</button>
-                  </div>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {tab === "revenue" && (
-            <div className="rounded-card border border-border bg-surface p-5">
-              <h2 className="font-bold text-lg mb-4">Giao dịch SePay gần đây</h2>
-              <table className="w-full text-sm">
-                <thead><tr className="text-ink-3 text-left text-xs uppercase"><th className="py-2">Mã</th><th className="py-2">Khóa</th><th className="py-2 text-right">Số tiền</th></tr></thead>
-                <tbody>
-                  {(stats?.orders.length
-                    ? stats.orders.map((o) => [o.id.slice(0, 8).toUpperCase(), o.course_slug, o.amount] as [string, string, number])
-                    : [["SP10293", "Prompt Engineering", 699000], ["SP10292", "Xây Chatbot AI", 1199000], ["SP10291", "AI tạo ảnh & video", 599000]] as [string, string, number][]
-                  ).map((r) => (
-                    <tr key={r[0]} className="border-t border-border"><td className="py-2.5 font-mono text-ink-2">{r[0]}</td><td className="py-2.5">{r[1]}</td><td className="py-2.5 text-right font-semibold">{formatVND(r[2])}</td></tr>
-                  ))}
-                </tbody>
-              </table>
+              <p className="text-ink-2 text-sm">Bài cộng đồng hiển thị tại trang /community. Quản trị viên có thể ẩn/xóa bài vi phạm trực tiếp (đang dùng dữ liệu thật từ DB nếu đã đăng).</p>
             </div>
           )}
         </div>

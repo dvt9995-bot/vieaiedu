@@ -1,19 +1,19 @@
 import crypto from "crypto";
+import { getConfig } from "@/lib/settings";
 
-// Bunny Stream — sinh URL nhúng có token chống tải trộm (token authentication).
-// Cấu hình: bật "Token Authentication" trong Bunny Stream library, lấy security key.
-const LIBRARY_ID = process.env.BUNNY_STREAM_LIBRARY_ID;
-const SECURITY_KEY = process.env.BUNNY_STREAM_TOKEN_KEY; // "Token Authentication Key" của library
+// Bunny Stream embed (token chống tải trộm nếu có token key). Cấu hình từ app_settings → env.
+export async function isBunnyConfigured() {
+  return !!(await getConfig("bunny_library_id", "BUNNY_STREAM_LIBRARY_ID"));
+}
 
-export const isBunnyConfigured = () => !!LIBRARY_ID;
-
-/** URL iframe nhúng video (có token + hạn dùng nếu đã cấu hình security key). */
-export function bunnyEmbedUrl(videoId: string, expiresInSec = 3 * 3600): string {
-  if (!LIBRARY_ID) return "";
-  const base = `https://iframe.mediadelivery.net/embed/${LIBRARY_ID}/${videoId}`;
-  if (!SECURITY_KEY) return base; // chưa bật token auth
+export async function bunnyEmbedUrl(videoId: string, expiresInSec = 3 * 3600): Promise<string> {
+  const lib = await getConfig("bunny_library_id", "BUNNY_STREAM_LIBRARY_ID");
+  if (!lib) return "";
+  const base = `https://iframe.mediadelivery.net/embed/${lib}/${videoId}`;
+  const key = await getConfig("bunny_token_key", "BUNNY_STREAM_TOKEN_KEY");
+  if (!key) return base;
   const expires = Math.floor(Date.now() / 1000) + expiresInSec;
-  const path = `/embed/${LIBRARY_ID}/${videoId}`;
-  const token = crypto.createHash("sha256").update(SECURITY_KEY + path + expires).digest("hex");
+  const path = `/embed/${lib}/${videoId}`;
+  const token = crypto.createHash("sha256").update(key + path + expires).digest("hex");
   return `${base}?token=${token}&expires=${expires}`;
 }

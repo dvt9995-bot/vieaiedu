@@ -3,12 +3,13 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getCourse } from "@/lib/mock";
 import { sendOrderReceipt } from "@/lib/email";
 import { notify } from "@/lib/notify";
+import { getConfig } from "@/lib/settings";
 
 // Webhook SePay gọi khi có giao dịch chuyển khoản tới.
 // Cấu hình tại SePay: URL = https://vieaiedu.vn/api/sepay/webhook
 // Header xác thực: Authorization: Apikey <SEPAY_WEBHOOK_API_KEY>
 export async function POST(req: Request) {
-  const secret = process.env.SEPAY_WEBHOOK_API_KEY;
+  const secret = await getConfig("sepay_webhook_key", "SEPAY_WEBHOOK_API_KEY");
   if (secret) {
     const auth = req.headers.get("authorization") || "";
     if (auth !== `Apikey ${secret}`) {

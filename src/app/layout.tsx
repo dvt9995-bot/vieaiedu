@@ -5,8 +5,9 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthModalProvider from "@/components/AuthModal";
 import PWARegister from "@/components/PWARegister";
+import Tracking from "@/components/Tracking";
 import { Analytics } from "@vercel/analytics/react";
-import { GoogleAnalytics } from "@next/third-parties/google";
+import { getConfig } from "@/lib/settings";
 
 // Bộ nhận diện VIE AI EDU: tiêu đề Be Vietnam Pro, nội dung Montserrat
 const beVietnam = Be_Vietnam_Pro({
@@ -21,27 +22,23 @@ const montserrat = Montserrat({
   display: "swap",
 });
 
-export const metadata: Metadata = {
-  metadataBase: new URL("https://vieaiedu.vn"),
-  title: { default: "VIE AI EDU — Nền tảng học AI thực chiến", template: "%s · VIE AI EDU" },
-  description:
-    "Khóa học AI thực chiến, dự án thực hành và cộng đồng học viên năng động. Học mọi lúc trên web và điện thoại.",
-  manifest: "/manifest.webmanifest",
-  appleWebApp: { capable: true, title: "VIE AI EDU", statusBarStyle: "default" },
-  openGraph: {
-    title: "VIE AI EDU — Nền tảng học AI thực chiến",
-    description: "Khóa học AI thực chiến, dự án thực hành và cộng đồng học viên.",
-    type: "website",
-    locale: "vi_VN",
-    images: [{ url: "/og.png", width: 1200, height: 630, alt: "VIE AI EDU" }],
-  },
-  twitter: {
-    card: "summary_large_image",
-    title: "VIE AI EDU — Nền tảng học AI thực chiến",
-    description: "Khóa học AI thực chiến, dự án thực hành và cộng đồng học viên.",
-    images: ["/og.png"],
-  },
-};
+export async function generateMetadata(): Promise<Metadata> {
+  const [t, d, og] = await Promise.all([
+    getConfig("seo_title"), getConfig("seo_description"), getConfig("seo_og_image"),
+  ]);
+  const title = t || "VIE AI EDU — Nền tảng học AI thực chiến";
+  const description = d || "Khóa học AI thực chiến, dự án thực hành và cộng đồng học viên năng động. Học mọi lúc trên web và điện thoại.";
+  const image = og || "/og.png";
+  return {
+    metadataBase: new URL("https://vieaiedu.vn"),
+    title: { default: title, template: "%s · VIE AI EDU" },
+    description,
+    manifest: "/manifest.webmanifest",
+    appleWebApp: { capable: true, title: "VIE AI EDU", statusBarStyle: "default" },
+    openGraph: { title, description, type: "website", locale: "vi_VN", images: [{ url: image, width: 1200, height: 630, alt: "VIE AI EDU" }] },
+    twitter: { card: "summary_large_image", title, description, images: [image] },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: "#ffffff",
@@ -60,7 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         </AuthModalProvider>
         <PWARegister />
         <Analytics />
-        {process.env.NEXT_PUBLIC_GA_ID && <GoogleAnalytics gaId={process.env.NEXT_PUBLIC_GA_ID} />}
+        <Tracking />
       </body>
     </html>
   );

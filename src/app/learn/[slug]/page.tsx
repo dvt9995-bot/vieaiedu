@@ -21,10 +21,10 @@ export default async function LearnPage({
 
   // URL nhúng video Bunny (server-side, kèm token nếu bật) cho từng bài có video_id.
   const videoUrls: Record<string, string> = {};
-  if (isBunnyConfigured()) {
+  if (await isBunnyConfigured()) {
     for (const s of course.sections)
       for (const l of s.lessons)
-        if (l.videoId) videoUrls[l.id] = bunnyEmbedUrl(l.videoId);
+        if (l.videoId) videoUrls[l.id] = await bunnyEmbedUrl(l.videoId);
   }
 
   return <LearnClient course={course} initialLesson={lesson} locked={!enrolled} videoUrls={videoUrls} />;
