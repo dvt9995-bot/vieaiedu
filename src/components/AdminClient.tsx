@@ -5,12 +5,14 @@ import CourseManager from "@/components/admin/CourseManager";
 import UserManager from "@/components/admin/UserManager";
 import CouponManager from "@/components/admin/CouponManager";
 import SettingsManager from "@/components/admin/SettingsManager";
+import BlogManager from "@/components/admin/BlogManager";
 import BroadcastForm from "@/components/admin/BroadcastForm";
 
-type Tab = "overview" | "courses" | "users" | "coupons" | "community" | "broadcast" | "settings";
+type Tab = "overview" | "courses" | "blog" | "users" | "coupons" | "community" | "broadcast" | "settings";
 const NAV: [Tab, string, string][] = [
   ["overview", "Tổng quan", "▦"],
   ["courses", "Khóa học", "▤"],
+  ["blog", "Blog", "📰"],
   ["users", "Học viên", "◍"],
   ["coupons", "Mã giảm giá", "%"],
   ["community", "Cộng đồng", "◫"],
@@ -43,6 +45,7 @@ export default function AdminClient() {
         <div>
           {tab === "overview" && <Dashboard />}
           {tab === "courses" && <CourseManager />}
+          {tab === "blog" && <BlogManager />}
           {tab === "users" && <UserManager />}
           {tab === "coupons" && <CouponManager />}
           {tab === "broadcast" && <BroadcastForm />}

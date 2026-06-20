@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuthModal } from "./AuthModal";
 import {
-  loadPosts, createPost, togglePostLike, uploadCommunityImage, communityStats,
+  loadPosts, createPost, togglePostLike, uploadCommunityImage,
   loadComments, addComment, currentUserId, isConfigured, type DBPost, type DBComment,
 } from "@/lib/db";
 import type { Course } from "@/lib/types";
@@ -41,14 +41,12 @@ export default function CommunityFeed() {
   const [file, setFile] = useState<File | null>(null);
   const [busy, setBusy] = useState(false);
   const [uid, setUid] = useState<string | null>(null);
-  const [stats, setStats] = useState<{ students: number; enrollments: number; certificates: number } | null>(null);
   const [courses, setCourses] = useState<Record<string, Course>>({});
 
   const refresh = useCallback(async () => setPosts(await loadPosts()), []);
   useEffect(() => {
     refresh();
     currentUserId().then(setUid);
-    communityStats().then((s) => s && setStats(s));
     fetch("/api/courses").then((r) => r.json()).then((d) => {
       const m: Record<string, Course> = {};
       (d.courses as Course[]).forEach((c) => (m[c.slug] = c));
@@ -77,18 +75,6 @@ export default function CommunityFeed() {
 
   return (
     <div className="max-w-[600px] mx-auto">
-      {/* Social proof strip */}
-      {stats && (
-        <div className="grid grid-cols-3 gap-3 mb-6">
-          {[["Học viên", stats.students], ["Lượt ghi danh", stats.enrollments], ["Chứng chỉ", stats.certificates]].map(([l, v]) => (
-            <div key={l as string} className="rounded-card border border-border bg-surface p-3 text-center">
-              <div className="text-xl font-extrabold text-accent">{(v as number).toLocaleString("vi-VN")}</div>
-              <div className="text-ink-3 text-xs">{l}</div>
-            </div>
-          ))}
-        </div>
-      )}
-
       <div className="flex flex-col gap-4">
         {/* Compose */}
         <div className="bg-surface border border-border rounded-card p-4 shadow-soft">
@@ -108,15 +94,17 @@ export default function CommunityFeed() {
           return (
             <div key={p.id} className="bg-surface border border-border rounded-card p-[18px]">
               <div className="flex items-center gap-2.5 mb-3">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: p.avatarColor }}>{p.author[0]}</div>
-                <div className="flex-1">
-                  <div className="flex items-center gap-2">
-                    <b className="text-sm">{p.author}</b>
-                    {p.role === "admin" && <span className="text-[10px] font-bold text-white bg-accent px-1.5 py-0.5 rounded">BQT</span>}
-                    {p.role === "instructor" && <span className="text-[10px] font-bold text-accent bg-accent-weak px-1.5 py-0.5 rounded">Giảng viên</span>}
+                <Link href={p.authorId ? `/u/${p.authorId}` : "#"} className="flex items-center gap-2.5 group">
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: p.avatarColor }}>{p.author[0]}</div>
+                  <div>
+                    <div className="flex items-center gap-2">
+                      <b className="text-sm group-hover:text-accent transition-colors">{p.author}</b>
+                      {p.role === "admin" && <span className="text-[10px] font-bold text-white bg-accent px-1.5 py-0.5 rounded">BQT</span>}
+                      {p.role === "instructor" && <span className="text-[10px] font-bold text-accent bg-accent-weak px-1.5 py-0.5 rounded">Giảng viên</span>}
+                    </div>
+                    <span className="text-ink-3 text-xs">{p.time}{p.owned > 0 && ` · 🎓 Sở hữu ${p.owned} khóa`}</span>
                   </div>
-                  <span className="text-ink-3 text-xs">{p.time}{p.owned > 0 && ` · 🎓 Sở hữu ${p.owned} khóa`}</span>
-                </div>
+                </Link>
               </div>
               <p className="text-[.96rem] mb-3 whitespace-pre-wrap">{p.body}</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}

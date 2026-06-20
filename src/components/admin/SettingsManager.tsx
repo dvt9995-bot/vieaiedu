@@ -33,11 +33,6 @@ export default function SettingsManager() {
     setMsg(r.ok ? "✓ Đã lưu. Thay đổi áp dụng ngay (không cần deploy)." : r.error || "Lỗi");
   }
 
-  async function genBlog() {
-    setMsg("Đang tạo bài blog từ tin AI mới nhất… (có thể mất ~30s)");
-    const r = await fetch("/api/cron/blog").then((x) => x.json()).catch(() => ({}));
-    setMsg(r.skipped ? r.skipped : r.created != null ? `✓ Đã tạo ${r.created} bài blog mới.` : r.error || "Lỗi");
-  }
 
   if (!loaded) return <p className="text-ink-3">Đang tải…</p>;
   const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
@@ -70,7 +65,6 @@ export default function SettingsManager() {
       </div>
       <div className="flex items-center gap-3 mt-5 flex-wrap">
         <button onClick={save} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-6 py-2.5 cursor-pointer transition-colors">Lưu tất cả</button>
-        <button onClick={genBlog} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold px-5 py-2.5 cursor-pointer transition-colors">📰 Tạo bài blog ngay</button>
         {msg && <span className="text-sm text-ink-2">{msg}</span>}
       </div>
     </div>

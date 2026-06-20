@@ -96,7 +96,7 @@ export async function toggleFavorite(slug: string, on: boolean) {
 
 // ---------- COMMUNITY ----------
 export interface DBPost {
-  id: string; author: string; avatarColor: string; time: string; body: string;
+  id: string; authorId?: string; author: string; avatarColor: string; time: string; body: string;
   image?: string; courseSlug?: string; likes: number; comments: number; owned: number; role?: string;
 }
 const COLORS = ["#e41e26", "#202124", "#f4b400"];
@@ -107,6 +107,7 @@ export async function loadPosts(): Promise<DBPost[]> {
     const { data } = await c.rpc("community_feed", { lim: 50 });
     if (data) return (data as Record<string, unknown>[]).map((p, i) => ({
       id: p.id as string,
+      authorId: (p.author_id as string) || undefined,
       author: (p.author_name as string) || "Học viên",
       avatarColor: COLORS[i % 3],
       time: new Date(p.created_at as string).toLocaleDateString("vi-VN"),
