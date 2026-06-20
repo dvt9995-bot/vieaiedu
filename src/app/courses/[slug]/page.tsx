@@ -11,10 +11,12 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const c = await getCourseBySlug(slug);
   if (!c) return { title: "Không tìm thấy khóa học" };
+  const title = c.seoTitle || c.title;
+  const description = c.seoDescription || c.subtitle;
   return {
-    title: c.title, description: c.subtitle,
+    title, description,
     alternates: { canonical: `/courses/${slug}` },
-    openGraph: { title: c.title, description: c.subtitle, images: c.thumb ? [c.thumb] : undefined },
+    openGraph: { title, description, images: c.thumb ? [c.thumb] : undefined },
   };
 }
 
@@ -37,13 +39,24 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
   ].slice(0, 3);
 
   // JSON-LD cho SEO
-  const jsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Course",
-    name: course.title,
-    description: course.subtitle,
-    provider: { "@type": "Organization", name: "VIE AI EDU", sameAs: "https://vieaiedu.vn" },
-  };
+  const jsonLd = [
+    {
+      "@context": "https://schema.org",
+      "@type": "Course",
+      name: course.title,
+      description: course.subtitle,
+      provider: { "@type": "Organization", name: "VIE AI EDU", sameAs: "https://vieaiedu.vn" },
+      ...(course.price > 0 ? { offers: { "@type": "Offer", price: course.price, priceCurrency: "VND", category: "Paid" } } : {}),
+    },
+    {
+      "@context": "https://schema.org", "@type": "BreadcrumbList",
+      itemListElement: [
+        { "@type": "ListItem", position: 1, name: "Trang chủ", item: "https://vieaiedu.vn" },
+        { "@type": "ListItem", position: 2, name: "Khóa học", item: "https://vieaiedu.vn/courses" },
+        { "@type": "ListItem", position: 3, name: course.title, item: `https://vieaiedu.vn/courses/${course.slug}` },
+      ],
+    },
+  ];
 
   return (
     <>

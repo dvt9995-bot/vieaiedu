@@ -27,6 +27,38 @@ export async function geminiHealthCheck(): Promise<{ ok: boolean; reason?: strin
 
 interface Rewritten { title: string; excerpt: string; body: string; }
 
+// Sinh tiêu đề + mô tả SEO tối ưu (tiếng Việt) cho 1 mục nội dung.
+export async function generateSeoMeta(input: { name: string; context?: string }): Promise<{ seo_title: string; seo_description: string } | null> {
+  const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
+  if (!key) return null;
+  const model = (await getConfig("gemini_model")) || "gemini-2.5-flash";
+  const prompt = `Bạn là chuyên gia SEO tiếng Việt cho nền tảng học AI "VIE AI EDU". Tạo thẻ SEO tối ưu cho mục dưới đây để xếp hạng cao trên Google.
+
+Tên: ${input.name}
+${input.context ? `Bối cảnh: ${input.context}` : ""}
+
+Yêu cầu:
+- "seo_title": tiêu đề hấp dẫn, chứa từ khóa người Việt hay tìm, TỐI ĐA 60 ký tự, có thể kèm "| VIE AI EDU" nếu còn chỗ.
+- "seo_description": mô tả lôi cuốn, kêu gọi nhấp, chứa từ khóa, 120–155 ký tự.
+- Tiếng Việt tự nhiên, không nhồi nhét từ khóa.
+
+Trả về JSON: {"seo_title": "...", "seo_description": "..."}`;
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", temperature: 0.7 } }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return null;
+    const p = JSON.parse(text);
+    if (!p.seo_title || !p.seo_description) return null;
+    return { seo_title: String(p.seo_title).slice(0, 70), seo_description: String(p.seo_description).slice(0, 165) };
+  } catch { return null; }
+}
+
 // Viết lại một tin AI sang tiếng Việt theo giọng VIE AI EDU (markdown).
 export async function rewriteArticle(input: { title: string; summary: string; sourceName: string }): Promise<Rewritten | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");

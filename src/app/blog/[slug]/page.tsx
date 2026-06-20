@@ -36,9 +36,18 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
     publisher: { "@type": "Organization", name: "VIE AI EDU", logo: { "@type": "ImageObject", url: "https://vieaiedu.vn/logo.png" } },
   };
 
+  const breadcrumbLd = {
+    "@context": "https://schema.org", "@type": "BreadcrumbList",
+    itemListElement: [
+      { "@type": "ListItem", position: 1, name: "Trang chủ", item: "https://vieaiedu.vn" },
+      { "@type": "ListItem", position: 2, name: "Tin tức", item: "https://vieaiedu.vn/blog" },
+      { "@type": "ListItem", position: 3, name: b.title, item: `https://vieaiedu.vn/blog/${b.slug}` },
+    ],
+  };
+
   return (
     <article className="container-x py-12 max-w-[720px]">
-      <JsonLd data={articleLd} />
+      <JsonLd data={[articleLd, breadcrumbLd]} />
       <Link href="/blog" className="text-ink-3 text-sm hover:text-ink">← Tất cả bài viết</Link>
       <div className="text-ink-3 text-sm mt-6 mb-3">{b.date} · {b.readMin} phút đọc{b.sourceName && ` · ${b.sourceName}`}</div>
       <h1 className="text-[clamp(1.8rem,4vw,2.8rem)] font-extrabold tracking-tight leading-tight">{b.title}</h1>

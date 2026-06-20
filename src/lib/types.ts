@@ -35,6 +35,8 @@ export interface Course {
   instructor: string;
   sections: Section[];
   whatYouLearn: string[];
+  seoTitle?: string;
+  seoDescription?: string;
 }
 
 export interface Post {

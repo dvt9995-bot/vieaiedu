@@ -44,6 +44,8 @@ function mapCourse(c: Row): Course {
     instructor: (c.instructor as string) || "Long Nam",
     sections,
     whatYouLearn: ((c.what_you_learn as string[]) || []),
+    seoTitle: (c.seo_title as string) || undefined,
+    seoDescription: (c.seo_description as string) || undefined,
   };
 }
 

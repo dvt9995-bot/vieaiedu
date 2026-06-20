@@ -48,6 +48,13 @@ export default function CourseManager() {
     load();
   }
 
+  async function aiSeo() {
+    if (!confirm("AI sẽ tự tạo tiêu đề & mô tả SEO cho các khóa chưa có. Tiếp tục?")) return;
+    toast("✨ AI đang tối ưu SEO… (~20s)", "info");
+    const r = await fetch("/api/admin/seo", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({}) }).then((x) => x.json()).catch(() => ({}));
+    toast(r.skipped ? r.skipped : r.updated != null ? `✓ Đã tối ưu SEO ${r.updated} khóa` : r.error || "Lỗi", r.updated ? "success" : "info");
+  }
+
   const inp = "w-full px-3 py-2 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
 
   return (
@@ -57,6 +64,9 @@ export default function CourseManager() {
         <div className="flex gap-2">
           {rows.length === 0 && !loading && (
             <button onClick={seed} className="rounded-full border border-border-strong hover:border-accent text-sm font-semibold px-4 py-2 cursor-pointer">⬇ Nạp dữ liệu mẫu</button>
+          )}
+          {rows.length > 0 && (
+            <button onClick={aiSeo} className="rounded-full border border-border-strong hover:border-accent hover:text-accent text-sm font-semibold px-4 py-2 cursor-pointer transition-colors">✨ AI tối ưu SEO</button>
           )}
           <button onClick={() => setForm({ ...empty })} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">+ Thêm khóa học</button>
         </div>
