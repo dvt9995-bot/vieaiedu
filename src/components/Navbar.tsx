@@ -6,6 +6,7 @@ import { useAuthModal } from "./AuthModal";
 import { createClient } from "@/lib/supabase/client";
 import { signOut } from "@/app/auth/actions";
 import NotificationBell from "./NotificationBell";
+import { track } from "@/lib/analytics";
 
 // Điều hướng công khai (hướng cộng đồng), gọn gàng
 const links = [
@@ -37,7 +38,14 @@ export default function Navbar() {
     const supabase = createClient();
     if (supabase) {
       supabase.auth.getUser().then(({ data }) => setEmail(data.user?.email ?? null));
-      const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setEmail(s?.user?.email ?? null));
+      const { data: sub } = supabase.auth.onAuthStateChange((e, s) => {
+        setEmail(s?.user?.email ?? null);
+        if (e === "SIGNED_IN") {
+          let intent: string | null = null;
+          try { intent = sessionStorage.getItem("vie:auth"); sessionStorage.removeItem("vie:auth"); } catch {}
+          if (intent) track(intent === "sign_up" ? "sign_up" : "login");
+        }
+      });
       return () => { window.removeEventListener("scroll", onScroll); document.removeEventListener("click", onClick); sub.subscription.unsubscribe(); };
     }
     return () => { window.removeEventListener("scroll", onScroll); document.removeEventListener("click", onClick); };

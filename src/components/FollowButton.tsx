@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import { toast } from "./Toaster";
+import { track } from "@/lib/analytics";
 import { createClient } from "@/lib/supabase/client";
 
 export default function FollowButton({ targetId }: { targetId: string }) {
@@ -27,6 +28,7 @@ export default function FollowButton({ targetId }: { targetId: string }) {
     const r = await fetch("/api/follow", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ targetId, action: next ? "follow" : "unfollow" }) }).then((x) => x.json()).catch(() => ({}));
     setBusy(false);
     if (r.error) { setFollowing(!next); return toast("Không thực hiện được", "error"); }
+    if (next) track("follow", { target_id: targetId });
     toast(next ? "Đã theo dõi" : "Đã bỏ theo dõi");
   }
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import CourseCard from "@/components/CourseCard";
+import SearchTracker from "@/components/SearchTracker";
 import { getCourses } from "@/lib/courses";
 import { getBlogPosts } from "@/lib/blog";
 
@@ -20,6 +21,7 @@ export default async function SearchPage({ searchParams }: { searchParams: Promi
 
   return (
     <div className="container-x py-12">
+      <SearchTracker q={q} results={total} />
       <h1 className="text-[clamp(1.8rem,4vw,2.6rem)] font-extrabold tracking-tight mb-5">Tìm kiếm</h1>
       <form action="/search" method="GET" className="relative max-w-[560px] mb-8">
         <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 stroke-ink-3 fill-none" viewBox="0 0 24 24" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>

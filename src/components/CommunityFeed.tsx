@@ -5,6 +5,7 @@ import { useAuthModal } from "./AuthModal";
 import { toast } from "./Toaster";
 import PostComments from "./PostComments";
 import FilterMenu from "./FilterMenu";
+import { track } from "@/lib/analytics";
 import { TOPICS } from "@/lib/topics";
 import {
   loadPosts, createPost, togglePostLike, uploadCommunityImage,
@@ -65,6 +66,7 @@ export default function CommunityFeed() {
     const ok = await createPost(text.trim(), imageUrl, null, tags);
     setBusy(false);
     if (!ok) { toast("Đăng bài thất bại", "error"); return open("login"); }
+    track("post_create", { has_image: !!imageUrl, tags: tags.join(",") });
     setText(""); setFile(null); setTags([]); toast("Đã đăng bài"); refresh();
   }
 

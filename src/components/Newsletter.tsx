@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { track } from "@/lib/analytics";
 
 export default function Newsletter() {
   const [email, setEmail] = useState("");
@@ -12,7 +13,7 @@ export default function Newsletter() {
       body: JSON.stringify({ email }),
     });
     setState(res.ok ? "ok" : "err");
-    if (res.ok) setEmail("");
+    if (res.ok) { track("newsletter_signup", { method: "footer" }); track("generate_lead"); setEmail(""); }
   }
 
   return (

@@ -3,6 +3,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useAuthModal } from "./AuthModal";
 import { createPost, currentUserId } from "@/lib/db";
+import { track } from "@/lib/analytics";
 
 export default function ShareCourseButton({ slug, title }: { slug: string; title: string }) {
   const { open } = useAuthModal();
@@ -17,7 +18,7 @@ export default function ShareCourseButton({ slug, title }: { slug: string; title
     setBusy(true);
     const ok = await createPost(note || `Khóa "${title}" đáng học!`, null, slug);
     setBusy(false);
-    if (ok) router.push("/community");
+    if (ok) { track("share", { method: "community", item_id: slug }); router.push("/community"); }
     else open("login");
   }
 

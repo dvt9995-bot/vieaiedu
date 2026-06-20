@@ -38,6 +38,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
     setLiked(next);
     await toggleFavorite(course.slug, next);
     invalidateFavorites();
+    if (next) track("add_to_wishlist", { item_id: course.slug, item_name: course.title });
     toast(next ? "Đã lưu vào yêu thích" : "Đã bỏ khỏi yêu thích");
   }
 

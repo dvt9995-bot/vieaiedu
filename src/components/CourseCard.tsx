@@ -5,6 +5,7 @@ import type { Course } from "@/lib/types";
 import { formatVND } from "@/lib/format";
 import { toggleFavorite, favoritesCached, invalidateFavorites } from "@/lib/db";
 import { toast } from "./Toaster";
+import { track } from "@/lib/analytics";
 
 export default function CourseCard({ course }: { course: Course }) {
   const [liked, setLiked] = useState(false);
@@ -18,6 +19,7 @@ export default function CourseCard({ course }: { course: Course }) {
     setLiked(next); setLikes((n) => n + (next ? 1 : -1));
     await toggleFavorite(course.slug, next);
     invalidateFavorites();
+    if (next) track("add_to_wishlist", { item_id: course.slug, item_name: course.title });
     toast(next ? "Đã lưu vào yêu thích" : "Đã bỏ khỏi yêu thích");
   }
 
