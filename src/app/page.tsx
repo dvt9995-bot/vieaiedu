@@ -2,104 +2,131 @@ import Link from "next/link";
 import Reveal from "@/components/Reveal";
 import Hero from "@/components/Hero";
 import CourseCard from "@/components/CourseCard";
-import { POSTS } from "@/lib/mock";
 import { getCourses } from "@/lib/courses";
+import { getBlogPosts } from "@/lib/blog";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
-const features = [
-  { t: "Video bài bản", d: "Bài giảng HD theo lộ trình, học mọi lúc trên web và điện thoại.", p: "M3 5h18v14H3z M10 9l5 3-5 3z" },
-  { t: "Dự án thực hành", d: "Project thực tế kèm code mẫu và tài liệu PDF tải về.", p: "M8 6l-5 6 5 6 M16 6l5 6-5 6" },
-  { t: "Cộng đồng hỗ trợ", d: "Hỏi đáp, chia sẻ và nhận phản hồi từ học viên khác.", p: "M3 20a6 6 0 0112 0" },
-  { t: "Lộ trình rõ ràng", d: "Theo dõi tiến độ, biết chính xác nên học gì tiếp theo.", p: "M4 7l5-2 6 2 5-2v12l-5 2-6-2-5 2z" },
-];
+export const revalidate = 300;
+
+interface FeedPost { id: string; body: string; author_name: string; author_id: string; likes: number; comments: number; created_at: string; image_url: string | null; }
+
+async function featuredPosts(): Promise<FeedPost[]> {
+  if (!isSupabaseConfigured()) return [];
+  const supabase = await createClient();
+  const { data } = await supabase!.rpc("community_feed", { lim: 50 });
+  return ((data as FeedPost[]) || []).sort((a, b) => (b.likes + b.comments) - (a.likes + a.comments)).slice(0, 4);
+}
 
 export default async function Home() {
-  const featured = (await getCourses()).slice(0, 6);
+  const [courses, posts, blog] = await Promise.all([getCourses(), featuredPosts(), getBlogPosts()]);
+  const free = courses.filter((c) => c.price === 0).slice(0, 3);
+  const freeList = free.length ? free : courses.slice(0, 3);
+  const news = blog.slice(0, 3);
+
   return (
     <>
-      {/* Hero (theo bộ nhận diện) */}
       <Hero />
 
-      {/* Features */}
-      <section className="py-20 bg-bg-soft border-y border-border">
+      {/* Khóa học miễn phí */}
+      <section className="py-16 border-b border-border">
         <div className="container-x">
-          <Reveal className="max-w-[640px] mx-auto text-center mb-12">
-            <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight">Mọi thứ bạn cần để học AI hiệu quả</h2>
-            <p className="text-ink-2 text-lg mt-2">Thiết kế cho người bận rộn: học nhanh, thực hành thật, áp dụng được vào công việc.</p>
-          </Reveal>
-          <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-4">
-            {features.map((f, i) => (
-              <Reveal key={f.t} delay={i * 60}>
-                <div className="bg-surface border border-border rounded-card p-6 h-full transition-all hover:border-border-strong hover:shadow-soft hover:-translate-y-1">
-                  <div className="w-[42px] h-[42px] rounded-[11px] bg-accent-weak flex items-center justify-center mb-4">
-                    <svg viewBox="0 0 24 24" className="w-[22px] h-[22px] stroke-accent fill-none" strokeWidth="1.9" strokeLinecap="round" strokeLinejoin="round"><path d={f.p} /></svg>
-                  </div>
-                  <h3 className="text-[1.08rem] font-bold mb-1">{f.t}</h3>
-                  <p className="text-ink-2 text-sm">{f.d}</p>
-                </div>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured courses */}
-      <section className="py-20">
-        <div className="container-x">
-          <Reveal className="max-w-[640px] mx-auto text-center mb-12">
-            <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight">Khóa học nổi bật</h2>
-            <p className="text-ink-2 text-lg mt-2">Mua riêng từng khóa, học trọn đời. Nhấn ★ để lưu khóa yêu thích.</p>
-          </Reveal>
-          <div className="grid gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
-            {featured.map((c, i) => (
-              <Reveal key={c.id} delay={i * 50}><CourseCard course={c} /></Reveal>
-            ))}
-          </div>
-          <div className="text-center mt-10">
-            <Link href="/courses" className="inline-flex rounded-full border border-border-strong hover:border-ink-3 font-semibold px-6 py-3 transition-colors">
-              Xem tất cả khóa học →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Community preview */}
-      <section className="py-20 bg-bg-soft border-y border-border">
-        <div className="container-x">
-          <Reveal className="max-w-[640px] mx-auto text-center mb-12">
-            <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight">Học cùng cộng đồng</h2>
-            <p className="text-ink-2 text-lg mt-2">Đăng bài, hỏi đáp, chia sẻ dự án và nhận phản hồi từ những người học AI khác.</p>
-          </Reveal>
-          <div className="max-w-[600px] mx-auto flex flex-col gap-4">
-            {POSTS.slice(0, 2).map((p, i) => (
-              <Reveal key={p.id} delay={i * 60}>
-                <div className="bg-surface border border-border rounded-card p-[18px]">
-                  <div className="flex items-center gap-2.5 mb-3">
-                    <div className="w-10 h-10 rounded-full flex items-center justify-center font-bold text-white" style={{ background: p.avatarColor }}>{p.author[0]}</div>
-                    <div><b className="text-sm">{p.author}</b><br /><span className="text-ink-3 text-xs">{p.time}</span></div>
-                  </div>
-                  <p className="text-[.96rem] mb-3">{p.body}</p>
-                  <div className="flex gap-6 border-t border-border pt-3 text-ink-2 text-sm font-medium">
-                    <span>♥ {p.likes}</span><span>💬 {p.comments}</span><span>↗ Chia sẻ</span>
-                  </div>
-                </div>
-              </Reveal>
-            ))}
-            <div className="text-center mt-2">
-              <Link href="/community" className="inline-flex rounded-full bg-ink hover:bg-black text-white font-semibold px-6 py-3 transition-colors">Vào cộng đồng →</Link>
+          <div className="flex items-end justify-between mb-7">
+            <div>
+              <div className="text-accent text-xs font-bold uppercase tracking-wider mb-1">Học miễn phí</div>
+              <h2 className="text-[clamp(1.5rem,3vw,2.1rem)] font-extrabold tracking-tight">Khóa học mở cho mọi người</h2>
             </div>
+            <Link href="/courses" className="text-sm font-semibold text-ink-2 hover:text-accent shrink-0">Tất cả →</Link>
+          </div>
+          <div className="grid gap-5 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+            {freeList.map((c, i) => (<Reveal key={c.id} delay={i * 50}><CourseCard course={c} /></Reveal>))}
           </div>
         </div>
       </section>
 
-      {/* CTA */}
-      <section className="py-20">
+      {/* Tin tức AI mới nhất */}
+      <section className="py-16 bg-bg-soft border-b border-border">
+        <div className="container-x">
+          <div className="flex items-end justify-between mb-7">
+            <div>
+              <div className="text-accent text-xs font-bold uppercase tracking-wider mb-1">Cập nhật mỗi ngày</div>
+              <h2 className="text-[clamp(1.5rem,3vw,2.1rem)] font-extrabold tracking-tight">Tin tức AI mới nhất</h2>
+            </div>
+            <Link href="/blog" className="text-sm font-semibold text-ink-2 hover:text-accent shrink-0">Tất cả →</Link>
+          </div>
+          {news.length === 0 ? (
+            <p className="text-ink-3">Sắp có tin tức mới…</p>
+          ) : (
+            <div className="grid gap-5 grid-cols-1 md:grid-cols-3">
+              {news.map((b, i) => (
+                <Reveal key={b.slug} delay={i * 50}>
+                  <Link href={`/blog/${b.slug}`} className="block rounded-card border border-border bg-surface overflow-hidden h-full transition-all hover:border-border-strong hover:shadow-soft hover:-translate-y-1">
+                    <div className="aspect-video bg-bg-soft overflow-hidden">
+                      {b.cover ? (
+                        /* eslint-disable-next-line @next/next/no-img-element */
+                        <img src={b.cover} alt={b.title} className="w-full h-full object-cover" />
+                      ) : <div className="w-full h-full grid place-items-center text-ink-3">📰</div>}
+                    </div>
+                    <div className="p-4">
+                      <div className="text-ink-3 text-xs mb-1.5">{b.date}{b.sourceName ? ` · ${b.sourceName}` : ""}</div>
+                      <h3 className="font-bold leading-snug line-clamp-2">{b.title}</h3>
+                      <p className="text-ink-2 text-sm mt-1.5 line-clamp-2">{b.excerpt}</p>
+                    </div>
+                  </Link>
+                </Reveal>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* Cộng đồng nổi bật */}
+      <section className="py-16 border-b border-border">
+        <div className="container-x">
+          <div className="flex items-end justify-between mb-7">
+            <div>
+              <div className="text-accent text-xs font-bold uppercase tracking-wider mb-1">Bảng tin cộng đồng</div>
+              <h2 className="text-[clamp(1.5rem,3vw,2.1rem)] font-extrabold tracking-tight">Chia sẻ nổi bật</h2>
+            </div>
+            <Link href="/community" className="text-sm font-semibold text-ink-2 hover:text-accent shrink-0">Vào cộng đồng →</Link>
+          </div>
+          {posts.length === 0 ? (
+            <div className="rounded-card border border-border bg-bg-soft p-8 text-center">
+              <p className="text-ink-2 mb-3">Hãy là người đầu tiên chia sẻ trong cộng đồng!</p>
+              <Link href="/community" className="inline-flex rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-5 py-2.5 transition-colors">Đăng bài đầu tiên</Link>
+            </div>
+          ) : (
+            <div className="grid gap-4 md:grid-cols-2">
+              {posts.map((p, i) => (
+                <Reveal key={p.id} delay={i * 50}>
+                  <div className="rounded-card border border-border bg-surface p-5 h-full flex flex-col">
+                    <div className="flex items-center gap-2.5 mb-3">
+                      <Link href={`/u/${p.author_id}`} className="w-9 h-9 rounded-full bg-accent text-white grid place-items-center font-bold text-sm shrink-0">{(p.author_name || "H")[0]}</Link>
+                      <div>
+                        <Link href={`/u/${p.author_id}`} className="text-sm font-semibold hover:text-accent">{p.author_name || "Học viên"}</Link>
+                        <div className="text-ink-3 text-xs">{new Date(p.created_at).toLocaleDateString("vi-VN")}</div>
+                      </div>
+                    </div>
+                    <p className="text-[.95rem] text-ink-2 line-clamp-3 flex-1">{p.body}</p>
+                    <div className="flex gap-5 mt-3 pt-3 border-t border-border text-ink-3 text-sm font-medium">
+                      <span>♥ {p.likes}</span><span>💬 {p.comments}</span>
+                    </div>
+                  </div>
+                </Reveal>
+              ))}
+            </div>
+          )}
+        </div>
+      </section>
+
+      {/* CTA cộng đồng (không bán hàng) */}
+      <section className="py-16">
         <div className="container-x">
           <Reveal>
-            <div className="relative overflow-hidden rounded-3xl bg-ink text-white text-center px-8 py-16">
+            <div className="relative overflow-hidden rounded-3xl bg-ink text-white text-center px-8 py-14">
               <svg className="absolute -right-20 top-1/2 -translate-y-1/2 w-[360px] opacity-[.06]" viewBox="0 0 200 200"><g fill="none" stroke="#fff" strokeWidth="1"><circle cx="100" cy="100" r="92" /><circle cx="100" cy="100" r="62" /><circle cx="100" cy="100" r="32" /></g></svg>
-              <h2 className="text-[clamp(1.8rem,3.6vw,2.8rem)] font-extrabold tracking-tight text-white">Sẵn sàng bắt đầu hành trình AI?</h2>
-              <p className="text-white/70 max-w-[48ch] mx-auto mt-3.5 mb-8">Tạo tài khoản miễn phí trong 30 giây. Chỉ thanh toán khi bạn chọn mua khóa học.</p>
-              <Link href="/courses" className="inline-flex rounded-full bg-white text-ink hover:bg-neutral-100 font-semibold px-7 py-3 transition-colors">Khám phá khóa học</Link>
+              <h2 className="text-[clamp(1.6rem,3.4vw,2.5rem)] font-extrabold tracking-tight text-white">Cùng nhau học &amp; chia sẻ về AI</h2>
+              <p className="text-white/70 max-w-[48ch] mx-auto mt-3 mb-7">Tham gia miễn phí — đặt câu hỏi, chia sẻ dự án, cập nhật tin tức và kết nối với cộng đồng AI Việt.</p>
+              <Link href="/community" className="inline-flex rounded-full bg-white text-ink hover:bg-neutral-100 font-semibold px-7 py-3 transition-colors">Tham gia cộng đồng</Link>
             </div>
           </Reveal>
         </div>

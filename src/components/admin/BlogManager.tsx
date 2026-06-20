@@ -21,6 +21,14 @@ export default function BlogManager() {
     const r = await fetch("/api/admin/blog", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(edit) }).then((x) => x.json());
     if (r.ok) { setEdit(null); setMsg("✓ Đã lưu"); toast("Đã lưu bài viết"); load(); } else { setMsg(r.error || "Lỗi"); toast(r.error || "Lưu thất bại", "error"); }
   }
+  async function uploadCover(file: File) {
+    if (!edit) return;
+    toast("Đang tải ảnh bìa…", "info");
+    const fd = new FormData(); fd.append("file", file); fd.append("bucket", "blog");
+    const r = await fetch("/api/admin/upload", { method: "POST", body: fd }).then((x) => x.json()).catch(() => ({}));
+    if (r.url) { setEdit({ ...edit, cover_url: r.url }); toast("Đã tải ảnh bìa"); }
+    else toast(r.error || "Tải ảnh thất bại", "error");
+  }
   async function del(id: string) { if (confirm("Xóa bài viết này?")) { await fetch(`/api/admin/blog?id=${id}`, { method: "DELETE" }); toast("Đã xóa bài viết"); load(); } }
   async function togglePublish(p: Post) { await fetch("/api/admin/blog", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, published: !p.published }) }); toast(p.published ? "Đã ẩn bài" : "Đã hiện bài"); load(); }
   async function autoGen() {
@@ -40,7 +48,18 @@ export default function BlogManager() {
       <div className="space-y-3">
         <input className={inp} placeholder="Tiêu đề" value={edit.title} onChange={(e) => setEdit({ ...edit, title: e.target.value })} />
         <input className={inp} placeholder="Tóm tắt ngắn" value={edit.excerpt} onChange={(e) => setEdit({ ...edit, excerpt: e.target.value })} />
-        <input className={inp} placeholder="Ảnh bìa (URL)" value={edit.cover_url} onChange={(e) => setEdit({ ...edit, cover_url: e.target.value })} />
+        <div>
+          <div className="flex items-center gap-3 mb-2">
+            <label className="rounded-full border border-border-strong hover:border-accent hover:text-accent text-sm font-semibold px-4 py-2 cursor-pointer transition-colors">
+              📷 Tải ảnh bìa
+              <input type="file" accept="image/*" className="hidden" onChange={(e) => e.target.files?.[0] && uploadCover(e.target.files[0])} />
+            </label>
+            <span className="text-ink-3 text-xs">hoặc dán URL bên dưới</span>
+          </div>
+          <input className={inp} placeholder="Ảnh bìa (URL)" value={edit.cover_url} onChange={(e) => setEdit({ ...edit, cover_url: e.target.value })} />
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          {edit.cover_url && <img src={edit.cover_url} alt="" className="mt-2 rounded-lg border border-border max-h-44 object-cover" />}
+        </div>
         <textarea className={`${inp} min-h-[280px] font-mono text-xs`} placeholder="Nội dung (Markdown: ## tiêu đề, **đậm**, - gạch đầu dòng, [link](url))" value={edit.body} onChange={(e) => setEdit({ ...edit, body: e.target.value })} />
         <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={edit.published} onChange={(e) => setEdit({ ...edit, published: e.target.checked })} /> Xuất bản (hiển thị công khai)</label>
       </div>

@@ -24,16 +24,16 @@ export default function Hero() {
             <span className="w-[7px] h-[7px] rounded-full bg-success" /> Kiến tạo tri thức · Dẫn lối tương lai
           </Reveal>
           <Reveal as="h1" className="text-[clamp(2.3rem,5vw,4rem)] font-extrabold tracking-[-.03em] leading-[1.06] max-w-[18ch]">
-            Nền tảng học <span className="text-accent">AI</span> dành cho người Việt
+            Cộng đồng <span className="text-accent">AI</span> của người Việt
           </Reveal>
           <Reveal as="p" className="text-[clamp(1.05rem,1.5vw,1.2rem)] text-ink-2 max-w-[52ch] mt-5">
-            Học từ chuyên gia, thực hành dự án thật và đồng hành cùng cộng đồng. Ứng dụng AI để bứt phá trong học tập và sự nghiệp.
+            Nơi cập nhật tin tức AI mới nhất, chia sẻ kinh nghiệm và học hỏi cùng nhau. Kiến thức mở, khóa học miễn phí, cùng nhau tiến bộ.
           </Reveal>
           <Reveal><HeroActions /></Reveal>
           <Reveal className="flex gap-8 flex-wrap mt-9 text-ink-3 text-sm font-medium">
-            <span><b className="text-ink font-bold">10.000+</b> học viên</span>
-            <span><b className="text-ink font-bold">50+</b> khóa học</span>
-            <span><b className="text-ink font-bold">4.9/5</b> đánh giá</span>
+            <span>📰 Tin AI cập nhật mỗi ngày</span>
+            <span>🎓 Khóa học miễn phí</span>
+            <span>🤝 Chia sẻ &amp; kết nối</span>
           </Reveal>
         </div>
 
