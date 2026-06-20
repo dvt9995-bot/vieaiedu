@@ -13,6 +13,7 @@ const links = [
   { href: "/courses", label: "Khóa học" },
   { href: "/blog", label: "Tin tức" },
   { href: "/community", label: "Cộng đồng" },
+  { href: "/gioi-thieu", label: "Giới thiệu" },
 ];
 // Mục cá nhân — gom vào menu avatar
 const userLinks = [
