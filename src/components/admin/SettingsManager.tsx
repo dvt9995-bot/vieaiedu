@@ -4,14 +4,19 @@ import { toast } from "@/components/Toaster";
 import { createClient } from "@/lib/supabase/client";
 
 type S = Record<string, string>;
-const GROUPS: { title: string; note?: string; fields: [string, string, boolean?][] }[] = [
+// field = [key, label, secret?, multiline?]
+const GROUPS: { title: string; note?: string; fields: [string, string, boolean?, boolean?][] }[] = [
   { title: "💳 Thanh toán (SePay)", fields: [
     ["sepay_account", "Số tài khoản nhận"], ["sepay_bank", "Mã ngân hàng (MB, VCB...)"], ["sepay_webhook_key", "Webhook API key", true],
   ]},
   { title: "🔌 Tích hợp & API key", note: "Để trống = dùng giá trị mặc định trong env.", fields: [
-    ["bunny_library_id", "Bunny Library ID"], ["bunny_api_key", "Bunny Stream API key", true], ["bunny_token_key", "Bunny Token key (chống tải trộm)", true],
+    ["bunny_library_id", "Bunny Library ID"], ["bunny_token_key", "Bunny Token key (chống tải trộm)", true],
     ["resend_api_key", "Resend API key", true], ["resend_from", "Email gửi (From)"],
     ["gemini_api_key", "Google Gemini API key (blog tự động)", true],
+  ]},
+  { title: "📰 Blog tự động (AI)", note: "Model AI viết lại tin + danh sách nguồn.", fields: [
+    ["gemini_model", "Model Gemini (mặc định gemini-2.5-flash)"],
+    ["blog_feeds", "Nguồn tin — mỗi dòng: url | Tên nguồn", false, true],
   ]},
   { title: "📈 Tracking & Pixel", fields: [
     ["ga_id", "Google Analytics 4 ID (G-XXXX)"], ["fb_pixel_id", "Facebook Pixel ID"], ["tiktok_pixel_id", "TikTok Pixel ID"],
@@ -73,17 +78,25 @@ export default function SettingsManager() {
             <h3 className="font-semibold mb-1">{g.title}</h3>
             {g.note && <p className="text-ink-3 text-xs mb-3">{g.note}</p>}
             <div className="space-y-3 mt-3">
-              {g.fields.map(([key, label, secret]) => (
+              {g.fields.map(([key, label, secret, multiline]) => (
                 <div key={key}>
                   <label className="block text-xs font-semibold text-ink-2 mb-1">{label}</label>
-                  <div className="flex gap-2">
-                    <input
-                      className={inp} type={secret && !show[key] ? "password" : "text"}
+                  {multiline ? (
+                    <textarea
+                      className={`${inp} min-h-[90px] font-mono`} rows={4}
                       value={s[key] || ""} onChange={(e) => setS({ ...s, [key]: e.target.value })}
-                      placeholder={secret ? "••••••" : ""}
+                      placeholder={"https://vd.com/rss | Tên nguồn"}
                     />
-                    {secret && <button onClick={() => setShow({ ...show, [key]: !show[key] })} className="text-xs text-ink-3 px-2 cursor-pointer">{show[key] ? "Ẩn" : "Hiện"}</button>}
-                  </div>
+                  ) : (
+                    <div className="flex gap-2">
+                      <input
+                        className={inp} type={secret && !show[key] ? "password" : "text"}
+                        value={s[key] || ""} onChange={(e) => setS({ ...s, [key]: e.target.value })}
+                        placeholder={secret ? "••••••" : ""}
+                      />
+                      {secret && <button onClick={() => setShow({ ...show, [key]: !show[key] })} className="text-xs text-ink-3 px-2 cursor-pointer">{show[key] ? "Ẩn" : "Hiện"}</button>}
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
