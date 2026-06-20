@@ -2,7 +2,8 @@
 import { useEffect, useState } from "react";
 import { toast } from "@/components/Toaster";
 
-interface U { id: string; email: string; name: string; role: string; studentCode: string; banned: boolean; courses: number; }
+interface U { id: string; email: string; name: string; role: string; studentCode: string; banned: boolean; courses: number; referrals: number; credit: number; real: number; }
+const vnd = (n: number) => (n || 0).toLocaleString("vi-VN") + "đ";
 
 export default function UserManager() {
   const [users, setUsers] = useState<U[]>([]);
@@ -17,6 +18,11 @@ export default function UserManager() {
     toast("Đã cập nhật học viên");
     load();
   }
+  async function grant(id: string) {
+    const v = prompt("Tặng số dư KHUYẾN MÃI (đ) cho học viên này:");
+    const amt = parseInt(v || "0");
+    if (amt > 0) await patch(id, { grantCredit: amt });
+  }
 
   const filtered = users.filter((u) => !q || `${u.email} ${u.name}`.toLowerCase().includes(q.toLowerCase()));
   return (
@@ -28,25 +34,24 @@ export default function UserManager() {
       <div className="rounded-card border border-border bg-surface overflow-x-auto">
         <table className="w-full text-sm min-w-[680px]">
           <thead><tr className="bg-bg-soft text-ink-3 text-left text-xs uppercase tracking-wide">
-            <th className="px-4 py-3 font-semibold">Người dùng</th><th className="px-4 py-3 font-semibold">Mã học viên</th><th className="px-4 py-3 font-semibold">Khóa</th><th className="px-4 py-3 font-semibold">Quyền</th><th className="px-4 py-3"></th>
+            <th className="px-4 py-3 font-semibold">Người dùng</th><th className="px-4 py-3 font-semibold">Khóa</th><th className="px-4 py-3 font-semibold">Giới thiệu</th><th className="px-4 py-3 font-semibold">Ví (KM / Hoa hồng)</th><th className="px-4 py-3 font-semibold">Quyền</th><th className="px-4 py-3"></th>
           </tr></thead>
           <tbody>
-            {loading ? <tr><td colSpan={5} className="px-4 py-8 text-center text-ink-3">Đang tải…</td></tr>
+            {loading ? <tr><td colSpan={6} className="px-4 py-8 text-center text-ink-3">Đang tải…</td></tr>
             : filtered.map((u) => (
               <tr key={u.id} className={`border-t border-border ${u.banned ? "opacity-50" : ""}`}>
-                <td className="px-4 py-3"><div className="font-medium">{u.name || "—"}</div><div className="text-ink-3 text-xs">{u.email}</div></td>
-                <td className="px-4 py-3">
-                  <input defaultValue={u.studentCode} onBlur={(e) => e.target.value !== u.studentCode && patch(u.id, { studentCode: e.target.value })}
-                    className="font-mono text-xs w-28 rounded border border-border-strong bg-surface px-2 py-1 outline-none focus:border-accent" />
-                </td>
+                <td className="px-4 py-3"><div className="font-medium">{u.name || "—"}</div><div className="text-ink-3 text-xs">{u.email}</div><div className="text-ink-3 text-[10px] font-mono">{u.studentCode}</div></td>
                 <td className="px-4 py-3 text-ink-2">{u.courses}</td>
+                <td className="px-4 py-3 text-ink-2">{u.referrals}</td>
+                <td className="px-4 py-3"><span className="text-accent font-semibold">{vnd(u.credit)}</span> <span className="text-ink-3">/ {vnd(u.real)}</span></td>
                 <td className="px-4 py-3">
                   <select value={u.role} onChange={(e) => patch(u.id, { role: e.target.value })} className="rounded-lg border border-border-strong bg-surface text-sm px-2 py-1.5 cursor-pointer">
                     <option value="student">Học viên</option><option value="instructor">Giảng viên</option><option value="admin">Admin</option>
                   </select>
                 </td>
-                <td className="px-4 py-3 text-right">
-                  <button onClick={() => patch(u.id, { ban: !u.banned })} className={`text-sm font-semibold cursor-pointer ${u.banned ? "text-success" : "text-accent"}`}>{u.banned ? "Mở khóa" : "Khóa"}</button>
+                <td className="px-4 py-3 text-right whitespace-nowrap">
+                  <button onClick={() => grant(u.id)} className="text-sm font-semibold text-ink-2 hover:text-accent cursor-pointer mr-3">Tặng tiền</button>
+                  <button onClick={() => patch(u.id, { ban: !u.banned })} className={`text-sm font-semibold cursor-pointer ${u.banned ? "text-success" : "text-accent"}`}>{u.banned ? "Mở" : "Khóa"}</button>
                 </td>
               </tr>
             ))}
