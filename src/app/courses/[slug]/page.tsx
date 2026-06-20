@@ -6,6 +6,8 @@ import { LEVEL_LABEL } from "@/lib/types";
 import { formatDuration } from "@/lib/format";
 import CoursePurchase from "@/components/CoursePurchase";
 import CourseCard from "@/components/CourseCard";
+import CourseReviews from "@/components/CourseReviews";
+import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -31,6 +33,15 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
+  // Thống kê đánh giá (cho aggregateRating + hiển thị)
+  let reviewAvg = 0, reviewCount = 0;
+  const admin = createAdminClient();
+  if (admin) {
+    const { data: rv } = await admin.from("reviews").select("rating").eq("course_slug", slug);
+    reviewCount = (rv || []).length;
+    if (reviewCount) reviewAvg = Math.round((rv!.reduce((s, r) => s + (r.rating as number), 0) / reviewCount) * 10) / 10;
+  }
+
   // Gợi ý khóa khác (ưu tiên cùng danh mục) để tăng up-sale
   const allCourses = await getCourses();
   const related = [
@@ -47,6 +58,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
       description: course.subtitle,
       provider: { "@type": "Organization", name: "VIE AI EDU", sameAs: "https://vieaiedu.vn" },
       ...(course.price > 0 ? { offers: { "@type": "Offer", price: course.price, priceCurrency: "VND", category: "Paid" } } : {}),
+      ...(reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reviewAvg, reviewCount } } : {}),
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -121,6 +133,8 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
 
           <h2 className="text-2xl font-extrabold tracking-tight mt-12 mb-4">Mô tả</h2>
           <p className="text-ink-2 leading-relaxed">{course.description}</p>
+
+          <CourseReviews slug={course.slug} />
         </div>
 
         {/* Right: purchase */}
