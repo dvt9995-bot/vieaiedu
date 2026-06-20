@@ -1,8 +1,9 @@
 "use server";
 import { redirect } from "next/navigation";
-import { headers } from "next/headers";
+import { headers, cookies } from "next/headers";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
+import { notify } from "@/lib/notify";
 
 type Result = { error?: string };
 
@@ -32,6 +33,18 @@ export async function signUp(_prev: Result, formData: FormData): Promise<Result>
   const admin = createAdminClient();
   if (admin && data.user) {
     await admin.auth.admin.updateUserById(data.user.id, { email_confirm: true }).catch(() => {});
+    // Quy công người giới thiệu (cookie vie_ref)
+    try {
+      const ref = (await cookies()).get("vie_ref")?.value;
+      if (ref && /^[0-9a-f-]{36}$/i.test(ref) && ref !== data.user.id) {
+        await admin.from("profiles").update({ referred_by: ref }).eq("id", data.user.id);
+        const { data: r } = await admin.from("profiles").select("referral_count, full_name").eq("id", ref).maybeSingle();
+        if (r) {
+          await admin.from("profiles").update({ referral_count: ((r.referral_count as number) || 0) + 1 }).eq("id", ref);
+          await notify({ userId: ref, type: "community", title: "Bạn có người được giới thiệu mới 🎉", body: "Một người vừa đăng ký qua liên kết của bạn. Cảm ơn đã lan tỏa VIE AI EDU!", href: "/account" });
+        }
+      }
+    } catch {}
   }
   // Tạo phiên đăng nhập ngay
   await supabase!.auth.signInWithPassword({ email, password });

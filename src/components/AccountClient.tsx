@@ -101,6 +101,19 @@ export default function AccountClient() {
             </div>
           </section>
 
+          {/* Mời bạn bè (referral) */}
+          <section className="rounded-card border border-accent/25 bg-accent-weak p-6">
+            <h2 className="font-bold mb-1">🎁 Mời bạn bè</h2>
+            <p className="text-ink-2 text-sm mb-3">Chia sẻ liên kết của bạn — mỗi người đăng ký qua link này được tính cho bạn. Đã mời: <b className="text-accent">{p.referral_count}</b> người.</p>
+            <div className="flex gap-2 flex-wrap">
+              <input readOnly value={`https://vieaiedu.vn/?ref=${p.id}`} className={`${inp} flex-1 min-w-[220px] font-mono text-xs`} />
+              <button
+                onClick={() => { navigator.clipboard?.writeText(`https://vieaiedu.vn/?ref=${p.id}`); toast("Đã sao chép liên kết mời"); }}
+                className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-5 cursor-pointer transition-colors"
+              >Sao chép</button>
+            </div>
+          </section>
+
           {msg && <p className="text-sm text-ink-2">{msg}</p>}
         </div>
 

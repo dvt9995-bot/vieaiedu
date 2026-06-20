@@ -2,8 +2,8 @@
 import { createClient } from "@/lib/supabase/client";
 
 export interface MyProfile {
-  full_name: string; phone: string; address: string; birthdate: string; bio: string;
-  avatar_url: string; student_code: string; email: string;
+  id: string; full_name: string; phone: string; address: string; birthdate: string; bio: string;
+  avatar_url: string; student_code: string; email: string; referral_count: number;
 }
 
 export async function getMyProfile(): Promise<MyProfile | null> {
@@ -11,11 +11,11 @@ export async function getMyProfile(): Promise<MyProfile | null> {
   if (!c) return null;
   const { data: { user } } = await c.auth.getUser();
   if (!user) return null;
-  const { data } = await c.from("profiles").select("full_name, phone, address, birthdate, bio, avatar_url, student_code").eq("id", user.id).maybeSingle();
+  const { data } = await c.from("profiles").select("full_name, phone, address, birthdate, bio, avatar_url, student_code, referral_count").eq("id", user.id).maybeSingle();
   return {
-    full_name: data?.full_name || "", phone: data?.phone || "", address: data?.address || "",
+    id: user.id, full_name: data?.full_name || "", phone: data?.phone || "", address: data?.address || "",
     birthdate: data?.birthdate || "", bio: data?.bio || "", avatar_url: data?.avatar_url || "",
-    student_code: data?.student_code || "", email: user.email || "",
+    student_code: data?.student_code || "", email: user.email || "", referral_count: data?.referral_count || 0,
   };
 }
 

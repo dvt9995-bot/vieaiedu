@@ -3,8 +3,10 @@ import { Be_Vietnam_Pro, Montserrat } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
+import PromoBanner from "@/components/PromoBanner";
 import AuthModalProvider from "@/components/AuthModal";
 import PWARegister from "@/components/PWARegister";
+import RefCapture from "@/components/RefCapture";
 import Toaster from "@/components/Toaster";
 import Tracking from "@/components/Tracking";
 import { Analytics } from "@vercel/analytics/react";
@@ -52,11 +54,13 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
     <html lang="vi" className={`${beVietnam.variable} ${montserrat.variable}`}>
       <body className="antialiased">
         <AuthModalProvider>
+          <PromoBanner />
           <Navbar />
           <main className="pt-16">{children}</main>
           <Footer />
         </AuthModalProvider>
         <PWARegister />
+        <RefCapture />
         <Toaster />
         <Analytics />
         <Tracking />
