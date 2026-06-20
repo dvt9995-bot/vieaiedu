@@ -45,7 +45,7 @@ export default async function Home() {
       <Hero />
 
       {/* Khóa học miễn phí */}
-      <section className="py-16 border-b border-border">
+      <section className="py-10 md:py-16 border-b border-border">
         <div className="container-x">
           <div className="flex items-end justify-between mb-7">
             <div>
@@ -61,7 +61,7 @@ export default async function Home() {
       </section>
 
       {/* Tin tức AI mới nhất */}
-      <section className="py-16 bg-bg-soft border-b border-border">
+      <section className="py-10 md:py-16 bg-bg-soft border-b border-border">
         <div className="container-x">
           <div className="flex items-end justify-between mb-7">
             <div>
@@ -97,7 +97,7 @@ export default async function Home() {
       </section>
 
       {/* Cộng đồng nổi bật */}
-      <section className="py-16 border-b border-border">
+      <section className="py-10 md:py-16 border-b border-border">
         <div className="container-x">
           <div className="flex items-end justify-between mb-7">
             <div>
@@ -136,7 +136,7 @@ export default async function Home() {
       </section>
 
       {/* CTA cộng đồng (không bán hàng) */}
-      <section className="py-16">
+      <section className="py-10 md:py-16">
         <div className="container-x">
           <Reveal>
             <div className="relative overflow-hidden rounded-3xl bg-ink text-white text-center px-8 py-14">

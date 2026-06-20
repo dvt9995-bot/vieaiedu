@@ -49,7 +49,7 @@ export default function AboutPage() {
       </section>
 
       {/* Lợi ích */}
-      <section className="py-20 bg-bg-soft border-y border-border">
+      <section className="py-12 md:py-20 bg-bg-soft border-y border-border">
         <div className="container-x">
           <Reveal className="max-w-[640px] mx-auto text-center mb-12">
             <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight">Bạn nhận được gì khi tham gia?</h2>
@@ -70,7 +70,7 @@ export default function AboutPage() {
       </section>
 
       {/* Giá trị / triết lý */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="container-x grid lg:grid-cols-2 gap-12 items-center">
           <Reveal>
             <h2 className="text-[clamp(1.7rem,3.2vw,2.4rem)] font-extrabold tracking-tight leading-tight">Chúng tôi tin: <span className="text-accent">tri thức nên được mở</span></h2>
@@ -90,7 +90,7 @@ export default function AboutPage() {
       </section>
 
       {/* Cách bắt đầu */}
-      <section className="py-20 bg-bg-soft border-y border-border">
+      <section className="py-12 md:py-20 bg-bg-soft border-y border-border">
         <div className="container-x max-w-[820px] mx-auto">
           <Reveal className="text-center mb-12">
             <h2 className="text-[clamp(1.8rem,3.4vw,2.6rem)] font-extrabold tracking-tight">Bắt đầu trong 1 phút</h2>
@@ -110,7 +110,7 @@ export default function AboutPage() {
       </section>
 
       {/* CTA cuối */}
-      <section className="py-20">
+      <section className="py-12 md:py-20">
         <div className="container-x">
           <Reveal>
             <div className="relative overflow-hidden rounded-3xl bg-ink text-white text-center px-8 py-16">

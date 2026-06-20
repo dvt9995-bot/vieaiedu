@@ -46,7 +46,7 @@ export default async function Hero() {
         </svg>
       )}
 
-      <div className={`container-x relative ${hasMedia ? "" : "grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center"} pt-20 pb-24 lg:py-28`}>
+      <div className={`container-x relative ${hasMedia ? "" : "grid lg:grid-cols-[1.05fr_.95fr] gap-10 items-center"} pt-12 pb-16 lg:py-28`}>
         {/* Text */}
         <div className={hasMedia ? "max-w-[58ch]" : ""}>
           <Reveal as="span" className={`inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-[.82rem] font-semibold mb-6 ${hasMedia ? "border border-white/25 bg-white/10 text-white backdrop-blur-sm" : "border border-accent/20 bg-white text-accent shadow-soft"}`}>

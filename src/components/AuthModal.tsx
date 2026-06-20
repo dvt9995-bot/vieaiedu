@@ -24,10 +24,10 @@ export default function AuthModalProvider({ children }: { children: ReactNode })
           className="fixed inset-0 z-[250] flex items-center justify-center p-5 bg-[rgba(11,12,14,.4)] backdrop-blur-sm"
           onClick={(e) => e.target === e.currentTarget && setMode(null)}
         >
-          <div className="w-full max-w-[400px] rounded-[18px] border border-border bg-surface p-8 shadow-lg relative">
+          <div className="w-full max-w-[400px] max-h-[90dvh] overflow-y-auto rounded-[18px] border border-border bg-surface p-6 sm:p-8 shadow-lg relative">
             <button
               onClick={() => setMode(null)}
-              className="absolute top-4 right-4 text-ink-3 hover:text-ink text-2xl leading-none cursor-pointer"
+              className="absolute top-2.5 right-2.5 w-9 h-9 inline-flex items-center justify-center rounded-full text-ink-3 hover:text-ink hover:bg-bg-soft text-2xl leading-none cursor-pointer"
               aria-label="Đóng"
             >
               ×

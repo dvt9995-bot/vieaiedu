@@ -103,7 +103,7 @@ export default function Navbar() {
               <button onClick={() => open("register")} className="inline-flex text-sm font-semibold bg-accent hover:bg-accent-700 text-white px-4 py-2 rounded-full cursor-pointer transition-colors">Bắt đầu</button>
             </>
           )}
-          <button className="md:hidden p-2 cursor-pointer" aria-label="menu" onClick={() => setMenu(!menu)}>
+          <button className="md:hidden inline-flex flex-col items-center justify-center w-11 h-11 -mr-1.5 cursor-pointer" aria-label="Mở menu" onClick={() => setMenu(!menu)}>
             <span className="block w-5 h-0.5 bg-ink mb-1" />
             <span className="block w-5 h-0.5 bg-ink mb-1" />
             <span className="block w-5 h-0.5 bg-ink" />

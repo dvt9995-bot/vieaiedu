@@ -140,7 +140,7 @@ export default function CommunityFeed() {
           {/* Chọn chủ đề cho bài */}
           <div className="flex flex-wrap gap-1.5 mt-2">
             {TOPICS.map((t) => (
-              <button key={t} onClick={() => toggleTag(t)} className={`text-xs rounded-full px-2.5 py-1 border cursor-pointer transition-colors ${tags.includes(t) ? "bg-accent text-white border-accent" : "bg-bg-soft border-border hover:border-accent"}`}>#{t}</button>
+              <button key={t} onClick={() => toggleTag(t)} className={`text-xs rounded-full px-3 py-2 border cursor-pointer transition-colors ${tags.includes(t) ? "bg-accent text-white border-accent" : "bg-bg-soft border-border hover:border-accent"}`}>#{t}</button>
             ))}
           </div>
           {file && <div className="text-xs text-ink-2 mt-2">📎 {file.name} <button onClick={() => setFile(null)} className="text-accent cursor-pointer">(bỏ)</button></div>}

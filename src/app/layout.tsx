@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import PromoBanner from "@/components/PromoBanner";
 import AuthModalProvider from "@/components/AuthModal";
+import MobileTabBar from "@/components/MobileTabBar";
 import PWARegister from "@/components/PWARegister";
 import RefCapture from "@/components/RefCapture";
 import Toaster from "@/components/Toaster";
@@ -58,6 +59,9 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Navbar />
           <main className="pt-16">{children}</main>
           <Footer />
+          {/* Chừa chỗ cho thanh tab dưới trên mobile */}
+          <div className="h-14 md:hidden" aria-hidden style={{ marginBottom: "env(safe-area-inset-bottom)" }} />
+          <MobileTabBar />
         </AuthModalProvider>
         <PWARegister />
         <RefCapture />
