@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import { toast } from "@/components/Toaster";
 
 export default function BroadcastForm() {
   const [f, setF] = useState({ title: "", body: "", href: "" });
@@ -7,13 +8,13 @@ export default function BroadcastForm() {
   const [busy, setBusy] = useState(false);
 
   async function send() {
-    if (!f.title.trim()) { setMsg("Cần nhập tiêu đề"); return; }
+    if (!f.title.trim()) { setMsg("Cần nhập tiêu đề"); return toast("Cần nhập tiêu đề", "error"); }
     if (!confirm("Gửi thông báo này tới TẤT CẢ học viên?")) return;
     setBusy(true); setMsg("Đang gửi…");
     const r = await fetch("/api/admin/broadcast", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(f) }).then((x) => x.json());
     setBusy(false);
-    setMsg(r.ok ? `Đã gửi tới ${r.sent} học viên.` : r.error || "Lỗi");
-    if (r.ok) setF({ title: "", body: "", href: "" });
+    if (r.ok) { setMsg(`Đã gửi tới ${r.sent} học viên.`); toast(`Đã gửi tới ${r.sent} học viên`); setF({ title: "", body: "", href: "" }); }
+    else { setMsg(r.error || "Lỗi"); toast(r.error || "Gửi thất bại", "error"); }
   }
 
   const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";

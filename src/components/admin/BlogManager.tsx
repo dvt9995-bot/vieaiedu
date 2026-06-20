@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { toast } from "@/components/Toaster";
 
 interface Post { id: string; slug: string; title: string; excerpt: string; body: string; cover_url: string | null; published: boolean; source_name?: string | null; published_at: string; }
 const empty = { title: "", excerpt: "", body: "", cover_url: "", published: true };
@@ -18,14 +19,15 @@ export default function BlogManager() {
     setMsg("Đang lưu…");
     const method = edit.id ? "PATCH" : "POST";
     const r = await fetch("/api/admin/blog", { method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(edit) }).then((x) => x.json());
-    if (r.ok) { setEdit(null); setMsg("✓ Đã lưu"); load(); } else setMsg(r.error || "Lỗi");
+    if (r.ok) { setEdit(null); setMsg("✓ Đã lưu"); toast("Đã lưu bài viết"); load(); } else { setMsg(r.error || "Lỗi"); toast(r.error || "Lưu thất bại", "error"); }
   }
-  async function del(id: string) { if (confirm("Xóa bài viết này?")) { await fetch(`/api/admin/blog?id=${id}`, { method: "DELETE" }); load(); } }
-  async function togglePublish(p: Post) { await fetch("/api/admin/blog", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, published: !p.published }) }); load(); }
+  async function del(id: string) { if (confirm("Xóa bài viết này?")) { await fetch(`/api/admin/blog?id=${id}`, { method: "DELETE" }); toast("Đã xóa bài viết"); load(); } }
+  async function togglePublish(p: Post) { await fetch("/api/admin/blog", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, published: !p.published }) }); toast(p.published ? "Đã ẩn bài" : "Đã hiện bài"); load(); }
   async function autoGen() {
-    setMsg("Đang tạo bài từ tin AI mới nhất… (~30s)");
+    setMsg("Đang tạo bài từ tin AI mới nhất… (~30s)"); toast("Đang tạo bài từ tin AI…", "info");
     const r = await fetch("/api/cron/blog").then((x) => x.json()).catch(() => ({}));
-    setMsg(r.skipped ? r.skipped : r.created != null ? `✓ Đã tạo ${r.created} bài mới` : r.error || "Lỗi");
+    const m = r.skipped ? r.skipped : r.created != null ? `✓ Đã tạo ${r.created} bài mới` : r.error || "Lỗi";
+    setMsg(m); toast(m, r.created ? "success" : "info");
     load();
   }
 

@@ -5,6 +5,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import AuthModalProvider from "@/components/AuthModal";
 import PWARegister from "@/components/PWARegister";
+import Toaster from "@/components/Toaster";
 import Tracking from "@/components/Tracking";
 import { Analytics } from "@vercel/analytics/react";
 import { getConfig } from "@/lib/settings";
@@ -56,6 +57,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
           <Footer />
         </AuthModalProvider>
         <PWARegister />
+        <Toaster />
         <Analytics />
         <Tracking />
       </body>

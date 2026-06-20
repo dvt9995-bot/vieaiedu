@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { toast } from "@/components/Toaster";
 
 interface Post { id: string; body: string; image: string | null; hidden: boolean; created_at: string; author: string; author_id: string; }
 
@@ -10,8 +11,8 @@ export default function CommunityModerator() {
   async function load() { setLoading(true); const r = await fetch("/api/admin/posts").then((x) => x.json()).catch(() => ({ posts: [] })); setPosts(r.posts || []); setLoading(false); }
   useEffect(() => { load(); }, []);
 
-  async function toggle(p: Post) { await fetch("/api/admin/posts", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, hidden: !p.hidden }) }); load(); }
-  async function del(id: string) { if (confirm("Xóa hẳn bài viết này?")) { await fetch(`/api/admin/posts?id=${id}`, { method: "DELETE" }); load(); } }
+  async function toggle(p: Post) { await fetch("/api/admin/posts", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: p.id, hidden: !p.hidden }) }); toast(p.hidden ? "Đã hiện lại bài" : "Đã ẩn bài"); load(); }
+  async function del(id: string) { if (confirm("Xóa hẳn bài viết này?")) { await fetch(`/api/admin/posts?id=${id}`, { method: "DELETE" }); toast("Đã xóa bài viết"); load(); } }
 
   return (
     <div>

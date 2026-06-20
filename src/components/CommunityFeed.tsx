@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { useAuthModal } from "./AuthModal";
+import { toast } from "./Toaster";
 import {
   loadPosts, createPost, togglePostLike, uploadCommunityImage,
   loadComments, addComment, currentUserId, isConfigured, type DBPost, type DBComment,
@@ -62,8 +63,8 @@ export default function CommunityFeed() {
     if (file) imageUrl = await uploadCommunityImage(file);
     const ok = await createPost(text.trim(), imageUrl);
     setBusy(false);
-    if (!ok) return open("login");
-    setText(""); setFile(null); refresh();
+    if (!ok) { toast("Đăng bài thất bại", "error"); return open("login"); }
+    setText(""); setFile(null); toast("Đã đăng bài"); refresh();
   }
 
   function onLike(p: DBPost) {

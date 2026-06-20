@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
+import { toast } from "@/components/Toaster";
 
 interface Lesson { id: string; title: string; duration_sec: number; is_preview: boolean; video_id: string | null; }
 interface Section { id: string; title: string; lessons: Lesson[]; }
@@ -19,9 +20,9 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
   async function addSection() {
     if (!newSection.trim()) return;
     await fetch("/api/admin/sections", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ course_id: courseId, title: newSection, position: sections.length }) });
-    setNewSection(""); load();
+    setNewSection(""); toast("Đã thêm chương"); load();
   }
-  async function delSection(id: string) { if (confirm("Xóa chương (và toàn bộ bài trong đó)?")) { await fetch(`/api/admin/sections?id=${id}`, { method: "DELETE" }); load(); } }
+  async function delSection(id: string) { if (confirm("Xóa chương (và toàn bộ bài trong đó)?")) { await fetch(`/api/admin/sections?id=${id}`, { method: "DELETE" }); toast("Đã xóa chương"); load(); } }
 
   async function addLesson(sectionId: string, count: number) {
     if (!lf.title.trim()) return;
@@ -29,9 +30,9 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
       method: "POST", headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ section_id: sectionId, course_id: courseId, title: lf.title, duration_sec: Number(lf.duration) || 0, is_preview: lf.preview, video_id: lf.video || null, position: count }),
     });
-    setLf({ title: "", duration: "300", preview: false, video: "" }); setAddingTo(null); load();
+    setLf({ title: "", duration: "300", preview: false, video: "" }); setAddingTo(null); toast("Đã thêm bài học"); load();
   }
-  async function delLesson(id: string) { await fetch(`/api/admin/lessons?id=${id}`, { method: "DELETE" }); load(); }
+  async function delLesson(id: string) { await fetch(`/api/admin/lessons?id=${id}`, { method: "DELETE" }); toast("Đã xóa bài học"); load(); }
   async function togglePreview(l: Lesson) {
     await fetch("/api/admin/lessons", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: l.id, is_preview: !l.is_preview }) });
     load();
@@ -40,6 +41,7 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
     const v = prompt("Bunny video ID cho bài này:", l.video_id || "");
     if (v === null) return;
     await fetch("/api/admin/lessons", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: l.id, video_id: v || null }) });
+    toast("Đã gán video cho bài học");
     load();
   }
 

@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { toast } from "@/components/Toaster";
 
 type S = Record<string, string>;
 const GROUPS: { title: string; note?: string; fields: [string, string, boolean?][] }[] = [
@@ -30,7 +31,8 @@ export default function SettingsManager() {
   async function save() {
     setMsg("Đang lưu…");
     const r = await fetch("/api/admin/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ values: s }) }).then((x) => x.json());
-    setMsg(r.ok ? "✓ Đã lưu. Thay đổi áp dụng ngay (không cần deploy)." : r.error || "Lỗi");
+    if (r.ok) { setMsg("✓ Đã lưu. Thay đổi áp dụng ngay (không cần deploy)."); toast("Đã lưu cấu hình — áp dụng ngay"); }
+    else { setMsg(r.error || "Lỗi"); toast(r.error || "Lưu thất bại", "error"); }
   }
 
 

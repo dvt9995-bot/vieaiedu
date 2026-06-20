@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { toast } from "@/components/Toaster";
 
 interface C { code: string; percent_off: number; active: boolean; expires_at: string | null; }
 
@@ -11,11 +12,12 @@ export default function CouponManager() {
   useEffect(() => { load(); }, []);
 
   async function add() {
-    if (!f.code.trim()) return;
-    await fetch("/api/admin/coupons", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: f.code, percent_off: Number(f.percent_off), expires_at: f.expires_at || null }) });
-    setF({ code: "", percent_off: "20", expires_at: "" }); load();
+    if (!f.code.trim()) return toast("Nhập mã giảm giá", "error");
+    const r = await fetch("/api/admin/coupons", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code: f.code, percent_off: Number(f.percent_off), expires_at: f.expires_at || null }) }).then((x) => x.json());
+    if (r.ok) { toast(`Đã tạo mã ${f.code}`); setF({ code: "", percent_off: "20", expires_at: "" }); load(); }
+    else toast(r.error || "Tạo mã thất bại", "error");
   }
-  async function del(code: string) { if (confirm("Xóa mã " + code + "?")) { await fetch(`/api/admin/coupons?code=${code}`, { method: "DELETE" }); load(); } }
+  async function del(code: string) { if (confirm("Xóa mã " + code + "?")) { await fetch(`/api/admin/coupons?code=${code}`, { method: "DELETE" }); toast(`Đã xóa mã ${code}`); load(); } }
 
   const inp = "px-3 py-2 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
   return (

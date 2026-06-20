@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { formatVND } from "@/lib/format";
+import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
 
 interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; }
@@ -26,22 +27,24 @@ export default function CourseManager() {
   async function seed() {
     setMsg("Đang nạp dữ liệu mẫu…");
     const r = await fetch("/api/admin/seed-courses", { method: "POST" }).then((x) => x.json());
-    setMsg(r.ok ? `Đã nạp ${r.inserted} khóa.` : r.message || r.error || "Lỗi");
+    const m = r.ok ? `Đã nạp ${r.inserted} khóa.` : r.message || r.error || "Lỗi";
+    setMsg(m); toast(m, r.ok ? "success" : "info");
     load();
   }
 
   async function save() {
-    if (!form?.title || !form?.slug) { setMsg("Cần nhập tên + slug"); return; }
+    if (!form?.title || !form?.slug) { setMsg("Cần nhập tên + slug"); return toast("Cần nhập tên + slug", "error"); }
     const method = form.id ? "PATCH" : "POST";
     const r = await fetch("/api/admin/courses", {
       method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form),
     }).then((x) => x.json());
-    if (r.ok) { setForm(null); setMsg("Đã lưu."); load(); } else setMsg(r.error || "Lỗi lưu");
+    if (r.ok) { setForm(null); setMsg("Đã lưu."); toast("Đã lưu khóa học"); load(); } else { setMsg(r.error || "Lỗi lưu"); toast(r.error || "Lưu thất bại", "error"); }
   }
 
   async function del(id: string) {
     if (!confirm("Xóa khóa học này?")) return;
     await fetch(`/api/admin/courses?id=${id}`, { method: "DELETE" });
+    toast("Đã xóa khóa học");
     load();
   }
 

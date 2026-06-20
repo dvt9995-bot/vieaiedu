@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import StudentCard from "@/components/StudentCard";
+import { toast } from "@/components/Toaster";
 import {
   getMyProfile, updateMyProfile, uploadAvatar, changeEmail, changePassword, type MyProfile,
 } from "@/lib/profile";
@@ -23,26 +24,31 @@ export default function AccountClient() {
   async function saveProfile() {
     setBusy(true); setMsg("");
     const ok = await updateMyProfile(p!);
-    setBusy(false); setMsg(ok ? "✓ Đã lưu thông tin cá nhân." : "Lỗi khi lưu.");
+    setBusy(false);
+    if (ok) { setMsg("✓ Đã lưu thông tin cá nhân."); toast("Đã lưu thông tin cá nhân"); }
+    else { setMsg("Lỗi khi lưu."); toast("Lưu thất bại", "error"); }
   }
   async function onAvatar(file: File) {
-    setMsg("Đang tải ảnh…");
+    setMsg("Đang tải ảnh…"); toast("Đang tải ảnh lên…", "info");
     const url = await uploadAvatar(file);
-    if (!url) return setMsg("Tải ảnh thất bại.");
+    if (!url) { setMsg("Tải ảnh thất bại."); return toast("Tải ảnh thất bại", "error"); }
     set("avatar_url", url);
     await updateMyProfile({ avatar_url: url });
-    setMsg("✓ Đã cập nhật ảnh đại diện.");
+    setMsg("✓ Đã cập nhật ảnh đại diện."); toast("Đã cập nhật ảnh đại diện");
   }
   async function onChangeEmail() {
     setMsg("Đang đổi email…");
     const err = await changeEmail(email);
-    setMsg(err ? `Lỗi: ${err}` : "✓ Đã gửi email xác nhận tới địa chỉ mới. Vui lòng kiểm tra hộp thư.");
+    if (err) { setMsg(`Lỗi: ${err}`); toast(err, "error"); }
+    else { setMsg("✓ Đã gửi email xác nhận tới địa chỉ mới."); toast("Đã gửi email xác nhận tới địa chỉ mới"); }
   }
   async function onChangePassword() {
-    if (pw.length < 6) return setMsg("Mật khẩu tối thiểu 6 ký tự.");
+    if (pw.length < 6) return toast("Mật khẩu tối thiểu 6 ký tự", "error");
     setMsg("Đang đổi mật khẩu…");
     const err = await changePassword(pw);
-    setPw(""); setMsg(err ? `Lỗi: ${err}` : "✓ Đã đổi mật khẩu.");
+    setPw("");
+    if (err) { setMsg(`Lỗi: ${err}`); toast(err, "error"); }
+    else { setMsg("✓ Đã đổi mật khẩu."); toast("Đã đổi mật khẩu thành công"); }
   }
 
   return (

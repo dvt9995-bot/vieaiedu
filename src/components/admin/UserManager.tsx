@@ -1,5 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
+import { toast } from "@/components/Toaster";
 
 interface U { id: string; email: string; name: string; role: string; studentCode: string; banned: boolean; courses: number; }
 
@@ -13,6 +14,7 @@ export default function UserManager() {
 
   async function patch(id: string, body: Record<string, unknown>) {
     await fetch("/api/admin/users", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, ...body }) });
+    toast("Đã cập nhật học viên");
     load();
   }
 
