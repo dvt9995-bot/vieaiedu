@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { getAllSettings, clearSettingsCache } from "@/lib/settings";
@@ -18,5 +19,6 @@ export async function PUT(req: Request) {
   const { error } = await admin.from("app_settings").upsert(rows, { onConflict: "key" });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   clearSettingsCache();
+  revalidatePath("/");
   return NextResponse.json({ ok: true });
 }

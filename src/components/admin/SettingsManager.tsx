@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import { toast } from "@/components/Toaster";
+import { createClient } from "@/lib/supabase/client";
 
 type S = Record<string, string>;
 const GROUPS: { title: string; note?: string; fields: [string, string, boolean?][] }[] = [
@@ -31,8 +32,27 @@ export default function SettingsManager() {
   const [loaded, setLoaded] = useState(false);
   const [msg, setMsg] = useState("");
   const [show, setShow] = useState<Record<string, boolean>>({});
+  const [upBusy, setUpBusy] = useState("");
 
   useEffect(() => { fetch("/api/admin/settings").then((r) => r.json()).then((d) => { setS(d.settings || {}); setLoaded(true); }); }, []);
+
+  async function uploadHero(file: File, key: "hero_bg_image" | "hero_bg_video") {
+    const isVideo = key === "hero_bg_video";
+    if (!isVideo && file.size > 50_000_000) return toast("Ảnh quá lớn (>50MB)", "error");
+    if (isVideo && file.size > 50_000_000) return toast("Video quá lớn (>50MB) — hãy nén lại", "error");
+    setUpBusy(key);
+    // Upload trực tiếp trình duyệt → Supabase (tránh giới hạn body của serverless)
+    const c = createClient();
+    if (!c) { setUpBusy(""); return toast("Chưa kết nối Supabase", "error"); }
+    const ext = (file.name.split(".").pop() || (isVideo ? "mp4" : "jpg")).toLowerCase();
+    const path = `${Date.now()}.${ext}`;
+    const { error } = await c.storage.from("hero").upload(path, file, { upsert: true, contentType: file.type || undefined });
+    setUpBusy("");
+    if (error) return toast("Tải lên thất bại: " + error.message, "error");
+    const url = c.storage.from("hero").getPublicUrl(path).data.publicUrl;
+    setS((cur) => ({ ...cur, [key]: url }));
+    toast("Đã tải lên — nhớ bấm Lưu tất cả");
+  }
 
   async function save() {
     setMsg("Đang lưu…");
@@ -70,6 +90,34 @@ export default function SettingsManager() {
             </div>
           </div>
         ))}
+
+        {/* Nền Hero (ảnh/video) */}
+        <div className="rounded-card border border-border p-5">
+          <h3 className="font-semibold mb-1">🎬 Nền khu Hero (trang chủ)</h3>
+          <p className="text-ink-3 text-xs mb-3">Tải <b>video</b> (ưu tiên) hoặc <b>ảnh</b> làm nền. Có video → tự phát, lặp, tắt tiếng; chữ chuyển sang trắng. Để trống cả hai = dùng nền mặc định. Khuyến nghị video MP4 16:9, ≤50MB.</p>
+          <div className="grid sm:grid-cols-2 gap-4">
+            {([["hero_bg_video", "Video nền", "video/*"], ["hero_bg_image", "Ảnh nền / poster", "image/*"]] as const).map(([key, label, accept]) => (
+              <div key={key}>
+                <label className="block text-xs font-semibold text-ink-2 mb-1.5">{label}</label>
+                {s[key] ? (
+                  <div className="rounded-lg border border-border overflow-hidden bg-bg-soft mb-2">
+                    {key === "hero_bg_video"
+                      ? <video src={s[key]} className="w-full h-28 object-cover" muted playsInline />
+                      // eslint-disable-next-line @next/next/no-img-element
+                      : <img src={s[key]} alt="" className="w-full h-28 object-cover" />}
+                  </div>
+                ) : <div className="rounded-lg border border-dashed border-border h-28 grid place-items-center text-ink-3 text-xs mb-2">Chưa có</div>}
+                <div className="flex gap-2">
+                  <label className="rounded-lg border border-border-strong hover:border-accent text-sm font-semibold px-3 py-1.5 cursor-pointer">
+                    {upBusy === key ? "Đang tải…" : "Tải lên"}
+                    <input type="file" accept={accept} className="hidden" disabled={!!upBusy} onChange={(e) => { const f = e.target.files?.[0]; if (f) uploadHero(f, key); }} />
+                  </label>
+                  {s[key] && <button onClick={() => setS((cur) => ({ ...cur, [key]: "" }))} className="text-sm text-accent font-semibold px-2 cursor-pointer">Xóa</button>}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
       <div className="flex items-center gap-3 mt-5 flex-wrap">
         <button onClick={save} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-6 py-2.5 cursor-pointer transition-colors">Lưu tất cả</button>
