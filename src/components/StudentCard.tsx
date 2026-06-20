@@ -4,10 +4,14 @@ export default function StudentCard({
   name = "Nguyễn Văn An",
   studentId = "VIE-2026-0001",
   joined = "06/2026",
+  avatarUrl = "",
+  role = "Học viên",
 }: {
   name?: string;
   studentId?: string;
   joined?: string;
+  avatarUrl?: string;
+  role?: string;
 }) {
   return (
     <div className="w-[300px] max-w-full">
@@ -30,13 +34,18 @@ export default function StudentCard({
         {/* ảnh */}
         <div className="flex justify-center -mt-10">
           <div className="w-20 h-20 rounded-full ring-4 ring-white bg-bg-soft flex items-center justify-center overflow-hidden">
-            <svg viewBox="0 0 24 24" className="w-12 h-12 fill-ink-3/50"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.7-9 6v2h18v-2c0-3.3-4-6-9-6z" /></svg>
+            {avatarUrl ? (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
+            ) : (
+              <svg viewBox="0 0 24 24" className="w-12 h-12 fill-ink-3/50"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.7-9 6v2h18v-2c0-3.3-4-6-9-6z" /></svg>
+            )}
           </div>
         </div>
 
         <div className="px-5 pt-3 pb-5 text-center">
           <div className="font-bold text-lg">{name}</div>
-          <div className="text-accent text-sm font-semibold">Học viên</div>
+          <div className="text-accent text-sm font-semibold">{role}</div>
 
           <div className="mt-4 grid grid-cols-2 gap-3 text-left">
             <div>

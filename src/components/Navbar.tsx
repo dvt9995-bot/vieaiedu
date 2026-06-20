@@ -61,6 +61,7 @@ export default function Navbar() {
                 <span className="w-7 h-7 rounded-full bg-accent text-white flex items-center justify-center text-xs font-bold uppercase">{email[0]}</span>
                 <span className="max-w-[140px] truncate">{email}</span>
               </Link>
+              <Link href="/account" className="hidden sm:inline-flex text-sm font-semibold text-ink-2 hover:text-ink px-2 py-2" title="Cài đặt tài khoản">⚙</Link>
               <form action={signOut}>
                 <button className="hidden sm:inline-flex text-sm font-semibold text-ink-2 hover:text-accent px-3 py-2 cursor-pointer">Đăng xuất</button>
               </form>

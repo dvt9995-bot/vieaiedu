@@ -5,7 +5,7 @@ import { getCourseBySlug } from "@/lib/courses";
 
 export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Trần Minh Đức" };
+  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Trần Minh Đức", studentCode: "VIE26000000" };
 
   // Tra chứng chỉ thật theo mã
   if (isSupabaseConfigured() && code !== "VIEAIEDU-DEMO") {
@@ -13,7 +13,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
     const { data } = await supabase!.from("certificates").select("user_id, course_slug, issued_at").eq("code", code).maybeSingle();
     if (data) {
       const [{ data: prof }, course] = await Promise.all([
-        supabase!.from("profiles").select("full_name").eq("id", data.user_id).maybeSingle(),
+        supabase!.from("profiles").select("full_name, student_code").eq("id", data.user_id).maybeSingle(),
         getCourseBySlug(data.course_slug as string),
       ]);
       cert = {
@@ -21,6 +21,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
         course: (course?.title || data.course_slug as string).toUpperCase(),
         date: new Date(data.issued_at as string).toLocaleDateString("vi-VN"),
         code, signer: "Long Nam",
+        studentCode: (prof?.student_code as string) || "—",
       };
     }
   }
@@ -72,7 +73,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
               </div>
             </div>
 
-            <div className="mt-8 text-ink-3 text-xs">Mã xác thực: <span className="font-mono text-ink-2">{cert.code}</span></div>
+            <div className="mt-8 text-ink-3 text-xs">Mã học viên: <span className="font-mono text-ink-2">{cert.studentCode}</span> · Mã xác thực: <span className="font-mono text-ink-2">{cert.code}</span></div>
           </div>
         </div>
       </div>
