@@ -1,14 +1,14 @@
 import type { MetadataRoute } from "next";
-import { BLOG } from "@/lib/mock";
 import { getCourses } from "@/lib/courses";
+import { getBlogPosts } from "@/lib/blog";
 
 const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://vieaiedu.vn";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const COURSES = await getCourses();
-  const staticRoutes = ["", "/courses", "/community", "/blog"].map((p) => ({
+  const [COURSES, BLOG] = await Promise.all([getCourses(), getBlogPosts()]);
+  const staticRoutes = ["", "/courses", "/community", "/blog", "/leaderboard"].map((p) => ({
     url: `${BASE}${p}`,
-    changeFrequency: "weekly" as const,
+    changeFrequency: "daily" as const,
     priority: p === "" ? 1 : 0.8,
   }));
   const courseRoutes = COURSES.map((c) => ({
@@ -18,7 +18,7 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   }));
   const blogRoutes = BLOG.map((b) => ({
     url: `${BASE}/blog/${b.slug}`,
-    changeFrequency: "monthly" as const,
+    changeFrequency: "weekly" as const,
     priority: 0.6,
   }));
   return [...staticRoutes, ...courseRoutes, ...blogRoutes];

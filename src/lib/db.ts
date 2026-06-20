@@ -98,6 +98,7 @@ export async function toggleFavorite(slug: string, on: boolean) {
 export interface DBPost {
   id: string; authorId?: string; author: string; avatarColor: string; time: string; body: string;
   image?: string; courseSlug?: string; likes: number; comments: number; owned: number; role?: string;
+  tags?: string[]; views?: number;
 }
 const COLORS = ["#e41e26", "#202124", "#f4b400"];
 
@@ -118,6 +119,8 @@ export async function loadPosts(): Promise<DBPost[]> {
       comments: Number(p.comments) || 0,
       owned: Number(p.owned) || 0,
       role: p.author_role as string,
+      tags: (p.tags as string[]) || [],
+      views: Number(p.views) || 0,
     }));
   }
   return POSTS.map((p) => ({ ...p, owned: 0 })) as unknown as DBPost[];
@@ -141,11 +144,16 @@ export async function uploadCommunityImage(file: File): Promise<string | null> {
   return s.c.storage.from("community").getPublicUrl(path).data.publicUrl;
 }
 
-export async function createPost(body: string, imageUrl?: string | null, courseSlug?: string | null): Promise<boolean> {
+export async function createPost(body: string, imageUrl?: string | null, courseSlug?: string | null, tags?: string[]): Promise<boolean> {
   const s = await sb();
   if (!s) return false;
-  const { error } = await s.c.from("posts").insert({ author_id: s.uid, body, image_url: imageUrl ?? null, course_slug: courseSlug ?? null });
+  const { error } = await s.c.from("posts").insert({ author_id: s.uid, body, image_url: imageUrl ?? null, course_slug: courseSlug ?? null, tags: tags ?? [] });
   return !error;
+}
+
+export async function incrementPostView(postId: string) {
+  const c = createClient();
+  if (c) await c.rpc("increment_post_view", { p_id: postId });
 }
 
 export async function togglePostLike(postId: string, on: boolean) {

@@ -8,13 +8,15 @@ export const dynamic = "force-dynamic";
 interface Profile {
   id: string; name: string; avatar: string | null; bio: string | null; role: string;
   code: string | null; joined: string; courses: number; certificates: number; completed: number;
+  profile_views: number; interests: string[];
   posts: { id: string; body: string; image: string | null; created_at: string }[];
 }
 
-async function load(id: string): Promise<Profile | null> {
+async function load(id: string, count = false): Promise<Profile | null> {
   if (!isSupabaseConfigured()) return null;
   const supabase = await createClient();
   const { data } = await supabase!.rpc("public_profile", { p_id: id });
+  if (data && count) await supabase!.rpc("increment_profile_view", { p_id: id });
   return (data as Profile) || null;
 }
 
@@ -26,7 +28,7 @@ export async function generateMetadata({ params }: { params: Promise<{ id: strin
 
 export default async function ProfilePage({ params }: { params: Promise<{ id: string }> }) {
   const { id } = await params;
-  const p = await load(id);
+  const p = await load(id, true);
   if (!p || !p.id) notFound();
   const roleLabel = p.role === "admin" ? "Quản trị viên" : p.role === "instructor" ? "Giảng viên" : "Học viên";
   const joined = p.joined ? new Date(p.joined).toLocaleDateString("vi-VN", { month: "long", year: "numeric" }) : "";
@@ -52,7 +54,12 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
             </div>
           </div>
           {p.bio && <p className="text-ink-2 mt-4">{p.bio}</p>}
-          {joined && <p className="text-ink-3 text-sm mt-2">📅 Tham gia từ {joined}</p>}
+          <p className="text-ink-3 text-sm mt-2">{joined && `📅 Tham gia từ ${joined}`}{p.profile_views ? ` · 👁 ${p.profile_views} lượt xem hồ sơ` : ""}</p>
+          {p.interests?.length > 0 && (
+            <div className="flex flex-wrap gap-1.5 mt-3">
+              {p.interests.map((t) => <span key={t} className="text-xs text-accent bg-accent-weak rounded-full px-2 py-0.5">#{t}</span>)}
+            </div>
+          )}
 
           <div className="grid grid-cols-3 gap-3 mt-5">
             {[["Khóa học", p.courses], ["Chứng chỉ", p.certificates], ["Bài hoàn thành", p.completed]].map(([l, v]) => (
