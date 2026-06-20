@@ -1,7 +1,11 @@
 import type { Metadata } from "next";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
-export const metadata: Metadata = { title: "Bảng xếp hạng" };
+export const metadata: Metadata = {
+  title: "Bảng xếp hạng học viên",
+  description: "Bảng xếp hạng thành viên năng động nhất cộng đồng VIE AI EDU theo điểm đóng góp và học tập.",
+  alternates: { canonical: "/leaderboard" },
+};
 
 interface Row { user_id: string; full_name: string | null; avatar_url: string | null; completed: number; }
 

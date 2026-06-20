@@ -3,6 +3,9 @@ import { getCourseBySlug } from "@/lib/courses";
 import { isEnrolled } from "@/lib/enroll";
 import { bunnyEmbedUrl, isBunnyConfigured } from "@/lib/bunny";
 import LearnClient from "@/components/LearnClient";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = { title: "Khu vực học", robots: { index: false, follow: false } };
 
 export default async function LearnPage({
   params,

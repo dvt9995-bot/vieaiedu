@@ -4,6 +4,8 @@ import CommunityFeed from "@/components/CommunityFeed";
 export const metadata: Metadata = {
   title: "Cộng đồng",
   description: "Cộng đồng học viên AI: đăng bài, hỏi đáp, chia sẻ dự án.",
+  alternates: { canonical: "/community" },
+  openGraph: { title: "Cộng đồng AI người Việt · VIE AI EDU", description: "Tham gia cộng đồng học viên AI: đặt câu hỏi, chia sẻ dự án và kết nối.", type: "website" },
 };
 
 export default function CommunityPage() {

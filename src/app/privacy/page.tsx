@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Chính sách bảo mật" };
+export const metadata: Metadata = {
+  title: "Chính sách bảo mật",
+  description: "Chính sách bảo mật và cách VIE AI EDU thu thập, sử dụng, bảo vệ dữ liệu cá nhân của người dùng.",
+  alternates: { canonical: "/privacy" },
+};
 
 export default function PrivacyPage() {
   return (

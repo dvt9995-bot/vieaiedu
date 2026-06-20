@@ -4,7 +4,7 @@ import DashboardClient, { type DashData } from "@/components/DashboardClient";
 import { createClient, isSupabaseConfigured, getCurrentUser } from "@/lib/supabase/server";
 import { getCourses } from "@/lib/courses";
 
-export const metadata: Metadata = { title: "Học của tôi" };
+export const metadata: Metadata = { title: "Học của tôi", robots: { index: false, follow: false } };
 export const dynamic = "force-dynamic";
 
 export default async function DashboardPage() {

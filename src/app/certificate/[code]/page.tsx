@@ -2,6 +2,12 @@ import Link from "next/link";
 import CertPrintButton from "@/components/CertPrintButton";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getCourseBySlug } from "@/lib/courses";
+import type { Metadata } from "next";
+
+export const metadata: Metadata = {
+  title: "Chứng chỉ hoàn thành",
+  description: "Xác thực chứng chỉ hoàn thành khóa học AI tại VIE AI EDU.",
+};
 
 export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;

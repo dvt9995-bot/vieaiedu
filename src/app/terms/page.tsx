@@ -1,5 +1,9 @@
 import type { Metadata } from "next";
-export const metadata: Metadata = { title: "Điều khoản sử dụng" };
+export const metadata: Metadata = {
+  title: "Điều khoản sử dụng",
+  description: "Điều khoản và điều kiện sử dụng nền tảng học AI VIE AI EDU.",
+  alternates: { canonical: "/terms" },
+};
 
 export default function TermsPage() {
   return (

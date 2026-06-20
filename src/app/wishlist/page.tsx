@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import WishlistClient from "@/components/WishlistClient";
-export const metadata: Metadata = { title: "Khóa học yêu thích" };
+export const metadata: Metadata = { title: "Khóa học yêu thích", robots: { index: false, follow: false } };
 export default function WishlistPage() {
   return (
     <div className="container-x py-12">

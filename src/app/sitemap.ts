@@ -6,7 +6,7 @@ const BASE = process.env.NEXT_PUBLIC_SITE_URL || "https://vieaiedu.vn";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const [COURSES, BLOG] = await Promise.all([getCourses(), getBlogPosts()]);
-  const staticRoutes = ["", "/courses", "/community", "/blog", "/gioi-thieu", "/leaderboard"].map((p) => ({
+  const staticRoutes = ["", "/courses", "/community", "/blog", "/gioi-thieu", "/leaderboard", "/privacy", "/terms"].map((p) => ({
     url: `${BASE}${p}`,
     changeFrequency: "daily" as const,
     priority: p === "" ? 1 : 0.8,
