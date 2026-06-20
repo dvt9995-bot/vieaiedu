@@ -2,6 +2,7 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuthModal } from "./AuthModal";
+import ShareCourseButton from "./ShareCourseButton";
 import { enrollFree } from "@/lib/enroll";
 import { formatVND } from "@/lib/format";
 import type { Course } from "@/lib/types";
@@ -92,6 +93,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
         <button onClick={() => setLiked(!liked)} className={`w-full mt-2.5 rounded-full border font-semibold py-3 cursor-pointer transition-colors ${liked ? "border-accent text-accent bg-accent-weak" : "border-border-strong text-ink-2 hover:border-ink-3"}`}>
           {liked ? "★ Đã lưu yêu thích" : "☆ Lưu vào yêu thích"}
         </button>
+        <ShareCourseButton slug={course.slug} title={course.title} />
         {msg && <p className="text-accent text-sm mt-3 text-center">{msg}</p>}
         {!free && <p className="text-center text-ink-3 text-xs mt-3">Thanh toán an toàn qua SePay · Truy cập trọn đời</p>}
         <ul className="mt-5 pt-5 border-t border-border space-y-2.5 text-sm text-ink-2">

@@ -95,31 +95,55 @@ export async function toggleFavorite(slug: string, on: boolean) {
 }
 
 // ---------- COMMUNITY ----------
-export interface DBPost { id: string; author: string; avatarColor: string; time: string; body: string; image?: string; likes: number; comments: number; liked?: boolean; }
+export interface DBPost {
+  id: string; author: string; avatarColor: string; time: string; body: string;
+  image?: string; courseSlug?: string; likes: number; comments: number; owned: number; role?: string;
+}
+const COLORS = ["#e41e26", "#202124", "#f4b400"];
 
 export async function loadPosts(): Promise<DBPost[]> {
   const c = createClient();
   if (c) {
-    const { data } = await c.from("posts").select("id, body, image_url, created_at, profiles(full_name)").order("created_at", { ascending: false }).limit(50);
-    if (data) {
-      return data.map((p, i) => ({
-        id: p.id as string,
-        author: (p as { profiles?: { full_name?: string } }).profiles?.full_name || "Học viên",
-        avatarColor: ["#e41e26", "#202124", "#f4b400"][i % 3],
-        time: new Date(p.created_at as string).toLocaleDateString("vi-VN"),
-        body: p.body as string,
-        image: (p.image_url as string) || undefined,
-        likes: 0, comments: 0,
-      }));
-    }
+    const { data } = await c.rpc("community_feed", { lim: 50 });
+    if (data) return (data as Record<string, unknown>[]).map((p, i) => ({
+      id: p.id as string,
+      author: (p.author_name as string) || "Học viên",
+      avatarColor: COLORS[i % 3],
+      time: new Date(p.created_at as string).toLocaleDateString("vi-VN"),
+      body: p.body as string,
+      image: (p.image_url as string) || undefined,
+      courseSlug: (p.course_slug as string) || undefined,
+      likes: Number(p.likes) || 0,
+      comments: Number(p.comments) || 0,
+      owned: Number(p.owned) || 0,
+      role: p.author_role as string,
+    }));
   }
-  return POSTS as unknown as DBPost[];
+  return POSTS.map((p) => ({ ...p, owned: 0 })) as unknown as DBPost[];
 }
 
-export async function createPost(body: string): Promise<boolean> {
+export async function communityStats(): Promise<{ students: number; enrollments: number; certificates: number; posts: number } | null> {
+  const c = createClient();
+  if (!c) return null;
+  const { data } = await c.rpc("community_stats");
+  return (data as { students: number; enrollments: number; certificates: number; posts: number }) || null;
+}
+
+/** Upload ảnh bài cộng đồng lên Storage, trả public URL. */
+export async function uploadCommunityImage(file: File): Promise<string | null> {
+  const s = await sb();
+  if (!s) return null;
+  const ext = file.name.split(".").pop() || "jpg";
+  const path = `${s.uid}/${Date.now()}.${ext}`;
+  const { error } = await s.c.storage.from("community").upload(path, file, { upsert: true });
+  if (error) return null;
+  return s.c.storage.from("community").getPublicUrl(path).data.publicUrl;
+}
+
+export async function createPost(body: string, imageUrl?: string | null, courseSlug?: string | null): Promise<boolean> {
   const s = await sb();
   if (!s) return false;
-  const { error } = await s.c.from("posts").insert({ author_id: s.uid, body });
+  const { error } = await s.c.from("posts").insert({ author_id: s.uid, body, image_url: imageUrl ?? null, course_slug: courseSlug ?? null });
   return !error;
 }
 
@@ -128,6 +152,25 @@ export async function togglePostLike(postId: string, on: boolean) {
   if (!s) return;
   if (on) await s.c.from("post_likes").upsert({ post_id: postId, user_id: s.uid }, { onConflict: "post_id,user_id" });
   else await s.c.from("post_likes").delete().eq("post_id", postId).eq("user_id", s.uid);
+}
+
+export interface DBComment { id: string; body: string; author: string; time: string; }
+export async function loadComments(postId: string): Promise<DBComment[]> {
+  const c = createClient();
+  if (!c) return [];
+  const { data } = await c.from("comments").select("id, body, created_at, profiles(full_name)").eq("post_id", postId).order("created_at");
+  return (data || []).map((x) => ({ id: x.id as string, body: x.body as string, author: (x as { profiles?: { full_name?: string } }).profiles?.full_name || "Học viên", time: new Date(x.created_at as string).toLocaleDateString("vi-VN") }));
+}
+export async function addComment(postId: string, body: string): Promise<boolean> {
+  const s = await sb();
+  if (!s) return false;
+  const { error } = await s.c.from("comments").insert({ post_id: postId, author_id: s.uid, body });
+  return !error;
+}
+
+export async function currentUserId(): Promise<string | null> {
+  const s = await sb();
+  return s?.uid ?? null;
 }
 
 export function isConfigured() {
