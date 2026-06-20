@@ -2,8 +2,9 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCourse } from "@/lib/mock";
 import { sendOrderReceipt } from "@/lib/email";
-import { notify } from "@/lib/notify";
+import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
+import { formatVND } from "@/lib/format";
 
 // Webhook SePay gọi khi có giao dịch chuyển khoản tới.
 // Cấu hình tại SePay: URL = https://vieaiedu.vn/api/sepay/webhook
@@ -42,17 +43,23 @@ export async function POST(req: Request) {
 
   // Đánh dấu đã thanh toán + ghi danh
   await admin.from("orders").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", order.id);
-  await admin.from("enrollments").upsert(
+  const { error: enrollErr } = await admin.from("enrollments").upsert(
     { user_id: order.user_id, course_slug: order.course_slug },
     { onConflict: "user_id,course_slug" }
   );
 
   const course = getCourse(order.course_slug);
+  const courseTitle = course?.title ?? order.course_slug;
+
+  // Cảnh báo admin: đơn mới (luôn) + ghi danh lỗi (critical)
+  await notifyAdmins("💰 Đơn hàng mới", `${courseTitle} · ${formatVND(order.amount)}`, "/admin");
+  if (enrollErr)
+    await notifyAdmins("🔴 Đã thu tiền nhưng ghi danh LỖI", `Đơn ${order.id} (${courseTitle}). Cần ghi danh thủ công cho học viên.`, "/admin", { email: true });
   // Thông báo (in-app + push); email biên lai gửi riêng bên dưới
   await notify({
     userId: order.user_id, type: "transactional",
     title: "Thanh toán thành công 🎉",
-    body: `Bạn đã sở hữu khóa "${course?.title ?? order.course_slug}". Vào học ngay!`,
+    body: `Bạn đã sở hữu khóa "${courseTitle}". Vào học ngay!`,
     href: `/learn/${order.course_slug}`, email: false,
   });
 

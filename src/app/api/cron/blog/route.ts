@@ -65,14 +65,27 @@ async function parseFeed(f: { url: string; name: string }): Promise<Item[]> {
   } catch { return []; }
 }
 
-async function ogImage(url: string): Promise<string | null> {
+// Trích nhiều ảnh từ trang nguồn: og:image + ảnh nội dung, lọc icon/logo/pixel.
+async function extractImages(url: string): Promise<string[]> {
   try {
     const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 VIEAIEDU-Bot" }, redirect: "follow", signal: AbortSignal.timeout(12000) });
     const html = await res.text();
-    const m = html.match(/<meta[^>]+(?:property|name)=["'](?:og:image|twitter:image)["'][^>]+content=["']([^"']+)["']/i)
-      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+(?:property|name)=["'](?:og:image|twitter:image)["']/i);
-    return m ? m[1] : null;
-  } catch { return null; }
+    const out: string[] = [];
+    const push = (u?: string | null) => {
+      if (!u) return;
+      let s = u.trim();
+      if (s.startsWith("//")) s = "https:" + s;
+      if (!/^https?:\/\//i.test(s)) return;
+      if (/\.svg($|\?)|data:|sprite|logo|icon|avatar|favicon|pixel|1x1|blank|placeholder|gravatar|emoji/i.test(s)) return;
+      if (!out.includes(s)) out.push(s);
+    };
+    // og/twitter image trước
+    for (const m of html.matchAll(/<meta[^>]+(?:property|name)=["'](?:og:image(?::url)?|twitter:image)["'][^>]+content=["']([^"']+)["']/gi)) push(m[1]);
+    // ảnh nội dung (src + lazy data-src/srcset)
+    for (const m of html.matchAll(/<img[^>]+(?:data-src|data-original|src)=["']([^"']+)["']/gi)) push(m[1]);
+    for (const m of html.matchAll(/<source[^>]+srcset=["']([^"'\s,]+)/gi)) push(m[1]);
+    return out.slice(0, 6);
+  } catch { return []; }
 }
 
 function slugify(s: string) {
@@ -134,11 +147,11 @@ export async function GET(req: Request) {
       const rw = await rewriteArticle({ title: item.title, summary: item.summary, sourceName: item.source });
       if (!rw) { writeErrors++; continue; }
       if (seenTitle.has(norm(rw.title))) continue;
-      const cover = await ogImage(item.link);
+      const images = await extractImages(item.link);
       const slug = `${slugify(rw.title)}-${Math.abs(hashCode(item.link)).toString(36).slice(0, 5)}`;
       const body = `${rw.body}\n\n---\n*Nguồn tham khảo: [${item.source}](${item.link})*`;
       const { error } = await admin.from("blog_posts").insert({
-        slug, title: rw.title, excerpt: rw.excerpt, body, cover_url: cover,
+        slug, title: rw.title, excerpt: rw.excerpt, body, cover_url: images[0] ?? null, images,
         source_url: item.link, source_name: item.source, published: true, published_at: new Date().toISOString(),
       });
       if (!error) { created.push(rw.title); seenTitle.add(norm(rw.title)); }

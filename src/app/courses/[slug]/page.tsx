@@ -1,10 +1,11 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { getCourseBySlug } from "@/lib/courses";
+import { getCourseBySlug, getCourses } from "@/lib/courses";
 import { LEVEL_LABEL } from "@/lib/types";
 import { formatDuration } from "@/lib/format";
 import CoursePurchase from "@/components/CoursePurchase";
+import CourseCard from "@/components/CourseCard";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -23,6 +24,13 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
+
+  // Gợi ý khóa khác (ưu tiên cùng danh mục) để tăng up-sale
+  const allCourses = await getCourses();
+  const related = [
+    ...allCourses.filter((c) => c.slug !== slug && c.category === course.category),
+    ...allCourses.filter((c) => c.slug !== slug && c.category !== course.category),
+  ].slice(0, 3);
 
   // JSON-LD cho SEO
   const jsonLd = {
@@ -101,6 +109,24 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
         {/* Right: purchase */}
         <CoursePurchase course={course} />
       </div>
+
+      {/* Up-sale: gợi ý khóa khác */}
+      {related.length > 0 && (
+        <section className="bg-bg-soft border-t border-border py-14">
+          <div className="container-x">
+            <div className="flex items-end justify-between mb-6">
+              <div>
+                <div className="text-accent text-xs font-bold uppercase tracking-wider mb-1">Học thêm</div>
+                <h2 className="text-[clamp(1.4rem,3vw,2rem)] font-extrabold tracking-tight">Khóa học khác bạn có thể thích</h2>
+              </div>
+              <Link href="/courses" className="text-sm font-semibold text-ink-2 hover:text-accent shrink-0">Tất cả →</Link>
+            </div>
+            <div className="grid gap-[22px] grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
+              {related.map((c) => <CourseCard key={c.id} course={c} />)}
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }

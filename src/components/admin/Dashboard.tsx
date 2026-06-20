@@ -19,9 +19,15 @@ function BarChart({ data, color, fmt }: { data: Pt[]; color: string; fmt?: (n: n
   );
 }
 
+interface Service { key: string; label: string; ok: boolean; note: string }
+
 export default function Dashboard() {
   const [s, setS] = useState<Stats | null>(null);
-  useEffect(() => { fetch("/api/admin/stats").then((r) => r.json()).then(setS).catch(() => setS(null)); }, []);
+  const [health, setHealth] = useState<Service[] | null>(null);
+  useEffect(() => {
+    fetch("/api/admin/stats").then((r) => r.json()).then(setS).catch(() => setS(null));
+    fetch("/api/admin/health").then((r) => r.json()).then((d) => setHealth(d.services || [])).catch(() => setHealth([]));
+  }, []);
   const o = s?.overview || {};
   const kpis: [string, string][] = [
     ["Doanh thu tháng", formatVND(o.revenue_month || 0)],
@@ -33,6 +39,24 @@ export default function Dashboard() {
   ];
   return (
     <div className="space-y-6">
+      {/* Sức khỏe hệ thống */}
+      {health && (
+        <div className="rounded-card border border-border bg-surface p-5">
+          <div className="text-sm font-semibold mb-3">Sức khỏe hệ thống</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+            {health.map((sv) => (
+              <div key={sv.key} className="flex items-start gap-2.5">
+                <span className={`mt-1 w-2.5 h-2.5 rounded-full shrink-0 ${sv.ok ? "bg-success" : "bg-accent"}`} />
+                <div className="min-w-0">
+                  <div className="text-sm font-medium truncate">{sv.label}</div>
+                  <div className={`text-xs ${sv.ok ? "text-ink-3" : "text-accent"}`}>{sv.note}</div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
       <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
         {kpis.map(([l, v]) => (
           <div key={l} className="rounded-card border border-border bg-surface p-5">

@@ -2,7 +2,7 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { BLOG } from "@/lib/mock";
 import type { BlogPost } from "@/lib/types";
 
-interface FullBlog extends BlogPost { cover?: string; sourceUrl?: string; sourceName?: string; }
+interface FullBlog extends BlogPost { cover?: string; images?: string[]; sourceUrl?: string; sourceName?: string; }
 
 function map(r: Record<string, unknown>): FullBlog {
   return {
@@ -13,9 +13,15 @@ function map(r: Record<string, unknown>): FullBlog {
     date: r.published_at ? new Date(r.published_at as string).toLocaleDateString("vi-VN") : "",
     body: (r.body as string) || "",
     cover: (r.cover_url as string) || undefined,
+    images: (r.images as string[]) || [],
     sourceUrl: (r.source_url as string) || undefined,
     sourceName: (r.source_name as string) || undefined,
   };
+}
+
+export async function getRelatedPosts(slug: string, n = 3): Promise<FullBlog[]> {
+  const all = await getBlogPosts();
+  return all.filter((b) => b.slug !== slug).slice(0, n);
 }
 
 export async function getBlogPosts(): Promise<FullBlog[]> {
