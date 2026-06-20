@@ -17,6 +17,7 @@ const links = [
 // Mục cá nhân — gom vào menu avatar
 const userLinks = [
   { href: "/dashboard", label: "Học của tôi" },
+  { href: "/wallet", label: "Ví & Kiếm tiền" },
   { href: "/wishlist", label: "Yêu thích" },
   { href: "/account", label: "Cài đặt tài khoản" },
 ];
