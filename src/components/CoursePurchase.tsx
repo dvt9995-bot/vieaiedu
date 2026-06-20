@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import ShareCourseButton from "./ShareCourseButton";
 import { toast } from "./Toaster";
-import { loadFavorites, toggleFavorite } from "@/lib/db";
+import { favoritesCached, toggleFavorite, invalidateFavorites } from "@/lib/db";
 import { enrollFree } from "@/lib/enroll";
 import { formatVND } from "@/lib/format";
 import type { Course } from "@/lib/types";
@@ -27,12 +27,13 @@ export default function CoursePurchase({ course }: { course: Course }) {
   useEffect(() => () => { if (poll.current) clearInterval(poll.current); }, []);
 
   // Tải trạng thái yêu thích (DB nếu đăng nhập, ngược lại localStorage)
-  useEffect(() => { loadFavorites().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);
+  useEffect(() => { favoritesCached().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);
 
   async function onToggleFavorite() {
     const next = !liked;
     setLiked(next);
     await toggleFavorite(course.slug, next);
+    invalidateFavorites();
     toast(next ? "Đã lưu vào yêu thích" : "Đã bỏ khỏi yêu thích");
   }
 

@@ -80,6 +80,14 @@ export async function loadFavorites(): Promise<string[]> {
   if (s) { const { data } = await s.c.from("favorites").select("course_slug").eq("user_id", s.uid); if (data) return data.map((r) => r.course_slug as string); }
   try { return JSON.parse(localStorage.getItem(fKey) || "[]"); } catch { return []; }
 }
+// Cache danh sách yêu thích trong 1 lần tải trang (tránh gọi DB lặp ở mỗi thẻ khóa)
+let favCache: Promise<string[]> | null = null;
+export function favoritesCached(): Promise<string[]> {
+  if (!favCache) favCache = loadFavorites();
+  return favCache;
+}
+export function invalidateFavorites() { favCache = null; }
+
 export async function toggleFavorite(slug: string, on: boolean) {
   const s = await sb();
   if (s) {

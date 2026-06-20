@@ -1,18 +1,24 @@
 "use client";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import type { Course } from "@/lib/types";
 import { formatVND } from "@/lib/format";
-import { toggleFavorite } from "@/lib/db";
+import { toggleFavorite, favoritesCached, invalidateFavorites } from "@/lib/db";
+import { toast } from "./Toaster";
 
 export default function CourseCard({ course }: { course: Course }) {
   const [liked, setLiked] = useState(false);
   const [likes, setLikes] = useState(course.likes);
 
-  function onFav() {
+  // Tải trạng thái yêu thích đã lưu (DB nếu đăng nhập, localStorage nếu chưa)
+  useEffect(() => { favoritesCached().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);
+
+  async function onFav() {
     const next = !liked;
     setLiked(next); setLikes((n) => n + (next ? 1 : -1));
-    toggleFavorite(course.slug, next);
+    await toggleFavorite(course.slug, next);
+    invalidateFavorites();
+    toast(next ? "Đã lưu vào yêu thích" : "Đã bỏ khỏi yêu thích");
   }
 
   return (
