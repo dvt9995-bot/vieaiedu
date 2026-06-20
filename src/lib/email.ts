@@ -27,6 +27,12 @@ export async function sendOrderReceipt(to: string, courseTitle: string, amount: 
   }).catch(() => {});
 }
 
+export async function sendGenericEmail(to: string, subject: string, title: string, body: string, href?: string) {
+  if (!resend) return;
+  const cta = href ? `<p><a href="https://vieaiedu.vn${href}" style="background:#e41e26;color:#fff;padding:10px 18px;border-radius:999px;text-decoration:none;display:inline-block">Xem ngay</a></p>` : "";
+  await resend.emails.send({ from: FROM, to, subject, html: shell(title, `<p>${body}</p>${cta}`) }).catch(() => {});
+}
+
 export async function sendWelcome(to: string, name?: string) {
   if (!resend) return;
   await resend.emails.send({

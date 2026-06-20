@@ -1,10 +1,29 @@
 import Link from "next/link";
 import CertPrintButton from "@/components/CertPrintButton";
+import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import { getCourseBySlug } from "@/lib/courses";
 
 export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  // Mock: chứng chỉ mẫu. Thật: tra bảng certificates theo code.
-  const cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Trần Minh Đức" };
+  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Trần Minh Đức" };
+
+  // Tra chứng chỉ thật theo mã
+  if (isSupabaseConfigured() && code !== "VIEAIEDU-DEMO") {
+    const supabase = await createClient();
+    const { data } = await supabase!.from("certificates").select("user_id, course_slug, issued_at").eq("code", code).maybeSingle();
+    if (data) {
+      const [{ data: prof }, course] = await Promise.all([
+        supabase!.from("profiles").select("full_name").eq("id", data.user_id).maybeSingle(),
+        getCourseBySlug(data.course_slug as string),
+      ]);
+      cert = {
+        name: (prof?.full_name as string) || "Học viên",
+        course: (course?.title || data.course_slug as string).toUpperCase(),
+        date: new Date(data.issued_at as string).toLocaleDateString("vi-VN"),
+        code, signer: "Long Nam",
+      };
+    }
+  }
 
   const Corner = ({ className }: { className: string }) => (
     <svg className={`absolute w-16 h-16 ${className}`} viewBox="0 0 64 64" aria-hidden>

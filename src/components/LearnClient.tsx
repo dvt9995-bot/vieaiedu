@@ -29,6 +29,7 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
   const [quizDone, setQuizDone] = useState(false);
   const [quizScore, setQuizScore] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
+  const [certCode, setCertCode] = useState<string | null>(null);
 
   // Khôi phục tiến độ + ghi chú (DB nếu đăng nhập, else localStorage)
   useEffect(() => {
@@ -88,6 +89,14 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
   const quizPassed = quizDone && quizScore >= SAMPLE_QUIZ.passScore;
   const completed = allDone && quizPassed;
   const lessonNotes = notes.filter((n) => n.lessonId === current.id);
+
+  // Khi hoàn thành khóa → cấp chứng chỉ (1 lần)
+  useEffect(() => {
+    if (completed && !certCode) {
+      fetch("/api/complete-course", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: course.slug }) })
+        .then((r) => r.json()).then((d) => { if (d.code) setCertCode(d.code); }).catch(() => {});
+    }
+  }, [completed, certCode, course.slug]);
 
   return (
     <div className="grid lg:grid-cols-[1fr_340px] min-h-[calc(100vh-4rem)]">
@@ -216,7 +225,7 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
           </div>
           <div className="h-2 bg-border rounded-full mt-2 overflow-hidden"><div className="h-full bg-success transition-all" style={{ width: `${progress}%` }} /></div>
           {completed && (
-            <Link href="/certificate/VIEAIEDU-DEMO" className="mt-3 block text-center rounded-full bg-gold/90 hover:bg-gold text-ink font-semibold py-2.5 text-sm transition">🏆 Nhận chứng chỉ</Link>
+            <Link href={`/certificate/${certCode || "VIEAIEDU-DEMO"}`} className="mt-3 block text-center rounded-full bg-gold/90 hover:bg-gold text-ink font-semibold py-2.5 text-sm transition">🏆 Nhận chứng chỉ</Link>
           )}
         </div>
         <div className="p-3">

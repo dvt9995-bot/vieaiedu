@@ -12,13 +12,28 @@ export default function NotificationBell() {
 
   const load = useCallback(async () => {
     const supabase = createClient();
-    if (!supabase) return;
+    if (!supabase) return null;
     const { data: { user } } = await supabase.auth.getUser();
-    if (!user) { setReady(false); return; }
+    if (!user) { setReady(false); return null; }
     const { data } = await supabase.from("notifications").select("*").order("created_at", { ascending: false }).limit(15);
     setItems(data || []); setReady(true);
+    return user.id;
   }, []);
-  useEffect(() => { load(); }, [load]);
+
+  useEffect(() => {
+    const supabase = createClient();
+    if (!supabase) return;
+    let channel: ReturnType<typeof supabase.channel> | null = null;
+    load().then((uid) => {
+      if (!uid) return;
+      channel = supabase
+        .channel("notif:" + uid)
+        .on("postgres_changes", { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${uid}` },
+          (payload) => setItems((arr) => [payload.new as Notif, ...arr].slice(0, 15)))
+        .subscribe();
+    });
+    return () => { if (channel) supabase.removeChannel(channel); };
+  }, [load]);
 
   const unread = items.filter((i) => !i.read).length;
 
@@ -61,6 +76,7 @@ export default function NotificationBell() {
                 })}
               </ul>
             )}
+            <Link href="/notifications" onClick={() => setOpen(false)} className="block text-center py-2.5 text-sm font-semibold text-accent border-t border-border hover:bg-bg-soft">Xem tất cả</Link>
           </div>
         </>
       )}

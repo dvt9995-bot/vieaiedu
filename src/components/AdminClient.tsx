@@ -4,15 +4,17 @@ import { COURSES } from "@/lib/mock";
 import { formatVND } from "@/lib/format";
 import { createClient } from "@/lib/supabase/client";
 import CourseManager from "@/components/admin/CourseManager";
+import BroadcastForm from "@/components/admin/BroadcastForm";
 
 interface Stats { students: number; revenue: number; orders: { id: string; course_slug: string; amount: number }[]; }
 
-type Tab = "overview" | "courses" | "community" | "revenue";
+type Tab = "overview" | "courses" | "community" | "revenue" | "broadcast";
 const NAV: [Tab, string, string][] = [
   ["overview", "Tổng quan", "▦"],
   ["courses", "Khóa học", "▤"],
   ["community", "Cộng đồng", "◫"],
   ["revenue", "Doanh thu", "₫"],
+  ["broadcast", "Thông báo", "🔔"],
 ];
 
 export default function AdminClient() {
@@ -82,6 +84,7 @@ export default function AdminClient() {
           )}
 
           {tab === "courses" && <CourseManager />}
+          {tab === "broadcast" && <BroadcastForm />}
 
           {tab === "community" && (
             <div className="rounded-card border border-border bg-surface p-5">

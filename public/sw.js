@@ -1,5 +1,22 @@
-// Service worker tối giản: cache app shell, offline fallback cơ bản.
-const CACHE = "vieaiedu-v1";
+// Service worker: cache app shell + Web Push.
+const CACHE = "vieaiedu-v2";
+
+// Web Push: hiện thông báo
+self.addEventListener("push", (e) => {
+  let d = { title: "VIE AI EDU", body: "", href: "/" };
+  try { d = { ...d, ...e.data.json() }; } catch {}
+  e.waitUntil(self.registration.showNotification(d.title, {
+    body: d.body, icon: "/icon-192.png", badge: "/icon-192.png", data: { href: d.href || "/" },
+  }));
+});
+self.addEventListener("notificationclick", (e) => {
+  e.notification.close();
+  const url = (e.notification.data && e.notification.data.href) || "/";
+  e.waitUntil(clients.matchAll({ type: "window" }).then((ws) => {
+    for (const w of ws) if ("focus" in w) { w.navigate(url); return w.focus(); }
+    return clients.openWindow(url);
+  }));
+});
 const SHELL = ["/", "/courses", "/manifest.webmanifest", "/icon-192.png"];
 
 self.addEventListener("install", (e) => {
