@@ -3,9 +3,12 @@ import { createClient } from "@/lib/supabase/server";
 import { getCourseBySlug } from "@/lib/courses";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
 import { validateCoupon } from "@/lib/coupon";
+import { rateLimit, clientIp } from "@/lib/ratelimit";
 
 // Tạo đơn hàng cho 1 khóa và trả về QR SePay để thanh toán.
 export async function POST(req: Request) {
+  if (!rateLimit(`checkout:${clientIp(req)}`, 15, 60_000))
+    return NextResponse.json({ error: "Thao tác quá nhanh, vui lòng thử lại sau." }, { status: 429 });
   const { slug, couponCode } = await req.json().catch(() => ({ slug: "" }));
   const course = await getCourseBySlug(slug);
   if (!course) return NextResponse.json({ error: "Không tìm thấy khóa học" }, { status: 404 });

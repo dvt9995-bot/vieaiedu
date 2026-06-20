@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCourse } from "@/lib/mock";
+import { getCourseBySlug } from "@/lib/courses";
 import { sendOrderReceipt } from "@/lib/email";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
@@ -48,7 +48,7 @@ export async function POST(req: Request) {
     { onConflict: "user_id,course_slug" }
   );
 
-  const course = getCourse(order.course_slug);
+  const course = await getCourseBySlug(order.course_slug);
   const courseTitle = course?.title ?? order.course_slug;
 
   // Cảnh báo admin: đơn mới (luôn) + ghi danh lỗi (critical)

@@ -51,7 +51,7 @@ function tag(block: string, name: string) {
 
 async function parseFeed(f: { url: string; name: string }): Promise<Item[]> {
   try {
-    const res = await fetch(f.url, { headers: { "User-Agent": "Mozilla/5.0 VIEAIEDU-Bot" }, redirect: "follow", signal: AbortSignal.timeout(12000) });
+    const res = await fetch(f.url, { headers: { "User-Agent": "Mozilla/5.0 VIEAIEDU-Bot" }, redirect: "follow", signal: AbortSignal.timeout(8000) });
     if (!res.ok) return [];
     const xml = await res.text();
     const blocks = xml.match(/<(item|entry)[\s\S]*?<\/(item|entry)>/gi) || [];
@@ -68,7 +68,7 @@ async function parseFeed(f: { url: string; name: string }): Promise<Item[]> {
 // Trích nhiều ảnh từ trang nguồn: og:image + ảnh nội dung, lọc icon/logo/pixel.
 async function extractImages(url: string): Promise<string[]> {
   try {
-    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 VIEAIEDU-Bot" }, redirect: "follow", signal: AbortSignal.timeout(12000) });
+    const res = await fetch(url, { headers: { "User-Agent": "Mozilla/5.0 VIEAIEDU-Bot" }, redirect: "follow", signal: AbortSignal.timeout(8000) });
     const html = await res.text();
     const out: string[] = [];
     const push = (u?: string | null) => {
