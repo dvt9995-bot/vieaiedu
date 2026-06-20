@@ -6,6 +6,7 @@ import UserManager from "@/components/admin/UserManager";
 import CouponManager from "@/components/admin/CouponManager";
 import SettingsManager from "@/components/admin/SettingsManager";
 import BlogManager from "@/components/admin/BlogManager";
+import CommunityModerator from "@/components/admin/CommunityModerator";
 import BroadcastForm from "@/components/admin/BroadcastForm";
 
 type Tab = "overview" | "courses" | "blog" | "users" | "coupons" | "community" | "broadcast" | "settings";
@@ -50,12 +51,7 @@ export default function AdminClient() {
           {tab === "coupons" && <CouponManager />}
           {tab === "broadcast" && <BroadcastForm />}
           {tab === "settings" && <SettingsManager />}
-          {tab === "community" && (
-            <div className="rounded-card border border-border bg-surface p-5">
-              <h2 className="font-bold text-lg mb-4">Duyệt bài cộng đồng</h2>
-              <p className="text-ink-2 text-sm">Bài cộng đồng hiển thị tại trang /community. Quản trị viên có thể ẩn/xóa bài vi phạm trực tiếp (đang dùng dữ liệu thật từ DB nếu đã đăng).</p>
-            </div>
-          )}
+          {tab === "community" && <CommunityModerator />}
         </div>
       </div>
     </div>
