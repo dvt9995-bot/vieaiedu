@@ -1,5 +1,5 @@
 // Service worker: cache app shell + Web Push.
-const CACHE = "vieaiedu-v2";
+const CACHE = "vieaiedu-v3";
 
 // Web Push: hiện thông báo
 self.addEventListener("push", (e) => {
@@ -17,7 +17,8 @@ self.addEventListener("notificationclick", (e) => {
     return clients.openWindow(url);
   }));
 });
-const SHELL = ["/", "/courses", "/manifest.webmanifest", "/icon-192.png"];
+// Không precache trang HTML (luôn lấy bản mới qua network-first), chỉ giữ tài nguyên tĩnh.
+const SHELL = ["/manifest.webmanifest", "/icon-192.png"];
 
 self.addEventListener("install", (e) => {
   e.waitUntil(caches.open(CACHE).then((c) => c.addAll(SHELL)).catch(() => {}));
