@@ -11,7 +11,8 @@ function inline(s: string) {
 }
 
 function figure(src: string) {
-  return `<figure class="my-6"><img src="${src}" alt="" loading="lazy" class="mx-auto rounded-card border border-border max-h-[360px] w-auto max-w-full object-contain" /></figure>`;
+  // Khung 16:9 đồng nhất, full chiều rộng, cắt vừa — đẹp & chuyên nghiệp bất kể ảnh gốc.
+  return `<figure class="my-6"><img src="${src}" alt="" loading="lazy" class="w-full aspect-video object-cover rounded-card border border-border bg-bg-soft" /></figure>`;
 }
 
 // md → HTML. Nếu truyền images, ảnh được CHÈN XEN KẼ trong bài (trước mỗi mục ## từ mục thứ 2,
