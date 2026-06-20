@@ -1,5 +1,6 @@
 "use client";
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import { createClient } from "@/lib/supabase/client";
@@ -46,8 +47,7 @@ export default function Navbar() {
     <header className={`fixed top-0 inset-x-0 z-[120] backdrop-blur-md bg-[rgba(255,255,255,.82)] transition-shadow ${solid ? "border-b border-border shadow-soft" : "border-b border-transparent"}`}>
       <nav className="container-x flex items-center justify-between h-16 gap-4">
         <Link href="/" className="flex items-center shrink-0" aria-label="VIE AI EDU">
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/logo.png" alt="VIE AI EDU" className="h-10 w-auto" />
+          <Image src="/logo.png" alt="VIE AI EDU" width={132} height={44} priority className="h-10 w-auto" />
         </Link>
 
         {/* Điều hướng giữa */}

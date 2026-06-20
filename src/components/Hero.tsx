@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import HeroActions from "@/components/HeroActions";
 
@@ -40,8 +41,7 @@ export default function Hero() {
         {/* Minh họa AI (ảnh render, theo brand đỏ–vàng) */}
         <Reveal className="relative mx-auto w-[min(460px,92vw)]">
           <div className="absolute inset-0 bg-[radial-gradient(circle,rgba(228,30,38,.10),transparent_62%)] blur-2xl" aria-hidden />
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img src="/hero-ai.png" alt="Mạng nơ-ron AI" className="relative w-full h-auto drop-shadow-[0_24px_48px_rgba(228,30,38,.18)]" />
+          <Image src="/hero-ai.png" alt="Mạng nơ-ron AI" width={460} height={460} priority className="relative w-full h-auto drop-shadow-[0_24px_48px_rgba(228,30,38,.18)]" />
         </Reveal>
       </div>
     </section>
