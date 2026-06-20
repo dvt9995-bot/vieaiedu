@@ -38,19 +38,18 @@ export default function SettingsManager() {
 
   async function uploadHero(file: File, key: "hero_bg_image" | "hero_bg_video") {
     const isVideo = key === "hero_bg_video";
-    if (!isVideo && file.size > 50_000_000) return toast("Ảnh quá lớn (>50MB)", "error");
-    if (isVideo && file.size > 50_000_000) return toast("Video quá lớn (>50MB) — hãy nén lại", "error");
+    if (file.size > 50_000_000) return toast(isVideo ? "Video quá lớn (>50MB) — hãy nén lại" : "Ảnh quá lớn (>50MB)", "error");
     setUpBusy(key);
-    // Upload trực tiếp trình duyệt → Supabase (tránh giới hạn body của serverless)
     const c = createClient();
     if (!c) { setUpBusy(""); return toast("Chưa kết nối Supabase", "error"); }
+    // Xin signed upload URL từ server (service-role) rồi upload thẳng lên Supabase
     const ext = (file.name.split(".").pop() || (isVideo ? "mp4" : "jpg")).toLowerCase();
-    const path = `${Date.now()}.${ext}`;
-    const { error } = await c.storage.from("hero").upload(path, file, { upsert: true, contentType: file.type || undefined });
+    const sig = await fetch("/api/admin/hero-upload", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ext }) }).then((x) => x.json()).catch(() => ({}));
+    if (!sig.token) { setUpBusy(""); return toast(sig.error || "Không tạo được link tải lên", "error"); }
+    const { error } = await c.storage.from("hero").uploadToSignedUrl(sig.path, sig.token, file, { contentType: file.type || undefined });
     setUpBusy("");
     if (error) return toast("Tải lên thất bại: " + error.message, "error");
-    const url = c.storage.from("hero").getPublicUrl(path).data.publicUrl;
-    setS((cur) => ({ ...cur, [key]: url }));
+    setS((cur) => ({ ...cur, [key]: sig.publicUrl }));
     toast("Đã tải lên — nhớ bấm Lưu tất cả");
   }
 
