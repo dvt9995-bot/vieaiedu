@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
+import FollowButton from "@/components/FollowButton";
 
 export const dynamic = "force-dynamic";
 
 interface Profile {
   id: string; name: string; avatar: string | null; bio: string | null; role: string;
   code: string | null; joined: string; courses: number; certificates: number; completed: number;
-  profile_views: number; interests: string[];
+  profile_views: number; interests: string[]; followers: number; following: number;
   posts: { id: string; body: string; image: string | null; created_at: string }[];
 }
 
@@ -44,7 +45,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {p.avatar ? <img src={p.avatar} alt={p.name} className="w-full h-full object-cover" /> : p.name[0]}
             </div>
-            <div className="pb-1">
+            <div className="pb-1 flex-1">
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-extrabold tracking-tight">{p.name}</h1>
                 {p.role === "admin" && <span className="text-[10px] font-bold text-white bg-accent px-1.5 py-0.5 rounded">BQT</span>}
@@ -52,6 +53,11 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
               </div>
               <div className="text-ink-3 text-sm">{roleLabel}{p.code && ` · ${p.code}`}</div>
             </div>
+            <div className="pb-1"><FollowButton targetId={p.id} /></div>
+          </div>
+          <div className="flex gap-5 mt-3 text-sm">
+            <span><b className="text-ink">{p.followers}</b> <span className="text-ink-3">người theo dõi</span></span>
+            <span><b className="text-ink">{p.following}</b> <span className="text-ink-3">đang theo dõi</span></span>
           </div>
           {p.bio && <p className="text-ink-2 mt-4">{p.bio}</p>}
           <p className="text-ink-3 text-sm mt-2">{joined && `📅 Tham gia từ ${joined}`}{p.profile_views ? ` · 👁 ${p.profile_views} lượt xem hồ sơ` : ""}</p>

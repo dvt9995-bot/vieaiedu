@@ -5,6 +5,7 @@ import { useAuthModal } from "./AuthModal";
 import ShareCourseButton from "./ShareCourseButton";
 import { toast } from "./Toaster";
 import { favoritesCached, toggleFavorite, invalidateFavorites } from "@/lib/db";
+import { track } from "@/lib/analytics";
 import { enrollFree } from "@/lib/enroll";
 import { formatVND } from "@/lib/format";
 import type { Course } from "@/lib/types";
@@ -29,6 +30,9 @@ export default function CoursePurchase({ course }: { course: Course }) {
   // Tải trạng thái yêu thích (DB nếu đăng nhập, ngược lại localStorage)
   useEffect(() => { favoritesCached().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);
 
+  // Phễu: xem khóa học
+  useEffect(() => { track("view_item", { item_id: course.slug, item_name: course.title, price: course.price, currency: "VND" }); }, [course.slug, course.title, course.price]);
+
   async function onToggleFavorite() {
     const next = !liked;
     setLiked(next);
@@ -46,10 +50,11 @@ export default function CoursePurchase({ course }: { course: Course }) {
 
   async function onBuy() {
     setBusy(true); setMsg("");
+    track("begin_checkout", { item_id: course.slug, item_name: course.title, value: course.price, currency: "VND" });
     try {
       if (free) {
         const r = await enrollFree(course.slug);
-        if (r.ok) return router.push(`/learn/${course.slug}`);
+        if (r.ok) { track("purchase", { item_id: course.slug, value: 0, currency: "VND", method: "free" }); return router.push(`/learn/${course.slug}`); }
         if (r.error === "auth") return open("login");
         return setMsg("Chưa thể ghi danh. Vui lòng đăng nhập.");
       }
@@ -67,6 +72,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
         const s = await fetch(`/api/order/status?id=${data.orderId}`).then((r) => r.json()).catch(() => ({}));
         if (s.status === "paid") {
           if (poll.current) clearInterval(poll.current);
+          track("purchase", { item_id: course.slug, value: data.amount, currency: "VND", method: "sepay" });
           router.push(`/learn/${course.slug}`);
         }
       }, 4000);
