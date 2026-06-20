@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
+import { generateSeoMeta } from "@/lib/gemini";
 
 const FIELDS = ["slug", "title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "status", "instructor", "total_minutes"];
 
@@ -26,6 +27,11 @@ export async function POST(req: Request) {
   if (!body.slug || !body.title) return NextResponse.json({ error: "Thiếu slug/title" }, { status: 400 });
   const { data, error } = await admin.from("courses").insert(pick(body)).select("id").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  // AI tự sinh SEO cho khóa mới (không chặn nếu lỗi)
+  try {
+    const meta = await generateSeoMeta({ name: body.title, context: body.subtitle || body.description });
+    if (meta) await admin.from("courses").update({ seo_title: meta.seo_title, seo_description: meta.seo_description }).eq("id", data.id);
+  } catch {}
   return NextResponse.json({ ok: true, id: data.id });
 }
 
