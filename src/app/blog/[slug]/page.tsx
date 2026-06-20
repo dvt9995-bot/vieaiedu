@@ -55,7 +55,7 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
       <p className="text-ink-2 text-lg mt-4">{b.excerpt}</p>
       {b.cover ? (
         /* eslint-disable-next-line @next/next/no-img-element */
-        <img src={b.cover} alt={b.title} className="w-full rounded-card my-8 border border-border" />
+        <img src={b.cover} alt={b.title} className="w-full max-h-[420px] object-cover rounded-card my-8 border border-border" />
       ) : (
         <div className="aspect-video bg-bg-soft border border-border rounded-card my-8" />
       )}
