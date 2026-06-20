@@ -3,6 +3,8 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import ShareCourseButton from "./ShareCourseButton";
+import { toast } from "./Toaster";
+import { loadFavorites, toggleFavorite } from "@/lib/db";
 import { enrollFree } from "@/lib/enroll";
 import { formatVND } from "@/lib/format";
 import type { Course } from "@/lib/types";
@@ -23,6 +25,16 @@ export default function CoursePurchase({ course }: { course: Course }) {
   const free = course.price === 0;
 
   useEffect(() => () => { if (poll.current) clearInterval(poll.current); }, []);
+
+  // Tải trạng thái yêu thích (DB nếu đăng nhập, ngược lại localStorage)
+  useEffect(() => { loadFavorites().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);
+
+  async function onToggleFavorite() {
+    const next = !liked;
+    setLiked(next);
+    await toggleFavorite(course.slug, next);
+    toast(next ? "Đã lưu vào yêu thích" : "Đã bỏ khỏi yêu thích");
+  }
 
   async function applyCoupon() {
     if (!coupon.trim()) return;
@@ -90,7 +102,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
         <button onClick={onBuy} disabled={busy} className="w-full rounded-full bg-accent hover:bg-accent-700 disabled:opacity-60 text-white font-semibold py-3.5 cursor-pointer transition-colors">
           {busy ? "Đang xử lý…" : free ? "Học miễn phí ngay" : "Mua khóa học"}
         </button>
-        <button onClick={() => setLiked(!liked)} className={`w-full mt-2.5 rounded-full border font-semibold py-3 cursor-pointer transition-colors ${liked ? "border-accent text-accent bg-accent-weak" : "border-border-strong text-ink-2 hover:border-ink-3"}`}>
+        <button onClick={onToggleFavorite} className={`w-full mt-2.5 rounded-full border font-semibold py-3 cursor-pointer transition-colors ${liked ? "border-accent text-accent bg-accent-weak" : "border-border-strong text-ink-2 hover:border-ink-3"}`}>
           {liked ? "★ Đã lưu yêu thích" : "☆ Lưu vào yêu thích"}
         </button>
         <ShareCourseButton slug={course.slug} title={course.title} />

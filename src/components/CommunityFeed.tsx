@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
 import { useAuthModal } from "./AuthModal";
 import { toast } from "./Toaster";
@@ -43,6 +43,15 @@ export default function CommunityFeed() {
       if (Array.isArray(saved)) setInterests(saved); else setShowOnboard(true);
     } catch { setShowOnboard(true); }
   }, [refresh]);
+
+  const composeRef = useRef<HTMLTextAreaElement>(null);
+  function applyTemplate(text: string, tag?: string) {
+    if (!uid) return open("login");
+    setText(text);
+    if (tag) setTags((cur) => (cur.includes(tag) ? cur : [...cur, tag]));
+    composeRef.current?.focus();
+    composeRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+  }
 
   function toggleTag(t: string) { setTags((cur) => cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]); }
   function saveInterests(list: string[]) { setInterests(list); localStorage.setItem(LS_KEY, JSON.stringify(list)); setShowOnboard(false); toast("Đã lưu chủ đề quan tâm"); }
@@ -105,9 +114,22 @@ export default function CommunityFeed() {
       </div>
 
       <div className="flex flex-col gap-4">
+        {/* Lời mời viết bài đầu tiên */}
+        {!text && (
+          <div className="rounded-card border border-accent/25 bg-gradient-to-br from-accent-weak to-transparent p-5">
+            <div className="text-lg font-extrabold tracking-tight">👋 Chào mừng đến với cộng đồng AI!</div>
+            <p className="text-ink-2 text-sm mt-1 mb-3 max-w-[60ch]">Hãy bắt đầu bằng một bài chia sẻ: giới thiệu bản thân &amp; công việc, lý do bạn quan tâm AI, hoặc điều bạn muốn học hỏi. Một dòng cũng quý — cộng đồng luôn chào đón!</p>
+            <div className="flex flex-wrap gap-2">
+              <button onClick={() => applyTemplate("Xin chào cả nhà! Mình là [tên], hiện đang làm [nghề nghiệp]. Mình mới tham gia cộng đồng và rất mong được học hỏi, chia sẻ kiến thức về AI cùng mọi người 🙌", "Kinh nghiệm")} className="text-sm rounded-full bg-surface border border-border-strong hover:border-accent hover:text-accent px-3.5 py-1.5 cursor-pointer transition-colors">👤 Giới thiệu bản thân</button>
+              <button onClick={() => applyTemplate("Mình vừa học được một điều thú vị về AI: [chia sẻ của bạn]. Hy vọng hữu ích cho mọi người!", "Kinh nghiệm")} className="text-sm rounded-full bg-surface border border-border-strong hover:border-accent hover:text-accent px-3.5 py-1.5 cursor-pointer transition-colors">💡 Chia sẻ kiến thức</button>
+              <button onClick={() => applyTemplate("Mình đang tìm hiểu về [chủ đề AI] và có một thắc mắc: [câu hỏi của bạn]. Ai có kinh nghiệm chỉ giúp mình với ạ?", "Hỏi đáp")} className="text-sm rounded-full bg-surface border border-border-strong hover:border-accent hover:text-accent px-3.5 py-1.5 cursor-pointer transition-colors">❓ Đặt câu hỏi</button>
+            </div>
+          </div>
+        )}
+
         {/* Compose */}
         <div className="bg-surface border border-border rounded-card p-4 shadow-soft">
-          <textarea value={text} onChange={(e) => setText(e.target.value)} placeholder={uid ? "Chia sẻ điều bạn vừa học được..." : "Đăng nhập để chia sẻ..."} onClick={() => !uid && open("login")} className="w-full bg-bg-soft border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent resize-none min-h-[60px]" />
+          <textarea ref={composeRef} value={text} onChange={(e) => setText(e.target.value)} placeholder={uid ? "Chia sẻ điều bạn vừa học được..." : "Đăng nhập để chia sẻ..."} onClick={() => !uid && open("login")} className="w-full bg-bg-soft border border-border rounded-xl px-4 py-2.5 text-sm outline-none focus:border-accent resize-none min-h-[60px]" />
           {/* Chọn chủ đề cho bài */}
           <div className="flex flex-wrap gap-1.5 mt-2">
             {TOPICS.map((t) => (
