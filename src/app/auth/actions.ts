@@ -4,6 +4,8 @@ import { headers, cookies } from "next/headers";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notify } from "@/lib/notify";
+import { getConfig } from "@/lib/settings";
+import { walletChange } from "@/lib/wallet";
 
 type Result = { error?: string };
 
@@ -33,15 +35,28 @@ export async function signUp(_prev: Result, formData: FormData): Promise<Result>
   const admin = createAdminClient();
   if (admin && data.user) {
     await admin.auth.admin.updateUserById(data.user.id, { email_confirm: true }).catch(() => {});
-    // Quy công người giới thiệu (cookie vie_ref)
+    const uid = data.user.id;
+
+    // Tặng tiền khuyến mãi cho người dùng mới (admin cấu hình)
+    try {
+      const bonus = parseInt(await getConfig("signup_credit")) || 0;
+      if (bonus > 0) {
+        await walletChange(uid, "credit", bonus, "Quà chào mừng thành viên mới");
+        await notify({ userId: uid, type: "promo", title: `🎁 Bạn được tặng ${bonus.toLocaleString("vi-VN")}đ`, body: "Số dư khuyến mãi dùng để mua khóa học trên VIE AI EDU. Khám phá ngay!", href: "/courses" });
+      }
+    } catch {}
+
+    // Quy công người giới thiệu (cookie vie_ref) + thưởng
     try {
       const ref = (await cookies()).get("vie_ref")?.value;
-      if (ref && /^[0-9a-f-]{36}$/i.test(ref) && ref !== data.user.id) {
-        await admin.from("profiles").update({ referred_by: ref }).eq("id", data.user.id);
-        const { data: r } = await admin.from("profiles").select("referral_count, full_name").eq("id", ref).maybeSingle();
+      if (ref && /^[0-9a-f-]{36}$/i.test(ref) && ref !== uid) {
+        await admin.from("profiles").update({ referred_by: ref }).eq("id", uid);
+        const { data: r } = await admin.from("profiles").select("referral_count").eq("id", ref).maybeSingle();
         if (r) {
           await admin.from("profiles").update({ referral_count: ((r.referral_count as number) || 0) + 1 }).eq("id", ref);
-          await notify({ userId: ref, type: "community", title: "Bạn có người được giới thiệu mới 🎉", body: "Một người vừa đăng ký qua liên kết của bạn. Cảm ơn đã lan tỏa VIE AI EDU!", href: "/account" });
+          const reward = parseInt(await getConfig("referral_reward_credit")) || 0;
+          if (reward > 0) await walletChange(ref, "credit", reward, "Thưởng giới thiệu bạn mới");
+          await notify({ userId: ref, type: "community", title: "Bạn có người được giới thiệu mới 🎉", body: reward > 0 ? `Bạn nhận ${reward.toLocaleString("vi-VN")}đ khuyến mãi. Cảm ơn đã lan tỏa VIE AI EDU!` : "Một người vừa đăng ký qua liên kết của bạn!", href: "/account" });
         }
       }
     } catch {}

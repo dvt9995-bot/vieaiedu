@@ -18,6 +18,11 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?]
   { title: "🔍 SEO", fields: [
     ["seo_title", "Tiêu đề mặc định"], ["seo_description", "Mô tả mặc định"], ["seo_og_image", "Ảnh OG (URL)"],
   ]},
+  { title: "💰 Ví & Hoa hồng", note: "Nhập số (VND/%). Để trống = tắt.", fields: [
+    ["signup_credit", "Tặng người mới (đ khuyến mãi)"],
+    ["referral_reward_credit", "Thưởng người giới thiệu khi có bạn đăng ký (đ)"],
+    ["referral_commission_pct", "Hoa hồng giới thiệu khi bạn mua khóa thật (%)"],
+  ]},
 ];
 
 export default function SettingsManager() {

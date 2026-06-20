@@ -101,6 +101,22 @@ export default function AccountClient() {
             </div>
           </section>
 
+          {/* Ví của tôi */}
+          <section className="rounded-card border border-border bg-surface p-6">
+            <h2 className="font-bold mb-4">Ví của tôi</h2>
+            <div className="grid grid-cols-2 gap-4">
+              <div className="rounded-card border border-border bg-gradient-to-br from-accent-weak to-transparent p-4">
+                <div className="text-2xl font-extrabold text-accent">{(p.credit_balance || 0).toLocaleString("vi-VN")}đ</div>
+                <div className="text-ink-3 text-xs mt-0.5">Số dư khuyến mãi · chỉ mua khóa học</div>
+              </div>
+              <div className="rounded-card border border-border bg-bg-soft p-4">
+                <div className="text-2xl font-extrabold text-ink">{(p.real_balance || 0).toLocaleString("vi-VN")}đ</div>
+                <div className="text-ink-3 text-xs mt-0.5">Số dư hoa hồng · dùng mua khóa học</div>
+              </div>
+            </div>
+            <p className="text-ink-3 text-xs mt-3">Số dư được trừ tự động khi mua khóa học (ưu tiên khuyến mãi trước). Không quy đổi tiền mặt.</p>
+          </section>
+
           {/* Mời bạn bè (referral) */}
           <section className="rounded-card border border-accent/25 bg-accent-weak p-6">
             <h2 className="font-bold mb-1">🎁 Mời bạn bè</h2>

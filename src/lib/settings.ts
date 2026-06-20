@@ -45,4 +45,7 @@ export const CONFIG_KEYS = {
   seo_title: "",
   seo_description: "",
   seo_og_image: "",
+  signup_credit: "",
+  referral_reward_credit: "",
+  referral_commission_pct: "",
 } as const;

@@ -1,6 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useActionState, type ReactNode } from "react";
-import { authAction, signInWithGoogle } from "@/app/auth/actions";
+import { authAction } from "@/app/auth/actions";
 
 type Mode = "login" | "register";
 const AuthCtx = createContext<{ open: (m?: Mode) => void } | null>(null);
@@ -39,12 +39,6 @@ export default function AuthModalProvider({ children }: { children: ReactNode })
               {reg ? "Miễn phí, chỉ mất 30 giây" : "Chào mừng trở lại"}
             </p>
 
-            <form action={signInWithGoogle} onSubmit={() => { try { sessionStorage.setItem("vie:auth", reg ? "sign_up" : "login"); } catch {} }}>
-              <button className="w-full flex items-center justify-center gap-2 rounded-full border border-border-strong hover:border-ink-3 py-2.5 font-semibold text-sm mb-4 cursor-pointer transition-colors">
-                <span className="text-lg">G</span> Tiếp tục với Google
-              </button>
-            </form>
-            <div className="flex items-center gap-3 text-ink-3 text-xs my-4"><span className="flex-1 h-px bg-border" />hoặc<span className="flex-1 h-px bg-border" /></div>
             <form action={action} onSubmit={() => { try { sessionStorage.setItem("vie:auth", reg ? "sign_up" : "login"); } catch {} }}>
               <input type="hidden" name="mode" value={reg ? "register" : "login"} />
               {reg && (
