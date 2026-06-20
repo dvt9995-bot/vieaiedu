@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { rewriteArticle, isGeminiConfigured } from "@/lib/gemini";
+import { rewriteArticle, isGeminiConfigured, geminiHealthCheck } from "@/lib/gemini";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
+import { notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
 
 export const maxDuration = 60;
+
+// Chỉ lấy bài trong 10 ngày gần nhất
+const MAX_AGE_MS = 10 * 24 * 3600 * 1000;
 
 // Nguồn tin AI mặc định (admin có thể bổ sung qua app_settings: blog_feeds)
 const DEFAULT_FEEDS: { url: string; name: string }[] = [
@@ -15,6 +19,8 @@ const DEFAULT_FEEDS: { url: string; name: string }[] = [
   { url: "https://blog.google/technology/ai/rss/", name: "Google AI" },
   { url: "https://the-decoder.com/feed/", name: "The Decoder" },
   { url: "https://www.artificialintelligence-news.com/feed/", name: "AI News" },
+  { url: "https://openai.com/news/rss.xml", name: "OpenAI" },
+  { url: "https://www.marktechpost.com/feed/", name: "MarkTechPost" },
 ];
 
 interface Item { title: string; link: string; summary: string; source: string; ts: number; }
@@ -81,44 +87,76 @@ export async function GET(req: Request) {
   if (!cronOk && !(await isCurrentUserAdmin()))
     return NextResponse.json({ error: "unauthorized" }, { status: 401 });
 
-  if (!(await isGeminiConfigured())) return NextResponse.json({ skipped: "Chưa cấu hình GEMINI_API_KEY trong Admin → Cài đặt" });
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ error: "no db" }, { status: 500 });
 
-  const feeds = await getFeeds();
-  // Gom tin từ mọi nguồn, ưu tiên MỚI NHẤT (theo pubDate)
-  const all = (await Promise.all(feeds.map(parseFeed))).flat().sort((a, b) => b.ts - a.ts);
+  try {
+    if (!(await isGeminiConfigured())) {
+      await notifyAdmins("⚠️ Blog tự động chưa chạy", "Chưa cấu hình Gemini API key. Vào Admin → Cài đặt để thêm.", "/admin");
+      return NextResponse.json({ skipped: "Chưa cấu hình GEMINI_API_KEY" });
+    }
+    // Kiểm tra API trước (phát hiện hết tín dụng / sai key / model gỡ)
+    const health = await geminiHealthCheck();
+    if (!health.ok) {
+      await notifyAdmins("🔴 Lỗi API Gemini — blog dừng tạo", `${health.reason}. Kiểm tra API key / hạn mức trong Admin → Cài đặt.`, "/admin", { email: true });
+      return NextResponse.json({ error: "gemini", reason: health.reason }, { status: 200 });
+    }
 
-  // Chống trùng: theo link nguồn VÀ theo tiêu đề đã đăng
-  const { data: existing } = await admin.from("blog_posts").select("source_url, title");
-  const seenUrl = new Set((existing ?? []).map((e) => e.source_url).filter(Boolean));
-  const seenTitle = new Set((existing ?? []).map((e) => norm(e.title || "")));
-  const batchTitle = new Set<string>();
-  const fresh = all.filter((i) => {
-    const nt = norm(i.title);
-    if (seenUrl.has(i.link) || seenTitle.has(nt) || batchTitle.has(nt)) return false;
-    batchTitle.add(nt);
-    return true;
-  });
+    const feeds = await getFeeds();
+    const cutoff = Date.now() - MAX_AGE_MS;
+    // Gom tin, ưu tiên MỚI NHẤT, chỉ giữ bài ≤10 ngày (có ngày đăng hợp lệ)
+    const all = (await Promise.all(feeds.map(parseFeed))).flat()
+      .filter((i) => i.ts >= cutoff)
+      .sort((a, b) => b.ts - a.ts);
 
-  const TARGET = 3;
-  const created: string[] = [];
-  for (const item of fresh) {
-    if (created.length >= TARGET) break;
-    const rw = await rewriteArticle({ title: item.title, summary: item.summary, sourceName: item.source });
-    if (!rw) continue;
-    // Chống trùng lần nữa theo tiêu đề bài đã viết lại
-    if (seenTitle.has(norm(rw.title))) continue;
-    const cover = await ogImage(item.link);
-    const slug = `${slugify(rw.title)}-${Math.abs(hashCode(item.link)).toString(36).slice(0, 5)}`;
-    const body = `${rw.body}\n\n---\n*Nguồn tham khảo: [${item.source}](${item.link})*`;
-    const { error } = await admin.from("blog_posts").insert({
-      slug, title: rw.title, excerpt: rw.excerpt, body, cover_url: cover,
-      source_url: item.link, source_name: item.source, published: true, published_at: new Date().toISOString(),
+    // Chống trùng: theo link nguồn VÀ theo tiêu đề đã đăng
+    const { data: existing } = await admin.from("blog_posts").select("source_url, title");
+    const seenUrl = new Set((existing ?? []).map((e) => e.source_url).filter(Boolean));
+    const seenTitle = new Set((existing ?? []).map((e) => norm(e.title || "")));
+    const batchTitle = new Set<string>();
+    const fresh = all.filter((i) => {
+      const nt = norm(i.title);
+      if (seenUrl.has(i.link) || seenTitle.has(nt) || batchTitle.has(nt)) return false;
+      batchTitle.add(nt);
+      return true;
     });
-    if (!error) { created.push(rw.title); seenTitle.add(norm(rw.title)); }
+
+    if (fresh.length === 0) {
+      await notifyAdmins("📭 Hết bài mới để đăng", `Không còn tin AI mới (≤10 ngày, chưa trùng) từ ${feeds.length} nguồn. Hãy bổ sung nguồn ở Admin → Blog → Nguồn tin.`, "/admin");
+      return NextResponse.json({ created: 0, candidates: 0, feeds: feeds.length, note: "no fresh" });
+    }
+
+    const TARGET = 3;
+    const created: string[] = [];
+    let writeErrors = 0;
+    for (const item of fresh) {
+      if (created.length >= TARGET) break;
+      const rw = await rewriteArticle({ title: item.title, summary: item.summary, sourceName: item.source });
+      if (!rw) { writeErrors++; continue; }
+      if (seenTitle.has(norm(rw.title))) continue;
+      const cover = await ogImage(item.link);
+      const slug = `${slugify(rw.title)}-${Math.abs(hashCode(item.link)).toString(36).slice(0, 5)}`;
+      const body = `${rw.body}\n\n---\n*Nguồn tham khảo: [${item.source}](${item.link})*`;
+      const { error } = await admin.from("blog_posts").insert({
+        slug, title: rw.title, excerpt: rw.excerpt, body, cover_url: cover,
+        source_url: item.link, source_name: item.source, published: true, published_at: new Date().toISOString(),
+      });
+      if (!error) { created.push(rw.title); seenTitle.add(norm(rw.title)); }
+    }
+
+    // Thông báo kết quả cho admin
+    if (created.length === 0)
+      await notifyAdmins("🔴 Blog: không tạo được bài", `Có ${fresh.length} tin nhưng viết lại đều lỗi. Có thể lỗi/hết hạn mức Gemini.`, "/admin", { email: true });
+    else if (created.length < TARGET)
+      await notifyAdmins("🟡 Blog: tạo thiếu bài", `Chỉ đăng ${created.length}/${TARGET} bài. Cân nhắc thêm nguồn để có thêm tin mới.`, "/admin");
+    else
+      await notifyAdmins("✅ Blog: đã đăng 3 bài mới", created.map((t) => `• ${t}`).join("\n"), "/blog");
+
+    return NextResponse.json({ created: created.length, titles: created, candidates: fresh.length, feeds: feeds.length, writeErrors });
+  } catch (e) {
+    await notifyAdmins("🔴 Lỗi hệ thống khi tạo blog", String((e as Error)?.message || e).slice(0, 200), "/admin", { email: true });
+    return NextResponse.json({ error: "exception" }, { status: 500 });
   }
-  return NextResponse.json({ created: created.length, titles: created, candidates: fresh.length, feeds: feeds.length });
 }
 
 function hashCode(s: string) { let h = 0; for (let i = 0; i < s.length; i++) h = (Math.imul(31, h) + s.charCodeAt(i)) | 0; return h; }

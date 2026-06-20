@@ -50,6 +50,16 @@ export async function notify(input: NotifyInput) {
   if (wantPush) await sendPushToUser(userId, { title, body, href });
 }
 
+/** Gửi cảnh báo vận hành cho TẤT CẢ admin (in-app + push, email nếu critical). */
+export async function notifyAdmins(title: string, body?: string, href?: string, opts?: { email?: boolean }) {
+  const admin = createAdminClient();
+  if (!admin) return 0;
+  const { data: admins } = await admin.from("profiles").select("id").eq("role", "admin");
+  if (!admins?.length) return 0;
+  await Promise.all(admins.map((a) => notify({ userId: a.id as string, type: "system", title, body, href: href ?? "/admin", email: opts?.email ?? false, push: true })));
+  return admins.length;
+}
+
 /** Gửi cho tất cả user (broadcast) — chỉ in-app + push (không email hàng loạt ở đây). */
 export async function notifyAll(title: string, body?: string, href?: string) {
   const admin = createAdminClient();

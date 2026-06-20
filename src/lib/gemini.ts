@@ -4,6 +4,27 @@ export async function isGeminiConfigured() {
   return !!(await getConfig("gemini_api_key", "GEMINI_API_KEY"));
 }
 
+// Kiểm tra sức khỏe API: phát hiện hết tín dụng / sai key / model gỡ.
+export async function geminiHealthCheck(): Promise<{ ok: boolean; reason?: string }> {
+  const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
+  if (!key) return { ok: false, reason: "Chưa cấu hình API key" };
+  const model = (await getConfig("gemini_model")) || "gemini-2.5-flash";
+  try {
+    const r = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: "ping" }] }] }),
+      signal: AbortSignal.timeout(15000),
+    });
+    if (r.ok) return { ok: true };
+    if (r.status === 429) return { ok: false, reason: "Hết hạn mức / tín dụng API (429)" };
+    if (r.status === 400 || r.status === 403) return { ok: false, reason: "API key không hợp lệ hoặc bị từ chối" };
+    if (r.status === 404) return { ok: false, reason: `Model '${model}' không còn khả dụng` };
+    return { ok: false, reason: `Lỗi API (${r.status})` };
+  } catch {
+    return { ok: false, reason: "Không kết nối được tới Gemini" };
+  }
+}
+
 interface Rewritten { title: string; excerpt: string; body: string; }
 
 // Viết lại một tin AI sang tiếng Việt theo giọng VIE AI EDU (markdown).
