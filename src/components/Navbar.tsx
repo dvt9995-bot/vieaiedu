@@ -60,6 +60,9 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          <Link href="/search" aria-label="Tìm kiếm" className="p-2 rounded-full text-ink-2 hover:text-accent hover:bg-bg-soft transition-colors">
+            <svg className="w-[18px] h-[18px] stroke-current fill-none" viewBox="0 0 24 24" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>
+          </Link>
           {email ? (
             <>
               <NotificationBell />

@@ -48,6 +48,12 @@ export default function BlogManager() {
     setMsg(m); toast(m, r.created ? "success" : "info");
     load();
   }
+  async function sendNewsletter() {
+    if (!confirm("Gửi bản tin (5 bài mới nhất) tới tất cả người đăng ký?")) return;
+    toast("Đang gửi bản tin…", "info");
+    const r = await fetch("/api/cron/newsletter").then((x) => x.json()).catch(() => ({}));
+    toast(r.skipped ? r.skipped : r.sent != null ? `✓ Đã gửi ${r.sent} người` : r.error || "Lỗi", r.sent ? "success" : "info");
+  }
 
   const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
 
@@ -88,6 +94,7 @@ export default function BlogManager() {
           <button onClick={() => setShowFeeds((s) => !s)} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">🛰 Nguồn tin</button>
           <button onClick={() => { setEdit({ ...empty }); setMsg(""); }} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">+ Thêm bài viết</button>
           <button onClick={autoGen} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">📰 Tạo tự động ngay</button>
+          <button onClick={sendNewsletter} className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">📨 Gửi bản tin</button>
         </div>
       </div>
 
