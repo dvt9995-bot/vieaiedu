@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import Link from "next/link";
+import FilterChips from "./FilterChips";
 
 export interface BlogItem { slug: string; title: string; excerpt: string; date: string; cover?: string; sourceName?: string; }
 
@@ -18,11 +19,7 @@ export default function BlogBrowser({ posts }: { posts: BlogItem[] }) {
   return (
     <>
       {/* Lọc nguồn */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-7 -mx-1 px-1">
-        {sources.map((s) => (
-          <button key={s} onClick={() => setSrc(s)} className={`shrink-0 text-sm rounded-full px-3.5 py-1.5 border cursor-pointer transition-colors ${src === s ? "bg-accent text-white border-accent" : "bg-surface border-border-strong hover:border-accent"}`}>{s}</button>
-        ))}
-      </div>
+      <FilterChips className="mb-7" value={src} onChange={setSrc} options={sources.map((s) => ({ value: s, label: s }))} />
 
       {filtered.length === 0 ? (
         <p className="text-ink-3 py-10 text-center">Chưa có bài viết.</p>

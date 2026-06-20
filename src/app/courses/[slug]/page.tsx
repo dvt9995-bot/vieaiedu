@@ -57,7 +57,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
 
       <div className="container-x py-12 grid lg:grid-cols-[1fr_360px] gap-10 items-start">
         {/* Left */}
-        <div>
+        <div className="order-last lg:order-none">
           <h2 className="text-2xl font-extrabold tracking-tight mb-4">Bạn sẽ học được gì</h2>
           <ul className="grid sm:grid-cols-2 gap-3 mb-12">
             {course.whatYouLearn.map((w) => (

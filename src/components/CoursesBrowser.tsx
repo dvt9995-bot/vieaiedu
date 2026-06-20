@@ -1,6 +1,7 @@
 "use client";
 import { useMemo, useState } from "react";
 import CourseCard from "./CourseCard";
+import FilterChips from "./FilterChips";
 import type { Course } from "@/lib/types";
 import { LEVEL_LABEL } from "@/lib/types";
 
@@ -32,20 +33,20 @@ export default function CoursesBrowser({ courses }: { courses: Course[] }) {
   }, [courses, q, cat, level, price, sort]);
 
   const selectCls =
-    "appearance-none cursor-pointer rounded-xl border border-border-strong bg-surface pl-3.5 pr-9 py-2.5 text-sm font-medium text-ink outline-none focus:border-accent transition-colors bg-[length:16px] bg-no-repeat bg-[right_0.7rem_center]";
+    "appearance-none cursor-pointer rounded-full border border-border-strong bg-surface pl-3.5 pr-8 py-2 text-sm font-medium text-ink-2 outline-none focus:border-accent transition-colors bg-[length:15px] bg-no-repeat bg-[right_0.6rem_center]";
   const chevron = `url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' viewBox='0 0 24 24' fill='none' stroke='%238a909c' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E")`;
 
   return (
     <div>
-      {/* Thanh công cụ: tìm kiếm + dropdown gọn */}
-      <div className="flex flex-col sm:flex-row gap-3 mb-6">
-        <div className="relative flex-1">
-          <svg className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 stroke-ink-3 fill-none" viewBox="0 0 24 24" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>
+      {/* Thanh công cụ: tìm kiếm + lọc gọn */}
+      <div className="flex flex-wrap items-center gap-2.5 mb-4">
+        <div className="relative flex-1 min-w-[200px]">
+          <svg className="absolute left-3.5 top-1/2 -translate-y-1/2 w-[18px] h-[18px] stroke-ink-3 fill-none" viewBox="0 0 24 24" strokeWidth="2"><circle cx="11" cy="11" r="7" /><path d="M21 21l-4-4" /></svg>
           <input
             value={q}
             onChange={(e) => setQ(e.target.value)}
-            placeholder="Tìm khóa học (vd: prompt, chatbot, dữ liệu...)"
-            className="w-full pl-11 pr-4 py-2.5 rounded-xl border border-border-strong bg-surface outline-none focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-weak)] transition"
+            placeholder="Tìm khóa học…"
+            className="w-full pl-10 pr-4 py-2 rounded-full border border-border-strong bg-surface text-sm outline-none focus:border-accent focus:shadow-[0_0_0_3px_var(--color-accent-weak)] transition"
           />
         </div>
         <select value={level} onChange={(e) => setLevel(e.target.value)} className={selectCls} style={{ backgroundImage: chevron }} aria-label="Cấp độ">
@@ -60,29 +61,20 @@ export default function CoursesBrowser({ courses }: { courses: Course[] }) {
           <option value="paid">Trả phí</option>
         </select>
         <select value={sort} onChange={(e) => setSort(e.target.value)} className={selectCls} style={{ backgroundImage: chevron }} aria-label="Sắp xếp">
-          <option value="popular">Phổ biến nhất</option>
+          <option value="popular">Phổ biến</option>
           <option value="rating">Đánh giá cao</option>
-          <option value="price-asc">Giá thấp → cao</option>
-          <option value="price-desc">Giá cao → thấp</option>
+          <option value="price-asc">Giá ↑</option>
+          <option value="price-desc">Giá ↓</option>
         </select>
       </div>
 
-      {/* Chủ đề: tab gạch chân, một hàng (cuộn ngang trên mobile) */}
-      <div className="flex gap-6 border-b border-border mb-6 overflow-x-auto -mx-1 px-1">
-        {cats.map((c) => {
-          const active = cat === c;
-          return (
-            <button
-              key={c}
-              onClick={() => setCat(c)}
-              className={`relative whitespace-nowrap pb-3 pt-1 text-sm font-semibold transition-colors cursor-pointer ${active ? "text-accent" : "text-ink-2 hover:text-ink"}`}
-            >
-              {c === "all" ? "Tất cả" : c}
-              {active && <span className="absolute left-0 right-0 -bottom-px h-0.5 bg-accent rounded-full" />}
-            </button>
-          );
-        })}
-      </div>
+      {/* Chủ đề: chip cuộn ngang */}
+      <FilterChips
+        className="mb-5"
+        value={cat}
+        onChange={setCat}
+        options={cats.map((c) => ({ value: c, label: c === "all" ? "Tất cả" : c }))}
+      />
 
       <p className="text-ink-3 text-sm mb-5">{filtered.length} khóa học</p>
 

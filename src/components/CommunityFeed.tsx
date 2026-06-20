@@ -4,6 +4,7 @@ import Link from "next/link";
 import { useAuthModal } from "./AuthModal";
 import { toast } from "./Toaster";
 import PostComments from "./PostComments";
+import FilterChips from "./FilterChips";
 import { TOPICS } from "@/lib/topics";
 import {
   loadPosts, createPost, togglePostLike, uploadCommunityImage,
@@ -95,12 +96,12 @@ export default function CommunityFeed() {
       )}
 
       {/* Lọc chủ đề */}
-      <div className="flex gap-2 overflow-x-auto pb-3 mb-1 -mx-1 px-1">
-        <button onClick={() => setFilter("")} className={`shrink-0 text-sm rounded-full px-3.5 py-1.5 border cursor-pointer transition-colors ${!filter ? "bg-ink text-white border-ink" : "bg-surface border-border-strong hover:border-ink-3"}`}>Tất cả</button>
-        {TOPICS.map((t) => (
-          <button key={t} onClick={() => setFilter(t)} className={`shrink-0 text-sm rounded-full px-3.5 py-1.5 border cursor-pointer transition-colors ${filter === t ? "bg-accent text-white border-accent" : "bg-surface border-border-strong hover:border-accent"}`}>{t}</button>
-        ))}
-      </div>
+      <FilterChips
+        className="mb-4"
+        value={filter}
+        onChange={setFilter}
+        options={[{ value: "", label: "Tất cả" }, ...TOPICS.map((t) => ({ value: t, label: t }))]}
+      />
 
       <div className="flex flex-col gap-4">
         {/* Compose */}
