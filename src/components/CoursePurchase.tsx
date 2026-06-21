@@ -3,6 +3,7 @@ import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 import { useAuthModal } from "./AuthModal";
 import ShareCourseButton from "./ShareCourseButton";
+import DonateButton from "./DonateButton";
 import { toast } from "./Toaster";
 import { favoritesCached, toggleFavorite, invalidateFavorites } from "@/lib/db";
 import { track } from "@/lib/analytics";
@@ -134,6 +135,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
           {liked ? "★ Đã lưu yêu thích" : "☆ Lưu vào yêu thích"}
         </button>
         <ShareCourseButton slug={course.slug} title={course.title} />
+        <div className="mt-2.5"><DonateButton courseSlug={course.slug} /></div>
         {msg && <p className="text-accent text-sm mt-3 text-center">{msg}</p>}
         {!free && <p className="text-center text-ink-3 text-xs mt-3">Thanh toán an toàn qua SePay · Truy cập trọn đời</p>}
         <ul className="mt-5 pt-5 border-t border-border space-y-2.5 text-sm text-ink-2">

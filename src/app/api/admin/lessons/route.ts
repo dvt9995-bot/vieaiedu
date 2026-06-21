@@ -23,16 +23,22 @@ async function recomputeCourseMinutes(admin: NonNullable<ReturnType<typeof creat
   await admin.from("courses").update({ total_minutes: Math.round(sec / 60) }).eq("id", courseId as string);
 }
 
-// Khi gán video YouTube: tự lấy TÊN KÊNH → điền vào "Nguồn" của khóa (nếu khóa chưa có nguồn).
+// Khi gán video YouTube: tự lấy TÊN KÊNH → điền "Nguồn" + "Giảng viên" của khóa (nếu admin để trống).
 async function autoSourceFromYouTube(admin: NonNullable<ReturnType<typeof createAdminClient>>, courseId: string | null | undefined, videoId: unknown) {
   if (!courseId) return;
   const ref = parseVideoRef(typeof videoId === "string" ? videoId : null);
   if (ref?.kind !== "youtube") return;
-  const { data: c } = await admin.from("courses").select("source").eq("id", courseId).maybeSingle();
-  if (c && (c.source == null || String(c.source).trim() === "")) {
-    const ch = await youtubeChannelName(ref.id);
-    if (ch) await admin.from("courses").update({ source: ch }).eq("id", courseId);
-  }
+  const { data: c } = await admin.from("courses").select("source, instructor").eq("id", courseId).maybeSingle();
+  if (!c) return;
+  const empty = (v: unknown) => v == null || String(v).trim() === "";
+  const instrFillable = empty(c.instructor) || String(c.instructor).trim() === "Long Nam"; // "Long Nam" = mặc định → coi như chưa nhập
+  if (!empty(c.source) && !instrFillable) return;
+  const ch = await youtubeChannelName(ref.id);
+  if (!ch) return;
+  const patch: Record<string, string> = {};
+  if (empty(c.source)) patch.source = ch;
+  if (instrFillable) patch.instructor = ch; // giảng viên = tên kênh khi admin chưa nhập
+  if (Object.keys(patch).length) await admin.from("courses").update(patch).eq("id", courseId);
 }
 function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};

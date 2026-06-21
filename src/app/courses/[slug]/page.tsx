@@ -10,6 +10,7 @@ import CourseReviews from "@/components/CourseReviews";
 import YouTubeComments from "@/components/YouTubeComments";
 import { parseVideoRef } from "@/lib/video";
 import { syncCoursesSocial } from "@/lib/course-social";
+import { mdToHtml } from "@/lib/md";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -74,9 +75,14 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
 
-      {/* Header band */}
-      <section className="bg-ink text-white">
-        <div className="container-x py-12">
+      {/* Header band — banner = ảnh bìa khóa + lớp đen mờ cố định để chữ luôn rõ */}
+      <section className="relative bg-ink text-white overflow-hidden">
+        {course.thumb && (
+          // eslint-disable-next-line @next/next/no-img-element
+          <img src={course.thumb} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/85 to-ink/70" />
+        <div className="container-x py-12 relative">
           <div className="text-sm text-white/60 mb-3">
             <Link href="/courses" className="hover:text-white">Khóa học</Link> / {course.category}
           </div>
@@ -131,8 +137,12 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
             ))}
           </div>
 
-          <h2 className="text-2xl font-extrabold tracking-tight mt-12 mb-4">Mô tả</h2>
-          <p className="text-ink-2 leading-relaxed">{course.description}</p>
+          {course.description?.trim() && (
+            <>
+              <h2 className="text-2xl font-extrabold tracking-tight mt-12 mb-4">Mô tả</h2>
+              <div className="prose-course text-ink-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: mdToHtml(course.description) }} />
+            </>
+          )}
 
           <CourseReviews slug={course.slug} />
           {ytVideoId && <YouTubeComments videoId={ytVideoId} />}

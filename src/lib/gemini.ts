@@ -48,25 +48,49 @@ Yêu cầu: 1 câu tiếng Việt, 8–18 từ, nêu rõ lợi ích hoặc đố
   } catch { return null; }
 }
 
-// Gợi ý MÔ TẢ DÀI (chi tiết) cho khóa học
-export async function suggestCourseDescription(title: string): Promise<string | null> {
+// Gọi Gemini text, trả chuỗi đã trim (dùng chung cho mô tả/làm đẹp)
+async function geminiText(prompt: string, max = 2500): Promise<string | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
   const model = (await getConfig("gemini_model")) || "gemini-2.5-flash";
-  const prompt = `Viết phần MÔ TẢ chi tiết, hấp dẫn cho khóa học AI tên "${title}" trên nền tảng VIE AI EDU.
-Yêu cầu: tiếng Việt, 2–3 đoạn ngắn (tổng 80–140 từ), nêu: khóa học này dạy gì, học viên đạt được gì, phù hợp với ai, vì sao nên học. Văn phong chuyên nghiệp, truyền cảm hứng, dễ đọc. Chỉ trả về nội dung mô tả, không tiêu đề, không markdown thừa.`;
   try {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.85 } }),
-      signal: AbortSignal.timeout(20000),
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8 } }),
+      signal: AbortSignal.timeout(25000),
     });
     if (!res.ok) return null;
     const data = await res.json();
     const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
     if (!text) return null;
-    return String(text).trim().replace(/^["'“”]+|["'“”]+$/g, "").slice(0, 1200);
+    return String(text).trim().replace(/```\w*\n?|```/g, "").trim().slice(0, max);
   } catch { return null; }
+}
+
+const MD_RULE = `Định dạng Markdown rõ ràng, có cấu trúc, dễ đọc:
+- Dùng tiêu đề phụ "## " cho mỗi phần (vd: ## Bạn sẽ học được gì, ## Phù hợp với ai, ## Vì sao nên học).
+- Dùng gạch đầu dòng "- " cho các ý liệt kê; **in đậm** từ khóa quan trọng.
+- Đoạn ngắn, xuống dòng hợp lý. KHÔNG dùng bảng, KHÔNG H1 (#), KHÔNG nhồi nhét.`;
+
+// Gợi ý MÔ TẢ DÀI (chi tiết) cho khóa học — Markdown có cấu trúc
+export async function suggestCourseDescription(title: string): Promise<string | null> {
+  return geminiText(`Viết phần MÔ TẢ chi tiết, hấp dẫn cho khóa học AI tên "${title}" trên nền tảng VIE AI EDU.
+Nội dung tiếng Việt, chuyên nghiệp, truyền cảm hứng, hướng đến chuyển đổi mua hàng. Bao gồm: khóa học dạy gì, học viên đạt được gì (lợi ích cụ thể), phù hợp với ai, vì sao nên học.
+${MD_RULE}
+Chỉ trả về nội dung Markdown, không lời dẫn.`);
+}
+
+// Làm đẹp / chuẩn hóa lại nội dung mô tả admin đã nhập → Markdown có cấu trúc, giữ nguyên ý
+export async function beautifyCourseDescription(title: string, raw: string): Promise<string | null> {
+  return geminiText(`Biên tập lại phần MÔ TẢ khóa học "${title}" dưới đây cho chuyên nghiệp, mạch lạc, dễ đọc và tăng trải nghiệm mua hàng. GIỮ NGUYÊN ý chính và thông tin, chỉ sắp xếp lại bố cục, thêm tiêu đề mục, gạch đầu dòng, làm gọn câu. Không bịa thêm thông tin sai.
+${MD_RULE}
+
+NỘI DUNG GỐC:
+"""
+${raw.slice(0, 4000)}
+"""
+
+Chỉ trả về nội dung Markdown đã biên tập, không lời dẫn.`);
 }
 
 export type ImgRole = "product" | "person" | "platform";

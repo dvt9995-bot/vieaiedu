@@ -58,6 +58,14 @@ export default function CourseManager() {
     if (r.description) { setForm((f) => f ? { ...f, description: r.description } : f); toast("✨ Đã viết mô tả chi tiết"); }
     else toast(r.error || "Không gợi ý được", "error");
   }
+  async function aiBeautify() {
+    if (!form?.description?.trim()) return toast("Hãy nhập nội dung mô tả trước", "error");
+    setDescBusy(true);
+    const r = await fetch("/api/admin/course-suggest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: form.title, field: "beautify", text: form.description }) }).then((x) => x.json()).catch(() => ({}));
+    setDescBusy(false);
+    if (r.description) { setForm((f) => f ? { ...f, description: r.description } : f); toast("✨ Đã làm đẹp nội dung"); }
+    else toast(r.error || "Không xử lý được", "error");
+  }
   const [managing, setManaging] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -148,9 +156,13 @@ export default function CourseManager() {
           <div className="sm:col-span-2">
             <div className="flex items-center justify-between mb-1">
               <label className="text-xs font-semibold text-ink-2">Mô tả (chi tiết) — hiển thị ở mục “Mô tả” trang khóa</label>
-              <button onClick={aiDescription} disabled={descBusy} title="AI viết mô tả chi tiết từ tên khóa" className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-60 whitespace-nowrap">{descBusy ? "Đang viết…" : "✨ AI viết mô tả"}</button>
+              <div className="flex gap-3">
+                <button onClick={aiDescription} disabled={descBusy} title="AI viết mô tả mới từ tên khóa" className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-60 whitespace-nowrap">{descBusy ? "Đang xử lý…" : "✨ AI viết mới"}</button>
+                <button onClick={aiBeautify} disabled={descBusy} title="AI làm đẹp/chuẩn hóa nội dung bạn đã nhập" className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-60 whitespace-nowrap">🪄 Làm đẹp</button>
+              </div>
             </div>
-            <textarea className={`${inp} min-h-[120px] resize-y`} placeholder="Mô tả chi tiết về khóa học: dạy gì, đạt được gì, phù hợp với ai…" value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            <textarea className={`${inp} min-h-[140px] resize-y`} placeholder="Mô tả chi tiết: dạy gì, đạt được gì, phù hợp với ai… (hỗ trợ Markdown: ## tiêu đề, - gạch đầu dòng, **in đậm**). Bấm 🪄 Làm đẹp để AI tự bố cục lại." value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+            <p className="text-ink-3 text-[11px] mt-1">Mẹo: nhập ý thô rồi bấm <b>🪄 Làm đẹp</b> để AI tự chia mục, thêm tiêu đề & gạch đầu dòng.</p>
           </div>
           {(form.price ?? 0) > 0 && (
             <>
