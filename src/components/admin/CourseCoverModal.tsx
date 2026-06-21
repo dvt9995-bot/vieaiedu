@@ -3,7 +3,9 @@ import { useState } from "react";
 import { compressImage } from "@/lib/image";
 import { toast } from "@/components/Toaster";
 
-type Ref = { preview: string; data: string; mime: string };
+type Role = "product" | "person" | "platform";
+type Ref = { preview: string; data: string; mime: string; role: Role };
+const ROLE_LABEL: Record<Role, string> = { product: "Logo sản phẩm (chủ thể)", person: "Nhân vật", platform: "Logo nền tảng (góc)" };
 
 function fileToBase64(file: File): Promise<{ data: string; mime: string; preview: string }> {
   return new Promise((resolve, reject) => {
@@ -24,12 +26,12 @@ export default function CourseCoverModal({ title, onClose, onUse }: { title: str
     if (!file || refs.length >= 3) return;
     const small = await compressImage(file, 1024, 0.85);
     const b = await fileToBase64(small);
-    setRefs((r) => [...r, b]);
+    setRefs((r) => [...r, { ...b, role: "product" as Role }]);
   }
 
   async function generate() {
     setBusy(true); setResult(null);
-    const body = { title, refs: refs.map((r) => ({ data: r.data, mime: r.mime })) };
+    const body = { title, refs: refs.map((r) => ({ data: r.data, mime: r.mime, role: r.role })) };
     const res = await fetch("/api/admin/course-cover", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }).then((x) => x.json()).catch(() => ({}));
     setBusy(false);
     if (res.url) setResult(res.url);
@@ -47,17 +49,22 @@ export default function CourseCoverModal({ title, onClose, onUse }: { title: str
         {/* Ảnh tham chiếu (tùy chọn) */}
         <div className="mt-4">
           <div className="text-xs font-semibold text-ink-2 mb-1.5">Ảnh tham chiếu — tối đa 3 (tùy chọn)</div>
-          <p className="text-ink-3 text-xs mb-2">Có thể tải ảnh <b>nhân vật</b> và <b>logo nền tảng</b> được nhắc trong khóa để AI đưa vào bìa.</p>
-          <div className="flex gap-2">
+          <p className="text-ink-3 text-xs mb-2">Tải <b>logo sản phẩm</b> (vd Claude — sẽ làm chủ thể), <b>nhân vật</b>, hoặc <b>logo nền tảng</b>. <b>Chọn đúng vai trò</b> dưới mỗi ảnh để AI đặt đúng chỗ.</p>
+          <div className="flex gap-3 flex-wrap">
             {refs.map((r, i) => (
-              <div key={i} className="relative w-16 h-16 rounded-lg overflow-hidden border border-border">
-                {/* eslint-disable-next-line @next/next/no-img-element */}
-                <img src={r.preview} alt="" className="w-full h-full object-cover" />
-                <button onClick={() => setRefs((cur) => cur.filter((_, j) => j !== i))} className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white text-xs leading-none cursor-pointer">×</button>
+              <div key={i} className="w-28">
+                <div className="relative w-full aspect-square rounded-lg overflow-hidden border border-border">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  <img src={r.preview} alt="" className="w-full h-full object-cover" />
+                  <button onClick={() => setRefs((cur) => cur.filter((_, j) => j !== i))} className="absolute top-0.5 right-0.5 w-5 h-5 rounded-full bg-black/60 text-white text-xs leading-none cursor-pointer">×</button>
+                </div>
+                <select value={r.role} onChange={(e) => setRefs((cur) => cur.map((x, j) => j === i ? { ...x, role: e.target.value as Role } : x))} className="w-full mt-1 text-[11px] rounded border border-border-strong bg-surface px-1 py-1 outline-none focus:border-accent cursor-pointer">
+                  {(Object.keys(ROLE_LABEL) as Role[]).map((k) => <option key={k} value={k}>{ROLE_LABEL[k]}</option>)}
+                </select>
               </div>
             ))}
             {refs.length < 3 && (
-              <label className="w-16 h-16 rounded-lg border border-dashed border-border-strong grid place-items-center text-ink-3 text-2xl cursor-pointer hover:border-accent">
+              <label className="w-28 aspect-square rounded-lg border border-dashed border-border-strong grid place-items-center text-ink-3 text-2xl cursor-pointer hover:border-accent">
                 +
                 <input type="file" accept="image/*" className="hidden" onChange={(e) => { addRef(e.target.files?.[0]); e.currentTarget.value = ""; }} />
               </label>

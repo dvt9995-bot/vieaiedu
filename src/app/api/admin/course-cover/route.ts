@@ -11,9 +11,12 @@ export async function POST(req: Request) {
   const { title, refs } = await req.json().catch(() => ({}));
   if (!title || !String(title).trim()) return NextResponse.json({ error: "Cần nhập tên khóa học trước" }, { status: 400 });
 
-  // Ảnh tham chiếu (tùy chọn, tối đa 3) — chỉ nhận base64 hợp lệ
+  // Ảnh tham chiếu (tùy chọn, tối đa 3) — chỉ nhận base64 hợp lệ + giữ vai trò
+  const ROLES = ["product", "person", "platform"];
   const refList = Array.isArray(refs)
-    ? refs.filter((r) => r && typeof r.data === "string" && typeof r.mime === "string" && r.mime.startsWith("image/")).slice(0, 3)
+    ? refs.filter((r) => r && typeof r.data === "string" && typeof r.mime === "string" && r.mime.startsWith("image/"))
+        .slice(0, 3)
+        .map((r) => ({ data: r.data, mime: r.mime, role: ROLES.includes(r.role) ? r.role : "product" }))
     : [];
 
   const img = await generateCoverImage(String(title).trim(), refList);

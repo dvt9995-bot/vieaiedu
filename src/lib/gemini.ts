@@ -48,23 +48,32 @@ Yêu cầu: 1 câu tiếng Việt, 8–18 từ, nêu rõ lợi ích hoặc đố
   } catch { return null; }
 }
 
-export type ImgRef = { data: string; mime: string };
+export type ImgRole = "product" | "person" | "platform";
+export type ImgRef = { data: string; mime: string; role?: ImgRole };
 
-// Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). refs = ảnh tham chiếu (nhân vật/logo, tùy chọn).
+// Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). refs = ảnh tham chiếu có VAI TRÒ.
 export async function generateCoverImage(title: string, refs: ImgRef[] = []): Promise<{ data: string; mime: string } | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
   const hasRefs = refs.length > 0;
-  // Bìa khóa học: CHỦ THỂ là AI/công cụ được dạy; tiêu đề NGẮN GỌN, bắt mắt; đỏ #E41E26 + vàng #F4B400.
-  const prompt = `Premium eye-catching widescreen 16:9 online course cover banner. Bold, modern, scroll-stopping design.
+
+  // Mô tả vai trò từng ảnh tham chiếu theo đúng thứ tự gửi lên
+  const refLines = refs.map((r, i) => {
+    const n = i + 1;
+    if (r.role === "person") return `• Reference image #${n} = a PERSON/instructor: make this exact person a clear figure in the cover.`;
+    if (r.role === "platform") return `• Reference image #${n} = the PLATFORM logo (the school's own logo): place it SMALL and subtle in a top corner as a light watermark ONLY — it must NOT be the focus and must NOT be large.`;
+    return `• Reference image #${n} = the COURSE PRODUCT logo (the AI tool being taught, e.g. Claude/ChatGPT/Gemini): reproduce it FAITHFULLY (exact shape, colors, proportions) and make it the LARGE CENTRAL HERO of the cover. Do NOT replace it with a generic glowing "AI" glyph, brain or text.`;
+  }).join("\n");
+
+  // Bìa khóa học: CHỦ THỂ = LOGO SẢN PHẨM được dạy; tiêu đề NGẮN GỌN; đỏ #E41E26 + vàng #F4B400 làm khung accent.
+  const prompt = `Premium, editorial, eye-catching widescreen 16:9 online course cover banner. Bold, modern, scroll-stopping — like a top-tier tech course thumbnail. Avoid generic stock "circuit board + glowing brain" clichés.
 Course topic (Vietnamese): "${title}".
-MAIN SUBJECT: feature the specific AI product/tool/skill from the topic as the clear hero (e.g. Claude, ChatGPT, Midjourney, Gemini…), prominent and recognizable.
-HEADLINE TEXT: render exactly ONE short, punchy, attention-grabbing headline — only 2 to 4 words in Vietnamese (correctly spelled, with proper diacritics), in large bold stylish typography. Use the key product/skill name (e.g. "Làm chủ Claude AI", "Master ChatGPT"). DO NOT write the full long sentence/title; keep the text minimal, big and striking. No paragraphs, no small print, no other text anywhere.
-Surround with tasteful AI/tech iconography (glowing neural networks, circuit lines, data nodes, soft holographic elements). Style: clean premium 3D/flat illustration, sophisticated, single focal point, uncluttered.
-Color palette (accent only): crimson red (#E41E26) and warm gold (#F4B400) over an elegant deep gradient (charcoal/navy to soft light). Soft cinematic lighting, depth of field, vibrant, high quality.
+HERO SUBJECT: the actual AI PRODUCT taught in this course (its real logo / brand identity) must be the large, recognizable centerpiece — keep that product's authentic look and colors. Do NOT substitute a generic "AI" symbol.
+HEADLINE TEXT: render exactly ONE short punchy Vietnamese headline, 2–4 words, correct spelling & diacritics, in large bold stylish typography (e.g. "Làm chủ Claude AI"). No full sentence, no small print, no other text.
+Composition: one clear focal point, clean, premium, depth, soft cinematic lighting. Crimson red (#E41E26) + warm gold (#F4B400) as accent/frame palette over an elegant deep gradient — but the product's own brand colors take priority on its logo.
 ${hasRefs
-  ? `REFERENCE IMAGES: ${refs.length} image(s) provided — you MUST use EVERY one of them, do not ignore any. If one shows a PERSON/character, make that person the main figure of the cover. If one shows a LOGO/brand mark, reproduce it FAITHFULLY (exact shapes, colors, proportions) and place it prominently. Combine ALL provided references together into one cohesive cover. Do NOT invent or add any other logo (especially NOT a generic education-platform logo or the letters "VIE AI EDU"). Besides the short headline above, add no other text.`
-  : `Besides the short headline above, no other text or watermark.`}`;
+  ? `REFERENCE IMAGES — ${refs.length} provided, you MUST use EVERY one with its exact role below (do not ignore or swap roles):\n${refLines}\nCombine them into one cohesive cover. Add no logo other than the provided ones. Besides the short headline, no other text.`
+  : `No logos. Besides the short headline, no other text or watermark.`}`;
 
   const parts: Record<string, unknown>[] = [
     ...refs.map((r) => ({ inlineData: { mimeType: r.mime, data: r.data } })),
