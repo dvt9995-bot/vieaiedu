@@ -27,6 +27,42 @@ export async function geminiHealthCheck(): Promise<{ ok: boolean; reason?: strin
 
 interface Rewritten { title: string; excerpt: string; body: string; }
 
+// Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). Trả {data base64, mime} hoặc null.
+export async function generateCoverImage(title: string): Promise<{ data: string; mime: string } | null> {
+  const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
+  if (!key) return null;
+  // Prompt theo Bộ nhận diện VIE AI EDU (đỏ #E41E26 + vàng #F4B400, premium, AI/giáo dục)
+  const prompt = `Professional widescreen 16:9 online course cover image for "VIE AI EDU", a premium Vietnamese AI education platform.
+Course topic: "${title}".
+Visualize this exact topic with modern, relevant AI & technology iconography (glowing neural networks, circuit lines, abstract data nodes, holographic futuristic elements that clearly represent the topic).
+Style: clean premium 3D/flat illustration, sophisticated, trustworthy, high-tech yet friendly. Single clear focal point, uncluttered composition.
+Brand colors: crimson red (#E41E26) and warm gold (#F4B400) as the primary accents, over an elegant deep gradient background (charcoal/navy to soft light). Soft cinematic lighting, depth of field, subtle geometric patterns.
+High quality, sharp, vibrant. ABSOLUTELY NO text, NO words, NO letters, NO numbers, NO logos, NO watermark.`;
+
+  const models = [(await getConfig("gemini_image_model")) || "gemini-3-pro-image-preview", "gemini-2.5-flash-image"];
+  for (let i = 0; i < models.length; i++) {
+    const model = models[i];
+    if (!model) continue;
+    try {
+      const body: Record<string, unknown> = {
+        contents: [{ parts: [{ text: prompt }] }],
+        generationConfig: { responseModalities: ["IMAGE"], ...(i === 0 ? { imageConfig: { aspectRatio: "16:9" } } : {}) },
+      };
+      const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+        signal: AbortSignal.timeout(55000),
+      });
+      if (!res.ok) continue; // thử model dự phòng
+      const data = await res.json();
+      const parts = data?.candidates?.[0]?.content?.parts || [];
+      const img = parts.find((p: { inlineData?: { data?: string; mimeType?: string } }) => p.inlineData?.data);
+      if (img?.inlineData?.data) return { data: img.inlineData.data as string, mime: (img.inlineData.mimeType as string) || "image/png" };
+    } catch { /* thử model kế tiếp */ }
+  }
+  return null;
+}
+
 // Sinh tiêu đề + mô tả SEO tối ưu (tiếng Việt) cho 1 mục nội dung.
 export async function generateSeoMeta(input: { name: string; context?: string }): Promise<{ seo_title: string; seo_description: string } | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
