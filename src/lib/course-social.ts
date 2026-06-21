@@ -1,6 +1,6 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getYouTubeStats } from "@/lib/youtube";
-import { parseVideoRef } from "@/lib/video";
+import { parseVideoRef, youtubeChannelName } from "@/lib/video";
 import type { Course } from "@/lib/types";
 
 // Đồng bộ "sao đã lưu" (like YouTube live + lượt người dùng lưu) + thời lượng cho danh sách khóa.
@@ -30,6 +30,11 @@ export async function syncCoursesSocial(courses: Course[]) {
       const { count } = await admin.from("favorites").select("*", { count: "exact", head: true }).eq("course_slug", c.slug);
       const likes = (st?.likes || 0) + (count || 0);
       if (likes !== c.likes) { c.likes = likes; patch.likes = likes; }
+      // Giảng viên trống → tự điền TÊN KÊNH YouTube (khỏi cần admin nhập / lưu lại bài)
+      if (!c.instructor) {
+        const ch = await youtubeChannelName(ytId);
+        if (ch) { c.instructor = ch; await admin.from("courses").update({ instructor: ch }).eq("slug", c.slug); }
+      }
     }
     // ⭐ luôn theo ĐÁNH GIÁ THẬT của nền tảng (chưa có đánh giá → 5.0). Tự sửa giá trị blend sót lại.
     const { data: rv } = await admin.from("reviews").select("rating").eq("course_slug", c.slug);

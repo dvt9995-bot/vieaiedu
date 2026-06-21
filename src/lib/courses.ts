@@ -43,7 +43,7 @@ function mapCourse(c: Row): Course {
     ratingCount: (c.rating_count as number) || 0,
     students: (c.students as number) || 0,
     likes: (c.likes as number) || 0,
-    instructor: (c.instructor as string) || "Long Nam",
+    instructor: (() => { const v = (c.instructor as string)?.trim(); return v && v !== "Long Nam" ? v : ""; })(),
     source: (c.source as string) || undefined,
     sections,
     whatYouLearn: ((c.what_you_learn as string[]) || []),

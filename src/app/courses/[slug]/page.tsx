@@ -93,7 +93,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
             <span>{course.students.toLocaleString("vi-VN")} học viên</span>
             <span>{LEVEL_LABEL[course.level]}</span>
             <span>{formatDuration(course.totalMinutes)} · {course.lessonsCount} bài</span>
-            <span>Giảng viên: {course.instructor}</span>
+            {course.instructor && <span>Giảng viên: {course.instructor}</span>}
           </div>
         </div>
       </section>
