@@ -80,7 +80,7 @@ ${hasRefs
     { text: prompt },
   ];
 
-  const models = [(await getConfig("gemini_image_model")) || "gemini-3-pro-image-preview", "gemini-2.5-flash-image"];
+  const models = [(await getConfig("gemini_image_model")) || "gemini-3-pro-image", "gemini-3-pro-image-preview", "gemini-2.5-flash-image"];
   for (let i = 0; i < models.length; i++) {
     const model = models[i];
     if (!model) continue;
