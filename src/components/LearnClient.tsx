@@ -153,7 +153,8 @@ export default function LearnClient({ course, initialLesson, locked = false, pla
               {done.has(current.id) ? "✓ Đã hoàn thành" : "Đánh dấu hoàn thành"}
             </button>
           </div>
-          {course.source && <div className="text-ink-3 text-xs mt-1.5">Nguồn: {course.source}</div>}
+          {course.source ? <div className="text-ink-3 text-xs mt-1.5">Nguồn: {course.source}</div>
+            : course.instructor ? <div className="text-ink-3 text-xs mt-1.5">Giảng viên: {course.instructor}</div> : null}
           <div className="flex gap-1 mt-5 border-b border-border">
             {([["overview", "Tổng quan"], ["notes", `Ghi chú (${notes.length})`], ["quiz", "Quiz"]] as [Tab, string][]).map(([t, label]) => (
               <button key={t} onClick={() => setTab(t)} className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px cursor-pointer transition-colors ${tab === t ? "border-accent text-accent" : "border-transparent text-ink-2 hover:text-ink"}`}>{label}</button>

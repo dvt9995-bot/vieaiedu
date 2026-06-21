@@ -25,3 +25,23 @@ export function parseVideoRef(videoId?: string | null): VideoRef | null {
   if (videoId.startsWith("yt:")) return { kind: "youtube", id: videoId.slice(3) };
   return { kind: "bunny", id: videoId };
 }
+
+/** Tạo slug từ tiếng Việt (bỏ dấu, chữ thường, nối gạch). */
+export function slugify(text: string): string {
+  return (text || "")
+    .normalize("NFD").replace(/[̀-ͯ]/g, "")
+    .replace(/đ/g, "d").replace(/Đ/g, "D")
+    .toLowerCase().trim()
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+/** Lấy TÊN KÊNH của video YouTube qua oEmbed (không cần API key). Dùng phía server. */
+export async function youtubeChannelName(videoId: string): Promise<string | null> {
+  try {
+    const r = await fetch(`https://www.youtube.com/oembed?url=https://www.youtube.com/watch?v=${videoId}&format=json`, { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) return null;
+    const d = await r.json();
+    return (d.author_name as string) || null;
+  } catch { return null; }
+}

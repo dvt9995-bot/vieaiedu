@@ -27,6 +27,27 @@ export async function geminiHealthCheck(): Promise<{ ok: boolean; reason?: strin
 
 interface Rewritten { title: string; excerpt: string; body: string; }
 
+// Gợi ý mô tả ngắn (subtitle) cho khóa học dựa trên tên.
+export async function suggestCourseSubtitle(title: string): Promise<string | null> {
+  const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
+  if (!key) return null;
+  const model = (await getConfig("gemini_model")) || "gemini-2.5-flash";
+  const prompt = `Viết MỘT mô tả ngắn (subtitle) hấp dẫn, súc tích cho khóa học AI tên "${title}" trên nền tảng VIE AI EDU.
+Yêu cầu: 1 câu tiếng Việt, 8–18 từ, nêu rõ lợi ích hoặc đối tượng học, lôi cuốn. Chỉ trả về đúng câu mô tả, không thêm dấu ngoặc, không giải thích.`;
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.85 } }),
+      signal: AbortSignal.timeout(20000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return null;
+    return String(text).trim().replace(/^["'“”]+|["'“”]+$/g, "").slice(0, 160);
+  } catch { return null; }
+}
+
 export type ImgRef = { data: string; mime: string };
 
 // Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). refs = ảnh tham chiếu (nhân vật/logo, tùy chọn).

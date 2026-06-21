@@ -2,8 +2,21 @@ import { NextResponse } from "next/server";
 import { revalidateTag } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
+import { parseVideoRef, youtubeChannelName } from "@/lib/video";
 
 const FIELDS = ["title", "type", "duration_sec", "is_preview", "video_id", "content", "position", "section_id"];
+
+// Khi gán video YouTube: tự lấy TÊN KÊNH → điền vào "Nguồn" của khóa (nếu khóa chưa có nguồn).
+async function autoSourceFromYouTube(admin: NonNullable<ReturnType<typeof createAdminClient>>, courseId: string | null | undefined, videoId: unknown) {
+  if (!courseId) return;
+  const ref = parseVideoRef(typeof videoId === "string" ? videoId : null);
+  if (ref?.kind !== "youtube") return;
+  const { data: c } = await admin.from("courses").select("source").eq("id", courseId).maybeSingle();
+  if (c && (c.source == null || String(c.source).trim() === "")) {
+    const ch = await youtubeChannelName(ref.id);
+    if (ch) await admin.from("courses").update({ source: ch }).eq("id", courseId);
+  }
+}
 function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};
   for (const f of FIELDS) if (b[f] !== undefined) o[f] = b[f];
@@ -32,6 +45,7 @@ export async function POST(req: Request) {
   if (!body.section_id || !body.course_id || !body.title) return NextResponse.json({ error: "Thiếu dữ liệu" }, { status: 400 });
   const { data, error } = await admin.from("lessons").insert({ course_id: body.course_id, ...pick(body) }).select("id").single();
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  await autoSourceFromYouTube(admin, body.course_id, body.video_id);
   revalidateTag("courses", "max");
   return NextResponse.json({ ok: true, id: data.id });
 }
@@ -43,6 +57,10 @@ export async function PATCH(req: Request) {
   if (!body.id) return NextResponse.json({ error: "Thiếu id" }, { status: 400 });
   const { error } = await admin.from("lessons").update(pick(body)).eq("id", body.id);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  if (typeof body.video_id === "string" && body.video_id.startsWith("yt:")) {
+    const { data: l } = await admin.from("lessons").select("course_id").eq("id", body.id).maybeSingle();
+    await autoSourceFromYouTube(admin, l?.course_id as string | undefined, body.video_id);
+  }
   revalidateTag("courses", "max");
   return NextResponse.json({ ok: true });
 }

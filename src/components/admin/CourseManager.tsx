@@ -4,6 +4,7 @@ import { formatVND } from "@/lib/format";
 import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
 import CourseCoverModal from "./CourseCoverModal";
+import { slugify } from "@/lib/video";
 
 interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; thumb?: string; }
 type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string };
@@ -15,7 +16,26 @@ export default function CourseManager() {
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
   const [coverOpen, setCoverOpen] = useState(false);
+  const [slugTouched, setSlugTouched] = useState(false);
+  const [subBusy, setSubBusy] = useState(false);
   const [msg, setMsg] = useState("");
+
+  // Đổi tên khóa → tự cập nhật slug (trừ khi người dùng đã sửa slug thủ công)
+  function onTitle(v: string) {
+    setForm((f) => f ? { ...f, title: v, ...(slugTouched ? {} : { slug: slugify(v) }) } : f);
+  }
+  function onSlug(v: string) { setSlugTouched(true); setForm((f) => f ? { ...f, slug: slugify(v) } : f); }
+  function openNew() { setSlugTouched(false); setForm({ ...empty }); }
+  function openEdit(f: Form) { setSlugTouched(true); setForm(f); }
+
+  async function aiSubtitle() {
+    if (!form?.title?.trim()) return toast("Nhập tên khóa học trước đã", "error");
+    setSubBusy(true);
+    const r = await fetch("/api/admin/course-suggest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: form.title }) }).then((x) => x.json()).catch(() => ({}));
+    setSubBusy(false);
+    if (r.subtitle) { setForm((f) => f ? { ...f, subtitle: r.subtitle } : f); toast("✨ Đã gợi ý mô tả"); }
+    else toast(r.error || "Không gợi ý được", "error");
+  }
   const [managing, setManaging] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -71,7 +91,7 @@ export default function CourseManager() {
           {rows.length > 0 && (
             <button onClick={aiSeo} className="rounded-full border border-border-strong hover:border-accent hover:text-accent text-sm font-semibold px-4 py-2 cursor-pointer transition-colors">✨ AI tối ưu SEO</button>
           )}
-          <button onClick={() => setForm({ ...empty })} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">+ Thêm khóa học</button>
+          <button onClick={openNew} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-4 py-2 cursor-pointer transition-colors">+ Thêm khóa học</button>
         </div>
       </div>
       {msg && <p className="text-sm text-ink-2 mb-3">{msg}</p>}
@@ -79,30 +99,45 @@ export default function CourseManager() {
       {form && (
         <div className="rounded-card border border-border bg-bg-soft p-5 mb-4 grid sm:grid-cols-2 gap-3">
           <div className="sm:col-span-2 flex gap-2">
-            <input className={`${inp} flex-1`} placeholder="Tên khóa học" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+            <input className={`${inp} flex-1`} placeholder="Tên khóa học" value={form.title || ""} onChange={(e) => onTitle(e.target.value)} />
             <button onClick={() => form?.title?.trim() ? setCoverOpen(true) : toast("Nhập tên khóa học trước đã", "error")} title="Tạo ảnh bìa bằng AI dựa trên tên khóa" className="shrink-0 rounded-lg bg-ink text-white font-semibold text-sm px-3.5 py-2 cursor-pointer hover:opacity-90 whitespace-nowrap">
               ✨ Tạo ảnh bìa AI
             </button>
           </div>
+
+          {/* Phân loại phí ngay từ đầu */}
+          <div className="sm:col-span-2 flex gap-2">
+            <button onClick={() => setForm({ ...form, price: 0, compare_price: 0 })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer transition-colors ${(form.price ?? 0) === 0 ? "border-success bg-success/10 text-success" : "border-border-strong hover:border-accent"}`}>🆓 Miễn phí</button>
+            <button onClick={() => setForm({ ...form, price: form.price && form.price > 0 ? form.price : 299000 })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer transition-colors ${(form.price ?? 0) > 0 ? "border-accent bg-accent-weak text-accent" : "border-border-strong hover:border-accent"}`}>💳 Có phí</button>
+          </div>
+
           {form.thumb && (
             <div className="sm:col-span-2">
               {/* eslint-disable-next-line @next/next/no-img-element */}
               <img src={form.thumb} alt="Ảnh bìa" className="w-full max-w-[280px] aspect-video object-cover rounded-lg border border-border" />
             </div>
           )}
-          <input className={inp} placeholder="slug (vd: nhap-mon-ai)" value={form.slug || ""} onChange={(e) => setForm({ ...form, slug: e.target.value })} />
-          <input className={inp} placeholder="Mô tả ngắn (subtitle)" value={form.subtitle || ""} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} />
+          <input className={inp} placeholder="slug — tự tạo từ tên" value={form.slug || ""} onChange={(e) => onSlug(e.target.value)} />
           <input className={inp} placeholder="Danh mục" value={form.category || ""} onChange={(e) => setForm({ ...form, category: e.target.value })} />
-          <input className={inp} type="number" placeholder="Giá (VND)" value={form.price ?? ""} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
-          <input className={inp} type="number" placeholder="Giá gạch (tùy chọn)" value={form.compare_price ?? ""} onChange={(e) => setForm({ ...form, compare_price: Number(e.target.value) })} />
+          <div className="sm:col-span-2 flex gap-2">
+            <input className={`${inp} flex-1`} placeholder="Mô tả ngắn (subtitle)" value={form.subtitle || ""} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} />
+            <button onClick={aiSubtitle} disabled={subBusy} title="AI gợi ý mô tả từ tên khóa" className="shrink-0 rounded-lg border border-border-strong hover:border-accent text-sm font-semibold px-3 cursor-pointer disabled:opacity-60 whitespace-nowrap">{subBusy ? "…" : "✨ AI gợi ý"}</button>
+          </div>
+          {(form.price ?? 0) > 0 && (
+            <>
+              <input className={inp} type="number" placeholder="Giá (VND)" value={form.price ?? ""} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
+              <input className={inp} type="number" placeholder="Giá gạch (tùy chọn)" value={form.compare_price ?? ""} onChange={(e) => setForm({ ...form, compare_price: Number(e.target.value) })} />
+            </>
+          )}
           <select className={inp} value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })}>
             <option value="beginner">Cơ bản</option><option value="intermediate">Trung cấp</option><option value="advanced">Nâng cao</option>
           </select>
           <select className={inp} value={form.status} onChange={(e) => setForm({ ...form, status: e.target.value })}>
             <option value="published">Công khai</option><option value="draft">Nháp</option>
           </select>
-          <input className={inp} placeholder="Nguồn / Tên kênh (tùy chọn)" value={form.source || ""} onChange={(e) => setForm({ ...form, source: e.target.value })} />
-          <input className={`${inp} sm:col-span-2`} placeholder="Ảnh thumbnail (URL, vd /courses/abc.jpg)" value={form.thumb || ""} onChange={(e) => setForm({ ...form, thumb: e.target.value })} />
+          <input className={inp} placeholder="Giảng viên (điền thủ công — khóa Bunny)" value={form.instructor || ""} onChange={(e) => setForm({ ...form, instructor: e.target.value })} />
+          <input className={inp} placeholder="Nguồn / Tên kênh (tự điền nếu dùng YouTube)" value={form.source || ""} onChange={(e) => setForm({ ...form, source: e.target.value })} />
+          <input className={`${inp} sm:col-span-2`} placeholder="Ảnh thumbnail (URL) — hoặc dùng nút tạo ảnh AI" value={form.thumb || ""} onChange={(e) => setForm({ ...form, thumb: e.target.value })} />
           <div className="sm:col-span-2 flex gap-2">
             <button onClick={save} className="rounded-full bg-ink text-white font-semibold text-sm px-4 py-2 cursor-pointer">Lưu khóa học</button>
             <button onClick={() => setForm(null)} className="rounded-full border border-border-strong text-sm px-4 py-2 cursor-pointer">Hủy</button>
@@ -127,7 +162,7 @@ export default function CourseManager() {
                 <td className="px-4 py-3 hidden sm:table-cell"><span className={`text-xs font-semibold ${c.status === "published" ? "text-success" : "text-ink-3"}`}>{c.status === "published" ? "Công khai" : "Nháp"}</span></td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button onClick={() => setManaging(c.id)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">Bài học</button>
-                  <button onClick={() => setForm({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, status: c.status, source: c.source })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
+                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, status: c.status, source: c.source, subtitle: c.subtitle, instructor: c.instructor })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
                   <button onClick={() => del(c.id)} className="text-ink-3 font-semibold cursor-pointer hover:text-accent">Xóa</button>
                 </td>
               </tr>
