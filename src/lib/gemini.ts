@@ -65,15 +65,26 @@ export async function generateCoverImage(title: string, refs: ImgRef[] = []): Pr
     return `• Reference image #${n} = the COURSE PRODUCT logo (the AI tool being taught, e.g. Claude/ChatGPT/Gemini): reproduce it FAITHFULLY (exact shape, colors, proportions) and make it the LARGE CENTRAL HERO of the cover. Do NOT replace it with a generic glowing "AI" glyph, brain or text.`;
   }).join("\n");
 
-  // Bìa khóa học: CHỦ THỂ = LOGO SẢN PHẨM được dạy; tiêu đề NGẮN GỌN; đỏ #E41E26 + vàng #F4B400 làm khung accent.
-  const prompt = `Premium, editorial, eye-catching widescreen 16:9 online course cover banner. Bold, modern, scroll-stopping — like a top-tier tech course thumbnail. Avoid generic stock "circuit board + glowing brain" clichés.
-Course topic (Vietnamese): "${title}".
-HERO SUBJECT: the actual AI PRODUCT taught in this course (its real logo / brand identity) must be the large, recognizable centerpiece — keep that product's authentic look and colors. Do NOT substitute a generic "AI" symbol.
-HEADLINE TEXT: render exactly ONE short punchy Vietnamese headline, 2–4 words, correct spelling & diacritics, in large bold stylish typography (e.g. "Làm chủ Claude AI"). No full sentence, no small print, no other text.
-Composition: one clear focal point, clean, premium, depth, soft cinematic lighting. Crimson red (#E41E26) + warm gold (#F4B400) as accent/frame palette over an elegant deep gradient — but the product's own brand colors take priority on its logo.
+  // Prompt cấp "senior graphic designer" — hiện đại, tinh tế, công nghệ cao, KHÔNG lòe loẹt.
+  const prompt = `Act as a SENIOR GRAPHIC DESIGNER at a world-class tech brand (think the visual polish of Apple, Stripe, Linear, Vercel, or an award-winning Behance/Dribbble course thumbnail). Design a premium 16:9 widescreen online-course cover.
+
+COURSE TOPIC (Vietnamese): "${title}".
+
+ART DIRECTION (very important):
+- Modern, sleek, sophisticated, minimal and uncluttered. Strong visual hierarchy, one clear focal point, generous negative space, balanced layout using the rule of thirds.
+- High-end tech aesthetic: clean geometry, refined 3D or crisp flat shapes, subtle depth, soft realistic studio lighting, gentle premium glow.
+- STRICTLY AVOID: busy circuit-board/glowing-brain clichés, cheesy or gaudy "casino" gold gradients, clip-art, heavy bevels, overcrowding, low-end stock look. Keep it tasteful and restrained.
+
+HERO: the actual AI product taught in this course as the recognizable focal element (use its real brand identity and colors), placed off-center per the rule of thirds — never a generic "AI" glyph.
+
+TYPOGRAPHY (designer-grade): render exactly ONE short Vietnamese headline, 2–4 words, correct diacritics (e.g. "Làm chủ Claude AI"), in a clean modern geometric sans-serif (Inter / SF Pro / Montserrat style), bold weight, tight kerning, crisp edges, excellent legibility and strong contrast with the background. Place it neatly in the top or left third with comfortable margins. No other text, no paragraphs, no small print, no misspelled or warped letters.
+
+COLOR: refined and editorial — a clean deep background (midnight navy or charcoal, OR a crisp light surface) with crimson red (#E41E26) as a confident accent and gold (#F4B400) used sparingly as a premium highlight. Restrained, elegant, NOT a heavy red-gold gradient wash.
+
+QUALITY: ultra-sharp, 4K, professional, cohesive, award-winning.
 ${hasRefs
-  ? `REFERENCE IMAGES — ${refs.length} provided, you MUST use EVERY one with its exact role below (do not ignore or swap roles):\n${refLines}\nCombine them into one cohesive cover. Add no logo other than the provided ones. Besides the short headline, no other text.`
-  : `No logos. Besides the short headline, no other text or watermark.`}`;
+  ? `\nREFERENCE IMAGES — ${refs.length} provided. Use EVERY one with its EXACT role below (never swap roles), integrated cleanly into the polished layout:\n${refLines}\nAdd no logo other than the provided ones. Besides the short headline, no other text.`
+  : `\nNo logos. Besides the short headline, no other text or watermark.`}`;
 
   const parts: Record<string, unknown>[] = [
     ...refs.map((r) => ({ inlineData: { mimeType: r.mime, data: r.data } })),
