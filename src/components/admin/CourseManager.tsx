@@ -5,6 +5,7 @@ import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
 import CourseCoverModal from "./CourseCoverModal";
 import { slugify } from "@/lib/video";
+import { compressImage } from "@/lib/image";
 
 interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; thumb?: string; }
 type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string };
@@ -18,6 +19,7 @@ export default function CourseManager() {
   const [coverOpen, setCoverOpen] = useState(false);
   const [slugTouched, setSlugTouched] = useState(false);
   const [subBusy, setSubBusy] = useState(false);
+  const [thumbBusy, setThumbBusy] = useState(false);
   const [msg, setMsg] = useState("");
 
   // Đổi tên khóa → tự cập nhật slug (trừ khi người dùng đã sửa slug thủ công)
@@ -27,6 +29,17 @@ export default function CourseManager() {
   function onSlug(v: string) { setSlugTouched(true); setForm((f) => f ? { ...f, slug: slugify(v) } : f); }
   function openNew() { setSlugTouched(false); setForm({ ...empty }); }
   function openEdit(f: Form) { setSlugTouched(true); setForm(f); }
+
+  async function uploadThumb(file?: File | null) {
+    if (!file) return;
+    setThumbBusy(true);
+    const small = await compressImage(file, 1600, 0.85);
+    const fd = new FormData(); fd.append("file", small); fd.append("bucket", "blog");
+    const r = await fetch("/api/admin/upload", { method: "POST", body: fd }).then((x) => x.json()).catch(() => ({}));
+    setThumbBusy(false);
+    if (r.url) { setForm((f) => f ? { ...f, thumb: r.url } : f); toast("Đã tải ảnh bìa"); }
+    else toast(r.error || "Tải ảnh thất bại", "error");
+  }
 
   async function aiSubtitle() {
     if (!form?.title?.trim()) return toast("Nhập tên khóa học trước đã", "error");
@@ -137,7 +150,16 @@ export default function CourseManager() {
           </select>
           <input className={inp} placeholder="Giảng viên (điền thủ công — khóa Bunny)" value={form.instructor || ""} onChange={(e) => setForm({ ...form, instructor: e.target.value })} />
           <input className={inp} placeholder="Nguồn / Tên kênh (tự điền nếu dùng YouTube)" value={form.source || ""} onChange={(e) => setForm({ ...form, source: e.target.value })} />
-          <input className={`${inp} sm:col-span-2`} placeholder="Ảnh thumbnail (URL) — hoặc dùng nút tạo ảnh AI" value={form.thumb || ""} onChange={(e) => setForm({ ...form, thumb: e.target.value })} />
+          <div className="sm:col-span-2">
+            <div className="flex gap-2">
+              <input className={`${inp} flex-1`} placeholder="Ảnh bìa (URL) — hoặc tải lên / tạo bằng AI" value={form.thumb || ""} onChange={(e) => setForm({ ...form, thumb: e.target.value })} />
+              <label className="shrink-0 rounded-lg border border-border-strong hover:border-accent text-sm font-semibold px-3.5 py-2 cursor-pointer whitespace-nowrap inline-flex items-center">
+                {thumbBusy ? "Đang tải…" : "⬆ Tải ảnh"}
+                <input type="file" accept="image/*" className="hidden" disabled={thumbBusy} onChange={(e) => { uploadThumb(e.target.files?.[0]); e.currentTarget.value = ""; }} />
+              </label>
+            </div>
+            <p className="text-ink-3 text-xs mt-1">Khuyến nghị tỉ lệ <b>16:9</b> — kích thước <b>1280×720</b> (hoặc 1920×1080). Ảnh tự nén tối ưu khi tải lên.</p>
+          </div>
           <div className="sm:col-span-2 flex gap-2">
             <button onClick={save} className="rounded-full bg-ink text-white font-semibold text-sm px-4 py-2 cursor-pointer">Lưu khóa học</button>
             <button onClick={() => setForm(null)} className="rounded-full border border-border-strong text-sm px-4 py-2 cursor-pointer">Hủy</button>
