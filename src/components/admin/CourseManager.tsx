@@ -33,13 +33,23 @@ export default function CourseManager() {
 
   async function uploadThumb(file?: File | null) {
     if (!file) return;
+    if (!file.type.startsWith("image/")) return toast("Chỉ chấp nhận file ảnh (JPG/PNG/WebP)", "error");
     setThumbBusy(true);
-    const small = await compressImage(file, 1600, 0.85);
-    const fd = new FormData(); fd.append("file", small); fd.append("bucket", "blog");
-    const r = await fetch("/api/admin/upload", { method: "POST", body: fd }).then((x) => x.json()).catch(() => ({}));
-    setThumbBusy(false);
-    if (r.url) { setForm((f) => f ? { ...f, thumb: r.url } : f); toast("Đã tải ảnh bìa"); }
-    else toast(r.error || "Tải ảnh thất bại", "error");
+    try {
+      const small = await compressImage(file, 1600, 0.85);
+      if (small.size > 4_000_000) { setThumbBusy(false); return toast("Ảnh quá lớn (>4MB sau khi nén). Hãy dùng ảnh nhỏ hơn.", "error"); }
+      const fd = new FormData(); fd.append("file", small); fd.append("bucket", "blog");
+      const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+      if (!res.ok) {
+        const e = await res.json().catch(() => ({}));
+        return toast(e.error || (res.status === 413 ? "Ảnh quá lớn" : `Lỗi tải ảnh (HTTP ${res.status})`), "error");
+      }
+      const r = await res.json();
+      if (r.url) { setForm((f) => f ? { ...f, thumb: r.url } : f); toast("Đã tải ảnh bìa ✓"); }
+      else toast(r.error || "Tải ảnh thất bại", "error");
+    } catch (err) {
+      toast("Lỗi xử lý ảnh: " + ((err as Error)?.message || "thử lại"), "error");
+    } finally { setThumbBusy(false); }
   }
 
   async function aiSubtitle() {
