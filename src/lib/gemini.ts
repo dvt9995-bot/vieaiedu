@@ -34,16 +34,16 @@ export async function generateCoverImage(title: string, refs: ImgRef[] = []): Pr
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
   const hasRefs = refs.length > 0;
-  // Prompt theo Bộ nhận diện VIE AI EDU (đỏ #E41E26 + vàng #F4B400, premium, AI/giáo dục)
-  const prompt = `Professional widescreen 16:9 online course cover image for "VIE AI EDU", a premium Vietnamese AI education platform.
-Course topic: "${title}".
-Visualize this exact topic with modern, relevant AI & technology iconography (glowing neural networks, circuit lines, abstract data nodes, holographic futuristic elements that clearly represent the topic).
-Style: clean premium 3D/flat illustration, sophisticated, trustworthy, high-tech yet friendly. Single clear focal point, uncluttered composition.
-Brand colors: crimson red (#E41E26) and warm gold (#F4B400) as the primary accents, over an elegant deep gradient background (charcoal/navy to soft light). Soft cinematic lighting, depth of field, subtle geometric patterns.
-High quality, sharp, vibrant.
+  // Bìa khóa học: CHỦ THỂ là AI/công cụ được dạy trong khóa; màu đỏ #E41E26 + vàng #F4B400 chỉ là PALETTE.
+  const prompt = `Premium widescreen 16:9 online course cover banner.
+Course title: "${title}".
+The MAIN SUBJECT must be the specific AI product/tool/topic named in the title above — visualize and feature THAT subject prominently and recognizably as the hero of the cover (if the title names a product like Claude, ChatGPT, Midjourney, Gemini, etc., make that product the clear focal element).
+Surround it with tasteful modern AI/technology iconography (glowing neural networks, circuit lines, data nodes, soft holographic elements).
+Style: clean premium 3D/flat illustration, sophisticated, trustworthy, single clear focal point, uncluttered.
+Color palette (accent only, NOT a logo): crimson red (#E41E26) and warm gold (#F4B400) over an elegant deep gradient background (charcoal/navy to soft light). Soft cinematic lighting, depth of field. High quality, sharp, vibrant.
 ${hasRefs
-  ? "Use the provided reference image(s): feature the depicted person/character as the main subject of the cover, and tastefully integrate the provided platform/brand logo. Do NOT add any other text or words."
-  : "ABSOLUTELY NO text, NO words, NO letters, NO numbers, NO logos, NO watermark."}`;
+  ? `IMPORTANT — reference images provided: they show the EXACT logo/branding of the AI product this course teaches, and possibly a person/instructor. Reproduce the provided logo FAITHFULLY (keep its exact shapes, colors and proportions) and make it a prominent focal element. If a person is provided, use them as the main figure. Do NOT invent, add, replace or substitute any other logo or brand mark — in particular, do NOT add any generic education-platform logo or the letters "VIE AI EDU". Keep the provided logo as the only brand mark. No other text or words.`
+  : `ABSOLUTELY NO text, NO words, NO letters, NO numbers, NO logos, NO watermark — only the visual illustration of the topic.`}`;
 
   const parts: Record<string, unknown>[] = [
     ...refs.map((r) => ({ inlineData: { mimeType: r.mime, data: r.data } })),
