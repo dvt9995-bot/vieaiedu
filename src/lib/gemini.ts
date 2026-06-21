@@ -77,9 +77,18 @@ export async function generateCoverImage(title: string, refs: ImgRef[] = [], opt
   }).join("\n");
 
   // Prompt cấp "senior graphic designer" — hiện đại, tinh tế, công nghệ cao, KHÔNG lòe loẹt.
-  const prompt = `Act as a SENIOR GRAPHIC DESIGNER at a world-class tech brand (think the visual polish of Apple, Stripe, Linear, Vercel, or an award-winning Behance/Dribbble course thumbnail). Design a premium 16:9 widescreen online-course cover.
+  const prompt = `You are a WORLD-CLASS EXPERT DESIGNER specialized in marketing banners and online-course cover art (course thumbnails / hero banners). You have the visual polish of Apple, Stripe, Linear, Vercel and award-winning Behance/Dribbble work. Design a premium 16:9 widescreen online-course cover.
 
 COURSE TOPIC (Vietnamese): "${title}".
+
+FIDELITY TO THE BRIEF (critical):
+- Study the attached reference image(s) and the course topic CAREFULLY, then design accordingly — the cover must clearly and accurately represent THIS specific course and its subject.
+- Reproduce every provided reference FAITHFULLY: exact logo shapes/colors/proportions, and exact likeness of any provided person. Do not distort, recolor or invent brand marks.
+- The artwork must be coherent with the topic's meaning (don't add unrelated objects). Make a viewer instantly understand what the course is about.
+
+THUMBNAIL CRAFT:
+- Must read clearly and look striking even at small sizes (as a thumbnail): bold focal point, strong figure/ground contrast, no tiny fussy details.
+- Professional finish: pixel-clean edges, consistent lighting and perspective, harmonious color, no artefacts or warped shapes.
 
 ART DIRECTION (very important):
 - Modern, sleek, sophisticated, minimal and uncluttered. Strong visual hierarchy, one clear focal point, generous negative space, balanced layout using the rule of thirds.
