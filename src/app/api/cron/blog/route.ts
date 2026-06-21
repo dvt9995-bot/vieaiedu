@@ -3,7 +3,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { rewriteArticle, isGeminiConfigured, geminiHealthCheck } from "@/lib/gemini";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { notifyAdmins } from "@/lib/notify";
-import { getConfig } from "@/lib/settings";
+import { getConfig, setSetting } from "@/lib/settings";
 import { revalidateTag } from "next/cache";
 
 export const maxDuration = 60;
@@ -103,6 +103,9 @@ export async function GET(req: Request) {
 
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ error: "no db" }, { status: 500 });
+
+  // Đánh dấu cron blog đã chạy (để bảng sức khỏe theo dõi)
+  await setSetting("cron_blog_last", new Date().toISOString());
 
   try {
     if (!(await isGeminiConfigured())) {

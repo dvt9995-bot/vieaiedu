@@ -20,13 +20,18 @@ function BarChart({ data, color, fmt }: { data: Pt[]; color: string; fmt?: (n: n
 }
 
 interface Service { key: string; label: string; ok: boolean; note: string }
+interface ActionItem { key: string; label: string; count: number; urgent: boolean }
 
-export default function Dashboard() {
+const TAB_OF: Record<string, string> = { withdrawals: "withdraw", posts: "community", users: "users" };
+
+export default function Dashboard({ onGo }: { onGo?: (tab: string) => void }) {
   const [s, setS] = useState<Stats | null>(null);
   const [health, setHealth] = useState<Service[] | null>(null);
+  const [actions, setActions] = useState<ActionItem[] | null>(null);
   useEffect(() => {
     fetch("/api/admin/stats").then((r) => r.json()).then(setS).catch(() => setS(null));
     fetch("/api/admin/health").then((r) => r.json()).then((d) => setHealth(d.services || [])).catch(() => setHealth([]));
+    fetch("/api/admin/action-items").then((r) => r.json()).then((d) => setActions(d.items || [])).catch(() => setActions([]));
   }, []);
   const o = s?.overview || {};
   const kpis: [string, string][] = [
@@ -39,6 +44,30 @@ export default function Dashboard() {
   ];
   return (
     <div className="space-y-6">
+      {/* Cần xử lý */}
+      {actions && actions.length > 0 && (
+        <div className="rounded-card border border-border bg-surface p-5">
+          <div className="text-sm font-semibold mb-3">🛎 Cần xử lý</div>
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+            {actions.map((a) => {
+              const tab = TAB_OF[a.key];
+              const active = a.count > 0;
+              const Inner = (
+                <>
+                  <div className={`text-2xl font-extrabold tracking-tight ${a.urgent ? "text-accent" : active ? "text-ink" : "text-ink-3"}`}>{a.count}</div>
+                  <div className="text-ink-3 text-xs leading-snug mt-0.5">{a.label}</div>
+                </>
+              );
+              return tab ? (
+                <button key={a.key} onClick={() => onGo?.(tab)} className={`text-left rounded-lg border p-3 transition-colors cursor-pointer ${a.urgent ? "border-accent/40 bg-accent-weak hover:border-accent" : "border-border hover:border-border-strong"}`}>{Inner}</button>
+              ) : (
+                <div key={a.key} className={`rounded-lg border p-3 ${a.urgent ? "border-accent/40 bg-accent-weak" : "border-border"}`}>{Inner}</div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
       {/* Sức khỏe hệ thống */}
       {health && (
         <div className="rounded-card border border-border bg-surface p-5">

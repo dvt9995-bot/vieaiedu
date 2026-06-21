@@ -18,6 +18,14 @@ export async function getAllSettings(): Promise<Record<string, string>> {
 
 export function clearSettingsCache() { cache = null; }
 
+/** Ghi 1 cấu hình vào app_settings (dùng cho mốc cron last-run...). */
+export async function setSetting(key: string, value: string) {
+  const admin = createAdminClient();
+  if (!admin) return;
+  await admin.from("app_settings").upsert({ key, value, updated_at: new Date().toISOString() }, { onConflict: "key" });
+  cache = null;
+}
+
 /** Giá trị cấu hình: ưu tiên DB (admin sửa), fallback env. */
 export async function getConfig(key: string, envKey?: string): Promise<string> {
   const s = await getAllSettings();

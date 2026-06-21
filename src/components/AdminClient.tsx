@@ -46,7 +46,7 @@ export default function AdminClient() {
         </nav>
 
         <div>
-          {tab === "overview" && <Dashboard />}
+          {tab === "overview" && <Dashboard onGo={(t) => setTab(t as Tab)} />}
           {tab === "courses" && <CourseManager />}
           {tab === "blog" && <BlogManager />}
           {tab === "users" && <UserManager />}

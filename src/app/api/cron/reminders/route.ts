@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { notify } from "@/lib/notify";
+import { notify, notifyAdmins } from "@/lib/notify";
 import { getCourseBySlug } from "@/lib/courses";
 import { walletChange } from "@/lib/wallet";
+import { setSetting } from "@/lib/settings";
+import { formatVND } from "@/lib/format";
 
 // Cron hằng ngày: nhắc học + email marketing tự động (bỏ giỏ, nhắc người mới).
 export async function GET(req: Request) {
@@ -65,5 +67,23 @@ export async function GET(req: Request) {
     refunded++;
   }
 
-  return NextResponse.json({ ok: true, reminded, abandoned, nudged, refunded });
+  // 5) Tổng kết hằng ngày cho admin (1 thông báo/ngày, không spam)
+  const since = iso(now - 24 * 3600_000);
+  const [{ count: newUsers }, { count: newPosts }, paidOrders] = await Promise.all([
+    admin.from("profiles").select("*", { count: "exact", head: true }).gt("created_at", since),
+    admin.from("posts").select("*", { count: "exact", head: true }).gt("created_at", since),
+    admin.from("orders").select("amount").eq("status", "paid").gt("created_at", since),
+  ]);
+  const ordersN = (paidOrders.data || []).length;
+  const revenue = (paidOrders.data || []).reduce((s, o) => s + ((o.amount as number) || 0), 0);
+  await notifyAdmins(
+    "📊 Tổng kết 24h qua",
+    `👤 +${newUsers || 0} học viên · 📝 +${newPosts || 0} bài cộng đồng · 🛒 ${ordersN} đơn (${formatVND(revenue)})`,
+    "/admin",
+  );
+
+  // Đánh dấu cron đã chạy (để bảng sức khỏe theo dõi)
+  await setSetting("cron_reminders_last", iso(now));
+
+  return NextResponse.json({ ok: true, reminded, abandoned, nudged, refunded, digest: { newUsers, newPosts, ordersN, revenue } });
 }
