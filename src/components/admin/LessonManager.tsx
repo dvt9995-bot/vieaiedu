@@ -90,12 +90,12 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
               </div>
               <ul>
                 {s.lessons.map((l) => (
-                  <li key={l.id} className="flex items-center gap-2 px-4 py-2 border-t border-border text-sm">
-                    <span className="flex-1">{l.title} <span className="text-ink-3 text-xs">({Math.round(l.duration_sec / 60)}p)</span></span>
-                    <button onClick={() => togglePreview(l)} className={`text-xs font-semibold px-2 py-0.5 rounded-full cursor-pointer ${l.is_preview ? "bg-accent-weak text-accent" : "text-ink-3 border border-border"}`}>{l.is_preview ? "Xem thử" : "Khóa"}</button>
-                    <button onClick={() => setVideo(l)} className={`text-xs font-semibold cursor-pointer ${l.video_id ? "text-success" : "text-accent"}`}>{l.video_id ? "🎬 đã gán" : "Gán video"}</button>
-                    <button onClick={() => { setDocLesson(l); setDocText(l.content || ""); }} className={`text-xs font-semibold cursor-pointer ${l.content ? "text-success" : "text-ink-2 hover:text-accent"}`}>{l.content ? "📄 có tài liệu" : "📄 Tài liệu"}</button>
-                    <button onClick={() => delLesson(l.id)} className="text-ink-3 hover:text-accent text-xs cursor-pointer">Xóa</button>
+                  <li key={l.id} className="flex flex-wrap items-center gap-x-3 gap-y-1.5 px-4 py-2.5 border-t border-border text-sm">
+                    <span className="basis-full sm:basis-auto sm:flex-1 min-w-0">{l.title} <span className="text-ink-3 text-xs">({Math.round(l.duration_sec / 60)}p)</span></span>
+                    <button onClick={() => togglePreview(l)} className={`text-xs font-semibold px-2.5 py-1 rounded-full cursor-pointer ${l.is_preview ? "bg-accent-weak text-accent" : "text-ink-3 border border-border"}`}>{l.is_preview ? "Xem thử" : "Khóa"}</button>
+                    <button onClick={() => setVideo(l)} className={`text-xs font-semibold py-1 cursor-pointer ${l.video_id ? "text-success" : "text-accent"}`}>{l.video_id ? "🎬 đã gán" : "Gán video"}</button>
+                    <button onClick={() => { setDocLesson(l); setDocText(l.content || ""); }} className={`text-xs font-semibold py-1 cursor-pointer ${l.content ? "text-success" : "text-ink-2 hover:text-accent"}`}>{l.content ? "📄 có tài liệu" : "📄 Tài liệu"}</button>
+                    <button onClick={() => delLesson(l.id)} className="text-ink-3 hover:text-accent text-xs py-1 cursor-pointer">Xóa</button>
                   </li>
                 ))}
               </ul>
