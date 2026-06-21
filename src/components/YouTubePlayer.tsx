@@ -35,6 +35,7 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
   const wrapRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
+  const audioTried = useRef(false);
   const [ready, setReady] = useState(false);
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
@@ -59,7 +60,7 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
           onStateChange: (e: any) => {
             const S = window.YT.PlayerState;
             setPlaying(e.data === S.PLAYING);
-            if (e.data === S.PLAYING) setDur(e.target.getDuration() || 0);
+            if (e.data === S.PLAYING) { setDur(e.target.getDuration() || 0); trySetViAudio(e.target); }
             if (e.data === S.ENDED) onEnded?.();
           },
         },
@@ -80,6 +81,21 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
     raf = requestAnimationFrame(tick);
     return () => cancelAnimationFrame(raf);
   }, []);
+
+  // Best-effort: tự chọn track LỒNG TIẾNG tiếng Việt nếu video có (API không chính thức → bọc try/catch)
+  function trySetViAudio(p: any) {
+    if (audioTried.current) return;
+    try {
+      const tracks = p.getAvailableAudioTracks?.() || p.getAvailableAudioLanguages?.();
+      if (Array.isArray(tracks) && tracks.length > 1) {
+        const vi = tracks.find((t: any) => {
+          const code = String(t?.languageCode || t?.id || t || "").toLowerCase();
+          return code.startsWith("vi") || /việt|vietnam/i.test(String(t?.displayName || t?.name || ""));
+        });
+        if (vi) { (p.setAudioTrack || p.setAudioLanguage)?.call(p, vi); audioTried.current = true; }
+      }
+    } catch { /* YouTube không hỗ trợ → bỏ qua, vẫn có phụ đề */ }
+  }
 
   const toggle = () => { const p = playerRef.current; if (!p) return; playing ? p.pauseVideo() : p.playVideo(); };
   const seekFrac = (frac: number) => { const p = playerRef.current; const d = p?.getDuration?.() || dur; if (p && d) p.seekTo(d * Math.max(0, Math.min(1, frac)), true); };
