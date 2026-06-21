@@ -82,46 +82,33 @@
   box-shadow: 0 0 0 3px var(--color-accent-weak);
 }
 
-/* ============ HỆ THỐNG NÚT BẤM — đồng bộ & tinh tế (toàn hệ thống) ============ */
-/* Viết NGOÀI @layer để độ mượt + bóng đổ áp lên MỌI nút, kể cả nút đang dùng transition-colors */
+/* ============ HỆ THỐNG NÚT BẤM — đơn giản, gọn gàng, đồng bộ ============ */
+/* Viết NGOÀI @layer để áp đè cả nút đang dùng transition-colors / rounded-full */
 button:not(:disabled),
 a,
 [role="button"] {
-  transition: background-color .18s ease, border-color .18s ease, color .18s ease,
-    box-shadow .28s cubic-bezier(.22, 1, .36, 1), transform .14s cubic-bezier(.22, 1, .36, 1);
+  transition: background-color .15s ease, border-color .15s ease, color .15s ease, opacity .15s ease;
 }
 button:disabled { cursor: not-allowed; }
 
-/* Phản hồi khi NHẤN cho mọi nút bo góc */
-:is(button, a)[class*="rounded"]:active:not(:disabled) { transform: translateY(.5px) scale(.98); }
-
-/* Nút CHÍNH (đỏ đặc) — bóng đổ đỏ cao cấp + nhấc nhẹ khi hover */
-:is(button, a)[class~="bg-accent"]:not(:disabled) {
-  box-shadow: 0 1px 2px rgba(228, 30, 38, .18), 0 8px 22px -7px rgba(228, 30, 38, .45);
+/* Bo góc VỪA PHẢI, THỐNG NHẤT (thay pill tròn quá mức) → gọn gàng, hiện đại */
+:is(button, a)[class~="rounded-full"],
+:is(button, a)[class~="rounded-2xl"],
+:is(button, a)[class~="rounded-xl"] { border-radius: 10px; }
+/* …nhưng GIỮ TRÒN cho nút icon (có cả w-* và h-*): tim, đóng ×, chuông… */
+:is(button, a)[class~="rounded-full"]:where([class^="w-"], [class*=" w-"]):where([class^="h-"], [class*=" h-"]) {
+  border-radius: 9999px;
 }
-:is(button, a)[class~="bg-accent"]:not(:disabled):hover {
-  transform: translateY(-1.5px);
-  box-shadow: 0 3px 8px rgba(228, 30, 38, .22), 0 16px 34px -8px rgba(228, 30, 38, .55);
-}
-:is(button, a)[class~="bg-accent"]:not(:disabled):active { transform: translateY(0) scale(.98); }
-:is(button, a)[class~="bg-accent"]:disabled { box-shadow: none; }
 
-/* Nút TỐI (mực) — bóng trung tính + nhấc nhẹ */
-:is(button, a)[class~="bg-ink"]:not(:disabled) {
-  box-shadow: 0 1px 2px rgba(11, 12, 14, .16), 0 8px 22px -7px rgba(11, 12, 14, .32);
-}
-:is(button, a)[class~="bg-ink"]:not(:disabled):hover { transform: translateY(-1.5px); }
+/* Phản hồi nhấn nhẹ, tinh tế (không bóng, không nhấc) */
+:is(button, a)[class*="rounded"]:active:not(:disabled) { transform: scale(.98); }
 
-/* Nút VIỀN — nền nhẹ khi hover để phản hồi rõ */
-:is(button, a)[class~="border-border-strong"]:not(:disabled):hover { background-color: var(--color-bg-soft); }
-
-/* Vòng FOCUS dễ tiếp cận, đồng bộ toàn hệ thống */
+/* Vòng FOCUS đồng bộ (a11y) */
 :is(button, a, input, select, textarea):focus-visible {
   outline: none;
   box-shadow: 0 0 0 3px var(--color-accent-weak), 0 0 0 1.5px var(--color-accent);
 }
 
 @media (prefers-reduced-motion: reduce) {
-  :is(button, a):hover,
   :is(button, a)[class*="rounded"]:active { transform: none !important; }
 }
