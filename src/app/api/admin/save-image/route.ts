@@ -8,7 +8,7 @@ export const maxDuration = 30;
 export async function POST(req: Request) {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const { dataUrl } = await req.json().catch(() => ({}));
-  const m = typeof dataUrl === "string" && dataUrl.match(/^data:(image\/[a-z+]+);base64,(.+)$/s);
+  const m = typeof dataUrl === "string" && dataUrl.match(/^data:(image\/[a-z+]+);base64,([A-Za-z0-9+/=]+)$/);
   if (!m) return NextResponse.json({ error: "Ảnh không hợp lệ" }, { status: 400 });
   const mime = m[1]; const b64 = m[2];
   if (b64.length > 12_000_000) return NextResponse.json({ error: "Ảnh quá lớn" }, { status: 413 });
