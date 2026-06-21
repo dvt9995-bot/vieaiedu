@@ -50,12 +50,23 @@ Yêu cầu: 1 câu tiếng Việt, 8–18 từ, nêu rõ lợi ích hoặc đố
 
 export type ImgRole = "product" | "person" | "platform";
 export type ImgRef = { data: string; mime: string; role?: ImgRole };
+export type CoverStyle = "modern" | "tech3d" | "gradient" | "photo" | "flat";
+
+const STYLE_DIRECTION: Record<CoverStyle, string> = {
+  modern: "STYLE: ultra-clean modern minimal — lots of negative space, refined geometry, subtle depth, restrained palette. Apple/Linear keynote aesthetic.",
+  tech3d: "STYLE: premium 3D render — glossy/matte 3D objects, soft studio lighting, realistic materials, gentle reflections, depth of field. High-end tech product look.",
+  gradient: "STYLE: modern vibrant gradient/glassmorphism — smooth color gradients, soft blur, glass panels, neon-soft glow, contemporary SaaS landing aesthetic (kept tasteful, not garish).",
+  photo: "STYLE: cinematic realistic photography composite — photoreal scene/subject, natural lighting, shallow depth of field, editorial magazine quality.",
+  flat: "STYLE: clean flat vector illustration — bold simple shapes, crisp edges, modern flat design, generous spacing, no heavy gradients.",
+};
 
 // Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). refs = ảnh tham chiếu có VAI TRÒ.
-export async function generateCoverImage(title: string, refs: ImgRef[] = []): Promise<{ data: string; mime: string } | null> {
+export async function generateCoverImage(title: string, refs: ImgRef[] = [], opts: { style?: CoverStyle; withText?: boolean } = {}): Promise<{ data: string; mime: string } | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
   const hasRefs = refs.length > 0;
+  const style = opts.style || "modern";
+  const withText = opts.withText !== false; // mặc định AI vẽ chữ; false = app tự thêm chữ
 
   // Mô tả vai trò từng ảnh tham chiếu theo đúng thứ tự gửi lên
   const refLines = refs.map((r, i) => {
@@ -75,9 +86,13 @@ ART DIRECTION (very important):
 - High-end tech aesthetic: clean geometry, refined 3D or crisp flat shapes, subtle depth, soft realistic studio lighting, gentle premium glow.
 - STRICTLY AVOID: busy circuit-board/glowing-brain clichés, cheesy or gaudy "casino" gold gradients, clip-art, heavy bevels, overcrowding, low-end stock look. Keep it tasteful and restrained.
 
+${STYLE_DIRECTION[style]}
+
 HERO: the actual AI product taught in this course as the recognizable focal element (use its real brand identity and colors), placed off-center per the rule of thirds — never a generic "AI" glyph.
 
-TYPOGRAPHY (designer-grade): render exactly ONE short Vietnamese headline, 2–4 words, correct diacritics (e.g. "Làm chủ Claude AI"), in a clean modern geometric sans-serif (Inter / SF Pro / Montserrat style), bold weight, tight kerning, crisp edges, excellent legibility and strong contrast with the background. Place it neatly in the top or left third with comfortable margins. No other text, no paragraphs, no small print, no misspelled or warped letters.
+${withText
+  ? `TYPOGRAPHY (designer-grade): render exactly ONE short Vietnamese headline, 2–4 words, correct diacritics (e.g. "Làm chủ Claude AI"), in a clean modern geometric sans-serif (Inter / SF Pro / Montserrat style), bold weight, tight kerning, crisp edges, excellent legibility and strong contrast with the background. Place it neatly in the top or left third with comfortable margins. No other text, no paragraphs, no small print, no misspelled or warped letters.`
+  : `NO TEXT AT ALL — render only the visual artwork with NO words, letters or numbers. Leave clean, uncluttered NEGATIVE SPACE in the LEFT third of the frame so a title can be overlaid later. Compose the hero subject toward the right.`}
 
 COLOR: refined and editorial — a clean deep background (midnight navy or charcoal, OR a crisp light surface) with crimson red (#E41E26) as a confident accent and gold (#F4B400) used sparingly as a premium highlight. Restrained, elegant, NOT a heavy red-gold gradient wash.
 
