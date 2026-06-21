@@ -91,14 +91,11 @@ a,
 }
 button:disabled { cursor: not-allowed; }
 
-/* Bo góc VỪA PHẢI, THỐNG NHẤT (thay pill tròn quá mức) → gọn gàng, hiện đại */
-:is(button, a)[class~="rounded-full"],
+/* Bo góc VỪA PHẢI, THỐNG NHẤT cho nút CÓ CHỮ (có padding/chiều rộng) → gọn gàng, hiện đại.
+   Nút icon (tim, đóng ×, chuông) không có padding ngang → GIỮ TRÒN tự nhiên. */
+:is(button, a)[class~="rounded-full"]:is([class*="px-"], [class*="py-"], [class~="w-full"]),
 :is(button, a)[class~="rounded-2xl"],
 :is(button, a)[class~="rounded-xl"] { border-radius: 10px; }
-/* …nhưng GIỮ TRÒN cho nút icon (có cả w-* và h-*): tim, đóng ×, chuông… */
-:is(button, a)[class~="rounded-full"]:where([class^="w-"], [class*=" w-"]):where([class^="h-"], [class*=" h-"]) {
-  border-radius: 9999px;
-}
 
 /* Phản hồi nhấn nhẹ, tinh tế (không bóng, không nhấc) */
 :is(button, a)[class*="rounded"]:active:not(:disabled) { transform: scale(.98); }
