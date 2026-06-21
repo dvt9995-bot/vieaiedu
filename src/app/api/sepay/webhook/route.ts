@@ -7,6 +7,7 @@ import { getConfig } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
 import { walletChange } from "@/lib/wallet";
 import { consumeCoupon } from "@/lib/coupon";
+import { ALL_ACCESS, enrollAllPublished } from "@/lib/bundle";
 
 // Webhook SePay gọi khi có giao dịch chuyển khoản tới.
 // Cấu hình tại SePay: URL = https://vieaiedu.vn/api/sepay/webhook
@@ -66,13 +67,19 @@ export async function POST(req: Request) {
     return NextResponse.json({ success: true, matched: true, note: "already processed" });
   }
   await consumeCoupon(order.coupon_code as string | undefined); // tiêu 1 lượt dùng mã (nếu đơn có áp mã)
-  const { error: enrollErr } = await admin.from("enrollments").upsert(
-    { user_id: order.user_id, course_slug: order.course_slug },
-    { onConflict: "user_id,course_slug" }
-  );
+  const isBundle = order.course_slug === ALL_ACCESS;
+  let enrollErr: { message: string } | null = null;
+  if (isBundle) {
+    await enrollAllPublished(admin, order.user_id);
+  } else {
+    ({ error: enrollErr } = await admin.from("enrollments").upsert(
+      { user_id: order.user_id, course_slug: order.course_slug },
+      { onConflict: "user_id,course_slug" }
+    ));
+  }
 
-  const course = await getCourseBySlug(order.course_slug);
-  const courseTitle = course?.title ?? order.course_slug;
+  const course = isBundle ? null : await getCourseBySlug(order.course_slug);
+  const courseTitle = isBundle ? "Trọn bộ khóa học (All-access)" : (course?.title ?? order.course_slug);
 
   // Hoa hồng giới thiệu: người được giới thiệu mua đơn THẬT → cộng % vào ví hoa hồng người giới thiệu
   try {
@@ -98,8 +105,8 @@ export async function POST(req: Request) {
   await notify({
     userId: order.user_id, type: "transactional",
     title: "Thanh toán thành công 🎉",
-    body: `Bạn đã sở hữu khóa "${courseTitle}". Vào học ngay!`,
-    href: `/learn/${order.course_slug}`, email: false,
+    body: `Bạn đã sở hữu "${courseTitle}". Vào học ngay!`,
+    href: isBundle ? "/courses" : `/learn/${order.course_slug}`, email: false,
   });
 
   // Gửi biên lai qua email (nếu đã cấu hình Resend)

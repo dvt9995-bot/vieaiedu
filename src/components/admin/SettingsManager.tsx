@@ -9,6 +9,9 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?,
   { title: "💳 Thanh toán (SePay)", fields: [
     ["sepay_account", "Số tài khoản nhận"], ["sepay_bank", "Mã ngân hàng (MB, VCB...)"], ["sepay_webhook_key", "Webhook API key", true],
   ]},
+  { title: "🎁 Gói All-access (trọn bộ)", note: "Đặt giá để bật gói mua 1 lần học tất cả khóa. Trống/0 = tắt.", fields: [
+    ["bundle_price", "Giá gói (đ) — vd 990000"], ["bundle_compare", "Giá neo / gạch ngang (đ) — vd 2990000"], ["bundle_title", "Tên gói (mặc định: Trọn bộ khóa học — Truy cập trọn đời)"],
+  ]},
   { title: "🔌 Tích hợp & API key", note: "Để trống = dùng giá trị mặc định trong env.", fields: [
     ["bunny_library_id", "Bunny Library ID"], ["bunny_token_key", "Bunny Token key (chống tải trộm)", true],
     ["resend_api_key", "Resend API key", true], ["resend_from", "Email gửi (From)"],

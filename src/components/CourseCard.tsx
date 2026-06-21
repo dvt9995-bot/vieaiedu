@@ -41,9 +41,14 @@ export default function CourseCard({ course }: { course: Course }) {
         <div className="text-ink-3 text-xs sm:text-sm mt-1.5 sm:mt-2 mb-3 sm:mb-4 line-clamp-1">
           {course.totalMinutes >= 60 ? `${Math.round(course.totalMinutes / 60)} giờ` : `${course.totalMinutes} phút`} · {course.lessonsCount} bài · ⭐ {course.rating}
         </div>
-        <div className="flex items-baseline gap-2 font-extrabold text-[1.05rem] sm:text-[1.2rem] tracking-tight mt-auto">
-          {formatVND(course.price)}
-          {course.comparePrice && <small className="text-ink-3 line-through font-medium text-[.78rem] sm:text-[.82rem]">{formatVND(course.comparePrice)}</small>}
+        <div className="flex items-baseline gap-2 font-extrabold text-[1.05rem] sm:text-[1.2rem] tracking-tight mt-auto flex-wrap">
+          {course.price === 0 ? "Miễn phí" : formatVND(course.price)}
+          {course.comparePrice && course.comparePrice > course.price && (
+            <>
+              <small className="text-ink-3 line-through font-medium text-[.78rem] sm:text-[.82rem]">{formatVND(course.comparePrice)}</small>
+              <small className="text-success font-bold text-[.7rem] bg-success/10 px-1.5 py-0.5 rounded">-{Math.round((1 - course.price / course.comparePrice) * 100)}%</small>
+            </>
+          )}
         </div>
         <Link href={`/courses/${course.slug}`} className="block text-center mt-3 text-sm font-semibold bg-accent hover:bg-accent-700 text-white px-4 py-2.5 rounded-full transition-colors">
           {course.price === 0 ? "Học ngay" : "Xem chi tiết"}

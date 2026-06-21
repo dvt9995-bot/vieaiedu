@@ -4,6 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { getCourseBySlug } from "@/lib/courses";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
 import { validateCoupon, consumeCoupon } from "@/lib/coupon";
+import { ALL_ACCESS, getBundle, enrollAllPublished } from "@/lib/bundle";
 import { getBalances, walletChange } from "@/lib/wallet";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { rateLimit, clientIp } from "@/lib/ratelimit";
@@ -13,8 +14,14 @@ export async function POST(req: Request) {
   if (!rateLimit(`checkout:${clientIp(req)}`, 15, 60_000))
     return NextResponse.json({ error: "Thao tác quá nhanh, vui lòng thử lại sau." }, { status: 429 });
   const { slug, couponCode, useWallet } = await req.json().catch(() => ({ slug: "" }));
-  const course = await getCourseBySlug(slug);
-  if (!course) return NextResponse.json({ error: "Không tìm thấy khóa học" }, { status: 404 });
+
+  // Gói ALL-ACCESS (trọn bộ) — khác với mua 1 khóa
+  const isBundle = slug === ALL_ACCESS;
+  const bundle = isBundle ? await getBundle() : null;
+  const course = isBundle ? null : await getCourseBySlug(slug);
+  if (isBundle ? !bundle : !course) return NextResponse.json({ error: "Không tìm thấy" }, { status: 404 });
+  const basePrice = isBundle ? bundle!.price : course!.price;
+  const itemTitle = isBundle ? bundle!.title : course!.title;
 
   const supabase = await createClient();
   if (!supabase) return NextResponse.json({ error: "Chưa cấu hình Supabase" }, { status: 503 });
@@ -22,12 +29,14 @@ export async function POST(req: Request) {
   if (!user) return NextResponse.json({ error: "Cần đăng nhập" }, { status: 401 });
   const admin = createAdminClient()!;
 
-  const { data: existing } = await supabase.from("enrollments").select("id").eq("user_id", user.id).eq("course_slug", slug).maybeSingle();
-  if (existing) return NextResponse.json({ enrolled: true });
-  if (course.price === 0) return NextResponse.json({ error: "Khóa miễn phí — dùng nút Học miễn phí" }, { status: 400 });
+  if (!isBundle) {
+    const { data: existing } = await supabase.from("enrollments").select("id").eq("user_id", user.id).eq("course_slug", slug).maybeSingle();
+    if (existing) return NextResponse.json({ enrolled: true });
+    if (course!.price === 0) return NextResponse.json({ error: "Khóa miễn phí — dùng nút Học miễn phí" }, { status: 400 });
+  }
 
   const percentOff = couponCode ? await validateCoupon(couponCode) : 0;
-  const amount = Math.round(course.price * (1 - percentOff / 100));
+  const amount = Math.round(basePrice * (1 - percentOff / 100));
 
   // Dùng số dư ví (ưu tiên khuyến mãi trước, rồi hoa hồng)
   let used = 0, usedCredit = 0, usedReal = 0;
@@ -51,16 +60,16 @@ export async function POST(req: Request) {
 
   // Trừ ví — KIỂM TRA kết quả; nếu thất bại/không đủ (đua 2 tab) thì HỦY đơn + hoàn phần đã trừ
   if (usedCredit > 0) {
-    const ok = await walletChange(user.id, "credit", -usedCredit, `Mua khóa ${course.title}`, order.id);
+    const ok = await walletChange(user.id, "credit", -usedCredit, `Mua ${itemTitle}`, order.id);
     if (!ok) {
       await admin.from("orders").delete().eq("id", order.id);
       return NextResponse.json({ error: "Số dư ví không đủ, vui lòng thử lại." }, { status: 409 });
     }
   }
   if (usedReal > 0) {
-    const ok = await walletChange(user.id, "real", -usedReal, `Mua khóa ${course.title}`, order.id);
+    const ok = await walletChange(user.id, "real", -usedReal, `Mua ${itemTitle}`, order.id);
     if (!ok) {
-      if (usedCredit > 0) await walletChange(user.id, "credit", usedCredit, `Hoàn ví (hủy đơn lỗi) ${course.title}`, order.id);
+      if (usedCredit > 0) await walletChange(user.id, "credit", usedCredit, `Hoàn ví (hủy đơn lỗi) ${itemTitle}`, order.id);
       await admin.from("orders").delete().eq("id", order.id);
       return NextResponse.json({ error: "Số dư ví không đủ, vui lòng thử lại." }, { status: 409 });
     }
@@ -68,10 +77,14 @@ export async function POST(req: Request) {
 
   if (fullyPaid) {
     if (percentOff > 0) await consumeCoupon(couponCode); // tiêu 1 lượt dùng mã
-    const { error: enrollErr } = await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
-    if (enrollErr) await notifyAdmins("🔴 Đã trừ ví nhưng ghi danh LỖI", `Đơn ${order.id} (${course.title}). Cần ghi danh thủ công.`, "/admin", { email: true });
-    await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu khóa "${course.title}" (thanh toán bằng số dư ví).`, href: `/learn/${slug}`, email: false });
-    return NextResponse.json({ enrolled: true });
+    if (isBundle) {
+      await enrollAllPublished(admin, user.id);
+    } else {
+      const { error: enrollErr } = await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
+      if (enrollErr) await notifyAdmins("🔴 Đã trừ ví nhưng ghi danh LỖI", `Đơn ${order.id} (${itemTitle}). Cần ghi danh thủ công.`, "/admin", { email: true });
+    }
+    await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu "${itemTitle}" (thanh toán bằng số dư ví).`, href: isBundle ? "/courses" : `/learn/${slug}`, email: false });
+    return NextResponse.json({ enrolled: true, bundle: isBundle });
   }
 
   const code = orderCode(order.id);

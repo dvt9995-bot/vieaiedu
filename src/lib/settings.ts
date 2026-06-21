@@ -36,6 +36,9 @@ export async function getConfig(key: string, envKey?: string): Promise<string> {
 
 // Bản đồ key cấu hình → env fallback (nguồn sự thật khi admin chưa đặt)
 export const CONFIG_KEYS = {
+  bundle_price: "",        // Giá gói All-access trọn đời (đ). Trống/0 = tắt gói.
+  bundle_compare: "",      // Giá neo (gạch ngang) cho gói
+  bundle_title: "",        // Tiêu đề gói (mặc định: Trọn bộ khóa học — Truy cập trọn đời)
   sepay_account: "SEPAY_ACCOUNT",
   sepay_bank: "SEPAY_BANK",
   sepay_webhook_key: "SEPAY_WEBHOOK_API_KEY",
