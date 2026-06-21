@@ -9,6 +9,7 @@ import CourseCard from "@/components/CourseCard";
 import CourseReviews from "@/components/CourseReviews";
 import YouTubeComments from "@/components/YouTubeComments";
 import { parseVideoRef } from "@/lib/video";
+import { getYouTubeStats } from "@/lib/youtube";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -39,12 +40,28 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
   const ytVideoId = course.sections.flatMap((s) => s.lessons).map((l) => parseVideoRef(l.videoId)).find((r) => r?.kind === "youtube")?.id;
 
   // Thống kê đánh giá (cho aggregateRating + hiển thị)
-  let reviewAvg = 0, reviewCount = 0;
+  let reviewSum = 0, reviewCount = 0;
   const admin = createAdminClient();
   if (admin) {
     const { data: rv } = await admin.from("reviews").select("rating").eq("course_slug", slug);
     reviewCount = (rv || []).length;
-    if (reviewCount) reviewAvg = Math.round((rv!.reduce((s, r) => s + (r.rating as number), 0) / reviewCount) * 10) / 10;
+    reviewSum = (rv || []).reduce((s, r) => s + (r.rating as number), 0);
+  }
+
+  // Quy đổi LƯỢT THÍCH YouTube (live) thành đánh giá: mỗi like ≈ 4.9★ (tán thành tích cực),
+  // CỘNG DỒN với đánh giá thật của người dùng trên nền tảng.
+  const LIKE_STAR = 4.9;
+  const yt = ytVideoId ? await getYouTubeStats(ytVideoId) : null;
+  const ytLikes = yt?.likes || 0;
+  const totalCount = reviewCount + ytLikes;
+  let displayRating = course.rating, displayCount = course.ratingCount;
+  if (totalCount > 0) {
+    displayRating = Math.min(5, Math.round(((reviewSum + ytLikes * LIKE_STAR) / totalCount) * 10) / 10);
+    displayCount = totalCount;
+  }
+  // Đồng bộ vào DB để thẻ khóa học ngoài danh sách cũng phản ánh
+  if (admin && (displayRating !== course.rating || displayCount !== course.ratingCount)) {
+    await admin.from("courses").update({ rating: displayRating, rating_count: displayCount }).eq("slug", slug);
   }
 
   // Gợi ý khóa khác (ưu tiên cùng danh mục) để tăng up-sale
@@ -63,7 +80,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
       description: course.subtitle,
       provider: { "@type": "Organization", name: "VIE AI EDU", sameAs: "https://vieaiedu.vn" },
       ...(course.price > 0 ? { offers: { "@type": "Offer", price: course.price, priceCurrency: "VND", category: "Paid" } } : {}),
-      ...(reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reviewAvg, reviewCount } } : {}),
+      ...(displayCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: displayRating, reviewCount: displayCount } } : {}),
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",
@@ -88,7 +105,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
           <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-extrabold tracking-tight max-w-[20ch]">{course.title}</h1>
           <p className="text-white/70 text-lg mt-3 max-w-[60ch]">{course.subtitle}</p>
           <div className="flex flex-wrap gap-x-6 gap-y-2 mt-5 text-sm text-white/80">
-            <span>⭐ <b className="text-white">{course.rating}</b> ({course.ratingCount} đánh giá)</span>
+            <span>⭐ <b className="text-white">{displayRating}</b> ({displayCount.toLocaleString("vi-VN")} đánh giá)</span>
             <span>{course.students.toLocaleString("vi-VN")} học viên</span>
             <span>{LEVEL_LABEL[course.level]}</span>
             <span>{formatDuration(course.totalMinutes)} · {course.lessonsCount} bài</span>
