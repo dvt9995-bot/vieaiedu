@@ -5,7 +5,7 @@ import { getCourseBySlug } from "@/lib/courses";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
 import { validateCoupon } from "@/lib/coupon";
 import { getBalances, walletChange } from "@/lib/wallet";
-import { notify } from "@/lib/notify";
+import { notify, notifyAdmins } from "@/lib/notify";
 import { rateLimit, clientIp } from "@/lib/ratelimit";
 
 // Tạo đơn hàng cho 1 khóa: áp mã + dùng số dư ví, trả QR SePay cho phần còn lại.
@@ -46,11 +46,26 @@ export async function POST(req: Request) {
     .select("id").single();
   if (error || !order) return NextResponse.json({ error: error?.message ?? "Lỗi tạo đơn" }, { status: 500 });
 
-  if (usedCredit > 0) await walletChange(user.id, "credit", -usedCredit, `Mua khóa ${course.title}`, order.id);
-  if (usedReal > 0) await walletChange(user.id, "real", -usedReal, `Mua khóa ${course.title}`, order.id);
+  // Trừ ví — KIỂM TRA kết quả; nếu thất bại/không đủ (đua 2 tab) thì HỦY đơn + hoàn phần đã trừ
+  if (usedCredit > 0) {
+    const ok = await walletChange(user.id, "credit", -usedCredit, `Mua khóa ${course.title}`, order.id);
+    if (!ok) {
+      await admin.from("orders").delete().eq("id", order.id);
+      return NextResponse.json({ error: "Số dư ví không đủ, vui lòng thử lại." }, { status: 409 });
+    }
+  }
+  if (usedReal > 0) {
+    const ok = await walletChange(user.id, "real", -usedReal, `Mua khóa ${course.title}`, order.id);
+    if (!ok) {
+      if (usedCredit > 0) await walletChange(user.id, "credit", usedCredit, `Hoàn ví (hủy đơn lỗi) ${course.title}`, order.id);
+      await admin.from("orders").delete().eq("id", order.id);
+      return NextResponse.json({ error: "Số dư ví không đủ, vui lòng thử lại." }, { status: 409 });
+    }
+  }
 
   if (fullyPaid) {
-    await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
+    const { error: enrollErr } = await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
+    if (enrollErr) await notifyAdmins("🔴 Đã trừ ví nhưng ghi danh LỖI", `Đơn ${order.id} (${course.title}). Cần ghi danh thủ công.`, "/admin", { email: true });
     await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu khóa "${course.title}" (thanh toán bằng số dư ví).`, href: `/learn/${slug}`, email: false });
     return NextResponse.json({ enrolled: true });
   }

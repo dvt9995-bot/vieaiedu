@@ -5,14 +5,14 @@ import { getCourseBySlug } from "@/lib/courses";
 import { walletChange } from "@/lib/wallet";
 import { setSetting } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
+import { isCurrentUserAdmin } from "@/lib/admin-guard";
 
 // Cron hằng ngày: nhắc học + email marketing tự động (bỏ giỏ, nhắc người mới).
 export async function GET(req: Request) {
+  // Fail-closed: có CRON_SECRET thì bắt buộc khớp; không có thì chỉ admin được kích hoạt thủ công
   const secret = process.env.CRON_SECRET;
-  if (secret) {
-    const auth = req.headers.get("authorization");
-    if (auth !== `Bearer ${secret}`) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
-  }
+  const authed = secret ? req.headers.get("authorization") === `Bearer ${secret}` : await isCurrentUserAdmin();
+  if (!authed) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ error: "unconfigured" }, { status: 503 });
 

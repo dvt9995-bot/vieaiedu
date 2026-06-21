@@ -9,7 +9,7 @@ import { track } from "@/lib/analytics";
 
 export default function CourseCard({ course }: { course: Course }) {
   const [liked, setLiked] = useState(false);
-  const [likes, setLikes] = useState(course.likes);
+  const [likes, setLikes] = useState(course.likes ?? 0);
 
   // Tải trạng thái yêu thích đã lưu (DB nếu đăng nhập, localStorage nếu chưa)
   useEffect(() => { favoritesCached().then((favs) => setLiked(favs.includes(course.slug))); }, [course.slug]);

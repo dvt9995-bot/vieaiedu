@@ -25,11 +25,14 @@ export async function PATCH(req: Request) {
   if (!w || w.status !== "pending") return NextResponse.json({ error: "Yêu cầu không hợp lệ" }, { status: 400 });
 
   if (action === "reject") {
+    // Cổng atomic: chỉ hoàn tiền khi chuyển được pending → rejected (chống hoàn 2 lần do double-click / 2 admin)
+    const { data: rows } = await admin.from("withdrawals").update({ status: "rejected", processed_at: new Date().toISOString() }).eq("id", id).eq("status", "pending").select("id");
+    if (!rows || rows.length === 0) return NextResponse.json({ error: "Yêu cầu đã được xử lý" }, { status: 409 });
     await walletChange(w.user_id as string, "real", w.amount as number, "Hoàn tiền yêu cầu rút bị từ chối", id);
-    await admin.from("withdrawals").update({ status: "rejected", processed_at: new Date().toISOString() }).eq("id", id);
     await notify({ userId: w.user_id as string, type: "transactional", title: "Yêu cầu rút tiền bị từ chối", body: `Số tiền ${(w.amount as number).toLocaleString("vi-VN")}đ đã được hoàn lại vào ví hoa hồng.`, href: "/account" });
   } else {
-    await admin.from("withdrawals").update({ status: "approved", processed_at: new Date().toISOString() }).eq("id", id);
+    const { data: rows } = await admin.from("withdrawals").update({ status: "approved", processed_at: new Date().toISOString() }).eq("id", id).eq("status", "pending").select("id");
+    if (!rows || rows.length === 0) return NextResponse.json({ error: "Yêu cầu đã được xử lý" }, { status: 409 });
     await notify({ userId: w.user_id as string, type: "transactional", title: "Yêu cầu rút tiền đã được duyệt ✅", body: `${(w.amount as number).toLocaleString("vi-VN")}đ sẽ được chuyển tới tài khoản của bạn.`, href: "/account" });
   }
   return NextResponse.json({ ok: true });

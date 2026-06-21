@@ -20,6 +20,17 @@ export default async function LearnPage({
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
 
+  // Khóa chưa có bài giảng nào → hiện thông báo thay vì crash trình phát (màn trắng)
+  if (course.sections.flatMap((s) => s.lessons).length === 0) {
+    return (
+      <div className="container-x py-24 text-center">
+        <h1 className="text-2xl font-extrabold tracking-tight">{course.title}</h1>
+        <p className="text-ink-2 mt-3">Khóa học này chưa có bài giảng. Vui lòng quay lại sau nhé.</p>
+        <a href="/courses" className="inline-block mt-6 rounded-full bg-accent text-white font-semibold px-6 py-3">Khám phá khóa khác</a>
+      </div>
+    );
+  }
+
   // Khóa bài non-preview nếu khóa trả phí và user chưa ghi danh.
   const enrolled = course.price === 0 ? true : await isEnrolled(slug);
 
