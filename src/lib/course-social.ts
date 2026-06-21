@@ -19,6 +19,12 @@ export async function syncCoursesSocial(courses: Course[]) {
     if (likes !== c.likes) { c.likes = likes; patch.likes = likes; }
     // Khóa 1 video chưa có tổng phút → lấy luôn từ thời lượng video
     if (c.totalMinutes === 0 && st.durationSec > 0) { c.totalMinutes = Math.round(st.durationSec / 60); patch.total_minutes = c.totalMinutes; }
+    // ⭐ luôn theo ĐÁNH GIÁ THẬT của nền tảng (chưa có đánh giá → 5.0). Tự sửa giá trị blend sót lại.
+    const { data: rv } = await admin.from("reviews").select("rating").eq("course_slug", c.slug);
+    const rc = (rv || []).length;
+    const ravg = rc ? Math.round((rv!.reduce((s, r) => s + (r.rating as number), 0) / rc) * 10) / 10 : 5;
+    if (c.rating !== ravg) { c.rating = ravg; patch.rating = ravg; }
+    if (c.ratingCount !== rc) { c.ratingCount = rc; patch.rating_count = rc; }
     if (Object.keys(patch).length) await admin.from("courses").update(patch).eq("slug", c.slug);
   }));
 }
