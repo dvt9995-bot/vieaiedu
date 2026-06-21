@@ -27,17 +27,28 @@ export async function geminiHealthCheck(): Promise<{ ok: boolean; reason?: strin
 
 interface Rewritten { title: string; excerpt: string; body: string; }
 
-// Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). Trả {data base64, mime} hoặc null.
-export async function generateCoverImage(title: string): Promise<{ data: string; mime: string } | null> {
+export type ImgRef = { data: string; mime: string };
+
+// Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). refs = ảnh tham chiếu (nhân vật/logo, tùy chọn).
+export async function generateCoverImage(title: string, refs: ImgRef[] = []): Promise<{ data: string; mime: string } | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
+  const hasRefs = refs.length > 0;
   // Prompt theo Bộ nhận diện VIE AI EDU (đỏ #E41E26 + vàng #F4B400, premium, AI/giáo dục)
   const prompt = `Professional widescreen 16:9 online course cover image for "VIE AI EDU", a premium Vietnamese AI education platform.
 Course topic: "${title}".
 Visualize this exact topic with modern, relevant AI & technology iconography (glowing neural networks, circuit lines, abstract data nodes, holographic futuristic elements that clearly represent the topic).
 Style: clean premium 3D/flat illustration, sophisticated, trustworthy, high-tech yet friendly. Single clear focal point, uncluttered composition.
 Brand colors: crimson red (#E41E26) and warm gold (#F4B400) as the primary accents, over an elegant deep gradient background (charcoal/navy to soft light). Soft cinematic lighting, depth of field, subtle geometric patterns.
-High quality, sharp, vibrant. ABSOLUTELY NO text, NO words, NO letters, NO numbers, NO logos, NO watermark.`;
+High quality, sharp, vibrant.
+${hasRefs
+  ? "Use the provided reference image(s): feature the depicted person/character as the main subject of the cover, and tastefully integrate the provided platform/brand logo. Do NOT add any other text or words."
+  : "ABSOLUTELY NO text, NO words, NO letters, NO numbers, NO logos, NO watermark."}`;
+
+  const parts: Record<string, unknown>[] = [
+    ...refs.map((r) => ({ inlineData: { mimeType: r.mime, data: r.data } })),
+    { text: prompt },
+  ];
 
   const models = [(await getConfig("gemini_image_model")) || "gemini-3-pro-image-preview", "gemini-2.5-flash-image"];
   for (let i = 0; i < models.length; i++) {
@@ -45,7 +56,7 @@ High quality, sharp, vibrant. ABSOLUTELY NO text, NO words, NO letters, NO numbe
     if (!model) continue;
     try {
       const body: Record<string, unknown> = {
-        contents: [{ parts: [{ text: prompt }] }],
+        contents: [{ parts }],
         generationConfig: { responseModalities: ["IMAGE"], ...(i === 0 ? { imageConfig: { aspectRatio: "16:9" } } : {}) },
       };
       const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {

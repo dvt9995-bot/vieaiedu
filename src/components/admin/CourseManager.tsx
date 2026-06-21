@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { formatVND } from "@/lib/format";
 import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
+import CourseCoverModal from "./CourseCoverModal";
 
 interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; thumb?: string; }
 type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string };
@@ -13,17 +14,8 @@ export default function CourseManager() {
   const [rows, setRows] = useState<Row[]>([]);
   const [loading, setLoading] = useState(true);
   const [form, setForm] = useState<Form | null>(null);
-  const [coverBusy, setCoverBusy] = useState(false);
+  const [coverOpen, setCoverOpen] = useState(false);
   const [msg, setMsg] = useState("");
-
-  async function genCover() {
-    if (!form?.title?.trim()) return toast("Nhập tên khóa học trước đã", "error");
-    setCoverBusy(true);
-    const r = await fetch("/api/admin/course-cover", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: form.title }) }).then((x) => x.json()).catch(() => ({}));
-    setCoverBusy(false);
-    if (r.url) { setForm((f) => f ? { ...f, thumb: r.url } : f); toast("✨ Đã tạo ảnh bìa bằng AI"); }
-    else toast(r.error || "Không tạo được ảnh", "error");
-  }
   const [managing, setManaging] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -69,6 +61,7 @@ export default function CourseManager() {
 
   return (
     <div>
+      {coverOpen && form && <CourseCoverModal title={form.title || ""} onClose={() => setCoverOpen(false)} onUse={(url) => setForm((f) => f ? { ...f, thumb: url } : f)} />}
       <div className="flex items-center justify-between mb-4 gap-2 flex-wrap">
         <h2 className="font-bold text-lg">Quản lý khóa học {rows.length > 0 && <span className="text-ink-3 font-normal">({rows.length})</span>}</h2>
         <div className="flex gap-2">
@@ -87,8 +80,8 @@ export default function CourseManager() {
         <div className="rounded-card border border-border bg-bg-soft p-5 mb-4 grid sm:grid-cols-2 gap-3">
           <div className="sm:col-span-2 flex gap-2">
             <input className={`${inp} flex-1`} placeholder="Tên khóa học" value={form.title || ""} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-            <button onClick={genCover} disabled={coverBusy} title="Tạo ảnh bìa bằng AI dựa trên tên khóa" className="shrink-0 rounded-lg bg-ink text-white font-semibold text-sm px-3.5 py-2 cursor-pointer hover:opacity-90 disabled:opacity-60 whitespace-nowrap">
-              {coverBusy ? "Đang tạo ảnh…" : "✨ Tạo ảnh bìa AI"}
+            <button onClick={() => form?.title?.trim() ? setCoverOpen(true) : toast("Nhập tên khóa học trước đã", "error")} title="Tạo ảnh bìa bằng AI dựa trên tên khóa" className="shrink-0 rounded-lg bg-ink text-white font-semibold text-sm px-3.5 py-2 cursor-pointer hover:opacity-90 whitespace-nowrap">
+              ✨ Tạo ảnh bìa AI
             </button>
           </div>
           {form.thumb && (
