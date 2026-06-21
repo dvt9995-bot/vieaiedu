@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import CoursesBrowser from "@/components/CoursesBrowser";
 import JsonLd from "@/components/JsonLd";
 import { getCourses } from "@/lib/courses";
+import { syncCoursesSocial } from "@/lib/course-social";
 
 export const metadata: Metadata = {
   title: "Khóa học AI",
@@ -11,6 +12,7 @@ export const metadata: Metadata = {
 
 export default async function CoursesPage() {
   const courses = await getCourses();
+  await syncCoursesSocial(courses); // cập nhật like YouTube + thời lượng (live) cho thẻ
   const itemList = {
     "@context": "https://schema.org", "@type": "ItemList",
     itemListElement: courses.map((c, i) => ({ "@type": "ListItem", position: i + 1, url: `https://vieaiedu.vn/courses/${c.slug}`, name: c.title })),

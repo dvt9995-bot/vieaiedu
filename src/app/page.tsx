@@ -7,6 +7,7 @@ import Avatar from "@/components/Avatar";
 import { formatDate } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 import { getCourses } from "@/lib/courses";
+import { syncCoursesSocial } from "@/lib/course-social";
 import { getBlogPosts } from "@/lib/blog";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 
@@ -37,6 +38,7 @@ async function featuredPosts(): Promise<FeedPost[]> {
 
 export default async function Home() {
   const [courses, posts, blog] = await Promise.all([getCourses(), featuredPosts(), getBlogPosts()]);
+  await syncCoursesSocial(courses); // like YouTube + thời lượng (live) cho thẻ
   const free = courses.filter((c) => c.price === 0).slice(0, 8);
   const freeList = free.length ? free : courses.slice(0, 8);
   const news = blog.slice(0, 6);
