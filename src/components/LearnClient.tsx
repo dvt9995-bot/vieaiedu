@@ -5,6 +5,7 @@ import type { Course, Lesson } from "@/lib/types";
 import { SAMPLE_QUIZ } from "@/lib/mock";
 import { loadProgress, saveLesson, loadNotes, addNote as dbAddNote, saveQuizAttempt } from "@/lib/db";
 import YouTubePlayer from "./YouTubePlayer";
+import DonateButton from "./DonateButton";
 
 type Tab = "overview" | "notes" | "quiz";
 interface Note { lessonId: string; t: number; body: string; }
@@ -262,6 +263,11 @@ export default function LearnClient({ course, initialLesson, locked = false, pla
               ))}
             </div>
           ))}
+          {/* Ủng hộ cộng đồng (tùy tâm) */}
+          <div className="mt-4 rounded-card border border-border bg-surface p-4 text-center">
+            <DonateButton courseSlug={course.slug} />
+            <p className="text-ink-3 text-xs mt-2">Thấy khóa học hữu ích? Ủng hộ tùy tâm để duy trì &amp; phát triển cộng đồng — không bắt buộc.</p>
+          </div>
         </div>
       </aside>
     </div>
