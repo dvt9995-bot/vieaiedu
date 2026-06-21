@@ -3,8 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCourseBySlug } from "@/lib/courses";
 import { notify } from "@/lib/notify";
-
-const REQUIRED_PAID = 5; // số khóa TRẢ PHÍ tối thiểu để được cấp chứng chỉ
+import { getConfig } from "@/lib/settings";
 
 // Khi học viên hoàn thành khóa: ghi nhận hoàn thành. Chỉ cấp chứng chỉ khi đã
 // hoàn thành tối thiểu 5 khóa TRẢ PHÍ.
@@ -24,6 +23,8 @@ export async function POST(req: Request) {
     const { data: en } = await supabase.from("enrollments").select("id").eq("user_id", user.id).eq("course_slug", slug).maybeSingle();
     if (!en) return NextResponse.json({ error: "not_enrolled" }, { status: 403 });
   }
+
+  const REQUIRED_PAID = parseInt(await getConfig("cert_required_paid")) || 5; // ngưỡng cấu hình ở admin
 
   const admin = createAdminClient()!;
   // Ghi nhận hoàn thành khóa (idempotent)

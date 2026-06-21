@@ -51,4 +51,7 @@ export const CONFIG_KEYS = {
   min_withdraw: "",
   hero_bg_image: "",
   hero_bg_video: "",
+  cert_required_paid: "",
+  cert_signer: "",
+  cert_signer_title: "",
 } as const;

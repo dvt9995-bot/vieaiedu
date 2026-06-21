@@ -4,6 +4,7 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getCourseBySlug } from "@/lib/courses";
 import type { Metadata } from "next";
 import { formatDate } from "@/lib/format";
+import { getConfig } from "@/lib/settings";
 
 export const metadata: Metadata = {
   title: "Chứng chỉ hoàn thành",
@@ -12,7 +13,10 @@ export const metadata: Metadata = {
 
 export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Long Nam", studentCode: "VIE26000000", avatar: "" };
+  const [signer, signerTitle] = await Promise.all([getConfig("cert_signer"), getConfig("cert_signer_title")]);
+  const SIGNER = signer || "Long Nam";
+  const SIGNER_TITLE = signerTitle || "Giám đốc đào tạo";
+  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: SIGNER, studentCode: "VIE26000000", avatar: "" };
 
   // Tra chứng chỉ thật theo mã
   if (isSupabaseConfigured() && code !== "VIEAIEDU-DEMO") {
@@ -82,7 +86,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
               </div>
               <div className="text-sm text-right">
                 <div className="font-display italic text-lg text-ink">{cert.signer}</div>
-                <div className="font-semibold text-ink border-t border-ink-3/40 pt-1.5 inline-block mt-1">Giám đốc đào tạo</div>
+                <div className="font-semibold text-ink border-t border-ink-3/40 pt-1.5 inline-block mt-1">{SIGNER_TITLE}</div>
               </div>
             </div>
 

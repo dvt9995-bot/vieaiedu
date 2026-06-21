@@ -30,6 +30,11 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?,
     ["referral_commission_pct", "Hoa hồng giới thiệu khi bạn mua khóa thật (%)"],
     ["min_withdraw", "Số tiền rút tối thiểu (đ)"],
   ]},
+  { title: "🎓 Chứng chỉ", note: "Điều kiện & thông tin in trên chứng chỉ.", fields: [
+    ["cert_required_paid", "Số khóa TRẢ PHÍ tối thiểu để được cấp chứng chỉ (mặc định 5)"],
+    ["cert_signer", "Người ký chứng chỉ (mặc định Long Nam)"],
+    ["cert_signer_title", "Chức danh người ký (mặc định Giám đốc đào tạo)"],
+  ]},
 ];
 
 export default function SettingsManager() {
