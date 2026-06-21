@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { generateSeoMeta } from "@/lib/gemini";
 
-const FIELDS = ["slug", "title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "status", "instructor", "source", "total_minutes"];
+const FIELDS = ["slug", "title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "status", "instructor", "source", "total_minutes", "assignment_title", "assignment_brief"];
 
 function pick(body: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
@@ -17,7 +17,7 @@ function pick(body: Record<string, unknown>) {
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, students, status, source, subtitle, description, instructor").order("position");
+  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, students, status, source, subtitle, description, instructor, assignment_title, assignment_brief").order("position");
   return NextResponse.json({ courses: data ?? [] });
 }
 

@@ -6,6 +6,7 @@ import { SAMPLE_QUIZ } from "@/lib/mock";
 import { loadProgress, saveLesson, loadNotes, addNote as dbAddNote, saveQuizAttempt } from "@/lib/db";
 import YouTubePlayer from "./YouTubePlayer";
 import DonateButton from "./DonateButton";
+import AssignmentPanel from "./AssignmentPanel";
 import { mdToHtml } from "@/lib/md";
 
 type Tab = "overview" | "notes" | "quiz";
@@ -166,9 +167,14 @@ export default function LearnClient({ course, initialLesson, locked = false, pla
         {/* Tab content */}
         <div className="px-6 py-6">
           {tab === "overview" && (
-            current.content?.trim()
-              ? <div className="text-ink-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: mdToHtml(current.content) }} />
-              : <p className="text-ink-3 leading-relaxed">Bài học <b className="text-ink-2">{current.title}</b> chưa có tài liệu kèm theo.</p>
+            <>
+              {current.content?.trim()
+                ? <div className="text-ink-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: mdToHtml(current.content) }} />
+                : <p className="text-ink-3 leading-relaxed">Bài học <b className="text-ink-2">{current.title}</b> chưa có tài liệu kèm theo.</p>}
+              {!locked && course.assignmentBrief?.trim() && (
+                <AssignmentPanel slug={course.slug} title={course.assignmentTitle} brief={course.assignmentBrief} />
+              )}
+            </>
           )}
 
           {tab === "notes" && (

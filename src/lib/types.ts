@@ -39,6 +39,8 @@ export interface Course {
   whatYouLearn: string[];
   seoTitle?: string;
   seoDescription?: string;
+  assignmentTitle?: string;
+  assignmentBrief?: string;
 }
 
 export interface Post {

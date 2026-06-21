@@ -7,8 +7,8 @@ import CourseCoverModal from "./CourseCoverModal";
 import { slugify } from "@/lib/video";
 import { compressImage } from "@/lib/image";
 
-interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; }
-type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string };
+interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; }
+type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string };
 
 const empty: Form = { title: "", slug: "", category: "Cơ bản", level: "beginner", price: 0, status: "published" };
 
@@ -164,6 +164,11 @@ export default function CourseManager() {
             <textarea className={`${inp} min-h-[140px] resize-y`} placeholder="Mô tả chi tiết: dạy gì, đạt được gì, phù hợp với ai… (hỗ trợ Markdown: ## tiêu đề, - gạch đầu dòng, **in đậm**). Bấm 🪄 Làm đẹp để AI tự bố cục lại." value={form.description || ""} onChange={(e) => setForm({ ...form, description: e.target.value })} />
             <p className="text-ink-3 text-[11px] mt-1">Mẹo: nhập ý thô rồi bấm <b>🪄 Làm đẹp</b> để AI tự chia mục, thêm tiêu đề & gạch đầu dòng.</p>
           </div>
+          <div className="sm:col-span-2 border-t border-border pt-3">
+            <label className="text-xs font-semibold text-ink-2">📝 Bài tập / Dự án thực hành (AI chấm điểm) — để trống nếu không có</label>
+            <input className={`${inp} mt-1.5`} placeholder="Tên bài tập (vd: Dự án: Tự động hóa công việc bằng AI)" value={form.assignment_title || ""} onChange={(e) => setForm({ ...form, assignment_title: e.target.value })} />
+            <textarea className={`${inp} min-h-[100px] resize-y mt-2`} placeholder="Đề bài / yêu cầu: học viên cần làm gì, nộp gì, tiêu chí đạt… AI sẽ dựa vào đây để chấm & nhận xét." value={form.assignment_brief || ""} onChange={(e) => setForm({ ...form, assignment_brief: e.target.value })} />
+          </div>
           {(form.price ?? 0) > 0 && (
             <>
               <input className={inp} type="number" placeholder="Giá (VND)" value={form.price ?? ""} onChange={(e) => setForm({ ...form, price: Number(e.target.value) })} />
@@ -212,7 +217,7 @@ export default function CourseManager() {
                 <td className="px-4 py-3 hidden sm:table-cell"><span className={`text-xs font-semibold ${c.status === "published" ? "text-success" : "text-ink-3"}`}>{c.status === "published" ? "Công khai" : "Nháp"}</span></td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button onClick={() => setManaging(c.id)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">Bài học</button>
-                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
+                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
                   <button onClick={() => del(c.id)} className="text-ink-3 font-semibold cursor-pointer hover:text-accent">Xóa</button>
                 </td>
               </tr>

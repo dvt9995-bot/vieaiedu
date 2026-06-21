@@ -80,6 +80,42 @@ ${MD_RULE}
 Chỉ trả về nội dung Markdown, không lời dẫn.`);
 }
 
+// Chấm bài tập/dự án của học viên bằng AI → điểm 0-100 + nhận xét xây dựng (tiếng Việt)
+export async function gradeAssignment(input: { courseTitle: string; brief: string; submission: string }): Promise<{ score: number; feedback: string; passed: boolean } | null> {
+  const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
+  if (!key) return null;
+  const model = (await getConfig("gemini_model")) || "gemini-2.5-flash";
+  const prompt = `Bạn là giảng viên AI giàu kinh nghiệm của VIE AI EDU, đang CHẤM bài tập/dự án thực hành của học viên một cách công tâm và mang tính xây dựng.
+
+KHÓA HỌC: "${input.courseTitle}"
+ĐỀ BÀI / YÊU CẦU:
+"""
+${input.brief.slice(0, 3000)}
+"""
+BÀI LÀM CỦA HỌC VIÊN:
+"""
+${input.submission.slice(0, 6000)}
+"""
+
+Hãy chấm theo các tiêu chí: mức độ đáp ứng yêu cầu đề bài, tính đúng/hợp lý, sự đầy đủ, và khả năng ứng dụng thực tế.
+Nhận xét bằng TIẾNG VIỆT, chân thành, cụ thể: nêu điểm tốt, điểm cần cải thiện, và 1-2 gợi ý hành động. Khích lệ nhưng trung thực. Nếu bài quá sơ sài hoặc lạc đề thì cho điểm thấp và nói rõ vì sao.
+Trả về JSON đúng định dạng: {"score": <số nguyên 0-100>, "feedback": "<nhận xét markdown ngắn gọn>", "passed": <true nếu score>=70>}`;
+  try {
+    const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
+      method: "POST", headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { responseMimeType: "application/json", temperature: 0.4 } }),
+      signal: AbortSignal.timeout(30000),
+    });
+    if (!res.ok) return null;
+    const data = await res.json();
+    const text = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+    if (!text) return null;
+    const j = JSON.parse(text);
+    const score = Math.max(0, Math.min(100, Math.round(Number(j.score) || 0)));
+    return { score, feedback: String(j.feedback || "").slice(0, 2000), passed: score >= 70 };
+  } catch { return null; }
+}
+
 // Làm đẹp / chuẩn hóa lại nội dung mô tả admin đã nhập → Markdown có cấu trúc, giữ nguyên ý
 export async function beautifyCourseDescription(title: string, raw: string): Promise<string | null> {
   return geminiText(`Biên tập lại phần MÔ TẢ khóa học "${title}" dưới đây cho chuyên nghiệp, mạch lạc, dễ đọc và tăng trải nghiệm mua hàng. GIỮ NGUYÊN ý chính và thông tin, chỉ sắp xếp lại bố cục, thêm tiêu đề mục, gạch đầu dòng, làm gọn câu. Không bịa thêm thông tin sai.
