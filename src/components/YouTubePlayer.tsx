@@ -40,6 +40,7 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
   const [muted, setMuted] = useState(false);
   const [cur, setCur] = useState(0);
   const [dur, setDur] = useState(0);
+  const [cc, setCc] = useState(true); // phụ đề tiếng Việt bật mặc định
 
   useEffect(() => {
     let cancelled = false;
@@ -50,7 +51,8 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
         host: "https://www.youtube-nocookie.com",
         playerVars: {
           controls: 0, modestbranding: 1, rel: 0, disablekb: 1, iv_load_policy: 3,
-          playsinline: 1, fs: 0, cc_load_policy: 0, showinfo: 0, autoplay: 0,
+          playsinline: 1, fs: 0, showinfo: 0, autoplay: 0,
+          cc_load_policy: 1, cc_lang_pref: "vi", hl: "vi", // phụ đề tiếng Việt (tự dịch) cho video tiếng Anh
         },
         events: {
           onReady: (e: any) => { setReady(true); setDur(e.target.getDuration() || 0); },
@@ -83,6 +85,13 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
   const seekFrac = (frac: number) => { const p = playerRef.current; const d = p?.getDuration?.() || dur; if (p && d) p.seekTo(d * Math.max(0, Math.min(1, frac)), true); };
   const onBar = (e: React.MouseEvent<HTMLDivElement>) => { const r = e.currentTarget.getBoundingClientRect(); seekFrac((e.clientX - r.left) / r.width); };
   const toggleMute = () => { const p = playerRef.current; if (!p) return; if (p.isMuted()) { p.unMute(); setMuted(false); } else { p.mute(); setMuted(true); } };
+  const toggleCC = () => {
+    const p = playerRef.current; if (!p) return;
+    try {
+      if (cc) { p.setOption("captions", "track", {}); setCc(false); }
+      else { p.setOption("captions", "reload", true); p.setOption("captions", "track", { languageCode: "vi" }); setCc(true); }
+    } catch { setCc(!cc); }
+  };
   const fullscreen = () => { const el = wrapRef.current as any; if (document.fullscreenElement) document.exitFullscreen(); else (el?.requestFullscreen || el?.webkitRequestFullscreen)?.call(el); };
 
   const pct = dur ? (cur / dur) * 100 : 0;
@@ -129,7 +138,8 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
               : <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white"><path d="M4 9v6h4l5 5V4L8 9H4zm11 .5a4 4 0 010 5v-5z" /></svg>}
           </button>
           <span className="text-xs tabular-nums text-white/90">{fmt(cur)} / {fmt(dur)}</span>
-          <button onClick={fullscreen} className="ml-auto cursor-pointer" aria-label="Toàn màn hình">
+          <button onClick={toggleCC} className={`ml-auto cursor-pointer text-[11px] font-bold border rounded px-1.5 py-0.5 leading-none ${cc ? "border-accent text-white bg-accent/80" : "border-white/50 text-white/80"}`} aria-label="Phụ đề tiếng Việt" title="Phụ đề tiếng Việt">CC</button>
+          <button onClick={fullscreen} className="cursor-pointer" aria-label="Toàn màn hình">
             <svg viewBox="0 0 24 24" className="w-5 h-5 fill-white"><path d="M4 4h6v2H6v4H4V4zm10 0h6v6h-2V6h-4V4zM4 14h2v4h4v2H4v-6zm14 0h2v6h-6v-2h4v-4z" /></svg>
           </button>
         </div>
