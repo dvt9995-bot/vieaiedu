@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import type { Course, Lesson } from "@/lib/types";
 import { SAMPLE_QUIZ } from "@/lib/mock";
 import { loadProgress, saveLesson, loadNotes, addNote as dbAddNote, saveQuizAttempt } from "@/lib/db";
+import YouTubePlayer from "./YouTubePlayer";
 
 type Tab = "overview" | "notes" | "quiz";
 interface Note { lessonId: string; t: number; body: string; }
@@ -13,7 +14,9 @@ function fmt(s: number) {
   return `${m}:${String(Math.floor(s % 60)).padStart(2, "0")}`;
 }
 
-export default function LearnClient({ course, initialLesson, locked = false, videoUrls = {} }: { course: Course; initialLesson?: string; locked?: boolean; videoUrls?: Record<string, string> }) {
+export type PlayerSrc = { kind: "youtube" | "bunny"; src: string };
+
+export default function LearnClient({ course, initialLesson, locked = false, players = {} }: { course: Course; initialLesson?: string; locked?: boolean; players?: Record<string, PlayerSrc> }) {
   const flat: Lesson[] = useMemo(() => course.sections.flatMap((s) => s.lessons), [course]);
   const accessible = (l: Lesson) => !locked || l.isPreview;
 
@@ -109,8 +112,10 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
         {/* Player */}
         <div className="relative bg-ink aspect-video flex items-center justify-center text-white">
           <svg className="absolute inset-0 w-full h-full opacity-[.08]" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#fff" strokeWidth="1"><circle cx="100" cy="60" r="50" /><circle cx="100" cy="60" r="32" /></g></svg>
-          {accessible(current) && videoUrls[current.id] ? (
-            <iframe src={videoUrls[current.id]} className="absolute inset-0 w-full h-full border-0" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
+          {accessible(current) && players[current.id]?.kind === "youtube" ? (
+            <div className="absolute inset-0"><YouTubePlayer key={current.id} videoId={players[current.id].src} /></div>
+          ) : accessible(current) && players[current.id]?.kind === "bunny" ? (
+            <iframe src={players[current.id].src} className="absolute inset-0 w-full h-full border-0" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
           ) : accessible(current) ? (
             <>
               <button onClick={() => setPlaying((p) => !p)} className="z-10 w-20 h-20 rounded-full bg-white/10 hover:bg-white/20 backdrop-blur flex items-center justify-center cursor-pointer transition">
@@ -147,6 +152,7 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
               {done.has(current.id) ? "✓ Đã hoàn thành" : "Đánh dấu hoàn thành"}
             </button>
           </div>
+          {course.source && <div className="text-ink-3 text-xs mt-1.5">Nguồn: {course.source}</div>}
           <div className="flex gap-1 mt-5 border-b border-border">
             {([["overview", "Tổng quan"], ["notes", `Ghi chú (${notes.length})`], ["quiz", "Quiz"]] as [Tab, string][]).map(([t, label]) => (
               <button key={t} onClick={() => setTab(t)} className={`px-4 py-2.5 text-sm font-semibold border-b-2 -mb-px cursor-pointer transition-colors ${tab === t ? "border-accent text-accent" : "border-transparent text-ink-2 hover:text-ink"}`}>{label}</button>

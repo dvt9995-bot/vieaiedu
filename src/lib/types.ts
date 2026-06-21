@@ -33,6 +33,7 @@ export interface Course {
   students: number;
   likes: number;
   instructor: string;
+  source?: string;
   sections: Section[];
   whatYouLearn: string[];
   seoTitle?: string;

@@ -43,6 +43,7 @@ function mapCourse(c: Row): Course {
     students: (c.students as number) || 0,
     likes: (c.likes as number) || 0,
     instructor: (c.instructor as string) || "Long Nam",
+    source: (c.source as string) || undefined,
     sections,
     whatYouLearn: ((c.what_you_learn as string[]) || []),
     seoTitle: (c.seo_title as string) || undefined,

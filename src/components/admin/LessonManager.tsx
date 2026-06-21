@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "@/components/Toaster";
+import { normalizeVideoInput } from "@/lib/video";
 
 interface Lesson { id: string; title: string; duration_sec: number; is_preview: boolean; video_id: string | null; }
 interface Section { id: string; title: string; lessons: Lesson[]; }
@@ -28,7 +29,7 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
     if (!lf.title.trim()) return;
     await fetch("/api/admin/lessons", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ section_id: sectionId, course_id: courseId, title: lf.title, duration_sec: Number(lf.duration) || 0, is_preview: lf.preview, video_id: lf.video || null, position: count }),
+      body: JSON.stringify({ section_id: sectionId, course_id: courseId, title: lf.title, duration_sec: Number(lf.duration) || 0, is_preview: lf.preview, video_id: normalizeVideoInput(lf.video), position: count }),
     });
     setLf({ title: "", duration: "300", preview: false, video: "" }); setAddingTo(null); toast("Đã thêm bài học"); load();
   }
@@ -38,10 +39,11 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
     load();
   }
   async function setVideo(l: Lesson) {
-    const v = prompt("Bunny video ID cho bài này:", l.video_id || "");
+    const cur = l.video_id?.startsWith("yt:") ? `https://youtu.be/${l.video_id.slice(3)}` : (l.video_id || "");
+    const v = prompt("Dán link YouTube (hoặc Bunny video ID) cho bài này:", cur);
     if (v === null) return;
-    await fetch("/api/admin/lessons", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: l.id, video_id: v || null }) });
-    toast("Đã gán video cho bài học");
+    await fetch("/api/admin/lessons", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: l.id, video_id: normalizeVideoInput(v) }) });
+    toast(v.trim() ? "Đã gán video cho bài học" : "Đã gỡ video");
     load();
   }
 
@@ -75,7 +77,7 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
                 <div className="px-4 py-3 border-t border-border bg-bg-soft grid sm:grid-cols-2 gap-2">
                   <input className={inp} placeholder="Tên bài" value={lf.title} onChange={(e) => setLf({ ...lf, title: e.target.value })} />
                   <input className={inp} type="number" placeholder="Thời lượng (giây)" value={lf.duration} onChange={(e) => setLf({ ...lf, duration: e.target.value })} />
-                  <input className={`${inp} sm:col-span-2`} placeholder="Bunny video ID (tùy chọn)" value={lf.video} onChange={(e) => setLf({ ...lf, video: e.target.value })} />
+                  <input className={`${inp} sm:col-span-2`} placeholder="Link YouTube hoặc Bunny video ID (tùy chọn)" value={lf.video} onChange={(e) => setLf({ ...lf, video: e.target.value })} />
                   <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={lf.preview} onChange={(e) => setLf({ ...lf, preview: e.target.checked })} /> Cho xem thử miễn phí</label>
                   <div className="flex gap-2 justify-end">
                     <button onClick={() => addLesson(s.id, s.lessons.length)} className="rounded-full bg-ink text-white text-sm font-semibold px-4 py-1.5 cursor-pointer">Thêm bài</button>
