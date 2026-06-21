@@ -17,12 +17,14 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
   const SIGNER = signer || "Long Nam";
   const SIGNER_TITLE = signerTitle || "Giám đốc đào tạo";
   let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: SIGNER, studentCode: "VIE26000000", avatar: "" };
+  let verified = false;
 
   // Tra chứng chỉ thật theo mã
   if (isSupabaseConfigured() && code !== "VIEAIEDU-DEMO") {
     const supabase = await createClient();
     const { data } = await supabase!.from("certificates").select("user_id, course_slug, issued_at").eq("code", code).maybeSingle();
     if (data) {
+      verified = true;
       const [{ data: prof }, course] = await Promise.all([
         supabase!.from("profiles").select("full_name, student_code, avatar_url").eq("id", data.user_id).maybeSingle(),
         getCourseBySlug(data.course_slug as string),
@@ -37,6 +39,8 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
       };
     }
   }
+
+  const certUrl = `https://vieaiedu.vn/certificate/${cert.code}`;
 
   const Corner = ({ className }: { className: string }) => (
     <svg className={`absolute w-16 h-16 ${className}`} viewBox="0 0 64 64" aria-hidden>
@@ -95,11 +99,23 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
         </div>
       </div>
 
-      <div className="flex justify-center gap-3 mt-6 no-print">
+      <div className="flex flex-wrap justify-center gap-3 mt-6 no-print">
         <CertPrintButton />
+        <a href={`https://www.linkedin.com/profile/add?startTask=CERTIFICATION_NAME&name=${encodeURIComponent(cert.course)}&organizationName=${encodeURIComponent("VIE AI EDU")}&certUrl=${encodeURIComponent(certUrl)}&certId=${encodeURIComponent(cert.code)}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full bg-[#0a66c2] text-white font-semibold px-5 py-3">
+          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden><path d="M19 3a2 2 0 012 2v14a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h14zM8.34 17V9.93H6V17h2.34zM7.17 8.9a1.36 1.36 0 100-2.71 1.36 1.36 0 000 2.71zM18 17v-3.87c0-2.07-1.1-3.03-2.58-3.03-1.19 0-1.72.66-2.02 1.12V9.93H11.1V17h2.3v-3.95c0-.21.02-.42.08-.57.17-.42.55-.85 1.2-.85.84 0 1.18.64 1.18 1.58V17H18z"/></svg>
+          Thêm vào hồ sơ LinkedIn
+        </a>
+        <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(certUrl)}`} target="_blank" rel="noopener" className="inline-flex items-center gap-2 rounded-full bg-[#1877f2] text-white font-semibold px-5 py-3">
+          <svg viewBox="0 0 24 24" className="w-4 h-4 fill-current" aria-hidden><path d="M22 12a10 10 0 10-11.56 9.88v-6.99H7.9V12h2.54V9.8c0-2.5 1.49-3.89 3.78-3.89 1.09 0 2.24.2 2.24.2v2.46h-1.26c-1.24 0-1.63.77-1.63 1.56V12h2.78l-.44 2.89h-2.34v6.99A10 10 0 0022 12z"/></svg>
+          Chia sẻ Facebook
+        </a>
         <Link href="/courses" className="rounded-full border border-border-strong hover:border-accent hover:text-accent font-semibold px-6 py-3 transition-colors">Khóa học khác</Link>
       </div>
-      <p className="text-center text-ink-3 text-sm mt-6">Xác thực công khai tại vieaiedu.vn/certificate/{cert.code}</p>
+      <p className="text-center text-ink-3 text-sm mt-6">
+        {verified
+          ? <span className="inline-flex items-center gap-1.5 text-success font-semibold">✓ Chứng chỉ đã được xác thực</span>
+          : "Chứng chỉ mẫu"} · Xác thực công khai tại <span className="font-mono">vieaiedu.vn/certificate/{cert.code}</span>
+      </p>
     </div>
   );
 }

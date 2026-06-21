@@ -17,6 +17,8 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?,
   ]},
   { title: "📰 Blog tự động (AI)", note: "Model AI viết lại tin + danh sách nguồn.", fields: [
     ["gemini_model", "Model Gemini (mặc định gemini-2.5-flash)"],
+    ["blog_per_day", "Số bài đăng/ngày (mặc định 1 — chất hơn lượng)"],
+    ["blog_author", "Tác giả hiển thị (mặc định: Ban biên tập VIE AI EDU)"],
     ["blog_feeds", "Nguồn tin — mỗi dòng: url | Tên nguồn", false, true],
   ]},
   { title: "📈 Tracking & Pixel", fields: [

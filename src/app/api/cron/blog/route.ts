@@ -143,7 +143,7 @@ export async function GET(req: Request) {
       return NextResponse.json({ created: 0, candidates: 0, feeds: feeds.length, note: "no fresh" });
     }
 
-    const TARGET = 3;
+    const TARGET = Math.max(1, parseInt(await getConfig("blog_per_day")) || 1); // mặc định 1 bài/ngày (chất hơn lượng)
     const created: string[] = [];
     let writeErrors = 0;
     for (const item of fresh) {
@@ -168,7 +168,7 @@ export async function GET(req: Request) {
     else if (created.length < TARGET)
       await notifyAdmins("🟡 Blog: tạo thiếu bài", `Chỉ đăng ${created.length}/${TARGET} bài. Cân nhắc thêm nguồn để có thêm tin mới.`, "/admin");
     else
-      await notifyAdmins("✅ Blog: đã đăng 3 bài mới", created.map((t) => `• ${t}`).join("\n"), "/blog");
+      await notifyAdmins(`✅ Blog: đã đăng ${created.length} bài mới`, created.map((t) => `• ${t}`).join("\n"), "/blog");
 
     return NextResponse.json({ created: created.length, titles: created, candidates: fresh.length, feeds: feeds.length, writeErrors });
   } catch (e) {

@@ -56,10 +56,21 @@ export default function WalletDashboard() {
           ))}
         </div>
         <div className="flex gap-2 flex-wrap">
-          <input readOnly value={refLink} className="flex-1 min-w-[220px] font-mono text-xs px-3 py-2.5 rounded-lg border border-border-strong bg-bg-soft outline-none" />
+          <input readOnly value={refLink} className="flex-1 min-w-0 sm:min-w-[220px] font-mono text-xs px-3 py-2.5 rounded-lg border border-border-strong bg-bg-soft outline-none" />
           <button onClick={() => { navigator.clipboard?.writeText(refLink); track("share", { method: "referral_copy" }); toast("Đã sao chép liên kết mời"); }} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 cursor-pointer transition-colors">Sao chép</button>
           <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(refLink)}`} target="_blank" rel="noopener" onClick={() => track("share", { method: "referral_facebook" })} className="rounded-full bg-[#1877f2] text-white font-semibold text-sm px-5 py-2.5 hover:opacity-90 transition-opacity">Chia sẻ Facebook</a>
         </div>
+        <details className="mt-5 text-sm">
+          <summary className="cursor-pointer font-semibold text-ink-2 hover:text-ink">📜 Điều khoản chương trình giới thiệu</summary>
+          <ul className="mt-3 space-y-1.5 text-ink-2 list-disc pl-5">
+            <li><b>Một cấp duy nhất</b> — bạn chỉ nhận hoa hồng từ người <b>trực tiếp</b> bạn giới thiệu. Đây <b>không phải mô hình đa cấp</b>: không có hoa hồng theo tầng/nhánh.</li>
+            <li>Hoa hồng được cộng vào ví khi người được giới thiệu <b>thanh toán thành công một đơn có phí</b> (không áp dụng khóa miễn phí).</li>
+            <li>Số dư hoa hồng có thể <b>rút về ngân hàng</b>; yêu cầu rút được xử lý sau khi quản trị viên duyệt.</li>
+            <li>Nghiêm cấm <b>gian lận</b> (tự mua qua link của mình, tạo tài khoản ảo, spam). Vi phạm sẽ bị <b>hủy hoa hồng và khóa tài khoản</b>.</li>
+            <li>Người nhận thu nhập tự chịu trách nhiệm <b>kê khai thuế</b> theo quy định pháp luật Việt Nam.</li>
+            <li>VIE AI EDU có quyền điều chỉnh tỷ lệ hoa hồng và điều khoản; thay đổi sẽ được thông báo trước.</li>
+          </ul>
+        </details>
       </section>
 
       {/* Rút tiền */}

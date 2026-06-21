@@ -6,6 +6,7 @@ import { mdToHtml } from "@/lib/md";
 import ShareButtons from "@/components/ShareButtons";
 import JsonLd from "@/components/JsonLd";
 import BlogEngagement from "@/components/BlogEngagement";
+import { getConfig } from "@/lib/settings";
 
 export const revalidate = 600;
 
@@ -26,6 +27,7 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
   if (!b) notFound();
   const related = await getRelatedPosts(slug, 3);
   const gallery = (b.images || []).slice(1); // ảnh phụ (bỏ ảnh bìa)
+  const author = (await getConfig("blog_author")) || "Ban biên tập VIE AI EDU"; // tác giả (E-E-A-T)
 
   const articleLd = {
     "@context": "https://schema.org", "@type": "BlogPosting",
@@ -33,7 +35,7 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
     image: b.cover ? [b.cover] : undefined,
     datePublished: b.publishedAt || undefined, inLanguage: "vi-VN",
     mainEntityOfPage: `https://vieaiedu.vn/blog/${b.slug}`,
-    author: { "@type": "Organization", name: b.sourceName ? `VIE AI EDU (nguồn: ${b.sourceName})` : "VIE AI EDU" },
+    author: { "@type": "Person", name: author },
     publisher: { "@type": "Organization", name: "VIE AI EDU", logo: { "@type": "ImageObject", url: "https://vieaiedu.vn/logo.png" } },
   };
 
@@ -50,7 +52,7 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
     <article className="container-x py-12 max-w-[720px]">
       <JsonLd data={[articleLd, breadcrumbLd]} />
       <Link href="/blog" className="text-ink-3 text-sm hover:text-ink">← Tất cả bài viết</Link>
-      <div className="text-ink-3 text-sm mt-6 mb-3">{b.date} · {b.readMin} phút đọc{b.sourceName && ` · ${b.sourceName}`}</div>
+      <div className="text-ink-3 text-sm mt-6 mb-3">✍️ {author} · {b.date} · {b.readMin} phút đọc{b.sourceName && ` · nguồn: ${b.sourceName}`}</div>
       <h1 className="text-[clamp(1.8rem,4vw,2.8rem)] font-extrabold tracking-tight leading-tight">{b.title}</h1>
       <p className="text-ink-2 text-lg mt-4">{b.excerpt}</p>
       {b.cover ? (

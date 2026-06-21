@@ -226,15 +226,16 @@ export async function rewriteArticle(input: { title: string; summary: string; so
 Tiêu đề gốc: ${input.title}
 Tóm tắt nguồn (${input.sourceName}): ${input.summary}
 
-Yêu cầu:
-- BẮT BUỘC: "title", "excerpt" và "body" PHẢI hoàn toàn bằng TIẾNG VIỆT (dịch cả tên riêng/thuật ngữ khi tự nhiên, giữ tên sản phẩm gốc nếu cần). TUYỆT ĐỐI không để tiêu đề tiếng Anh.
-- Tiêu đề tiếng Việt hấp dẫn, chuẩn SEO, tối đa ~70 ký tự.
-- Giọng văn chuyên nghiệp, gần gũi, truyền cảm hứng học AI.
-- Bài dài 350–550 từ, dùng Markdown: 2–4 mục \\n## tiêu đề phụ, có gạch đầu dòng khi hợp lý.
-- Mở đầu hook, kết bài gợi mở liên hệ tới việc học/ứng dụng AI.
-- Tự nhiên, không bịa số liệu. Nếu thiếu chi tiết thì viết tổng quan.
+Mục tiêu CHẤT LƯỢNG (chuẩn E-E-A-T của Google — tránh nội dung AI hời hợt bị phạt):
+- KHÔNG viết lại hời hợt. Phải có GÓC NHÌN & PHÂN TÍCH RIÊNG của VIE AI EDU, đặt trong bối cảnh người Việt.
+- BẮT BUỘC "title", "excerpt", "body" hoàn toàn bằng TIẾNG VIỆT (giữ tên sản phẩm gốc khi cần). Tuyệt đối không tiêu đề tiếng Anh.
+- Tiêu đề hấp dẫn, chuẩn SEO, ~60–70 ký tự, không giật tít sai sự thật.
+- Bài dài 600–900 từ, Markdown: 3–5 mục "## tiêu đề phụ", có gạch đầu dòng khi hợp lý.
+- CẤU TRÚC bắt buộc gồm các phần (đặt tiêu đề phụ phù hợp): (1) Có gì mới / chuyện gì đang xảy ra; (2) **Vì sao điều này quan trọng** (phân tích, ý nghĩa); (3) **Ý nghĩa với người Việt / người học AI tại VN**; (4) **Bạn nên làm gì** (gợi ý ứng dụng/kỹ năng thực tế, có thể liên hệ học tập).
+- Giọng chuyên gia, khách quan, gần gũi; có nhận định/đánh giá (experience + expertise), KHÔNG bịa số liệu cụ thể (số liệu/ngày tháng chỉ nêu nếu chắc chắn từ nguồn).
+- Mở đầu bằng hook thật, kết bài gợi mở hành động.
 
-Trả về JSON đúng định dạng: {"title": "tiêu đề tiếng Việt mới", "excerpt": "tóm tắt 1-2 câu", "body": "nội dung markdown"}`;
+Trả về JSON đúng định dạng: {"title": "tiêu đề tiếng Việt mới", "excerpt": "tóm tắt 1-2 câu súc tích", "body": "nội dung markdown chất lượng cao"}`;
 
   try {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {

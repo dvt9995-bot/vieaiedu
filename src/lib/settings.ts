@@ -49,6 +49,8 @@ export const CONFIG_KEYS = {
   gemini_image_model: "",
   youtube_api_key: "YOUTUBE_API_KEY",
   blog_feeds: "",
+  blog_per_day: "",
+  blog_author: "",
   ga_id: "NEXT_PUBLIC_GA_ID",
   fb_pixel_id: "",
   tiktok_pixel_id: "",
