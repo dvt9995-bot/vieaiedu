@@ -1,5 +1,6 @@
 "use client";
 import { createClient } from "@/lib/supabase/client";
+import { formatDate } from "@/lib/format";
 import { POSTS } from "@/lib/mock";
 
 // Lớp truy cập dữ liệu phía client. Mỗi hàm tự fallback localStorage/mock
@@ -120,7 +121,7 @@ export async function loadPosts(): Promise<DBPost[]> {
       author: (p.author_name as string) || "Học viên",
       avatar: (p.author_avatar as string) || undefined,
       avatarColor: COLORS[i % 3],
-      time: new Date(p.created_at as string).toLocaleDateString("vi-VN"),
+      time: formatDate(p.created_at as string),
       body: p.body as string,
       image: (p.image_url as string) || undefined,
       courseSlug: (p.course_slug as string) || undefined,
@@ -177,7 +178,7 @@ export async function loadComments(postId: string): Promise<DBComment[]> {
   const c = createClient();
   if (!c) return [];
   const { data } = await c.from("comments").select("id, body, created_at, profiles(full_name, avatar_url)").eq("post_id", postId).order("created_at");
-  return (data || []).map((x) => { const pr = (x as { profiles?: { full_name?: string; avatar_url?: string } }).profiles; return { id: x.id as string, body: x.body as string, author: pr?.full_name || "Học viên", avatar: pr?.avatar_url || undefined, time: new Date(x.created_at as string).toLocaleDateString("vi-VN") }; });
+  return (data || []).map((x) => { const pr = (x as { profiles?: { full_name?: string; avatar_url?: string } }).profiles; return { id: x.id as string, body: x.body as string, author: pr?.full_name || "Học viên", avatar: pr?.avatar_url || undefined, time: formatDate(x.created_at as string) }; });
 }
 export async function addComment(postId: string, body: string): Promise<boolean> {
   const s = await sb();

@@ -3,6 +3,7 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import FollowButton from "@/components/FollowButton";
+import { formatDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -86,7 +87,7 @@ export default async function ProfilePage({ params }: { params: Promise<{ id: st
         <div className="space-y-3">
           {p.posts.map((post) => (
             <div key={post.id} className="rounded-card border border-border bg-surface p-4">
-              <div className="text-ink-3 text-xs mb-2">{new Date(post.created_at).toLocaleDateString("vi-VN")}</div>
+              <div className="text-ink-3 text-xs mb-2">{formatDate(post.created_at)}</div>
               <p className="text-[.96rem] whitespace-pre-wrap">{post.body}</p>
               {/* eslint-disable-next-line @next/next/no-img-element */}
               {post.image && <img src={post.image} alt="" className="rounded-[10px] w-full border border-border mt-3" />}

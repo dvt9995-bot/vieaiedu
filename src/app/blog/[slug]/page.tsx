@@ -31,7 +31,7 @@ export default async function BlogDetail({ params }: { params: Promise<{ slug: s
     "@context": "https://schema.org", "@type": "BlogPosting",
     headline: b.title, description: b.excerpt,
     image: b.cover ? [b.cover] : undefined,
-    datePublished: b.date, inLanguage: "vi-VN",
+    datePublished: b.publishedAt || undefined, inLanguage: "vi-VN",
     mainEntityOfPage: `https://vieaiedu.vn/blog/${b.slug}`,
     author: { "@type": "Organization", name: b.sourceName ? `VIE AI EDU (nguồn: ${b.sourceName})` : "VIE AI EDU" },
     publisher: { "@type": "Organization", name: "VIE AI EDU", logo: { "@type": "ImageObject", url: "https://vieaiedu.vn/logo.png" } },

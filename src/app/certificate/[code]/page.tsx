@@ -3,6 +3,7 @@ import CertPrintButton from "@/components/CertPrintButton";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { getCourseBySlug } from "@/lib/courses";
 import type { Metadata } from "next";
+import { formatDate } from "@/lib/format";
 
 export const metadata: Metadata = {
   title: "Chứng chỉ hoàn thành",
@@ -25,7 +26,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
       cert = {
         name: (prof?.full_name as string) || "Học viên",
         course: (course?.title || data.course_slug as string).toUpperCase(),
-        date: new Date(data.issued_at as string).toLocaleDateString("vi-VN"),
+        date: formatDate(data.issued_at as string),
         code, signer: "Long Nam",
         studentCode: (prof?.student_code as string) || "—",
       };

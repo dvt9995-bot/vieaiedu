@@ -2,9 +2,10 @@ import { unstable_cache } from "next/cache";
 import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { BLOG } from "@/lib/mock";
+import { formatDate } from "@/lib/format";
 import type { BlogPost } from "@/lib/types";
 
-interface FullBlog extends BlogPost { id?: string; cover?: string; images?: string[]; sourceUrl?: string; sourceName?: string; }
+interface FullBlog extends BlogPost { id?: string; cover?: string; images?: string[]; sourceUrl?: string; sourceName?: string; publishedAt?: string; }
 
 function map(r: Record<string, unknown>): FullBlog {
   return {
@@ -13,7 +14,8 @@ function map(r: Record<string, unknown>): FullBlog {
     title: r.title as string,
     excerpt: (r.excerpt as string) || "",
     readMin: 5,
-    date: r.published_at ? new Date(r.published_at as string).toLocaleDateString("vi-VN") : "",
+    date: r.published_at ? formatDate(r.published_at as string) : "",
+    publishedAt: (r.published_at as string) || undefined,
     body: (r.body as string) || "",
     cover: (r.cover_url as string) || undefined,
     images: (r.images as string[]) || [],

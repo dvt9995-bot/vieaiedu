@@ -5,6 +5,7 @@ import { createClient, isSupabaseConfigured } from "@/lib/supabase/server";
 import PostComments from "@/components/PostComments";
 import ShareButtons from "@/components/ShareButtons";
 import Avatar from "@/components/Avatar";
+import { formatDate } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -43,7 +44,7 @@ export default async function PostPage({ params }: { params: Promise<{ id: strin
           <Link href={`/u/${p.author_id}`}><Avatar src={p.author_avatar} name={p.author_name || "H"} size={44} /></Link>
           <div>
             <Link href={`/u/${p.author_id}`} className="font-semibold hover:text-accent">{p.author_name}</Link>
-            <div className="text-ink-3 text-xs">{new Date(p.created_at).toLocaleDateString("vi-VN")} · 👁 {p.views} lượt xem</div>
+            <div className="text-ink-3 text-xs">{formatDate(p.created_at)} · 👁 {p.views} lượt xem</div>
           </div>
         </div>
         <p className="text-[1.02rem] leading-relaxed whitespace-pre-wrap">{p.body}</p>

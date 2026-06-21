@@ -4,6 +4,7 @@ import Reveal from "@/components/Reveal";
 import Hero from "@/components/Hero";
 import CourseCard from "@/components/CourseCard";
 import Avatar from "@/components/Avatar";
+import { formatDate } from "@/lib/format";
 import JsonLd from "@/components/JsonLd";
 import { getCourses } from "@/lib/courses";
 import { getBlogPosts } from "@/lib/blog";
@@ -120,7 +121,7 @@ export default async function Home() {
                       <Link href={`/u/${p.author_id}`}><Avatar src={p.author_avatar} name={p.author_name || "H"} size={36} /></Link>
                       <div>
                         <Link href={`/u/${p.author_id}`} className="text-sm font-semibold hover:text-accent">{p.author_name || "Học viên"}</Link>
-                        <div className="text-ink-3 text-xs">{new Date(p.created_at).toLocaleDateString("vi-VN")}</div>
+                        <div className="text-ink-3 text-xs">{formatDate(p.created_at)}</div>
                       </div>
                     </div>
                     <p className="text-[.95rem] text-ink-2 line-clamp-3 flex-1">{p.body}</p>

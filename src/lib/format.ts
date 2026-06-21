@@ -13,3 +13,12 @@ export function formatDuration(totalMinutes: number): string {
 export function formatCount(n: number): string {
   return n.toLocaleString("vi-VN");
 }
+
+// Định dạng ngày/giờ theo MÚI GIỜ VIỆT NAM (tránh lệch ngày khi render trên server UTC)
+const TZ = "Asia/Ho_Chi_Minh";
+export function formatDate(d: string | number | Date): string {
+  return new Date(d).toLocaleDateString("vi-VN", { timeZone: TZ });
+}
+export function formatDateTime(d: string | number | Date): string {
+  return new Date(d).toLocaleString("vi-VN", { timeZone: TZ, hour: "2-digit", minute: "2-digit", day: "2-digit", month: "2-digit", year: "numeric" });
+}
