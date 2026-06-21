@@ -54,14 +54,14 @@ function mapCourse(c: Row): Course {
 // Dùng service role (không cookie) để có thể cache. Catalog là dữ liệu công khai.
 async function fromDB(): Promise<Course[] | null> {
   const admin = createAdminClient();
-  if (!admin) return null;
+  if (!admin) return null; // chưa cấu hình Supabase → fallback mock
   const { data, error } = await admin
     .from("courses")
     .select("*, sections(*, lessons(*))")
     .eq("status", "published")
     .order("position", { ascending: true });
-  if (error || !data || data.length === 0) return null; // chưa seed → fallback mock
-  return data.map(mapCourse);
+  if (error) return null; // lỗi truy vấn → fallback mock
+  return (data ?? []).map(mapCourse); // ĐÃ cấu hình: trả đúng DB (kể cả rỗng) — KHÔNG hiện khóa mẫu
 }
 
 // Cache toàn bộ catalog 5 phút (tag "courses" để admin sửa là làm mới ngay).
