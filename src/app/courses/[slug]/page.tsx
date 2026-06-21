@@ -7,6 +7,8 @@ import { formatDuration } from "@/lib/format";
 import CoursePurchase from "@/components/CoursePurchase";
 import CourseCard from "@/components/CourseCard";
 import CourseReviews from "@/components/CourseReviews";
+import YouTubeComments from "@/components/YouTubeComments";
+import { parseVideoRef } from "@/lib/video";
 import { createAdminClient } from "@/lib/supabase/admin";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
@@ -32,6 +34,9 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
   const { slug } = await params;
   const course = await getCourseBySlug(slug);
   if (!course) notFound();
+
+  // Video YouTube đầu tiên của khóa → đồng bộ bình luận gốc
+  const ytVideoId = course.sections.flatMap((s) => s.lessons).map((l) => parseVideoRef(l.videoId)).find((r) => r?.kind === "youtube")?.id;
 
   // Thống kê đánh giá (cho aggregateRating + hiển thị)
   let reviewAvg = 0, reviewCount = 0;
@@ -135,6 +140,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
           <p className="text-ink-2 leading-relaxed">{course.description}</p>
 
           <CourseReviews slug={course.slug} />
+          {ytVideoId && <YouTubeComments videoId={ytVideoId} />}
         </div>
 
         {/* Right: purchase */}

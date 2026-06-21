@@ -13,6 +13,7 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?,
     ["bunny_library_id", "Bunny Library ID"], ["bunny_token_key", "Bunny Token key (chống tải trộm)", true],
     ["resend_api_key", "Resend API key", true], ["resend_from", "Email gửi (From)"],
     ["gemini_api_key", "Google Gemini API key (blog tự động)", true],
+    ["youtube_api_key", "YouTube Data API key (đồng bộ bình luận video)", true],
   ]},
   { title: "📰 Blog tự động (AI)", note: "Model AI viết lại tin + danh sách nguồn.", fields: [
     ["gemini_model", "Model Gemini (mặc định gemini-2.5-flash)"],
