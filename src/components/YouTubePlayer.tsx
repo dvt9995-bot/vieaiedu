@@ -82,9 +82,10 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
     return () => cancelAnimationFrame(raf);
   }, []);
 
-  // Best-effort: tự chọn track LỒNG TIẾNG tiếng Việt nếu video có (API không chính thức → bọc try/catch)
-  function trySetViAudio(p: any) {
-    if (audioTried.current) return;
+  // Best-effort: tự chọn track LỒNG TIẾNG tiếng Việt nếu video có (API không chính thức → bọc try/catch).
+  // Thử lại nhiều lần vì danh sách track có thể tải trễ sau khi play.
+  function trySetViAudio(p: any, attempt = 0) {
+    if (audioTried.current || attempt > 6) return;
     try {
       const tracks = p.getAvailableAudioTracks?.() || p.getAvailableAudioLanguages?.();
       if (Array.isArray(tracks) && tracks.length > 1) {
@@ -92,9 +93,11 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
           const code = String(t?.languageCode || t?.id || t || "").toLowerCase();
           return code.startsWith("vi") || /việt|vietnam/i.test(String(t?.displayName || t?.name || ""));
         });
-        if (vi) { (p.setAudioTrack || p.setAudioLanguage)?.call(p, vi); audioTried.current = true; }
+        if (vi) { (p.setAudioTrack || p.setAudioLanguage)?.call(p, vi); audioTried.current = true; return; }
+        audioTried.current = true; return; // có nhiều track nhưng không có tiếng Việt → thôi
       }
-    } catch { /* YouTube không hỗ trợ → bỏ qua, vẫn có phụ đề */ }
+    } catch { /* API không hỗ trợ → bỏ qua, vẫn còn phụ đề */ }
+    setTimeout(() => trySetViAudio(p, attempt + 1), 1200); // tải trễ → thử lại
   }
 
   const toggle = () => { const p = playerRef.current; if (!p) return; playing ? p.pauseVideo() : p.playVideo(); };
