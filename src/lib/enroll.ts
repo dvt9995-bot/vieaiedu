@@ -1,7 +1,7 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCourse } from "@/lib/mock";
+import { getCourseBySlug } from "@/lib/courses";
 
 /** Kiểm tra user hiện tại đã ghi danh khóa chưa (server). */
 export async function isEnrolled(courseSlug: string): Promise<boolean> {

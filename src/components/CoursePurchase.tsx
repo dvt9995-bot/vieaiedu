@@ -62,7 +62,7 @@ export default function CoursePurchase({ course }: { course: Course }) {
         const r = await enrollFree(course.slug);
         if (r.ok) { track("purchase", { item_id: course.slug, value: 0, currency: "VND", method: "free" }); return router.push(`/learn/${course.slug}`); }
         if (r.error === "auth") return open("login");
-        return setMsg("Chưa thể ghi danh. Vui lòng đăng nhập.");
+        return setMsg(r.error === "not_free" ? "Khóa này không miễn phí." : "Chưa ghi danh được, vui lòng thử lại.");
       }
       const res = await fetch("/api/checkout", {
         method: "POST", headers: { "Content-Type": "application/json" },
