@@ -55,16 +55,16 @@ export async function generateCoverImage(title: string, refs: ImgRef[] = []): Pr
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");
   if (!key) return null;
   const hasRefs = refs.length > 0;
-  // Bìa khóa học: CHỦ THỂ là AI/công cụ được dạy trong khóa; màu đỏ #E41E26 + vàng #F4B400 chỉ là PALETTE.
-  const prompt = `Premium widescreen 16:9 online course cover banner.
-Course title: "${title}".
-The MAIN SUBJECT must be the specific AI product/tool/topic named in the title above — visualize and feature THAT subject prominently and recognizably as the hero of the cover (if the title names a product like Claude, ChatGPT, Midjourney, Gemini, etc., make that product the clear focal element).
-Surround it with tasteful modern AI/technology iconography (glowing neural networks, circuit lines, data nodes, soft holographic elements).
-Style: clean premium 3D/flat illustration, sophisticated, trustworthy, single clear focal point, uncluttered.
-Color palette (accent only, NOT a logo): crimson red (#E41E26) and warm gold (#F4B400) over an elegant deep gradient background (charcoal/navy to soft light). Soft cinematic lighting, depth of field. High quality, sharp, vibrant.
+  // Bìa khóa học: CHỦ THỂ là AI/công cụ được dạy; tiêu đề NGẮN GỌN, bắt mắt; đỏ #E41E26 + vàng #F4B400.
+  const prompt = `Premium eye-catching widescreen 16:9 online course cover banner. Bold, modern, scroll-stopping design.
+Course topic (Vietnamese): "${title}".
+MAIN SUBJECT: feature the specific AI product/tool/skill from the topic as the clear hero (e.g. Claude, ChatGPT, Midjourney, Gemini…), prominent and recognizable.
+HEADLINE TEXT: render exactly ONE short, punchy, attention-grabbing headline — only 2 to 4 words in Vietnamese (correctly spelled, with proper diacritics), in large bold stylish typography. Use the key product/skill name (e.g. "Làm chủ Claude AI", "Master ChatGPT"). DO NOT write the full long sentence/title; keep the text minimal, big and striking. No paragraphs, no small print, no other text anywhere.
+Surround with tasteful AI/tech iconography (glowing neural networks, circuit lines, data nodes, soft holographic elements). Style: clean premium 3D/flat illustration, sophisticated, single focal point, uncluttered.
+Color palette (accent only): crimson red (#E41E26) and warm gold (#F4B400) over an elegant deep gradient (charcoal/navy to soft light). Soft cinematic lighting, depth of field, vibrant, high quality.
 ${hasRefs
-  ? `IMPORTANT — reference images provided: they show the EXACT logo/branding of the AI product this course teaches, and possibly a person/instructor. Reproduce the provided logo FAITHFULLY (keep its exact shapes, colors and proportions) and make it a prominent focal element. If a person is provided, use them as the main figure. Do NOT invent, add, replace or substitute any other logo or brand mark — in particular, do NOT add any generic education-platform logo or the letters "VIE AI EDU". Keep the provided logo as the only brand mark. No other text or words.`
-  : `ABSOLUTELY NO text, NO words, NO letters, NO numbers, NO logos, NO watermark — only the visual illustration of the topic.`}`;
+  ? `REFERENCE IMAGES: ${refs.length} image(s) provided — you MUST use EVERY one of them, do not ignore any. If one shows a PERSON/character, make that person the main figure of the cover. If one shows a LOGO/brand mark, reproduce it FAITHFULLY (exact shapes, colors, proportions) and place it prominently. Combine ALL provided references together into one cohesive cover. Do NOT invent or add any other logo (especially NOT a generic education-platform logo or the letters "VIE AI EDU"). Besides the short headline above, add no other text.`
+  : `Besides the short headline above, no other text or watermark.`}`;
 
   const parts: Record<string, unknown>[] = [
     ...refs.map((r) => ({ inlineData: { mimeType: r.mime, data: r.data } })),
