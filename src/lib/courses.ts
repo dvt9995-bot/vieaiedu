@@ -22,6 +22,7 @@ function mapCourse(c: Row): Course {
           durationSec: (l.duration_sec as number) || 0,
           isPreview: !!l.is_preview,
           videoId: (l.video_id as string) || undefined,
+          content: (l.content as string) || undefined,
         })),
     }));
   const lessonsCount = sections.reduce((n, s) => n + s.lessons.length, 0);

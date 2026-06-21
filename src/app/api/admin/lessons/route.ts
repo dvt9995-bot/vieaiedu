@@ -30,7 +30,7 @@ export async function GET(req: Request) {
   const admin = createAdminClient()!;
   const courseId = new URL(req.url).searchParams.get("course_id");
   const { data } = await admin
-    .from("sections").select("id, title, position, lessons(id, title, type, duration_sec, is_preview, video_id, position)")
+    .from("sections").select("id, title, position, lessons(id, title, type, duration_sec, is_preview, video_id, content, position)")
     .eq("course_id", courseId).order("position");
   const sections = (data || []).map((s) => ({
     ...s, lessons: ((s.lessons as Record<string, unknown>[]) || []).slice().sort((a, b) => (a.position as number) - (b.position as number)),

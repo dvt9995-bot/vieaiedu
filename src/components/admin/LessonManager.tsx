@@ -3,7 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import { toast } from "@/components/Toaster";
 import { normalizeVideoInput } from "@/lib/video";
 
-interface Lesson { id: string; title: string; duration_sec: number; is_preview: boolean; video_id: string | null; }
+interface Lesson { id: string; title: string; duration_sec: number; is_preview: boolean; video_id: string | null; content?: string | null; }
 interface Section { id: string; title: string; lessons: Lesson[]; }
 
 export default function LessonManager({ courseId, onClose }: { courseId: string; onClose: () => void }) {
@@ -11,6 +11,14 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
   const [newSection, setNewSection] = useState("");
   const [addingTo, setAddingTo] = useState<string | null>(null);
   const [lf, setLf] = useState({ title: "", duration: "300", preview: false, video: "" });
+  const [docLesson, setDocLesson] = useState<Lesson | null>(null);
+  const [docText, setDocText] = useState("");
+
+  async function saveDoc() {
+    if (!docLesson) return;
+    await fetch("/api/admin/lessons", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: docLesson.id, content: docText || null }) });
+    setDocLesson(null); toast("Đã lưu tài liệu bài học"); load();
+  }
 
   const load = useCallback(async () => {
     const r = await fetch(`/api/admin/lessons?course_id=${courseId}`).then((x) => x.json());
@@ -49,6 +57,23 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
 
   const inp = "px-3 py-2 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
 
+  if (docLesson) return (
+    <div className="fixed inset-0 z-[270] flex items-center justify-center p-4 bg-[rgba(11,12,14,.55)] backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setDocLesson(null)}>
+      <div className="bg-surface rounded-card border border-border shadow-lg w-full max-w-[640px] max-h-[88vh] overflow-auto p-5">
+        <div className="flex items-center justify-between mb-1">
+          <h3 className="font-bold text-lg">📄 Tài liệu bài: {docLesson.title}</h3>
+          <button onClick={() => setDocLesson(null)} className="text-ink-3 hover:text-ink text-2xl leading-none cursor-pointer">×</button>
+        </div>
+        <p className="text-ink-3 text-xs mb-3">Hỗ trợ Markdown. Thêm liên kết tải tài liệu: <code className="bg-bg-soft px-1 rounded">[Tải PDF](https://link...)</code>. Tiêu đề: <code className="bg-bg-soft px-1 rounded">## Mục</code>, gạch đầu dòng: <code className="bg-bg-soft px-1 rounded">- ý</code>.</p>
+        <textarea value={docText} onChange={(e) => setDocText(e.target.value)} rows={12} placeholder={"## Tài liệu bài học\n\n- [Slide bài giảng (PDF)](https://...)\n- [Mã nguồn mẫu](https://github.com/...)\n\nGhi chú thêm cho học viên..."} className="w-full rounded-lg border border-border-strong bg-surface px-3 py-2.5 text-sm font-mono outline-none focus:border-accent" />
+        <div className="flex gap-2 mt-3">
+          <button onClick={saveDoc} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2 cursor-pointer">Lưu tài liệu</button>
+          <button onClick={() => setDocLesson(null)} className="rounded-full border border-border-strong text-sm px-4 py-2 cursor-pointer">Hủy</button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
     <div className="fixed inset-0 z-[260] flex items-center justify-center p-4 bg-[rgba(11,12,14,.5)] backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && onClose()}>
       <div className="bg-surface rounded-card border border-border shadow-lg w-full max-w-[640px] max-h-[85vh] overflow-auto">
@@ -69,6 +94,7 @@ export default function LessonManager({ courseId, onClose }: { courseId: string;
                     <span className="flex-1">{l.title} <span className="text-ink-3 text-xs">({Math.round(l.duration_sec / 60)}p)</span></span>
                     <button onClick={() => togglePreview(l)} className={`text-xs font-semibold px-2 py-0.5 rounded-full cursor-pointer ${l.is_preview ? "bg-accent-weak text-accent" : "text-ink-3 border border-border"}`}>{l.is_preview ? "Xem thử" : "Khóa"}</button>
                     <button onClick={() => setVideo(l)} className={`text-xs font-semibold cursor-pointer ${l.video_id ? "text-success" : "text-accent"}`}>{l.video_id ? "🎬 đã gán" : "Gán video"}</button>
+                    <button onClick={() => { setDocLesson(l); setDocText(l.content || ""); }} className={`text-xs font-semibold cursor-pointer ${l.content ? "text-success" : "text-ink-2 hover:text-accent"}`}>{l.content ? "📄 có tài liệu" : "📄 Tài liệu"}</button>
                     <button onClick={() => delLesson(l.id)} className="text-ink-3 hover:text-accent text-xs cursor-pointer">Xóa</button>
                   </li>
                 ))}

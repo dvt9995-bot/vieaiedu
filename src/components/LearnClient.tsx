@@ -6,6 +6,7 @@ import { SAMPLE_QUIZ } from "@/lib/mock";
 import { loadProgress, saveLesson, loadNotes, addNote as dbAddNote, saveQuizAttempt } from "@/lib/db";
 import YouTubePlayer from "./YouTubePlayer";
 import DonateButton from "./DonateButton";
+import { mdToHtml } from "@/lib/md";
 
 type Tab = "overview" | "notes" | "quiz";
 interface Note { lessonId: string; t: number; body: string; }
@@ -165,10 +166,9 @@ export default function LearnClient({ course, initialLesson, locked = false, pla
         {/* Tab content */}
         <div className="px-6 py-6">
           {tab === "overview" && (
-            <div className="text-ink-2 leading-relaxed">
-              <p>Đây là phần nội dung/tài liệu của bài <b>{current.title}</b>. Khi nối Bunny.net, video thật sẽ phát ở trên với signed URL chống tải trộm; vị trí xem được lưu tự động để bạn học tiếp đúng chỗ.</p>
-              <a className="inline-flex items-center gap-2 mt-4 text-accent font-semibold" href="#">⬇ Tải tài liệu bài học (PDF)</a>
-            </div>
+            current.content?.trim()
+              ? <div className="text-ink-2 leading-relaxed" dangerouslySetInnerHTML={{ __html: mdToHtml(current.content) }} />
+              : <p className="text-ink-3 leading-relaxed">Bài học <b className="text-ink-2">{current.title}</b> chưa có tài liệu kèm theo.</p>
           )}
 
           {tab === "notes" && (

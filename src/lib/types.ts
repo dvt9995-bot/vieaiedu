@@ -7,6 +7,7 @@ export interface Lesson {
   durationSec: number;
   isPreview: boolean;
   videoId?: string;
+  content?: string;
 }
 
 export interface Section {
