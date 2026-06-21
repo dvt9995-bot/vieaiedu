@@ -1,22 +1,35 @@
 import { getConfig } from "@/lib/settings";
 
-// Thống kê live của video YouTube (like/view). Cache RAM 5 phút để tiết kiệm hạn mức API.
-const cache = new Map<string, { at: number; data: { likes: number; views: number } }>();
+// Thống kê live của video YouTube (like/view/thời lượng). Cache RAM 5 phút để tiết kiệm hạn mức API.
+type Stats = { likes: number; views: number; durationSec: number };
+const cache = new Map<string, { at: number; data: Stats }>();
 const TTL = 5 * 60_000;
 
-export async function getYouTubeStats(videoId: string): Promise<{ likes: number; views: number } | null> {
+// Chuyển ISO 8601 (PT#H#M#S) → giây
+function parseISODuration(iso: string): number {
+  const m = /^PT(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?$/.exec(iso || "");
+  if (!m) return 0;
+  return (Number(m[1]) || 0) * 3600 + (Number(m[2]) || 0) * 60 + (Number(m[3]) || 0);
+}
+
+export async function getYouTubeStats(videoId: string): Promise<Stats | null> {
   if (!videoId || !/^[a-zA-Z0-9_-]{11}$/.test(videoId)) return null;
   const hit = cache.get(videoId);
   if (hit && Date.now() - hit.at < TTL) return hit.data;
   const key = await getConfig("youtube_api_key", "YOUTUBE_API_KEY");
   if (!key) return null;
   try {
-    const r = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics&id=${videoId}&key=${key}`, { signal: AbortSignal.timeout(10000) });
+    const r = await fetch(`https://www.googleapis.com/youtube/v3/videos?part=statistics,contentDetails&id=${videoId}&key=${key}`, { signal: AbortSignal.timeout(10000) });
     if (!r.ok) return null;
     const d = await r.json();
-    const s = d.items?.[0]?.statistics;
-    if (!s) return null;
-    const data = { likes: Number(s.likeCount) || 0, views: Number(s.viewCount) || 0 };
+    const it = d.items?.[0];
+    if (!it) return null;
+    const s = it.statistics || {};
+    const data: Stats = {
+      likes: Number(s.likeCount) || 0,
+      views: Number(s.viewCount) || 0,
+      durationSec: parseISODuration(it.contentDetails?.duration || ""),
+    };
     cache.set(videoId, { at: Date.now(), data });
     return data;
   } catch { return null; }
