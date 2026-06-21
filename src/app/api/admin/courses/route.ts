@@ -17,7 +17,7 @@ function pick(body: Record<string, unknown>) {
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, students, status, source, subtitle, instructor").order("position");
+  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, students, status, source, subtitle, description, instructor").order("position");
   return NextResponse.json({ courses: data ?? [] });
 }
 
