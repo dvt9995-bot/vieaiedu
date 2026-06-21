@@ -20,7 +20,7 @@ export async function isEnrolled(courseSlug: string): Promise<boolean> {
 
 /** Ghi danh khóa miễn phí ngay (server xác thực khóa đúng là free, dùng service role). */
 export async function enrollFree(courseSlug: string): Promise<{ ok: boolean; error?: string }> {
-  const course = getCourse(courseSlug);
+  const course = await getCourseBySlug(courseSlug);
   if (!course || course.price !== 0) return { ok: false, error: "not_free" };
   const supabase = await createClient();
   if (!supabase) return { ok: false, error: "unconfigured" };
