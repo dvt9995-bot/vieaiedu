@@ -5,7 +5,8 @@ import { isCurrentUserAdmin } from "@/lib/admin-guard";
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("posts").select("id, body, image_url, hidden, created_at, author_id, profiles(full_name)").order("created_at", { ascending: false }).limit(200);
+  const { data, error } = await admin.from("posts").select("id, body, image_url, hidden, created_at, author_id, profiles!posts_author_id_fkey(full_name)").order("created_at", { ascending: false }).limit(200);
+  if (error) return NextResponse.json({ error: error.message, posts: [] }, { status: 500 });
   const posts = (data ?? []).map((p) => ({
     id: p.id, body: p.body, image: p.image_url, hidden: p.hidden, created_at: p.created_at,
     author_id: p.author_id, author: (p as { profiles?: { full_name?: string } }).profiles?.full_name || "Học viên",
