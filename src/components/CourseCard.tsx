@@ -29,9 +29,6 @@ export default function CourseCard({ course }: { course: Course }) {
         <div className="relative aspect-video bg-bg-soft border-b border-border flex items-center justify-center overflow-hidden">
           {/* eslint-disable-next-line @next/next/no-img-element */}
           <img src={course.thumb} alt={course.title} className="absolute inset-0 w-full h-full object-cover" />
-          <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-white/90 backdrop-blur border border-border shadow-soft flex items-center justify-center z-10 transition-transform group-hover:scale-110">
-            <svg viewBox="0 0 24 24" className="w-4 h-4 ml-0.5 fill-accent"><path d="M8 5v14l11-7z" /></svg>
-          </div>
           <span className="absolute top-2 left-2 sm:top-3 sm:left-3 bg-surface border border-border text-ink-2 font-semibold text-[.66rem] sm:text-[.72rem] px-2 py-0.5 sm:py-1 rounded-full z-10 max-w-[80%] truncate">
             {course.category}
           </span>
