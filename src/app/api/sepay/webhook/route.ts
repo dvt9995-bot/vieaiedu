@@ -36,7 +36,19 @@ export async function POST(req: Request) {
   const { data: orders } = await admin
     .from("orders").select("*").eq("status", "pending").limit(200);
   const order = (orders ?? []).find((o) => o.sepay_ref && content.toUpperCase().includes(o.sepay_ref));
-  if (!order) return NextResponse.json({ success: true, matched: false });
+  if (!order) {
+    // Không khớp đơn hàng → thử khớp ỦNG HỘ (tùy tâm)
+    const { data: dons } = await admin.from("donations").select("*").eq("status", "pending").limit(200);
+    const don = (dons ?? []).find((d) => d.sepay_ref && content.toUpperCase().includes(d.sepay_ref));
+    if (don) {
+      if (amount && amount < (don.amount as number)) return NextResponse.json({ success: true, matched: true, note: "donation amount too low" });
+      await admin.from("donations").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", don.id);
+      await notifyAdmins("❤️ Nhận ủng hộ cộng đồng", `${formatVND((amount as number) || (don.amount as number))}${don.message ? ` · "${don.message}"` : ""}`, "/admin");
+      if (don.user_id) await notify({ userId: don.user_id as string, type: "transactional", title: "Cảm ơn bạn đã ủng hộ ❤️", body: "Sự ủng hộ của bạn giúp duy trì & phát triển cộng đồng VIE AI EDU. Cảm ơn bạn rất nhiều!", href: "/" });
+      return NextResponse.json({ success: true, matched: true, donation: true });
+    }
+    return NextResponse.json({ success: true, matched: false });
+  }
 
   if (amount && amount < order.amount) {
     return NextResponse.json({ success: true, matched: true, note: "amount too low" });

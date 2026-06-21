@@ -5,6 +5,7 @@ import { getCourseBySlug, getCourses } from "@/lib/courses";
 import { LEVEL_LABEL } from "@/lib/types";
 import { formatDuration } from "@/lib/format";
 import CoursePurchase from "@/components/CoursePurchase";
+import DonateButton from "@/components/DonateButton";
 import CourseCard from "@/components/CourseCard";
 import CourseReviews from "@/components/CourseReviews";
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -137,8 +138,14 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
           <CourseReviews slug={course.slug} />
         </div>
 
-        {/* Right: purchase */}
-        <CoursePurchase course={course} />
+        {/* Right: purchase + ủng hộ */}
+        <div className="space-y-4">
+          <CoursePurchase course={course} />
+          <div className="rounded-card border border-border bg-surface p-4 text-center">
+            <DonateButton courseSlug={course.slug} />
+            <p className="text-ink-3 text-xs mt-2">Ủng hộ tự nguyện để duy trì &amp; phát triển cộng đồng — tùy tâm, không bắt buộc.</p>
+          </div>
+        </div>
       </div>
 
       {/* Up-sale: gợi ý khóa khác */}

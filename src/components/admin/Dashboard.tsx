@@ -37,6 +37,7 @@ export default function Dashboard({ onGo }: { onGo?: (tab: string) => void }) {
   const kpis: [string, string][] = [
     ["Doanh thu tháng", formatVND(o.revenue_month || 0)],
     ["Tổng doanh thu", formatVND(o.revenue || 0)],
+    ["Trong đó: Ủng hộ", formatVND(o.donations || 0)],
     ["Học viên", String(o.students || 0)],
     ["Đơn đã thanh toán", String(o.orders_paid || 0)],
     ["Lượt ghi danh", String(o.enrollments || 0)],
