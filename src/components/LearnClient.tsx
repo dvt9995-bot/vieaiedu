@@ -30,6 +30,7 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
   const [quizScore, setQuizScore] = useState(0);
   const [answers, setAnswers] = useState<Record<number, number>>({});
   const [certCode, setCertCode] = useState<string | null>(null);
+  const [certGate, setCertGate] = useState<{ paidDone: number; needed: number } | null>(null);
 
   // Khôi phục tiến độ + ghi chú (DB nếu đăng nhập, else localStorage)
   useEffect(() => {
@@ -94,7 +95,10 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
   useEffect(() => {
     if (completed && !certCode) {
       fetch("/api/complete-course", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug: course.slug }) })
-        .then((r) => r.json()).then((d) => { if (d.code) setCertCode(d.code); }).catch(() => {});
+        .then((r) => r.json()).then((d) => {
+          if (d.code) setCertCode(d.code);
+          else if (d.eligible === false) setCertGate({ paidDone: d.paidDone || 0, needed: d.needed || 5 });
+        }).catch(() => {});
     }
   }, [completed, certCode, course.slug]);
 
@@ -225,7 +229,15 @@ export default function LearnClient({ course, initialLesson, locked = false, vid
           </div>
           <div className="h-2 bg-border rounded-full mt-2 overflow-hidden"><div className="h-full bg-success transition-all" style={{ width: `${progress}%` }} /></div>
           {completed && (
-            <Link href={`/certificate/${certCode || "VIEAIEDU-DEMO"}`} className="mt-3 block text-center rounded-full bg-gold/90 hover:bg-gold text-ink font-semibold py-2.5 text-sm transition">🏆 Nhận chứng chỉ</Link>
+            certCode ? (
+              <Link href={`/certificate/${certCode}`} className="mt-3 block text-center rounded-full bg-gold/90 hover:bg-gold text-ink font-semibold py-2.5 text-sm transition">🏆 Nhận chứng chỉ</Link>
+            ) : certGate ? (
+              <div className="mt-3 rounded-lg bg-surface border border-border p-3 text-center text-xs text-ink-2">
+                ✅ Đã hoàn thành khóa này! Cần hoàn thành <b className="text-accent">{Math.max(0, certGate.needed - certGate.paidDone)} khóa trả phí</b> nữa để được cấp chứng chỉ. ({certGate.paidDone}/{certGate.needed})
+              </div>
+            ) : (
+              <div className="mt-3 block text-center rounded-full bg-gold/40 text-ink/70 font-semibold py-2.5 text-sm">Đang xử lý chứng chỉ…</div>
+            )
           )}
         </div>
         <div className="p-3">

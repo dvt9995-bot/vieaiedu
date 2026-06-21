@@ -12,7 +12,7 @@ export const metadata: Metadata = {
 
 export default async function CertificatePage({ params }: { params: Promise<{ code: string }> }) {
   const { code } = await params;
-  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Trần Minh Đức", studentCode: "VIE26000000" };
+  let cert = { name: "Nguyễn Văn Minh", course: "ỨNG DỤNG AI TRONG CÔNG VIỆC", date: "19/06/2026", code, signer: "Long Nam", studentCode: "VIE26000000", avatar: "" };
 
   // Tra chứng chỉ thật theo mã
   if (isSupabaseConfigured() && code !== "VIEAIEDU-DEMO") {
@@ -20,7 +20,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
     const { data } = await supabase!.from("certificates").select("user_id, course_slug, issued_at").eq("code", code).maybeSingle();
     if (data) {
       const [{ data: prof }, course] = await Promise.all([
-        supabase!.from("profiles").select("full_name, student_code").eq("id", data.user_id).maybeSingle(),
+        supabase!.from("profiles").select("full_name, student_code, avatar_url").eq("id", data.user_id).maybeSingle(),
         getCourseBySlug(data.course_slug as string),
       ]);
       cert = {
@@ -29,6 +29,7 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
         date: formatDate(data.issued_at as string),
         code, signer: "Long Nam",
         studentCode: (prof?.student_code as string) || "—",
+        avatar: (prof?.avatar_url as string) || "",
       };
     }
   }
@@ -57,7 +58,12 @@ export default async function CertificatePage({ params }: { params: Promise<{ co
             {/* eslint-disable-next-line @next/next/no-img-element */}
             <img src="/logo.png" alt="VIE AI EDU" className="h-16 w-auto mx-auto" />
             <h1 className="font-display text-[clamp(1.6rem,4vw,2.4rem)] font-extrabold tracking-[.05em] text-ink mt-6">CHỨNG NHẬN HOÀN THÀNH</h1>
-            <div className="mx-auto mt-3 mb-7 h-0.5 w-24 bg-gradient-to-r from-transparent via-gold to-transparent" />
+            <div className="mx-auto mt-3 mb-6 h-0.5 w-24 bg-gradient-to-r from-transparent via-gold to-transparent" />
+
+            {cert.avatar && (
+              /* eslint-disable-next-line @next/next/no-img-element */
+              <img src={cert.avatar} alt={cert.name} className="w-24 h-24 rounded-full object-cover mx-auto mb-5 ring-4 ring-gold/40 shadow-md" />
+            )}
 
             <p className="text-ink-2">Chứng nhận</p>
             <div className="font-display text-[clamp(1.8rem,5vw,3rem)] italic font-bold text-accent my-2">{cert.name}</div>

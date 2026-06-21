@@ -31,14 +31,14 @@ export default function StudentCard({
           </div>
         </div>
 
-        {/* ảnh */}
-        <div className="flex justify-center -mt-10">
-          <div className="w-20 h-20 rounded-full ring-4 ring-white bg-bg-soft flex items-center justify-center overflow-hidden">
+        {/* ảnh — nổi rõ dưới dải đỏ (chỉ chồng nhẹ ~1/3) */}
+        <div className="flex justify-center -mt-8 relative z-10">
+          <div className="w-24 h-24 rounded-full ring-4 ring-white shadow-md bg-bg-soft flex items-center justify-center overflow-hidden">
             {avatarUrl ? (
               /* eslint-disable-next-line @next/next/no-img-element */
               <img src={avatarUrl} alt={name} className="w-full h-full object-cover" />
             ) : (
-              <svg viewBox="0 0 24 24" className="w-12 h-12 fill-ink-3/50"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.7-9 6v2h18v-2c0-3.3-4-6-9-6z" /></svg>
+              <svg viewBox="0 0 24 24" className="w-14 h-14 fill-ink-3/50"><path d="M12 12a5 5 0 100-10 5 5 0 000 10zm0 2c-5 0-9 2.7-9 6v2h18v-2c0-3.3-4-6-9-6z" /></svg>
             )}
           </div>
         </div>
