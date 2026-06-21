@@ -66,8 +66,8 @@ ${hasRefs
       });
       if (!res.ok) continue; // thử model dự phòng
       const data = await res.json();
-      const parts = data?.candidates?.[0]?.content?.parts || [];
-      const img = parts.find((p: { inlineData?: { data?: string; mimeType?: string } }) => p.inlineData?.data);
+      const respParts = data?.candidates?.[0]?.content?.parts || [];
+      const img = respParts.find((p: { inlineData?: { data?: string; mimeType?: string } }) => p.inlineData?.data);
       if (img?.inlineData?.data) return { data: img.inlineData.data as string, mime: (img.inlineData.mimeType as string) || "image/png" };
     } catch { /* thử model kế tiếp */ }
   }
