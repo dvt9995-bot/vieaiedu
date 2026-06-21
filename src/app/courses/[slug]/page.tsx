@@ -9,8 +9,7 @@ import CourseCard from "@/components/CourseCard";
 import CourseReviews from "@/components/CourseReviews";
 import YouTubeComments from "@/components/YouTubeComments";
 import { parseVideoRef } from "@/lib/video";
-import { getYouTubeStats } from "@/lib/youtube";
-import { createAdminClient } from "@/lib/supabase/admin";
+import { syncCoursesSocial } from "@/lib/course-social";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
   const { slug } = await params;
@@ -39,32 +38,16 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
   // Video YouTube đầu tiên của khóa → đồng bộ bình luận gốc
   const ytVideoId = course.sections.flatMap((s) => s.lessons).map((l) => parseVideoRef(l.videoId)).find((r) => r?.kind === "youtube")?.id;
 
-  // Thống kê đánh giá thật của nền tảng (cho ⭐ + aggregateRating) — KHÔNG trộn like YouTube vào sao.
-  let reviewAvg = 0, reviewCount = 0;
-  const admin = createAdminClient();
-  if (admin) {
-    const { data: rv } = await admin.from("reviews").select("rating").eq("course_slug", slug);
-    reviewCount = (rv || []).length;
-    if (reviewCount) reviewAvg = Math.round((rv!.reduce((s, r) => s + (r.rating as number), 0) / reviewCount) * 10) / 10;
-  }
-
-  // Số "sao đã lưu" ở dưới thẻ = LƯỢT THÍCH YouTube (live) + lượt người dùng lưu trên nền tảng.
-  const yt = ytVideoId ? await getYouTubeStats(ytVideoId) : null;
-  let displayLikes = course.likes;
-  if (admin) {
-    const { count: favCount } = await admin.from("favorites").select("*", { count: "exact", head: true }).eq("course_slug", slug);
-    displayLikes = (yt?.likes || 0) + (favCount || 0);
-    if (displayLikes !== course.likes) {
-      await admin.from("courses").update({ likes: displayLikes }).eq("slug", slug); // để thẻ ngoài danh sách phản ánh
-    }
-  }
-
   // Gợi ý khóa khác (ưu tiên cùng danh mục) để tăng up-sale
   const allCourses = await getCourses();
   const related = [
     ...allCourses.filter((c) => c.slug !== slug && c.category === course.category),
     ...allCourses.filter((c) => c.slug !== slug && c.category !== course.category),
   ].slice(0, 3);
+
+  // Đồng bộ like YouTube + thời lượng từng bài + chuẩn hóa ⭐ (live) cho khóa này & khóa gợi ý
+  await syncCoursesSocial([course, ...related]);
+  const reviewCount = course.ratingCount; // = số đánh giá thật sau chuẩn hóa
 
   // JSON-LD cho SEO
   const jsonLd = [
@@ -75,7 +58,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
       description: course.subtitle,
       provider: { "@type": "Organization", name: "VIE AI EDU", sameAs: "https://vieaiedu.vn" },
       ...(course.price > 0 ? { offers: { "@type": "Offer", price: course.price, priceCurrency: "VND", category: "Paid" } } : {}),
-      ...(reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: reviewAvg, reviewCount } } : {}),
+      ...(reviewCount > 0 ? { aggregateRating: { "@type": "AggregateRating", ratingValue: course.rating, reviewCount } } : {}),
     },
     {
       "@context": "https://schema.org", "@type": "BreadcrumbList",

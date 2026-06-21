@@ -9,16 +9,28 @@ export async function syncCoursesSocial(courses: Course[]) {
   const admin = createAdminClient();
   if (!admin) return;
   await Promise.all(courses.map(async (c) => {
-    const ytId = c.sections?.flatMap((s) => s.lessons).map((l) => parseVideoRef(l.videoId)).find((r) => r?.kind === "youtube")?.id;
-    if (!ytId) return;
-    const st = await getYouTubeStats(ytId);
-    if (!st) return;
-    const { count } = await admin.from("favorites").select("*", { count: "exact", head: true }).eq("course_slug", c.slug);
-    const likes = (st.likes || 0) + (count || 0);
+    const lessons = (c.sections || []).flatMap((s) => s.lessons);
+    const ytId = lessons.map((l) => parseVideoRef(l.videoId)).find((r) => r?.kind === "youtube")?.id;
     const patch: Record<string, number> = {};
-    if (likes !== c.likes) { c.likes = likes; patch.likes = likes; }
-    // Khóa 1 video chưa có tổng phút → lấy luôn từ thời lượng video
-    if (c.totalMinutes === 0 && st.durationSec > 0) { c.totalMinutes = Math.round(st.durationSec / 60); patch.total_minutes = c.totalMinutes; }
+
+    // Thời lượng từng bài YouTube còn 0 → lấy live + ghi DB (để hàng bài hiện đúng thời gian, không phải 0:00)
+    for (const l of lessons) {
+      if (l.durationSec > 0) continue;
+      const ref = parseVideoRef(l.videoId);
+      if (ref?.kind !== "youtube") continue;
+      const ls = await getYouTubeStats(ref.id);
+      if (ls && ls.durationSec > 0) { l.durationSec = ls.durationSec; await admin.from("lessons").update({ duration_sec: ls.durationSec }).eq("id", l.id); }
+    }
+    // Tổng phút khóa = tổng thời lượng các bài
+    const tm = Math.round(lessons.reduce((n, l) => n + (l.durationSec || 0), 0) / 60);
+    if (tm > 0 && tm !== c.totalMinutes) { c.totalMinutes = tm; patch.total_minutes = tm; }
+
+    if (ytId) {
+      const st = await getYouTubeStats(ytId);
+      const { count } = await admin.from("favorites").select("*", { count: "exact", head: true }).eq("course_slug", c.slug);
+      const likes = (st?.likes || 0) + (count || 0);
+      if (likes !== c.likes) { c.likes = likes; patch.likes = likes; }
+    }
     // ⭐ luôn theo ĐÁNH GIÁ THẬT của nền tảng (chưa có đánh giá → 5.0). Tự sửa giá trị blend sót lại.
     const { data: rv } = await admin.from("reviews").select("rating").eq("course_slug", c.slug);
     const rc = (rv || []).length;

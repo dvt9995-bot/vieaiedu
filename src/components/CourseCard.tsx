@@ -6,6 +6,7 @@ import { formatVND } from "@/lib/format";
 import { toggleFavorite, favoritesCached, invalidateFavorites } from "@/lib/db";
 import { toast } from "./Toaster";
 import { track } from "@/lib/analytics";
+import DonateButton from "./DonateButton";
 
 export default function CourseCard({ course }: { course: Course }) {
   const [liked, setLiked] = useState(false);
@@ -58,7 +59,7 @@ export default function CourseCard({ course }: { course: Course }) {
             </svg>
             {likes.toLocaleString("vi-VN")}
           </button>
-          <span className="text-ink-3 text-[.82rem] hidden sm:inline">Truy cập trọn đời</span>
+          <DonateButton courseSlug={course.slug} variant="inline" />
         </div>
       </div>
     </div>
