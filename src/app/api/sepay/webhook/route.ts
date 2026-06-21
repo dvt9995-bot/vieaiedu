@@ -6,6 +6,7 @@ import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
 import { walletChange } from "@/lib/wallet";
+import { consumeCoupon } from "@/lib/coupon";
 
 // Webhook SePay gọi khi có giao dịch chuyển khoản tới.
 // Cấu hình tại SePay: URL = https://vieaiedu.vn/api/sepay/webhook
@@ -64,6 +65,7 @@ export async function POST(req: Request) {
   if (!paidRows || paidRows.length === 0) {
     return NextResponse.json({ success: true, matched: true, note: "already processed" });
   }
+  await consumeCoupon(order.coupon_code as string | undefined); // tiêu 1 lượt dùng mã (nếu đơn có áp mã)
   const { error: enrollErr } = await admin.from("enrollments").upsert(
     { user_id: order.user_id, course_slug: order.course_slug },
     { onConflict: "user_id,course_slug" }

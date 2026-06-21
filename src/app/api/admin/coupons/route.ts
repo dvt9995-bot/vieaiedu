@@ -12,11 +12,12 @@ export async function GET() {
 export async function POST(req: Request) {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { code, percent_off, expires_at } = await req.json();
+  const { code, percent_off, expires_at, max_uses } = await req.json();
   if (!code || !percent_off) return NextResponse.json({ error: "Thiếu mã/giảm %" }, { status: 400 });
   const { error } = await admin.from("coupons").upsert({
     code: String(code).toUpperCase(), percent_off: Number(percent_off), active: true,
     expires_at: expires_at || null,
+    max_uses: max_uses != null && max_uses !== "" ? Number(max_uses) : null,
   }, { onConflict: "code" });
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
   return NextResponse.json({ ok: true });

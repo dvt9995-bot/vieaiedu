@@ -3,7 +3,7 @@ import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getCourseBySlug } from "@/lib/courses";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
-import { validateCoupon } from "@/lib/coupon";
+import { validateCoupon, consumeCoupon } from "@/lib/coupon";
 import { getBalances, walletChange } from "@/lib/wallet";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { rateLimit, clientIp } from "@/lib/ratelimit";
@@ -46,6 +46,9 @@ export async function POST(req: Request) {
     .select("id").single();
   if (error || !order) return NextResponse.json({ error: error?.message ?? "Lỗi tạo đơn" }, { status: 500 });
 
+  // Lưu mã giảm giá vào đơn (best-effort — bỏ qua nếu chưa chạy migration coupon-limits)
+  if (percentOff > 0) await supabase.from("orders").update({ coupon_code: String(couponCode).toUpperCase() }).eq("id", order.id);
+
   // Trừ ví — KIỂM TRA kết quả; nếu thất bại/không đủ (đua 2 tab) thì HỦY đơn + hoàn phần đã trừ
   if (usedCredit > 0) {
     const ok = await walletChange(user.id, "credit", -usedCredit, `Mua khóa ${course.title}`, order.id);
@@ -64,6 +67,7 @@ export async function POST(req: Request) {
   }
 
   if (fullyPaid) {
+    if (percentOff > 0) await consumeCoupon(couponCode); // tiêu 1 lượt dùng mã
     const { error: enrollErr } = await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
     if (enrollErr) await notifyAdmins("🔴 Đã trừ ví nhưng ghi danh LỖI", `Đơn ${order.id} (${course.title}). Cần ghi danh thủ công.`, "/admin", { email: true });
     await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu khóa "${course.title}" (thanh toán bằng số dư ví).`, href: `/learn/${slug}`, email: false });

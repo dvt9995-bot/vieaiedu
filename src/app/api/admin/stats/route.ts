@@ -5,12 +5,14 @@ import { isCurrentUserAdmin } from "@/lib/admin-guard";
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const [overview, revenue, signups, top, dons] = await Promise.all([
+  const [overview, revenue, signups, top, dons, enrollCount, certCount] = await Promise.all([
     admin.rpc("admin_overview"),
     admin.rpc("revenue_by_day", { days: 30 }),
     admin.rpc("signups_by_day", { days: 30 }),
     admin.rpc("top_courses"),
     admin.from("donations").select("amount, paid_at").eq("status", "paid"),
+    admin.from("enrollments").select("*", { count: "exact", head: true }),   // tổng lượt ghi danh
+    admin.from("certificates").select("*", { count: "exact", head: true }),  // tổng chứng chỉ đã cấp
   ]);
 
   // Cộng ỦNG HỘ vào doanh thu
@@ -22,6 +24,10 @@ export async function GET() {
   ov.revenue = (ov.revenue || 0) + donTotal;
   ov.revenue_month = (ov.revenue_month || 0) + donMonth;
   ov.donations = donTotal;
+  // North Star: học tập THỰC CHẤT (không phải lượt xem)
+  ov.enrollments = enrollCount.count || 0;
+  ov.certificates = certCount.count || 0;
+  ov.completion_rate = ov.enrollments > 0 ? Math.round((ov.certificates / ov.enrollments) * 100) : 0;
 
   // Gộp ủng hộ vào biểu đồ doanh thu theo ngày (giờ VN)
   const byDay: Record<string, number> = {};

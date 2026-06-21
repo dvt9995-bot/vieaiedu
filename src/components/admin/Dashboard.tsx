@@ -41,7 +41,8 @@ export default function Dashboard({ onGo }: { onGo?: (tab: string) => void }) {
     ["Học viên", String(o.students || 0)],
     ["Đơn đã thanh toán", String(o.orders_paid || 0)],
     ["Lượt ghi danh", String(o.enrollments || 0)],
-    ["Tỉ lệ hoàn thành", `${o.completion_rate || 0}%`],
+    ["Chứng chỉ đã cấp", String(o.certificates || 0)],
+    ["⭐ Tỉ lệ hoàn thành (North Star)", `${o.completion_rate || 0}%`],
   ];
   return (
     <div className="space-y-6">
