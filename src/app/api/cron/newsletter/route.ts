@@ -4,13 +4,23 @@ import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { sendGenericEmail, isEmailConfigured } from "@/lib/email";
 import { notifyAdmins } from "@/lib/notify";
 import { getBlogPosts } from "@/lib/blog";
+import { getConfig, setSetting } from "@/lib/settings";
 
 export const maxDuration = 60;
 
 export async function GET(req: Request) {
   const auth = req.headers.get("authorization");
   const cronOk = process.env.CRON_SECRET && auth === `Bearer ${process.env.CRON_SECRET}`;
-  if (!cronOk && !(await isCurrentUserAdmin())) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+  const isAdminCall = !cronOk && (await isCurrentUserAdmin());
+  if (!cronOk && !isAdminCall) return NextResponse.json({ error: "unauthorized" }, { status: 401 });
+
+  // Chống gửi trùng: chỉ gửi nếu đã >6 ngày kể từ lần gửi trước (admin bấm tay thì bỏ qua chặn)
+  if (!isAdminCall) {
+    const last = await getConfig("cron_newsletter_last");
+    if (last && Date.now() - new Date(last).getTime() < 6 * 86400_000) {
+      return NextResponse.json({ skipped: "Đã gửi trong tuần này", last });
+    }
+  }
 
   if (!(await isEmailConfigured())) return NextResponse.json({ skipped: "Chưa cấu hình email (Resend)" });
   const admin = createAdminClient();
@@ -36,6 +46,7 @@ export async function GET(req: Request) {
     const chunk = emails.slice(i, i + 20);
     await Promise.all(chunk.map((e) => sendGenericEmail(e, "📰 Bản tin AI tuần này · VIE AI EDU", "Bản tin AI tuần này", body, "/blog").then(() => { sent++; }).catch(() => {})));
   }
+  await setSetting("cron_newsletter_last", new Date().toISOString());
   await notifyAdmins("📨 Đã gửi bản tin tuần", `Gửi ${sent}/${emails.length} người đăng ký, ${posts.length} bài.`, "/admin");
   return NextResponse.json({ sent, subscribers: emails.length, posts: posts.length });
 }
