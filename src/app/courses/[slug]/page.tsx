@@ -79,7 +79,7 @@ export default async function CourseDetail({ params }: { params: Promise<{ slug:
       <section className="relative bg-ink text-white overflow-hidden">
         {course.thumb && (
           // eslint-disable-next-line @next/next/no-img-element
-          <img src={course.thumb} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
+          <img src={course.thumb} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover blur-[3px] scale-110" />
         )}
         <div className="absolute inset-0 bg-gradient-to-r from-ink/95 via-ink/85 to-ink/70" />
         <div className="container-x py-12 relative">
