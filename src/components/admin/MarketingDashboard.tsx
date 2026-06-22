@@ -53,13 +53,27 @@ export default function MarketingDashboard() {
   const [days, setDays] = useState(30);
   const [d, setD] = useState<Data | null>(null);
   const [loading, setLoading] = useState(true);
+  const [err, setErr] = useState("");
+  const [online, setOnline] = useState<{ online: number; online_users: number; today_visits: number } | null>(null);
 
   useEffect(() => {
-    setLoading(true);
-    fetch(`/api/admin/marketing?days=${days}`).then((r) => r.json()).then((x) => { setD(x?.visits != null ? x : null); setLoading(false); }).catch(() => setLoading(false));
+    setLoading(true); setErr("");
+    fetch(`/api/admin/marketing?days=${days}`).then((r) => r.json())
+      .then((x) => { if (x?.error) setErr(x.error); else if (x?.visits != null) setD(x); else setErr("Phản hồi không hợp lệ"); setLoading(false); })
+      .catch((e) => { setErr(e?.message || "Không kết nối được"); setLoading(false); });
   }, [days]);
 
+  // Trực tuyến thời gian thực — poll mỗi 15 giây
+  useEffect(() => {
+    let stop = false;
+    const tick = () => fetch("/api/admin/online").then((r) => r.json()).then((x) => { if (!stop && x) setOnline(x); }).catch(() => {});
+    tick();
+    const t = setInterval(tick, 15000);
+    return () => { stop = true; clearInterval(t); };
+  }, []);
+
   if (loading) return <p className="text-ink-3">Đang tải dữ liệu marketing…</p>;
+  if (err) return <div className="rounded-card border border-accent/30 bg-accent-weak p-4 text-accent text-sm">Lỗi tải dữ liệu marketing: {err}</div>;
   if (!d) return <p className="text-ink-3">Chưa có dữ liệu.</p>;
 
   const kpis: [string, string, string][] = [
@@ -87,6 +101,23 @@ export default function MarketingDashboard() {
             <button key={v} onClick={() => setDays(v)} className={`text-xs font-semibold rounded-full px-3 py-1.5 cursor-pointer border ${days === v ? "border-accent bg-accent-weak text-accent" : "border-border-strong hover:border-accent"}`}>{v} ngày</button>
           ))}
         </div>
+      </div>
+
+      {/* ĐANG TRỰC TUYẾN — thời gian thực */}
+      <div className="rounded-card border border-success/30 bg-success/5 p-4 mb-5 flex items-center gap-5 flex-wrap">
+        <div className="flex items-center gap-2.5">
+          <span className="relative flex h-3 w-3">
+            <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-success opacity-60" />
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-success" />
+          </span>
+          <span className="text-2xl font-extrabold text-success tabular-nums">{online?.online ?? "—"}</span>
+          <span className="text-ink-2 text-sm">đang trực tuyến</span>
+        </div>
+        <div className="text-sm text-ink-3 flex gap-5">
+          <span>👤 <b className="text-ink">{online?.online_users ?? 0}</b> đã đăng nhập</span>
+          <span>📅 <b className="text-ink">{(online?.today_visits ?? 0).toLocaleString("vi-VN")}</b> lượt xem hôm nay</span>
+        </div>
+        <span className="text-ink-3 text-[11px] ml-auto">cập nhật mỗi 15s · tính khách hoạt động ≤5 phút</span>
       </div>
 
       {/* KPI */}
