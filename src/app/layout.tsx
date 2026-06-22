@@ -10,6 +10,7 @@ import PWARegister from "@/components/PWARegister";
 import RefCapture from "@/components/RefCapture";
 import Toaster from "@/components/Toaster";
 import Tracking from "@/components/Tracking";
+import AnalyticsBeacon from "@/components/AnalyticsBeacon";
 import { Analytics } from "@vercel/analytics/react";
 import { getConfig } from "@/lib/settings";
 
@@ -68,6 +69,7 @@ export default function RootLayout({ children }: Readonly<{ children: React.Reac
         <Toaster />
         <Analytics />
         <Tracking />
+        <AnalyticsBeacon />
       </body>
     </html>
   );

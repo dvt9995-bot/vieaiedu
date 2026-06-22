@@ -9,11 +9,13 @@ import BlogManager from "@/components/admin/BlogManager";
 import CommunityModerator from "@/components/admin/CommunityModerator";
 import WithdrawManager from "@/components/admin/WithdrawManager";
 import OrderManager from "@/components/admin/OrderManager";
+import MarketingDashboard from "@/components/admin/MarketingDashboard";
 import BroadcastForm from "@/components/admin/BroadcastForm";
 
-type Tab = "overview" | "courses" | "orders" | "blog" | "users" | "coupons" | "withdraw" | "community" | "broadcast" | "settings";
+type Tab = "overview" | "marketing" | "courses" | "orders" | "blog" | "users" | "coupons" | "withdraw" | "community" | "broadcast" | "settings";
 const NAV: [Tab, string, string][] = [
   ["overview", "Tổng quan", "▦"],
+  ["marketing", "Marketing", "📈"],
   ["courses", "Khóa học", "▤"],
   ["orders", "Đơn hàng", "🧾"],
   ["blog", "Blog", "📰"],
@@ -49,6 +51,7 @@ export default function AdminClient() {
 
         <div>
           {tab === "overview" && <Dashboard onGo={(t) => setTab(t as Tab)} />}
+          {tab === "marketing" && <MarketingDashboard />}
           {tab === "courses" && <CourseManager />}
           {tab === "orders" && <OrderManager />}
           {tab === "blog" && <BlogManager />}
