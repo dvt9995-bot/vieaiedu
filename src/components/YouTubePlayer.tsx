@@ -31,12 +31,13 @@ const fmt = (s: number) => {
   return `${m}:${x.toString().padStart(2, "0")}`;
 };
 
-export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; onEnded?: () => void }) {
+export default function YouTubePlayer({ videoId, onEnded, poster }: { videoId: string; onEnded?: () => void; poster?: string }) {
   const wrapRef = useRef<HTMLDivElement>(null);
   const hostRef = useRef<HTMLDivElement>(null);
   const playerRef = useRef<any>(null);
   const audioTried = useRef(false);
   const [ready, setReady] = useState(false);
+  const [started, setStarted] = useState(false); // đã play lần đầu chưa (để che poster ẩn tiêu đề/logo YouTube)
   const [playing, setPlaying] = useState(false);
   const [muted, setMuted] = useState(false);
   const [cur, setCur] = useState(0);
@@ -60,7 +61,7 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
           onStateChange: (e: any) => {
             const S = window.YT.PlayerState;
             setPlaying(e.data === S.PLAYING);
-            if (e.data === S.PLAYING) { setDur(e.target.getDuration() || 0); trySetViAudio(e.target); }
+            if (e.data === S.PLAYING) { setDur(e.target.getDuration() || 0); setStarted(true); trySetViAudio(e.target); }
             if (e.data === S.ENDED) onEnded?.();
           },
         },
@@ -127,15 +128,31 @@ export default function YouTubePlayer({ videoId, onEnded }: { videoId: string; o
         className="absolute inset-0 z-10 w-full h-full cursor-pointer"
       />
 
-      {/* Nút play lớn khi đang dừng */}
-      {ready && !playing && (
+      {/* POSTER thương hiệu — che lúc chưa play để ẩn tiêu đề/tên kênh/logo của YouTube */}
+      {!started && (
+        <button onClick={() => { playerRef.current?.playVideo?.(); setStarted(true); }} aria-label="Phát video"
+          className="absolute inset-0 z-20 w-full h-full cursor-pointer bg-black overflow-hidden">
+          {poster && (
+            /* eslint-disable-next-line @next/next/no-img-element */
+            <img src={poster} alt="" aria-hidden className="absolute inset-0 w-full h-full object-cover" />
+          )}
+          <div className="absolute inset-0 bg-gradient-to-t from-black/55 via-black/25 to-black/40" />
+          <div className="absolute inset-0 flex items-center justify-center">
+            <div className="w-16 h-16 rounded-full bg-accent/90 shadow-lg flex items-center justify-center group-hover:scale-105 transition-transform">
+              <svg viewBox="0 0 24 24" className="w-7 h-7 ml-1 fill-white"><path d="M8 5v14l11-7z" /></svg>
+            </div>
+          </div>
+        </button>
+      )}
+      {/* Nút play lớn khi tạm dừng giữa chừng */}
+      {ready && started && !playing && (
         <div className="pointer-events-none absolute inset-0 z-20 flex items-center justify-center">
           <div className="w-16 h-16 rounded-full bg-accent/90 shadow-lg flex items-center justify-center">
             <svg viewBox="0 0 24 24" className="w-7 h-7 ml-1 fill-white"><path d="M8 5v14l11-7z" /></svg>
           </div>
         </div>
       )}
-      {!ready && <div className="absolute inset-0 z-20 flex items-center justify-center text-white/70 text-sm">Đang tải video…</div>}
+      {!ready && !started && <div className="absolute inset-0 z-30 flex items-center justify-center text-white/70 text-sm pointer-events-none">Đang tải video…</div>}
 
       {/* Thanh điều khiển tùy chỉnh (z-30, trên lớp phủ) */}
       <div className="absolute bottom-0 inset-x-0 z-30 px-3 pb-2 pt-8 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">

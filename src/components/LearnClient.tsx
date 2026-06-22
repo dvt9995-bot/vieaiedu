@@ -116,7 +116,7 @@ export default function LearnClient({ course, initialLesson, locked = false, pla
         <div className="relative bg-ink aspect-video flex items-center justify-center text-white">
           <svg className="absolute inset-0 w-full h-full opacity-[.08]" viewBox="0 0 200 120" preserveAspectRatio="xMidYMid slice"><g fill="none" stroke="#fff" strokeWidth="1"><circle cx="100" cy="60" r="50" /><circle cx="100" cy="60" r="32" /></g></svg>
           {accessible(current) && players[current.id]?.kind === "youtube" ? (
-            <div className="absolute inset-0"><YouTubePlayer key={current.id} videoId={players[current.id].src} /></div>
+            <div className="absolute inset-0"><YouTubePlayer key={current.id} videoId={players[current.id].src} poster={course.thumb} /></div>
           ) : accessible(current) && players[current.id]?.kind === "bunny" ? (
             <iframe src={players[current.id].src} className="absolute inset-0 w-full h-full border-0" loading="lazy" allow="accelerometer; gyroscope; autoplay; encrypted-media; picture-in-picture; fullscreen" allowFullScreen />
           ) : accessible(current) ? (
