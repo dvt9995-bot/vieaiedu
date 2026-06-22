@@ -7,28 +7,45 @@ import { notify } from "@/lib/notify";
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data: list } = await admin.auth.admin.listUsers({ page: 1, perPage: 200 });
-  const { data: profiles } = await admin.from("profiles").select("id, role, full_name, student_code, referral_count, credit_balance, real_balance");
-  const roleMap = new Map((profiles ?? []).map((p) => [p.id, p]));
+
+  // NGUỒN CHÍNH: bảng profiles (luôn đọc được qua data API) → học viên LUÔN hiển thị,
+  // không phụ thuộc Auth Admin API (listUsers có thể lỗi mạng/khóa).
+  const { data: profiles } = await admin
+    .from("profiles")
+    .select("id, role, full_name, email, student_code, referral_count, credit_balance, real_balance, created_at")
+    .order("created_at", { ascending: false });
+
   const { data: enr } = await admin.from("enrollments").select("user_id");
   const enrollCount = new Map<string, number>();
   for (const e of enr ?? []) enrollCount.set(e.user_id as string, (enrollCount.get(e.user_id as string) || 0) + 1);
-  const users = (list?.users ?? []).map((u) => {
-    const p = roleMap.get(u.id);
+
+  // BỔ SUNG (best-effort): trạng thái khóa + email dự phòng từ Auth Admin API. Lỗi → bỏ qua.
+  const authMap = new Map<string, { email?: string; banned?: boolean }>();
+  let authOk = false;
+  try {
+    const { data: list, error } = await admin.auth.admin.listUsers({ page: 1, perPage: 1000 });
+    if (!error && list?.users) {
+      authOk = true;
+      for (const u of list.users) authMap.set(u.id, { email: u.email, banned: !!(u as { banned_until?: string }).banned_until });
+    }
+  } catch { /* listUsers lỗi → vẫn có danh sách từ profiles */ }
+
+  const users = (profiles ?? []).map((p) => {
+    const a = authMap.get(p.id as string) || {};
     return {
-      id: u.id, email: u.email,
-      name: (p?.full_name as string) || (u.user_metadata?.full_name as string) || "",
-      role: (p?.role as string) || "student",
-      studentCode: (p?.student_code as string) || "",
-      referrals: (p?.referral_count as number) || 0,
-      credit: (p?.credit_balance as number) || 0,
-      real: (p?.real_balance as number) || 0,
-      banned: !!(u as { banned_until?: string }).banned_until,
-      courses: enrollCount.get(u.id) || 0,
-      created_at: u.created_at,
+      id: p.id, email: (p.email as string) || a.email || "",
+      name: (p.full_name as string) || "",
+      role: (p.role as string) || "student",
+      studentCode: (p.student_code as string) || "",
+      referrals: (p.referral_count as number) || 0,
+      credit: (p.credit_balance as number) || 0,
+      real: (p.real_balance as number) || 0,
+      banned: !!a.banned,
+      courses: enrollCount.get(p.id as string) || 0,
+      created_at: p.created_at,
     };
   });
-  return NextResponse.json({ users });
+  return NextResponse.json({ users, authOk });
 }
 
 export async function PATCH(req: Request) {
