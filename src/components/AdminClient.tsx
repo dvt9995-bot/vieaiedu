@@ -11,6 +11,7 @@ import WithdrawManager from "@/components/admin/WithdrawManager";
 import OrderManager from "@/components/admin/OrderManager";
 import MarketingDashboard from "@/components/admin/MarketingDashboard";
 import BroadcastForm from "@/components/admin/BroadcastForm";
+import AdminErrorBoundary from "@/components/admin/AdminErrorBoundary";
 
 type Tab = "overview" | "marketing" | "courses" | "orders" | "blog" | "users" | "coupons" | "withdraw" | "community" | "broadcast" | "settings";
 const NAV: [Tab, string, string][] = [
@@ -50,17 +51,19 @@ export default function AdminClient() {
         </nav>
 
         <div>
-          {tab === "overview" && <Dashboard onGo={(t) => setTab(t as Tab)} />}
-          {tab === "marketing" && <MarketingDashboard />}
-          {tab === "courses" && <CourseManager />}
-          {tab === "orders" && <OrderManager />}
-          {tab === "blog" && <BlogManager />}
-          {tab === "users" && <UserManager />}
-          {tab === "coupons" && <CouponManager />}
-          {tab === "withdraw" && <WithdrawManager />}
-          {tab === "broadcast" && <BroadcastForm />}
-          {tab === "settings" && <SettingsManager />}
-          {tab === "community" && <CommunityModerator />}
+          <AdminErrorBoundary key={tab} label={NAV.find(([t]) => t === tab)?.[1]}>
+            {tab === "overview" && <Dashboard onGo={(t) => setTab(t as Tab)} />}
+            {tab === "marketing" && <MarketingDashboard />}
+            {tab === "courses" && <CourseManager />}
+            {tab === "orders" && <OrderManager />}
+            {tab === "blog" && <BlogManager />}
+            {tab === "users" && <UserManager />}
+            {tab === "coupons" && <CouponManager />}
+            {tab === "withdraw" && <WithdrawManager />}
+            {tab === "broadcast" && <BroadcastForm />}
+            {tab === "settings" && <SettingsManager />}
+            {tab === "community" && <CommunityModerator />}
+          </AdminErrorBoundary>
         </div>
       </div>
     </div>

@@ -17,6 +17,13 @@ interface Data {
 const pct = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) : 0);
 const fmtSec = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}m ${Math.round(s % 60)}s` : `${Math.round(s)}s`);
 
+// Mặc định MỌI field → component không bao giờ crash kể cả khi API trả thiếu
+const DEFAULTS: Data = {
+  days: 30, visits: 0, uniques: 0, active7: 0, signups: 0, enrollments: 0, paid: 0, revenue: 0, total_users: 0,
+  sessions: 0, bounce_rate: 0, pages_per_session: 0, avg_dwell_sec: 0, avg_session_sec: 0,
+  by_day: [], top_pages: [], sources: [], top_events: [], top_clicks: [], top_courses: [],
+};
+
 function Bars({ data }: { data: { d: string; visits: number; signups: number }[] }) {
   const max = Math.max(...data.map((p) => p.visits), 1);
   return (
@@ -59,7 +66,7 @@ export default function MarketingDashboard() {
   useEffect(() => {
     setLoading(true); setErr("");
     fetch(`/api/admin/marketing?days=${days}`).then((r) => r.json())
-      .then((x) => { if (x?.error) setErr(x.error); else if (x?.visits != null) setD(x); else setErr("Phản hồi không hợp lệ"); setLoading(false); })
+      .then((x) => { if (x?.error) setErr(x.error); else if (x?.visits != null) setD({ ...DEFAULTS, ...x }); else setErr("Phản hồi không hợp lệ"); setLoading(false); })
       .catch((e) => { setErr(e?.message || "Không kết nối được"); setLoading(false); });
   }, [days]);
 

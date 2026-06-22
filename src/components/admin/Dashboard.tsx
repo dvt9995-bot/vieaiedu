@@ -29,7 +29,7 @@ export default function Dashboard({ onGo }: { onGo?: (tab: string) => void }) {
   const [health, setHealth] = useState<Service[] | null>(null);
   const [actions, setActions] = useState<ActionItem[] | null>(null);
   useEffect(() => {
-    fetch("/api/admin/stats").then((r) => r.json()).then(setS).catch(() => setS(null));
+    fetch("/api/admin/stats").then((r) => r.json()).then((d) => setS(d?.overview ? d : null)).catch(() => setS(null));
     fetch("/api/admin/health").then((r) => r.json()).then((d) => setHealth(d.services || [])).catch(() => setHealth([]));
     fetch("/api/admin/action-items").then((r) => r.json()).then((d) => setActions(d.items || [])).catch(() => setActions([]));
   }, []);
@@ -110,7 +110,7 @@ export default function Dashboard({ onGo }: { onGo?: (tab: string) => void }) {
         <div className="text-sm font-semibold mb-3">Top khóa học (ghi danh)</div>
         {(s?.top || []).length === 0 ? <p className="text-ink-3 text-sm">Chưa có dữ liệu</p> : (
           <ul className="space-y-2">
-            {s!.top.map((t, i) => (
+            {(s?.top || []).map((t, i) => (
               <li key={t.course_slug} className="flex items-center gap-3 text-sm">
                 <span className="w-5 text-ink-3">{i + 1}</span>
                 <span className="flex-1">{t.course_slug}</span>
