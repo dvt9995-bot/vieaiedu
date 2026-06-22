@@ -101,10 +101,11 @@ export default function YouTubePlayer({ videoId, onEnded, poster }: { videoId: s
     setTimeout(() => trySetViAudio(p, attempt + 1), 1200); // tải trễ → thử lại
   }
 
-  const toggle = () => { const p = playerRef.current; if (!p) return; playing ? p.pauseVideo() : p.playVideo(); };
-  const seekFrac = (frac: number) => { const p = playerRef.current; const d = p?.getDuration?.() || dur; if (p && d) p.seekTo(d * Math.max(0, Math.min(1, frac)), true); };
+  // Tất cả hàm điều khiển dùng optional-chaining + kiểm tra hàm → KHÔNG crash nếu player chưa sẵn sàng
+  const toggle = () => { const p = playerRef.current; if (typeof p?.playVideo !== "function") return; playing ? p.pauseVideo?.() : p.playVideo?.(); };
+  const seekFrac = (frac: number) => { const p = playerRef.current; const d = p?.getDuration?.() || dur; if (p && d && typeof p.seekTo === "function") p.seekTo(d * Math.max(0, Math.min(1, frac)), true); };
   const onBar = (e: React.MouseEvent<HTMLDivElement>) => { const r = e.currentTarget.getBoundingClientRect(); seekFrac((e.clientX - r.left) / r.width); };
-  const toggleMute = () => { const p = playerRef.current; if (!p) return; if (p.isMuted()) { p.unMute(); setMuted(false); } else { p.mute(); setMuted(true); } };
+  const toggleMute = () => { const p = playerRef.current; if (typeof p?.isMuted !== "function") return; if (p.isMuted()) { p.unMute?.(); setMuted(false); } else { p.mute?.(); setMuted(true); } };
   const toggleCC = () => {
     const p = playerRef.current; if (!p) return;
     try {
