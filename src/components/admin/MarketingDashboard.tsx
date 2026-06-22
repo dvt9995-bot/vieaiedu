@@ -5,14 +5,17 @@ import { formatVND } from "@/lib/format";
 interface Data {
   days: number; visits: number; uniques: number; active7: number; signups: number;
   enrollments: number; paid: number; revenue: number; total_users: number;
+  sessions: number; bounce_rate: number; pages_per_session: number; avg_dwell_sec: number; avg_session_sec: number;
   by_day: { d: string; visits: number; signups: number }[];
   top_pages: { path: string; n: number }[];
   sources: { ref: string; n: number }[];
   top_events: { event: string; n: number }[];
+  top_clicks: { label: string; n: number }[];
   top_courses: { slug: string; n: number }[];
 }
 
 const pct = (a: number, b: number) => (b > 0 ? Math.round((a / b) * 100) : 0);
+const fmtSec = (s: number) => (s >= 60 ? `${Math.floor(s / 60)}m ${Math.round(s % 60)}s` : `${Math.round(s)}s`);
 
 function Bars({ data }: { data: { d: string; visits: number; signups: number }[] }) {
   const max = Math.max(...data.map((p) => p.visits), 1);
@@ -97,6 +100,27 @@ export default function MarketingDashboard() {
         ))}
       </div>
 
+      {/* Engagement — thời gian, tỉ lệ ở lại/thoát, tương tác */}
+      <div className="rounded-card border border-border bg-surface p-5 mb-5">
+        <h3 className="font-bold text-sm mb-3">Mức độ gắn kết (Engagement)</h3>
+        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+          {([
+            ["Phiên truy cập", d.sessions.toLocaleString("vi-VN"), "lần ghé"],
+            ["TG / phiên", fmtSec(d.avg_session_sec), "trung bình"],
+            ["TG / trang", fmtSec(d.avg_dwell_sec), "ở lại đọc"],
+            ["Tỉ lệ thoát", `${d.bounce_rate}%`, d.bounce_rate <= 40 ? "tốt 👍" : d.bounce_rate <= 60 ? "ổn" : "cao ⚠️"],
+            ["Trang / phiên", String(d.pages_per_session), "độ sâu"],
+          ] as [string, string, string][]).map(([l, v, sub]) => (
+            <div key={l} className="rounded-lg border border-border bg-bg-soft p-3">
+              <div className="text-ink-3 text-[11px]">{l}</div>
+              <div className="text-lg font-extrabold tracking-tight">{v}</div>
+              <div className="text-ink-3 text-[10px]">{sub}</div>
+            </div>
+          ))}
+        </div>
+        <p className="text-ink-3 text-[11px] mt-2">Tỉ lệ thoát = % phiên chỉ xem 1 trang rồi rời đi. TG/phiên = tổng thời gian ở lại web mỗi lần ghé.</p>
+      </div>
+
       {/* Phễu chuyển đổi */}
       <div className="rounded-card border border-border bg-surface p-5 mb-5">
         <h3 className="font-bold text-sm mb-1">Phễu chuyển đổi (AARRR)</h3>
@@ -125,6 +149,7 @@ export default function MarketingDashboard() {
       <div className="grid md:grid-cols-2 gap-4">
         <ListBox title="🔗 Nguồn truy cập" rows={d.sources.map((s) => ({ label: hostOf(s.ref), n: s.n }))} />
         <ListBox title="📄 Trang xem nhiều" rows={d.top_pages.map((p) => ({ label: p.path, n: p.n }))} />
+        <ListBox title={`🖱️ Nút bấm nhiều (CTR / ${d.visits} lượt xem)`} rows={d.top_clicks.map((e) => ({ label: `${e.label}  ·  ${pct(e.n, d.visits)}%`, n: e.n }))} />
         <ListBox title="🎯 Sự kiện hành vi" rows={d.top_events.map((e) => ({ label: e.event, n: e.n }))} />
         <ListBox title="🔥 Khóa được ghi danh" rows={d.top_courses.map((c) => ({ label: c.slug, n: c.n }))} />
       </div>

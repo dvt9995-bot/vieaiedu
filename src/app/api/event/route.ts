@@ -17,6 +17,7 @@ export async function POST(req: Request) {
 
   await admin.from("analytics_events").insert({
     anon_id: (String(b.anon || "").slice(0, 40)) || null,
+    session_id: (String(b.sid || "").slice(0, 40)) || null,
     user_id: userId,
     event,
     path: (String(b.path || "").slice(0, 200)) || null,

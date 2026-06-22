@@ -48,8 +48,8 @@ export function track(event: string, params: Record<string, unknown> = {}) {
   } catch {}
   // First-party (Marketing Dashboard của app)
   try {
-    let anon = localStorage.getItem("vie_anon");
-    if (!anon) { anon = Math.random().toString(36).slice(2) + Date.now().toString(36); localStorage.setItem("vie_anon", anon); }
-    fetch("/api/event", { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true, body: JSON.stringify({ event, path: location.pathname, anon, props: params }) }).catch(() => {});
+    import("@/lib/session").then(({ anonId, sessionId }) => {
+      fetch("/api/event", { method: "POST", headers: { "Content-Type": "application/json" }, keepalive: true, body: JSON.stringify({ event, path: location.pathname, anon: anonId(), sid: sessionId(), props: params }) }).catch(() => {});
+    }).catch(() => {});
   } catch {}
 }
