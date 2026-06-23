@@ -2,11 +2,20 @@ import { NextResponse } from "next/server";
 import { revalidatePath } from "next/cache";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
-import { getAllSettings, clearSettingsCache } from "@/lib/settings";
+import { getAllSettings, clearSettingsCache, CONFIG_KEYS } from "@/lib/settings";
 
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
-  return NextResponse.json({ settings: await getAllSettings() });
+  const settings = await getAllSettings();
+  // Trạng thái mỗi khóa: đã cấu hình chưa + nguồn (db = admin nhập, env = biến môi trường Vercel).
+  // KHÔNG trả giá trị secret từ env — chỉ trả cờ boolean + nguồn.
+  const status: Record<string, { set: boolean; source: "db" | "env" | null }> = {};
+  for (const [key, envKey] of Object.entries(CONFIG_KEYS)) {
+    const inDb = !!settings[key];
+    const inEnv = !!(envKey && process.env[envKey as string]);
+    status[key] = { set: inDb || inEnv, source: inDb ? "db" : inEnv ? "env" : null };
+  }
+  return NextResponse.json({ settings, status });
 }
 
 // Lưu nhiều cấu hình cùng lúc: { values: { key: value, ... } }

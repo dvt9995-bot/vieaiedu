@@ -12,11 +12,21 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?,
   { title: "🎁 Gói All-access (trọn bộ)", note: "Đặt giá để bật gói mua 1 lần học tất cả khóa. Trống/0 = tắt.", fields: [
     ["bundle_price", "Giá gói (đ) — vd 990000"], ["bundle_compare", "Giá neo / gạch ngang (đ) — vd 2990000"], ["bundle_title", "Tên gói (mặc định: Trọn bộ khóa học — Truy cập trọn đời)"],
   ]},
-  { title: "🔌 Tích hợp & API key", note: "Để trống = dùng giá trị mặc định trong env.", fields: [
-    ["bunny_library_id", "Bunny Library ID"], ["bunny_token_key", "Bunny Token key (chống tải trộm)", true],
-    ["resend_api_key", "Resend API key", true], ["resend_from", "Email gửi (From)"],
-    ["gemini_api_key", "Google Gemini API key (blog tự động)", true],
+  { title: "🎬 Bunny Stream (lưu trữ video khóa thu phí)", note: "Dùng để upload video khóa thu phí lên app. Cần đủ Library ID + API key.", fields: [
+    ["bunny_library_id", "Bunny Library ID"],
+    ["bunny_api_key", "Bunny Stream API key (để upload video)", true],
+    ["bunny_token_key", "Bunny Token key (chống tải trộm — tùy chọn)", true],
+  ]},
+  { title: "🔌 Tích hợp & API key khác", note: "Để trống = dùng giá trị mặc định trong env.", fields: [
+    ["resend_api_key", "Resend API key (gửi email)", true], ["resend_from", "Email gửi (From)"],
+    ["gemini_api_key", "Google Gemini API key (blog tự động + AI)", true],
     ["youtube_api_key", "YouTube Data API key (đồng bộ bình luận video)", true],
+  ]},
+  { title: "🎥 Google Meet (lớp học trực tiếp)", note: "Để app TỰ SINH link Meet cho lớp live. Tạo OAuth Client (Web) trong Google Cloud (bật Google Calendar API), thêm Redirect URI: https://vieaiedu.vn/api/admin/gcal/callback — rồi nhập Client ID/Secret + bấm “Kết nối Google” bên dưới.", fields: [
+    ["gcal_client_id", "Google OAuth Client ID"],
+    ["gcal_client_secret", "Google OAuth Client Secret", true],
+    ["gcal_calendar_id", "Calendar ID (mặc định: primary)"],
+    ["gcal_timezone", "Múi giờ (mặc định: Asia/Ho_Chi_Minh)"],
   ]},
   { title: "📰 Blog tự động (AI)", note: "Model AI viết lại tin + danh sách nguồn.", fields: [
     ["gemini_model", "Model Gemini (mặc định gemini-2.5-flash)"],
@@ -43,14 +53,32 @@ const GROUPS: { title: string; note?: string; fields: [string, string, boolean?,
   ]},
 ];
 
+type Status = Record<string, { set: boolean; source: "db" | "env" | null }>;
+
 export default function SettingsManager() {
   const [s, setS] = useState<S>({});
+  const [status, setStatus] = useState<Status>({});
+  const [gcal, setGcal] = useState<{ connected: boolean; hasClient: boolean } | null>(null);
   const [loaded, setLoaded] = useState(false);
   const [msg, setMsg] = useState("");
   const [show, setShow] = useState<Record<string, boolean>>({});
   const [upBusy, setUpBusy] = useState("");
 
-  useEffect(() => { fetch("/api/admin/settings").then((r) => r.json()).then((d) => { setS(d.settings || {}); setLoaded(true); }); }, []);
+  useEffect(() => {
+    fetch("/api/admin/settings").then((r) => r.json()).then((d) => { setS(d.settings || {}); setStatus(d.status || {}); setLoaded(true); });
+    fetch("/api/admin/gcal").then((r) => r.json()).then((d) => setGcal(d.connected !== undefined ? d : null)).catch(() => {});
+  }, []);
+
+  // Nhãn trạng thái: ✓ đã cấu hình (DB/env) hoặc ⚠ chưa cấu hình. Phản ánh cả giá trị đang gõ.
+  function Badge({ k }: { k: string }) {
+    const typed = (s[k] || "").trim().length > 0;
+    const st = status[k];
+    if (typed || st?.set) {
+      const src = typed && !st?.set ? "mới nhập" : st?.source === "env" ? "qua env" : "đã lưu";
+      return <span className="text-[11px] font-semibold text-success bg-success/10 rounded-full px-2 py-0.5 shrink-0">✓ Đã cấu hình{src ? ` · ${src}` : ""}</span>;
+    }
+    return <span className="text-[11px] font-semibold text-amber-700 bg-gold/15 rounded-full px-2 py-0.5 shrink-0">⚠ Chưa cấu hình</span>;
+  }
 
   async function uploadHero(file: File, key: "hero_bg_image" | "hero_bg_video") {
     const isVideo = key === "hero_bg_video";
@@ -91,7 +119,7 @@ export default function SettingsManager() {
             <div className="space-y-3 mt-3">
               {g.fields.map(([key, label, secret, multiline]) => (
                 <div key={key}>
-                  <label className="block text-xs font-semibold text-ink-2 mb-1">{label}</label>
+                  <label className="flex items-center justify-between gap-2 text-xs font-semibold text-ink-2 mb-1"><span>{label}</span><Badge k={key} /></label>
                   {multiline ? (
                     <textarea
                       className={`${inp} min-h-[90px] font-mono`} rows={4}
@@ -111,6 +139,20 @@ export default function SettingsManager() {
                 </div>
               ))}
             </div>
+            {/* Kết nối Google Meet (sau khi nhập Client ID/Secret + Lưu) */}
+            {g.title.includes("Google Meet") && (
+              <div className="mt-4 rounded-lg border border-border bg-bg-soft p-3 flex flex-wrap items-center justify-between gap-2">
+                <div className="text-xs">
+                  <b>Trạng thái kết nối: </b>
+                  {gcal?.connected ? <span className="text-success font-semibold">✓ Đã kết nối — link Meet tự sinh</span>
+                    : <span className="text-amber-700 font-semibold">⚠ Chưa kết nối</span>}
+                  <div className="text-ink-3 mt-0.5">Nhập Client ID/Secret ở trên → bấm <b>Lưu tất cả</b> → rồi bấm Kết nối.</div>
+                </div>
+                {gcal?.hasClient
+                  ? <a href="/api/admin/gcal/auth" className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2 shrink-0">{gcal.connected ? "Kết nối lại" : "Kết nối Google"}</a>
+                  : <span className="text-xs text-ink-3 shrink-0">Lưu Client ID/Secret trước</span>}
+              </div>
+            )}
           </div>
         ))}
 

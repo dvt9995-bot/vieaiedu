@@ -43,7 +43,7 @@ export default function InstructorManager() {
         <div className="rounded-card border border-border bg-surface p-5 flex flex-wrap items-center justify-between gap-3">
           <div>
             <div className="text-sm font-semibold">🎥 Google Meet (lớp trực tiếp)</div>
-            <div className={`text-xs mt-0.5 ${gcal.connected ? "text-success" : "text-ink-3"}`}>{gcal.connected ? "✓ Đã kết nối — link Meet tự sinh khi giảng viên tạo buổi học." : gcal.hasClient ? "Chưa kết nối. Bấm để cấp quyền tài khoản Google host." : "Chưa cấu hình Client ID/Secret. Cung cấp cho kỹ thuật để bật."}</div>
+            <div className={`text-xs mt-0.5 ${gcal.connected ? "text-success" : "text-ink-3"}`}>{gcal.connected ? "✓ Đã kết nối — link Meet tự sinh khi giảng viên tạo buổi học." : gcal.hasClient ? "Chưa kết nối. Bấm để cấp quyền tài khoản Google host." : "Chưa cấu hình. Vào tab Cài đặt → mục “🎥 Google Meet” nhập Client ID/Secret rồi kết nối."}</div>
           </div>
           {gcal.hasClient && <a href="/api/admin/gcal/auth" className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-5 py-2.5">{gcal.connected ? "Kết nối lại" : "Kết nối Google"}</a>}
         </div>
