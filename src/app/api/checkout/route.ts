@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCourseBySlug } from "@/lib/courses";
+import { getPurchasableCourse } from "@/lib/courses";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
 import { validateCoupon, consumeCoupon } from "@/lib/coupon";
 import { ALL_ACCESS, getBundle, enrollAllPublished } from "@/lib/bundle";
@@ -18,7 +18,7 @@ export async function POST(req: Request) {
   // Gói ALL-ACCESS (trọn bộ) — khác với mua 1 khóa
   const isBundle = slug === ALL_ACCESS;
   const bundle = isBundle ? await getBundle() : null;
-  const course = isBundle ? null : await getCourseBySlug(slug);
+  const course = isBundle ? null : await getPurchasableCourse(slug);
   if (isBundle ? !bundle : !course) return NextResponse.json({ error: "Không tìm thấy" }, { status: 404 });
   const basePrice = isBundle ? bundle!.price : course!.price;
   const itemTitle = isBundle ? bundle!.title : course!.title;
@@ -83,7 +83,7 @@ export async function POST(req: Request) {
       const { error: enrollErr } = await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
       if (enrollErr) await notifyAdmins("🔴 Đã trừ ví nhưng ghi danh LỖI", `Đơn ${order.id} (${itemTitle}). Cần ghi danh thủ công.`, "/admin", { email: true });
     }
-    await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu "${itemTitle}" (thanh toán bằng số dư ví).`, href: isBundle ? "/courses" : `/learn/${slug}`, email: false });
+    await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu "${itemTitle}" (thanh toán bằng số dư ví).`, href: isBundle ? "/courses" : course!.format === "live" ? `/live/${slug}` : `/learn/${slug}`, email: false });
     return NextResponse.json({ enrolled: true, bundle: isBundle });
   }
 

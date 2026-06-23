@@ -1,7 +1,7 @@
 "use server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCourseBySlug } from "@/lib/courses";
+import { getPurchasableCourse } from "@/lib/courses";
 
 /** Kiểm tra user hiện tại đã ghi danh khóa chưa (server). */
 export async function isEnrolled(courseSlug: string): Promise<boolean> {
@@ -20,7 +20,7 @@ export async function isEnrolled(courseSlug: string): Promise<boolean> {
 
 /** Ghi danh khóa miễn phí ngay (server xác thực khóa đúng là free, dùng service role). */
 export async function enrollFree(courseSlug: string): Promise<{ ok: boolean; error?: string }> {
-  const course = await getCourseBySlug(courseSlug);
+  const course = await getPurchasableCourse(courseSlug);
   if (!course || course.price !== 0) return { ok: false, error: "not_free" };
   const supabase = await createClient();
   if (!supabase) return { ok: false, error: "unconfigured" };

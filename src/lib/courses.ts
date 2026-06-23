@@ -83,3 +83,13 @@ export async function getCourses(): Promise<Course[]> {
 export async function getCourseBySlug(slug: string): Promise<Course | undefined> {
   return (await cachedCourses()).find((c) => c.slug === slug);
 }
+
+// Khóa hợp lệ để THANH TOÁN (cả video LẪN live) — truy vấn trực tiếp, không bị lọc format=video.
+export interface PurchasableCourse { slug: string; title: string; price: number; format: string; }
+export async function getPurchasableCourse(slug: string): Promise<PurchasableCourse | null> {
+  const admin = createAdminClient();
+  if (!admin) { const c = await getCourseBySlug(slug); return c ? { slug: c.slug, title: c.title, price: c.price, format: "video" } : null; }
+  const { data } = await admin.from("courses").select("slug, title, price, format")
+    .eq("slug", slug).eq("status", "published").eq("review_status", "approved").maybeSingle();
+  return data ? { slug: data.slug as string, title: data.title as string, price: (data.price as number) || 0, format: (data.format as string) || "video" } : null;
+}

@@ -171,7 +171,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
                   </div>
                 )}
               </div>
-              <LiveRegister slug={c.slug} price={c.price} comparePrice={c.compare_price} enrolled={enrolled} soldOut={soldOut} />
+              <LiveRegister slug={c.slug} title={c.title} price={c.price} comparePrice={c.compare_price} enrolled={enrolled} soldOut={soldOut} />
               {!enrolled && (
                 <div className="mt-3 rounded-lg bg-bg-soft p-3 text-center text-xs text-ink-2">
                   💬 Thanh toán an toàn qua SePay · Xác nhận tự động trong vài giây<br />Đăng ký xong nhận ngay <b>lịch học + nhắc giờ tự động</b>

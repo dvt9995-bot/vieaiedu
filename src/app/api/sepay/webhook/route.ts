@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { getCourseBySlug } from "@/lib/courses";
+import { getPurchasableCourse } from "@/lib/courses";
 import { sendOrderReceipt } from "@/lib/email";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
@@ -78,8 +78,9 @@ export async function POST(req: Request) {
     ));
   }
 
-  const course = isBundle ? null : await getCourseBySlug(order.course_slug);
+  const course = isBundle ? null : await getPurchasableCourse(order.course_slug);
   const courseTitle = isBundle ? "Trọn bộ khóa học (All-access)" : (course?.title ?? order.course_slug);
+  const courseHref = isBundle ? "/courses" : course?.format === "live" ? `/live/${order.course_slug}` : `/learn/${order.course_slug}`;
 
   // Hoa hồng giới thiệu: người được giới thiệu mua đơn THẬT → cộng % vào ví hoa hồng người giới thiệu
   try {
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
     userId: order.user_id, type: "transactional",
     title: "Thanh toán thành công 🎉",
     body: `Bạn đã sở hữu "${courseTitle}". Vào học ngay!`,
-    href: isBundle ? "/courses" : `/learn/${order.course_slug}`, email: false,
+    href: courseHref, email: false,
   });
 
   // Gửi biên lai qua email (nếu đã cấu hình Resend)

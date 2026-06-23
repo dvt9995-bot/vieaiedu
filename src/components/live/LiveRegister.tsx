@@ -10,9 +10,11 @@ import { formatVND } from "@/lib/format";
 type Qr = { qrUrl: string; code: string; amount: number; orderId: string };
 
 // Đăng ký lớp LIVE — ở lại trang landing, sau khi đăng ký hiện lịch + nút vào lớp.
-export default function LiveRegister({ slug, price, comparePrice, enrolled, soldOut }: { slug: string; price: number; comparePrice?: number; enrolled: boolean; soldOut?: boolean }) {
+export default function LiveRegister({ slug, title, price, comparePrice, enrolled, soldOut }: { slug: string; title?: string; price: number; comparePrice?: number; enrolled: boolean; soldOut?: boolean }) {
   const { open } = useAuthModal();
   const router = useRouter();
+  // Phễu: xem sản phẩm (ViewContent) — bắn 1 lần khi mở trang
+  useEffect(() => { track("view_item", { item_id: slug, item_name: title, value: price, currency: "VND" }); }, [slug, title, price]);
   const [busy, setBusy] = useState(false);
   const [msg, setMsg] = useState("");
   const [qr, setQr] = useState<Qr | null>(null);
