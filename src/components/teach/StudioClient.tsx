@@ -8,10 +8,11 @@ import TeachLessonManager from "./TeachLessonManager";
 import LiveSessionManager from "./LiveSessionManager";
 import TestimonialManager from "./TestimonialManager";
 import ImageUpload from "@/components/ImageUpload";
+import GalleryUpload from "@/components/GalleryUpload";
 
 interface Faq { q: string; a: string }
 interface App { status: string; admin_note?: string | null }
-interface Course { id: string; slug: string; title: string; subtitle?: string; description?: string; price: number; compare_price?: number; status: string; review_status: string; review_note?: string | null; total_minutes: number; thumb?: string; category?: string; level?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faq?: Faq[] }
+interface Course { id: string; slug: string; title: string; subtitle?: string; description?: string; price: number; compare_price?: number; status: string; review_status: string; review_note?: string | null; total_minutes: number; thumb?: string; category?: string; level?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faq?: Faq[]; result_images?: string[] }
 
 const STATUS: Record<string, { label: string; cls: string }> = {
   draft: { label: "Nháp", cls: "bg-bg-soft text-ink-2" },
@@ -20,7 +21,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   rejected: { label: "Cần chỉnh sửa", cls: "bg-accent-weak text-accent" },
 };
 const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
-const empty = { title: "", subtitle: "", description: "", price: "0", compare_price: "", category: "", level: "Cơ bản", thumb: "", format: "video", capacity: "", instructor_bio: "", instructor_avatar: "", guarantee: "", faqText: "" };
+const empty = { title: "", subtitle: "", description: "", price: "0", compare_price: "", category: "", level: "Cơ bản", thumb: "", format: "video", capacity: "", instructor_bio: "", instructor_avatar: "", guarantee: "", faqText: "", result_images: [] as string[] };
 // Chuyển textarea "Câu hỏi | Trả lời" mỗi dòng ⇄ mảng [{q,a}]
 const parseFaq = (t: string): Faq[] => t.split("\n").map((l) => { const i = l.indexOf("|"); return i < 0 ? null : { q: l.slice(0, i).trim(), a: l.slice(i + 1).trim() }; }).filter((x): x is Faq => !!x && !!x.q && !!x.a);
 const faqToText = (f?: Faq[]) => (f || []).map((x) => `${x.q} | ${x.a}`).join("\n");
@@ -99,7 +100,7 @@ export default function StudioClient() {
     if (!res.ok) return toast(d.error || "Lỗi lưu khóa");
     toast(editId ? "Đã lưu khóa học" : "Đã tạo khóa học (nháp)"); setCreating(false); setEditId(null); setForm(empty); loadCourses();
   }
-  function openEdit(c: Course) { setEditId(c.id); setForm({ title: c.title, subtitle: c.subtitle || "", description: c.description || "", price: String(c.price || 0), compare_price: c.compare_price ? String(c.compare_price) : "", category: c.category || "", level: c.level || "Cơ bản", thumb: c.thumb || "", format: c.format || "video", capacity: c.capacity ? String(c.capacity) : "", instructor_bio: c.instructor_bio || "", instructor_avatar: c.instructor_avatar || "", guarantee: c.guarantee || "", faqText: faqToText(c.faq) }); setCreating(true); }
+  function openEdit(c: Course) { setEditId(c.id); setForm({ title: c.title, subtitle: c.subtitle || "", description: c.description || "", price: String(c.price || 0), compare_price: c.compare_price ? String(c.compare_price) : "", category: c.category || "", level: c.level || "Cơ bản", thumb: c.thumb || "", format: c.format || "video", capacity: c.capacity ? String(c.capacity) : "", instructor_bio: c.instructor_bio || "", instructor_avatar: c.instructor_avatar || "", guarantee: c.guarantee || "", faqText: faqToText(c.faq), result_images: c.result_images || [] }); setCreating(true); }
   async function submitReview(c: Course) {
     const res = await fetch("/api/instructor/courses", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: c.id, action: "submit" }) });
     const d = await res.json();
@@ -277,6 +278,7 @@ export default function StudioClient() {
                 <summary className="text-sm font-semibold cursor-pointer">🚀 Marketing / bán hàng (giảng viên, cam kết, FAQ) — tùy chọn</summary>
                 <div className="space-y-2 mt-3">
                   <div><label className="block text-[11px] text-ink-3 mb-1">Ảnh đại diện giảng viên</label><ImageUpload value={form.instructor_avatar} onChange={(u) => setForm({ ...form, instructor_avatar: u })} placeholder="Dán URL hoặc tải ảnh giảng viên" /></div>
+                  <div><label className="block text-[11px] text-ink-3 mb-1">📸 Ảnh kết quả học viên khóa trước (tải nhiều ảnh — bằng chứng tăng chuyển đổi)</label><GalleryUpload value={form.result_images} onChange={(u) => setForm({ ...form, result_images: u })} /></div>
                   <textarea className={inp} rows={2} placeholder="Giới thiệu giảng viên (kinh nghiệm, thành tích…)" value={form.instructor_bio} onChange={(e) => setForm({ ...form, instructor_bio: e.target.value })} />
                   <textarea className={inp} rows={2} placeholder="Cam kết/đảm bảo (vd: hỗ trợ trọn đời, có bản ghi xem lại…) — để trống dùng mặc định" value={form.guarantee} onChange={(e) => setForm({ ...form, guarantee: e.target.value })} />
                   <div>

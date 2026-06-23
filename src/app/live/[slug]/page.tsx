@@ -64,6 +64,22 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
 
           {c.description?.trim() && <div className="mt-6"><AnimatedProse html={mdToHtml(c.description)} /></div>}
 
+          {/* Ảnh kết quả học viên khóa trước (bằng chứng) */}
+          {c.resultImages && c.resultImages.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-2xl font-extrabold tracking-tight mb-1">Kết quả học viên khóa trước</h2>
+              <p className="text-ink-3 text-sm mb-4">Hình ảnh thực tế từ học viên đã tham gia.</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {c.resultImages.map((url, i) => (
+                  <a key={i} href={url} target="_blank" rel="noreferrer" className="block rounded-card overflow-hidden border border-border bg-bg-soft aspect-[4/3] hover:opacity-90">
+                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                    <img src={url} alt={`Kết quả học viên ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
+                  </a>
+                ))}
+              </div>
+            </section>
+          )}
+
           {/* Đánh giá học viên (social proof) */}
           {c.testimonials && c.testimonials.length > 0 && (
             <section className="mt-10">

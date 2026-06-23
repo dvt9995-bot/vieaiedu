@@ -8,7 +8,7 @@ export interface LiveCourse {
   price: number; compare_price?: number; category?: string; level?: string; instructor?: string;
   instructorBio?: string; instructorAvatar?: string; guarantee?: string;
   capacity?: number | null; sessions: LiveSession[]; registered?: number;
-  testimonials?: Testimonial[]; faq?: Faq[];
+  testimonials?: Testimonial[]; faq?: Faq[]; resultImages?: string[];
 }
 
 // FAQ mặc định (xử lý phản đối phổ biến) — dùng khi khóa chưa nhập FAQ riêng
@@ -51,7 +51,7 @@ export async function getLiveCourses(): Promise<LiveCourse[]> {
 export async function getLiveCourseBySlug(slug: string): Promise<LiveCourse | null> {
   const admin = createAdminClient();
   if (!admin) return null;
-  const { data: c } = await admin.from("courses").select("id, slug, title, subtitle, description, thumb, price, compare_price, category, level, instructor, capacity, instructor_bio, instructor_avatar, faq, guarantee")
+  const { data: c } = await admin.from("courses").select("id, slug, title, subtitle, description, thumb, price, compare_price, category, level, instructor, capacity, instructor_bio, instructor_avatar, faq, guarantee, result_images")
     .eq("slug", slug).eq("format", "live").maybeSingle();
   if (!c) return null;
   const { data: sess } = await admin.from("live_sessions").select("id, title, starts_at, duration_min, recording_url").eq("course_id", c.id).order("starts_at");
@@ -76,6 +76,7 @@ export async function getLiveCourseBySlug(slug: string): Promise<LiveCourse | nu
   base.guarantee = (c.guarantee as string) || undefined;
   const faqArr = Array.isArray(c.faq) ? (c.faq as Faq[]).filter((f) => f?.q && f?.a) : [];
   base.faq = faqArr.length ? faqArr : DEFAULT_LIVE_FAQ;
+  base.resultImages = Array.isArray(c.result_images) ? (c.result_images as string[]).filter(Boolean) : [];
   return base;
 }
 

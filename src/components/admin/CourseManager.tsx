@@ -6,13 +6,14 @@ import LessonManager from "./LessonManager";
 import LiveSessionManager from "@/components/teach/LiveSessionManager";
 import TestimonialManager from "@/components/teach/TestimonialManager";
 import ImageUpload from "@/components/ImageUpload";
+import GalleryUpload from "@/components/GalleryUpload";
 import CourseCoverModal from "./CourseCoverModal";
 import { slugify } from "@/lib/video";
 import { compressImage } from "@/lib/image";
 
 interface Faq { q: string; a: string }
-interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; compare_price?: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faq?: Faq[]; }
-type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faqText?: string };
+interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; compare_price?: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faq?: Faq[]; result_images?: string[]; }
+type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faqText?: string; result_images?: string[] };
 
 const empty: Form = { title: "", slug: "", category: "Cơ bản", level: "beginner", price: 0, status: "published", format: "video" };
 const parseFaq = (t: string): Faq[] => (t || "").split("\n").map((l) => { const i = l.indexOf("|"); return i < 0 ? null : { q: l.slice(0, i).trim(), a: l.slice(i + 1).trim() }; }).filter((x): x is Faq => !!x && !!x.q && !!x.a);
@@ -230,6 +231,7 @@ export default function CourseManager() {
             <summary className="text-sm font-semibold cursor-pointer">🚀 Marketing / bán hàng — giảng viên, cam kết, FAQ (tùy chọn)</summary>
             <div className="space-y-2 mt-3">
               <div><label className="block text-[11px] text-ink-3 mb-1">Ảnh đại diện giảng viên</label><ImageUpload value={form.instructor_avatar || ""} onChange={(u) => setForm({ ...form, instructor_avatar: u })} endpoint="/api/admin/upload" placeholder="Dán URL hoặc tải ảnh giảng viên" /></div>
+              <div><label className="block text-[11px] text-ink-3 mb-1">📸 Ảnh kết quả học viên khóa trước (tải nhiều ảnh)</label><GalleryUpload value={form.result_images || []} onChange={(u) => setForm({ ...form, result_images: u })} endpoint="/api/admin/upload" /></div>
               <textarea className={inp} rows={2} placeholder="Giới thiệu giảng viên (kinh nghiệm, thành tích…)" value={form.instructor_bio || ""} onChange={(e) => setForm({ ...form, instructor_bio: e.target.value })} />
               <textarea className={inp} rows={2} placeholder="Cam kết/đảm bảo — để trống dùng mặc định" value={form.guarantee || ""} onChange={(e) => setForm({ ...form, guarantee: e.target.value })} />
               <div>
@@ -265,7 +267,7 @@ export default function CourseManager() {
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button onClick={() => setManaging(c)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">{c.format === "live" ? "Buổi học" : "Bài học"}</button>
                   <button onClick={() => setTestimonialFor(c)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">★ Đánh giá</button>
-                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, compare_price: c.compare_price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief, format: c.format, capacity: c.capacity, instructor_bio: c.instructor_bio, instructor_avatar: c.instructor_avatar, guarantee: c.guarantee, faqText: faqToText(c.faq) })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
+                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, compare_price: c.compare_price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief, format: c.format, capacity: c.capacity, instructor_bio: c.instructor_bio, instructor_avatar: c.instructor_avatar, guarantee: c.guarantee, faqText: faqToText(c.faq), result_images: c.result_images })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
                   <button onClick={() => del(c.id)} className="text-ink-3 font-semibold cursor-pointer hover:text-accent">Xóa</button>
                 </td>
               </tr>
