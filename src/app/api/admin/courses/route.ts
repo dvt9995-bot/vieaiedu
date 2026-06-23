@@ -4,20 +4,22 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { generateSeoMeta } from "@/lib/gemini";
 
-const FIELDS = ["slug", "title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "status", "instructor", "source", "total_minutes", "assignment_title", "assignment_brief"];
+const FIELDS = ["slug", "title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "status", "instructor", "source", "total_minutes", "assignment_title", "assignment_brief", "format", "capacity"];
 
 function pick(body: Record<string, unknown>) {
   const out: Record<string, unknown> = {};
   for (const f of FIELDS) if (body[f] !== undefined) out[f] = body[f];
   if (typeof out.price === "string") out.price = parseInt(out.price as string) || 0;
   if (typeof out.compare_price === "string") out.compare_price = parseInt(out.compare_price as string) || null;
+  if (out.capacity !== undefined) out.capacity = out.capacity === "" || out.capacity == null ? null : (parseInt(String(out.capacity)) || null);
+  if (out.format !== undefined && out.format !== "live") out.format = "video";
   return out;
 }
 
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, students, status, source, subtitle, description, instructor, assignment_title, assignment_brief").order("position");
+  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, compare_price, students, status, source, subtitle, description, instructor, assignment_title, assignment_brief, format, capacity").order("position");
   return NextResponse.json({ courses: data ?? [] });
 }
 

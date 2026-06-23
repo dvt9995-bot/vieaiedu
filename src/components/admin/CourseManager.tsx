@@ -3,14 +3,15 @@ import { useEffect, useState, useCallback } from "react";
 import { formatVND } from "@/lib/format";
 import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
+import LiveSessionManager from "@/components/teach/LiveSessionManager";
 import CourseCoverModal from "./CourseCoverModal";
 import { slugify } from "@/lib/video";
 import { compressImage } from "@/lib/image";
 
-interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; }
-type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string };
+interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; compare_price?: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; }
+type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null };
 
-const empty: Form = { title: "", slug: "", category: "Cơ bản", level: "beginner", price: 0, status: "published" };
+const empty: Form = { title: "", slug: "", category: "Cơ bản", level: "beginner", price: 0, status: "published", format: "video" };
 
 export default function CourseManager() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -76,7 +77,7 @@ export default function CourseManager() {
     if (r.description) { setForm((f) => f ? { ...f, description: r.description } : f); toast("✨ Đã làm đẹp nội dung"); }
     else toast(r.error || "Không xử lý được", "error");
   }
-  const [managing, setManaging] = useState<string | null>(null);
+  const [managing, setManaging] = useState<Row | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -145,11 +146,25 @@ export default function CourseManager() {
             </button>
           </div>
 
+          {/* Loại khóa: Video quay sẵn / Live Google Meet */}
+          <div className="sm:col-span-2 flex gap-2">
+            <button onClick={() => setForm({ ...form, format: "video" })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer transition-colors ${(form.format ?? "video") === "video" ? "border-accent bg-accent-weak text-accent" : "border-border-strong hover:border-accent"}`}>🎬 Video quay sẵn</button>
+            <button onClick={() => setForm({ ...form, format: "live" })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer transition-colors ${form.format === "live" ? "border-accent bg-accent-weak text-accent" : "border-border-strong hover:border-accent"}`}>🔴 Live (Google Meet)</button>
+          </div>
+
           {/* Phân loại phí ngay từ đầu */}
           <div className="sm:col-span-2 flex gap-2">
             <button onClick={() => setForm({ ...form, price: 0, compare_price: 0 })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer transition-colors ${(form.price ?? 0) === 0 ? "border-success bg-success/10 text-success" : "border-border-strong hover:border-accent"}`}>🆓 Miễn phí</button>
             <button onClick={() => setForm({ ...form, price: form.price && form.price > 0 ? form.price : 299000 })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer transition-colors ${(form.price ?? 0) > 0 ? "border-accent bg-accent-weak text-accent" : "border-border-strong hover:border-accent"}`}>💳 Có phí</button>
           </div>
+
+          {form.format === "live" && (
+            <div className="sm:col-span-2">
+              <label className="text-xs font-semibold text-ink-2">Sức chứa lớp (số chỗ tối đa — để trống = không giới hạn)</label>
+              <input className={`${inp} mt-1`} type="number" placeholder="vd 30" value={form.capacity ?? ""} onChange={(e) => setForm({ ...form, capacity: e.target.value === "" ? null : Number(e.target.value) })} />
+              <p className="text-ink-3 text-[11px] mt-1">🔴 Khóa Live: lưu xong bấm <b>“Buổi học”</b> ở danh sách để thêm lịch buổi (link Meet tự sinh nếu đã kết nối Google).</p>
+            </div>
+          )}
 
           {form.thumb && (
             <div className="sm:col-span-2">
@@ -226,8 +241,8 @@ export default function CourseManager() {
                 <td className="px-4 py-3">{formatVND(c.price)}</td>
                 <td className="px-4 py-3 hidden sm:table-cell"><span className={`text-xs font-semibold ${c.status === "published" ? "text-success" : "text-ink-3"}`}>{c.status === "published" ? "Công khai" : "Nháp"}</span></td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
-                  <button onClick={() => setManaging(c.id)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">Bài học</button>
-                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
+                  <button onClick={() => setManaging(c)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">{c.format === "live" ? "Buổi học" : "Bài học"}</button>
+                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, compare_price: c.compare_price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief, format: c.format, capacity: c.capacity })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
                   <button onClick={() => del(c.id)} className="text-ink-3 font-semibold cursor-pointer hover:text-accent">Xóa</button>
                 </td>
               </tr>
@@ -236,7 +251,9 @@ export default function CourseManager() {
         </table>
       </div>
 
-      {managing && <LessonManager courseId={managing} onClose={() => setManaging(null)} />}
+      {managing && (managing.format === "live"
+        ? <LiveSessionManager courseId={managing.id} onClose={() => setManaging(null)} />
+        : <LessonManager courseId={managing.id} onClose={() => setManaging(null)} />)}
     </div>
   );
 }
