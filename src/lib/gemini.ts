@@ -56,7 +56,7 @@ async function geminiText(prompt: string, max = 2500): Promise<string | null> {
   try {
     const res = await fetch(`https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`, {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8 } }),
+      body: JSON.stringify({ contents: [{ parts: [{ text: prompt }] }], generationConfig: { temperature: 0.8, maxOutputTokens: Math.min(8192, Math.ceil(max / 2.5) + 512) } }),
       signal: AbortSignal.timeout(25000),
     });
     if (!res.ok) return null;
@@ -77,7 +77,7 @@ export async function suggestCourseDescription(title: string): Promise<string | 
   return geminiText(`Viết phần MÔ TẢ chi tiết, hấp dẫn cho khóa học AI tên "${title}" trên nền tảng VIE AI EDU.
 Nội dung tiếng Việt, chuyên nghiệp, truyền cảm hứng, hướng đến chuyển đổi mua hàng. Bao gồm: khóa học dạy gì, học viên đạt được gì (lợi ích cụ thể), phù hợp với ai, vì sao nên học.
 ${MD_RULE}
-Chỉ trả về nội dung Markdown, không lời dẫn.`);
+Chỉ trả về nội dung Markdown, không lời dẫn.`, 7000);
 }
 
 // Chấm bài tập/dự án của học viên bằng AI → điểm 0-100 + nhận xét xây dựng (tiếng Việt)
@@ -118,15 +118,16 @@ Trả về JSON đúng định dạng: {"score": <số nguyên 0-100>, "feedback
 
 // Làm đẹp / chuẩn hóa lại nội dung mô tả admin đã nhập → Markdown có cấu trúc, giữ nguyên ý
 export async function beautifyCourseDescription(title: string, raw: string): Promise<string | null> {
-  return geminiText(`Biên tập lại phần MÔ TẢ khóa học "${title}" dưới đây cho chuyên nghiệp, mạch lạc, dễ đọc và tăng trải nghiệm mua hàng. GIỮ NGUYÊN ý chính và thông tin, chỉ sắp xếp lại bố cục, thêm tiêu đề mục, gạch đầu dòng, làm gọn câu. Không bịa thêm thông tin sai.
+  return geminiText(`Biên tập lại phần MÔ TẢ khóa học "${title}" dưới đây cho chuyên nghiệp, mạch lạc, dễ đọc và tăng trải nghiệm mua hàng.
+QUAN TRỌNG: GIỮ NGUYÊN TOÀN BỘ nội dung và mọi chi tiết người dùng đã viết — KHÔNG được lược bỏ, KHÔNG tóm tắt, KHÔNG rút gọn ý. Chỉ định dạng lại: chia mục, thêm tiêu đề "## ", gạch đầu dòng, in đậm từ khóa, tách đoạn cho dễ đọc. Không bịa thêm thông tin sai.
 ${MD_RULE}
 
-NỘI DUNG GỐC:
+NỘI DUNG GỐC (giữ đầy đủ):
 """
-${raw.slice(0, 4000)}
+${raw.slice(0, 12000)}
 """
 
-Chỉ trả về nội dung Markdown đã biên tập, không lời dẫn.`);
+Chỉ trả về nội dung Markdown đã biên tập (đầy đủ, không thiếu ý), không lời dẫn.`, 12000);
 }
 
 export type ImgRole = "product" | "person" | "platform";
