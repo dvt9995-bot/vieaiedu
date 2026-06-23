@@ -231,7 +231,7 @@ export default function CourseManager() {
             <summary className="text-sm font-semibold cursor-pointer">🚀 Marketing / bán hàng — giảng viên, cam kết, FAQ (tùy chọn)</summary>
             <div className="space-y-2 mt-3">
               <div><label className="block text-[11px] text-ink-3 mb-1">Ảnh đại diện giảng viên</label><ImageUpload value={form.instructor_avatar || ""} onChange={(u) => setForm({ ...form, instructor_avatar: u })} endpoint="/api/admin/upload" placeholder="Dán URL hoặc tải ảnh giảng viên" /></div>
-              <div><label className="block text-[11px] text-ink-3 mb-1">📸 Ảnh kết quả học viên khóa trước (tải nhiều ảnh)</label><GalleryUpload value={form.result_images || []} onChange={(u) => setForm({ ...form, result_images: u })} endpoint="/api/admin/upload" /></div>
+              <div><label className="block text-[11px] text-ink-3 mb-1">📸 Ảnh/Video kết quả học viên khóa trước</label><GalleryUpload value={form.result_images || []} onChange={(u) => setForm({ ...form, result_images: u })} endpoint="/api/admin/upload" /></div>
               <textarea className={inp} rows={2} placeholder="Giới thiệu giảng viên (kinh nghiệm, thành tích…)" value={form.instructor_bio || ""} onChange={(e) => setForm({ ...form, instructor_bio: e.target.value })} />
               <textarea className={inp} rows={2} placeholder="Cam kết/đảm bảo — để trống dùng mặc định" value={form.guarantee || ""} onChange={(e) => setForm({ ...form, guarantee: e.target.value })} />
               <div>
