@@ -39,7 +39,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
   const nextDateStr = upcoming[0] ? new Date(upcoming[0].starts_at).toLocaleString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Ho_Chi_Minh" }) : null;
 
   return (
-    <div className="container-x pt-5 pb-28 lg:py-8 overflow-x-hidden">
+    <div className="container-x pt-5 pb-40 lg:py-8 overflow-x-hidden">
       <Link href="/live" className="text-sm text-ink-3 hover:text-ink">← Lớp học trực tiếp</Link>
       <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-6 lg:gap-8 mt-3 lg:mt-4 items-start">
         {/* CỘT TRÁI: giới thiệu + mô tả */}

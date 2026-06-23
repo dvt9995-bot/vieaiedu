@@ -12,7 +12,10 @@ export default function StickyCta({ price, soldOut }: { price: number; soldOut?:
   }, []);
   if (!show) return null;
   return (
-    <div className={`lg:hidden fixed bottom-0 inset-x-0 z-40 bg-surface border-t border-border shadow-lg px-4 py-2.5 flex items-center gap-3 transition-transform ${show ? "translate-y-0" : "translate-y-full"}`} style={{ paddingBottom: "max(0.625rem, env(safe-area-inset-bottom))" }}>
+    <div
+      className="lg:hidden fixed inset-x-0 z-[110] bg-surface border-t border-border shadow-lg px-4 py-2.5 flex items-center gap-3 bottom-[calc(3.5rem+env(safe-area-inset-bottom))] md:bottom-0"
+      style={{ paddingBottom: "0.625rem" }}
+    >
       <div className="leading-tight">
         <div className="font-extrabold text-accent">{price > 0 ? formatVND(price) : "Miễn phí"}</div>
         <div className="text-[11px] text-ink-3">Học trực tiếp · còn chỗ</div>
