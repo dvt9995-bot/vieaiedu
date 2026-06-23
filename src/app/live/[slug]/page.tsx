@@ -39,11 +39,11 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
   const nextDateStr = upcoming[0] ? new Date(upcoming[0].starts_at).toLocaleString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Ho_Chi_Minh" }) : null;
 
   return (
-    <div className="container-x pt-5 pb-28 lg:py-8">
+    <div className="container-x pt-5 pb-28 lg:py-8 overflow-x-hidden">
       <Link href="/live" className="text-sm text-ink-3 hover:text-ink">← Lớp học trực tiếp</Link>
-      <div className="grid lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 mt-3 lg:mt-4 items-start">
+      <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_380px] gap-6 lg:gap-8 mt-3 lg:mt-4 items-start">
         {/* CỘT TRÁI: giới thiệu + mô tả */}
-        <div>
+        <div className="min-w-0">
           <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-accent bg-accent-weak rounded-full px-3 py-1">🔴 LỚP TRỰC TIẾP qua Google Meet</span>
           <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-3 leading-snug">{c.title}</h1>
           {c.subtitle && <p className="text-base sm:text-lg text-ink-2 mt-2">{c.subtitle}</p>}
@@ -136,7 +136,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
         </div>
 
         {/* CỘT PHẢI: giảng viên + đăng ký (CTA) + lịch học */}
-        <aside className="space-y-4 lg:sticky lg:top-24">
+        <aside className="space-y-4 lg:sticky lg:top-24 min-w-0">
           {/* Giảng viên — đưa lên đầu */}
           {(c.instructor || c.instructorBio || c.instructorAvatar) && (
             <div className="rounded-card border border-border bg-surface p-4 flex items-start gap-3">

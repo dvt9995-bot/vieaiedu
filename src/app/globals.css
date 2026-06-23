@@ -111,6 +111,7 @@ button:disabled { cursor: not-allowed; }
 }
 
 /* ============ Nội dung mô tả khóa (Markdown render) — đẹp + dễ đọc ============ */
+.prose-course { overflow-wrap: anywhere; word-break: break-word; }
 .prose-course > :first-child { margin-top: 0; }
 .prose-course h2 {
   font-family: var(--font-display); font-weight: 800; font-size: 1.35rem; line-height: 1.3;
