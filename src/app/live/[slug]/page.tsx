@@ -4,9 +4,10 @@ import Link from "next/link";
 import { getLiveCourseBySlug } from "@/lib/live";
 import { getCurrentUser } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
-import { formatVND } from "@/lib/format";
+import { mdToHtml } from "@/lib/md";
 import LiveRegister from "@/components/live/LiveRegister";
 import JoinLiveButton from "@/components/live/JoinLiveButton";
+import AnimatedProse from "@/components/live/AnimatedProse";
 
 export const dynamic = "force-dynamic";
 
@@ -54,7 +55,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
             </div>
           )}
 
-          {c.description && <div className="prose prose-sm max-w-none mt-6 whitespace-pre-line text-ink-2">{c.description}</div>}
+          {c.description?.trim() && <div className="mt-6"><AnimatedProse html={mdToHtml(c.description)} /></div>}
 
           {/* Lịch học */}
           <div className="rounded-card border border-border bg-surface p-5 mt-6">
