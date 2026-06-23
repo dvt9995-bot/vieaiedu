@@ -12,6 +12,7 @@ import { track } from "@/lib/analytics";
 // Điều hướng công khai (hướng cộng đồng), gọn gàng
 const links = [
   { href: "/courses", label: "Khóa học" },
+  { href: "/live", label: "Lớp trực tiếp" },
   { href: "/blog", label: "Tin tức" },
   { href: "/community", label: "Cộng đồng" },
   { href: "/gioi-thieu", label: "Giới thiệu" },

@@ -63,6 +63,7 @@ async function fromDB(): Promise<Course[] | null> {
     .select("*, sections(*, lessons(*))")
     .eq("status", "published")
     .eq("review_status", "approved") // khóa giảng viên chỉ hiện sau khi admin duyệt
+    .eq("format", "video")           // khóa LIVE có trang riêng /live, không lẫn vào danh sách khóa video
     .order("position", { ascending: true });
   if (error) return null; // lỗi truy vấn → fallback mock
   return (data ?? []).map(mapCourse); // ĐÃ cấu hình: trả đúng DB (kể cả rỗng) — KHÔNG hiện khóa mẫu

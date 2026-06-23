@@ -4,9 +4,10 @@ import Link from "next/link";
 import { toast } from "@/components/Toaster";
 import { formatVND } from "@/lib/format";
 import TeachLessonManager from "./TeachLessonManager";
+import LiveSessionManager from "./LiveSessionManager";
 
 interface App { status: string; admin_note?: string | null }
-interface Course { id: string; slug: string; title: string; subtitle?: string; description?: string; price: number; compare_price?: number; status: string; review_status: string; review_note?: string | null; total_minutes: number; thumb?: string; category?: string; level?: string }
+interface Course { id: string; slug: string; title: string; subtitle?: string; description?: string; price: number; compare_price?: number; status: string; review_status: string; review_note?: string | null; total_minutes: number; thumb?: string; category?: string; level?: string; format?: string; capacity?: number | null }
 
 const STATUS: Record<string, { label: string; cls: string }> = {
   draft: { label: "Nháp", cls: "bg-bg-soft text-ink-2" },
@@ -15,7 +16,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   rejected: { label: "Cần chỉnh sửa", cls: "bg-accent-weak text-accent" },
 };
 const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
-const empty = { title: "", subtitle: "", description: "", price: "0", category: "", level: "Cơ bản", thumb: "" };
+const empty = { title: "", subtitle: "", description: "", price: "0", category: "", level: "Cơ bản", thumb: "", format: "video", capacity: "" };
 
 export default function StudioClient() {
   const [loading, setLoading] = useState(true);
@@ -61,7 +62,7 @@ export default function StudioClient() {
     if (!res.ok) return toast(d.error || "Lỗi lưu khóa");
     toast(editId ? "Đã lưu khóa học" : "Đã tạo khóa học (nháp)"); setCreating(false); setEditId(null); setForm(empty); loadCourses();
   }
-  function openEdit(c: Course) { setEditId(c.id); setForm({ title: c.title, subtitle: c.subtitle || "", description: c.description || "", price: String(c.price || 0), category: c.category || "", level: c.level || "Cơ bản", thumb: c.thumb || "" }); setCreating(true); }
+  function openEdit(c: Course) { setEditId(c.id); setForm({ title: c.title, subtitle: c.subtitle || "", description: c.description || "", price: String(c.price || 0), category: c.category || "", level: c.level || "Cơ bản", thumb: c.thumb || "", format: c.format || "video", capacity: c.capacity ? String(c.capacity) : "" }); setCreating(true); }
   async function submitReview(c: Course) {
     const res = await fetch("/api/instructor/courses", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: c.id, action: "submit" }) });
     const d = await res.json();
@@ -123,16 +124,17 @@ export default function StudioClient() {
                 <div className="flex-1 min-w-[200px]">
                   <div className="flex items-center gap-2 flex-wrap">
                     <span className="font-semibold">{c.title}</span>
+                    {c.format === "live" && <span className="text-[11px] font-bold text-accent bg-accent-weak px-2 py-0.5 rounded-full">🔴 LIVE</span>}
                     <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full ${st.cls}`}>{st.label}</span>
-                    <span className="text-xs text-ink-3">{c.price > 0 ? formatVND(c.price) : "Miễn phí"} · {Math.round(c.total_minutes || 0)}p</span>
+                    <span className="text-xs text-ink-3">{c.price > 0 ? formatVND(c.price) : "Miễn phí"}{c.format !== "live" ? ` · ${Math.round(c.total_minutes || 0)}p` : ""}</span>
                   </div>
                   {c.review_status === "rejected" && c.review_note && <p className="text-xs text-accent mt-1">Góp ý: {c.review_note}</p>}
                 </div>
                 <div className="flex items-center gap-3 text-sm">
                   <button onClick={() => openEdit(c)} className="font-semibold text-ink-2 hover:text-ink cursor-pointer">Sửa</button>
-                  <button onClick={() => setManaging(c)} className="font-semibold text-accent cursor-pointer">Bài học</button>
+                  <button onClick={() => setManaging(c)} className="font-semibold text-accent cursor-pointer">{c.format === "live" ? "Buổi học" : "Bài học"}</button>
                   {(c.review_status === "draft" || c.review_status === "rejected") && <button onClick={() => submitReview(c)} className="font-semibold text-success cursor-pointer">Gửi duyệt</button>}
-                  {c.review_status === "approved" && <Link href={`/courses/${c.slug}`} className="font-semibold text-ink-2 hover:text-ink">Xem</Link>}
+                  {c.review_status === "approved" && <Link href={c.format === "live" ? `/live/${c.slug}` : `/courses/${c.slug}`} className="font-semibold text-ink-2 hover:text-ink">Xem</Link>}
                   <button onClick={() => delCourse(c)} className="text-ink-3 hover:text-accent cursor-pointer">Xóa</button>
                 </div>
               </div>
@@ -150,6 +152,14 @@ export default function StudioClient() {
               <button onClick={() => setCreating(false)} className="text-ink-3 hover:text-ink text-2xl leading-none cursor-pointer">×</button>
             </div>
             <div className="space-y-3">
+              {/* Loại khóa */}
+              {!editId && (
+                <div className="grid grid-cols-2 gap-2">
+                  {[["video", "🎬 Video quay sẵn"], ["live", "🔴 Live (Google Meet)"]].map(([v, label]) => (
+                    <button key={v} type="button" onClick={() => setForm({ ...form, format: v })} className={`rounded-lg border px-3 py-2.5 text-sm font-semibold cursor-pointer ${form.format === v ? "border-accent bg-accent-weak text-accent" : "border-border-strong text-ink-2"}`}>{label}</button>
+                  ))}
+                </div>
+              )}
               <input className={inp} placeholder="Tiêu đề khóa học *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
               <input className={inp} placeholder="Mô tả ngắn (subtitle)" value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} />
               <textarea className={inp} rows={4} placeholder="Mô tả chi tiết" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
@@ -159,7 +169,12 @@ export default function StudioClient() {
               </div>
               <input className={inp} placeholder="Danh mục (vd: Lập trình, AI, Marketing)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
               <input className={inp} placeholder="Ảnh bìa (URL — tùy chọn)" value={form.thumb} onChange={(e) => setForm({ ...form, thumb: e.target.value })} />
-              {Number(form.price) > 0 && <p className="text-xs text-ink-3">🔒 Khóa thu phí: video phải <b>tải lên hệ thống</b> (không dùng link YouTube). Bạn sẽ tải video ở bước “Bài học”.</p>}
+              {form.format === "live" && <input className={inp} type="number" placeholder="Sức chứa (số chỗ tối đa — để trống = không giới hạn)" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} />}
+              {form.format === "live" ? (
+                <p className="text-xs text-ink-3">🔴 Khóa LIVE: học qua Google Meet. Sau khi tạo, vào “Buổi học” để thêm lịch các buổi (link Meet tự sinh nếu admin đã kết nối Google).</p>
+              ) : Number(form.price) > 0 ? (
+                <p className="text-xs text-ink-3">🔒 Khóa thu phí: video phải <b>tải lên hệ thống</b> (không dùng link YouTube). Bạn sẽ tải video ở bước “Bài học”.</p>
+              ) : null}
               <div className="flex gap-2 pt-1">
                 <button onClick={saveCourse} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">{editId ? "Lưu" : "Tạo khóa"}</button>
                 <button onClick={() => setCreating(false)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button>
@@ -169,7 +184,9 @@ export default function StudioClient() {
         </div>
       )}
 
-      {managing && <TeachLessonManager courseId={managing.id} isPaid={(managing.price || 0) > 0} onClose={() => { setManaging(null); loadCourses(); }} />}
+      {managing && (managing.format === "live"
+        ? <LiveSessionManager courseId={managing.id} onClose={() => { setManaging(null); loadCourses(); }} />
+        : <TeachLessonManager courseId={managing.id} isPaid={(managing.price || 0) > 0} onClose={() => { setManaging(null); loadCourses(); }} />)}
     </div>
   );
 }

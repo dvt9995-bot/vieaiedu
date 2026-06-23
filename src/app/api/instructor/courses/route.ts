@@ -4,12 +4,14 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireInstructor, ownsCourse } from "@/lib/instructor-guard";
 import { slugify } from "@/lib/video";
 
-const FIELDS = ["title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "instructor"];
+const FIELDS = ["title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "instructor", "format", "capacity"];
 function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};
   for (const f of FIELDS) if (b[f] !== undefined) o[f] = b[f];
   if (typeof o.price === "string") o.price = parseInt(o.price as string) || 0;
   if (typeof o.compare_price === "string") o.compare_price = parseInt(o.compare_price as string) || null;
+  if (o.capacity !== undefined) o.capacity = o.capacity === "" || o.capacity == null ? null : (parseInt(String(o.capacity)) || null);
+  if (o.format !== undefined && o.format !== "live") o.format = "video";
   return o;
 }
 
@@ -18,7 +20,7 @@ export async function GET() {
   const u = await requireInstructor();
   if (!u) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("courses").select("id, slug, title, subtitle, description, price, compare_price, status, review_status, review_note, total_minutes, thumb, category, level, instructor").eq("owner_id", u.uid).order("created_at", { ascending: false });
+  const { data } = await admin.from("courses").select("id, slug, title, subtitle, description, price, compare_price, status, review_status, review_note, total_minutes, thumb, category, level, instructor, format, capacity").eq("owner_id", u.uid).order("created_at", { ascending: false });
   return NextResponse.json({ courses: data ?? [] });
 }
 
@@ -46,14 +48,19 @@ export async function PATCH(req: Request) {
   const b = await req.json();
   if (!b.id || !(await ownsCourse(b.id, u))) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   if (b.action === "submit") {
-    const { count } = await admin.from("lessons").select("id", { count: "exact", head: true }).eq("course_id", b.id);
-    if (!count) return NextResponse.json({ error: "Khóa cần ít nhất 1 bài học trước khi gửi duyệt" }, { status: 400 });
-    // Khóa thu phí bắt buộc video Bunny (không dùng link YouTube công khai)
-    const { data: paid } = await admin.from("courses").select("price").eq("id", b.id).maybeSingle();
-    if ((paid?.price || 0) > 0) {
-      const { data: ls } = await admin.from("lessons").select("video_id").eq("course_id", b.id);
-      const ytPaid = (ls || []).some((l) => typeof l.video_id === "string" && l.video_id.startsWith("yt:"));
-      if (ytPaid) return NextResponse.json({ error: "Khóa thu phí phải dùng video tải lên (Bunny), không dùng link YouTube" }, { status: 400 });
+    const { data: cur } = await admin.from("courses").select("price, format").eq("id", b.id).maybeSingle();
+    if (cur?.format === "live") {
+      const { count } = await admin.from("live_sessions").select("id", { count: "exact", head: true }).eq("course_id", b.id);
+      if (!count) return NextResponse.json({ error: "Khóa live cần ít nhất 1 buổi học trước khi gửi duyệt" }, { status: 400 });
+    } else {
+      const { count } = await admin.from("lessons").select("id", { count: "exact", head: true }).eq("course_id", b.id);
+      if (!count) return NextResponse.json({ error: "Khóa cần ít nhất 1 bài học trước khi gửi duyệt" }, { status: 400 });
+      // Khóa video thu phí bắt buộc video Bunny (không dùng link YouTube công khai)
+      if ((cur?.price || 0) > 0) {
+        const { data: ls } = await admin.from("lessons").select("video_id").eq("course_id", b.id);
+        const ytPaid = (ls || []).some((l) => typeof l.video_id === "string" && l.video_id.startsWith("yt:"));
+        if (ytPaid) return NextResponse.json({ error: "Khóa thu phí phải dùng video tải lên (Bunny), không dùng link YouTube" }, { status: 400 });
+      }
     }
     await admin.from("courses").update({ review_status: "pending" }).eq("id", b.id);
     return NextResponse.json({ ok: true });

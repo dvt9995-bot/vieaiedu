@@ -11,12 +11,14 @@ export default function InstructorManager() {
   const [apps, setApps] = useState<Appl[]>([]);
   const [courses, setCourses] = useState<PCourse[]>([]);
 
+  const [gcal, setGcal] = useState<{ connected: boolean; hasClient: boolean } | null>(null);
   const load = useCallback(async () => {
-    const [a, c] = await Promise.all([
+    const [a, c, g] = await Promise.all([
       fetch("/api/admin/instructors").then((r) => r.json()).catch(() => ({})),
       fetch("/api/admin/course-review").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/admin/gcal").then((r) => r.json()).catch(() => ({})),
     ]);
-    setApps(a.applications || []); setCourses(c.courses || []);
+    setApps(a.applications || []); setCourses(c.courses || []); setGcal(g.connected !== undefined ? g : null);
   }, []);
   useEffect(() => { load(); }, [load]);
 
@@ -36,6 +38,16 @@ export default function InstructorManager() {
   const pendingApps = apps.filter((a) => a.status === "pending");
   return (
     <div className="space-y-6">
+      {/* Kết nối Google Meet (tự sinh link cho lớp LIVE) */}
+      {gcal && (
+        <div className="rounded-card border border-border bg-surface p-5 flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <div className="text-sm font-semibold">🎥 Google Meet (lớp trực tiếp)</div>
+            <div className={`text-xs mt-0.5 ${gcal.connected ? "text-success" : "text-ink-3"}`}>{gcal.connected ? "✓ Đã kết nối — link Meet tự sinh khi giảng viên tạo buổi học." : gcal.hasClient ? "Chưa kết nối. Bấm để cấp quyền tài khoản Google host." : "Chưa cấu hình Client ID/Secret. Cung cấp cho kỹ thuật để bật."}</div>
+          </div>
+          {gcal.hasClient && <a href="/api/admin/gcal/auth" className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-5 py-2.5">{gcal.connected ? "Kết nối lại" : "Kết nối Google"}</a>}
+        </div>
+      )}
       <div className="rounded-card border border-border bg-surface p-5">
         <div className="text-sm font-semibold mb-3">📝 Đơn đăng ký giảng viên {pendingApps.length > 0 && <span className="text-accent">({pendingApps.length} chờ duyệt)</span>}</div>
         {apps.length === 0 ? <p className="text-ink-3 text-sm">Chưa có đơn nào.</p> : (
