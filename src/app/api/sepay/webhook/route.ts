@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPurchasableCourse } from "@/lib/courses";
+import { firstSessionLabel } from "@/lib/live";
 import { sendOrderReceipt } from "@/lib/email";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
@@ -106,7 +107,7 @@ export async function POST(req: Request) {
   await notify({
     userId: order.user_id, type: "transactional",
     title: "Thanh toán thành công 🎉",
-    body: `Bạn đã sở hữu "${courseTitle}". Vào học ngay!`,
+    body: `Bạn đã sở hữu "${courseTitle}".${course?.format === "live" ? await (async () => { const s = await firstSessionLabel(order.course_slug); return s ? ` Buổi học đầu: ${s}. Hệ thống sẽ nhắc bạn trước giờ học.` : " Xem lịch học ngay!"; })() : " Vào học ngay!"}`,
     href: courseHref, email: false,
   });
 

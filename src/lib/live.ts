@@ -97,6 +97,17 @@ export async function getMyLiveCourses(userId: string): Promise<LiveCourse[]> {
   return data.map((c) => mapCourse(c, byCourse.get(c.id) || []));
 }
 
+// Nhãn buổi học gần nhất sắp tới của khóa live (để báo khi đăng ký xong). "" nếu không phải live / chưa có lịch.
+export async function firstSessionLabel(courseSlug: string): Promise<string> {
+  const admin = createAdminClient();
+  if (!admin) return "";
+  const { data: c } = await admin.from("courses").select("id, format").eq("slug", courseSlug).maybeSingle();
+  if (!c || c.format !== "live") return "";
+  const { data: s } = await admin.from("live_sessions").select("starts_at").eq("course_id", c.id).gte("starts_at", new Date(Date.now() - 3600000).toISOString()).order("starts_at").limit(1).maybeSingle();
+  if (!s?.starts_at) return "";
+  return new Date(s.starts_at as string).toLocaleString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Ho_Chi_Minh" });
+}
+
 // Khung giờ được phép vào lớp
 export function joinWindow(startsAt: string, durationMin: number): { open: boolean; reason: "early" | "ended" | "ok"; opensAt: number } {
   const now = Date.now();

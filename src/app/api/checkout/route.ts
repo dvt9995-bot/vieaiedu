@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPurchasableCourse } from "@/lib/courses";
+import { firstSessionLabel } from "@/lib/live";
 import { orderCode, sepayQrUrl } from "@/lib/sepay";
 import { validateCoupon, consumeCoupon } from "@/lib/coupon";
 import { ALL_ACCESS, getBundle, enrollAllPublished } from "@/lib/bundle";
@@ -83,7 +84,8 @@ export async function POST(req: Request) {
       const { error: enrollErr } = await admin.from("enrollments").upsert({ user_id: user.id, course_slug: slug }, { onConflict: "user_id,course_slug" });
       if (enrollErr) await notifyAdmins("🔴 Đã trừ ví nhưng ghi danh LỖI", `Đơn ${order.id} (${itemTitle}). Cần ghi danh thủ công.`, "/admin", { email: true });
     }
-    await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu "${itemTitle}" (thanh toán bằng số dư ví).`, href: isBundle ? "/courses" : course!.format === "live" ? `/live/${slug}` : `/learn/${slug}`, email: false });
+    const sched = !isBundle && course!.format === "live" ? await firstSessionLabel(slug) : "";
+    await notify({ userId: user.id, type: "transactional", title: "Thanh toán thành công 🎉", body: `Bạn đã sở hữu "${itemTitle}".${sched ? ` Buổi học đầu: ${sched}. Hệ thống sẽ nhắc bạn trước giờ học.` : " Vào học ngay!"}`, href: isBundle ? "/courses" : course!.format === "live" ? `/live/${slug}` : `/learn/${slug}`, email: false });
     return NextResponse.json({ enrolled: true, bundle: isBundle });
   }
 

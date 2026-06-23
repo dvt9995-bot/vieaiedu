@@ -36,7 +36,8 @@ export async function GET(req: Request) {
     const title = kind === "10m" ? "🔴 Lớp học bắt đầu sau 10 phút!" : kind === "1h" ? "⏰ Lớp học bắt đầu sau 1 giờ" : "📅 Nhắc lịch: ngày mai bạn có buổi học";
     const body = `"${course.title}"${ss.title ? " — " + ss.title : ""} lúc ${when}.${kind === "24h" ? " Nhớ sắp xếp thời gian nhé!" : " Bấm để vào lớp."}`;
     for (const e of enr || []) {
-      await notify({ userId: e.user_id as string, type: "learning", title, body, href: `/live/${course.slug}`, push: true });
+      // Email cho mốc 1 ngày & 1 giờ (đủ thời gian); mốc 10' chỉ in-app + push cho kịp
+      await notify({ userId: e.user_id as string, type: "learning", title, body, href: `/live/${course.slug}`, push: true, email: kind !== "10m" });
       sent++;
     }
     await admin.from("live_sessions").update(kind === "10m" ? { reminded_10m: true } : kind === "1h" ? { reminded_1h: true } : { reminded_24h: true }).eq("id", ss.id);

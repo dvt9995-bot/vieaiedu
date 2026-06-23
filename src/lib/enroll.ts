@@ -31,5 +31,15 @@ export async function enrollFree(courseSlug: string): Promise<{ ok: boolean; err
   const { error } = await admin
     .from("enrollments")
     .upsert({ user_id: user.id, course_slug: courseSlug }, { onConflict: "user_id,course_slug" });
-  return error ? { ok: false, error: error.message } : { ok: true };
+  if (error) return { ok: false, error: error.message };
+  // Khóa LIVE: gửi xác nhận kèm lịch buổi đầu (in-app + push)
+  if (course.format === "live") {
+    try {
+      const { firstSessionLabel } = await import("@/lib/live");
+      const { notify } = await import("@/lib/notify");
+      const sched = await firstSessionLabel(courseSlug);
+      await notify({ userId: user.id, type: "transactional", title: "Đăng ký thành công 🎉", body: `Bạn đã đăng ký lớp trực tiếp.${sched ? ` Buổi học đầu: ${sched}. Hệ thống sẽ nhắc bạn trước giờ học.` : ""}`, href: `/live/${courseSlug}`, push: true });
+    } catch { /* noop */ }
+  }
+  return { ok: true };
 }
