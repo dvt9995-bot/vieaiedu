@@ -5,6 +5,7 @@ import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
 import LiveSessionManager from "@/components/teach/LiveSessionManager";
 import TestimonialManager from "@/components/teach/TestimonialManager";
+import ImageUpload from "@/components/ImageUpload";
 import CourseCoverModal from "./CourseCoverModal";
 import { slugify } from "@/lib/video";
 import { compressImage } from "@/lib/image";
@@ -228,7 +229,7 @@ export default function CourseManager() {
           <details className="sm:col-span-2 border border-border rounded-lg p-3 bg-surface">
             <summary className="text-sm font-semibold cursor-pointer">🚀 Marketing / bán hàng — giảng viên, cam kết, FAQ (tùy chọn)</summary>
             <div className="space-y-2 mt-3">
-              <input className={inp} placeholder="Ảnh đại diện giảng viên (URL)" value={form.instructor_avatar || ""} onChange={(e) => setForm({ ...form, instructor_avatar: e.target.value })} />
+              <div><label className="block text-[11px] text-ink-3 mb-1">Ảnh đại diện giảng viên</label><ImageUpload value={form.instructor_avatar || ""} onChange={(u) => setForm({ ...form, instructor_avatar: u })} endpoint="/api/admin/upload" placeholder="Dán URL hoặc tải ảnh giảng viên" /></div>
               <textarea className={inp} rows={2} placeholder="Giới thiệu giảng viên (kinh nghiệm, thành tích…)" value={form.instructor_bio || ""} onChange={(e) => setForm({ ...form, instructor_bio: e.target.value })} />
               <textarea className={inp} rows={2} placeholder="Cam kết/đảm bảo — để trống dùng mặc định" value={form.guarantee || ""} onChange={(e) => setForm({ ...form, guarantee: e.target.value })} />
               <div>

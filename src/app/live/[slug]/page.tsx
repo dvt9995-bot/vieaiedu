@@ -86,23 +86,6 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
             </section>
           )}
 
-          {/* Giảng viên */}
-          {(c.instructor || c.instructorBio) && (
-            <section className="mt-10">
-              <h2 className="text-2xl font-extrabold tracking-tight mb-4">Giảng viên</h2>
-              <div className="rounded-card border border-border bg-surface p-5 flex items-start gap-4">
-                <div className="w-16 h-16 rounded-full bg-bg-soft overflow-hidden shrink-0">
-                  {/* eslint-disable-next-line @next/next/no-img-element */}
-                  {c.instructorAvatar ? <img src={c.instructorAvatar} alt={c.instructor || "Giảng viên"} className="w-full h-full object-cover" /> : <span className="w-full h-full grid place-items-center text-2xl text-ink-3 font-bold">{(c.instructor || "G").charAt(0)}</span>}
-                </div>
-                <div>
-                  <div className="font-bold">{c.instructor || "Giảng viên VIE AI EDU"}</div>
-                  {c.instructorBio && <p className="text-sm text-ink-2 mt-1 leading-relaxed whitespace-pre-line">{c.instructorBio}</p>}
-                </div>
-              </div>
-            </section>
-          )}
-
           {/* Cam kết / đảm bảo */}
           <section className="mt-10">
             <div className="rounded-card border border-success/30 bg-success/5 p-5 flex items-start gap-3">
@@ -132,8 +115,23 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
           )}
         </div>
 
-        {/* CỘT PHẢI: đăng ký (CTA) + lịch học */}
+        {/* CỘT PHẢI: giảng viên + đăng ký (CTA) + lịch học */}
         <aside className="space-y-4 lg:sticky lg:top-24">
+          {/* Giảng viên — đưa lên đầu */}
+          {(c.instructor || c.instructorBio || c.instructorAvatar) && (
+            <div className="rounded-card border border-border bg-surface p-4 flex items-start gap-3">
+              <div className="w-14 h-14 rounded-full bg-bg-soft overflow-hidden shrink-0">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                {c.instructorAvatar ? <img src={c.instructorAvatar} alt={c.instructor || "Giảng viên"} className="w-full h-full object-cover" /> : <span className="w-full h-full grid place-items-center text-xl text-ink-3 font-bold">{(c.instructor || "G").charAt(0)}</span>}
+              </div>
+              <div className="min-w-0">
+                <div className="text-[11px] uppercase tracking-wide text-accent font-semibold">Giảng viên</div>
+                <div className="font-bold">{c.instructor || "Giảng viên VIE AI EDU"}</div>
+                {c.instructorBio && <p className="text-xs text-ink-2 mt-1 leading-relaxed whitespace-pre-line line-clamp-4">{c.instructorBio}</p>}
+              </div>
+            </div>
+          )}
+
           {/* Thẻ giá + kêu gọi mua hàng */}
           <div id="register" className="rounded-card border-2 border-accent/30 bg-surface shadow-lg overflow-hidden scroll-mt-24">
             {/* Băng khẩn cấp */}
@@ -147,7 +145,10 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
                 <div className="text-base font-extrabold text-ink">🎓 Giữ chỗ học trực tiếp cùng giảng viên</div>
                 <div className="text-xs text-ink-3 mt-0.5">Tương tác trực tiếp · hỏi đáp ngay · có video xem lại</div>
                 {!enrolled && upcoming[0] && (
-                  <div className="mt-3"><div className="text-[11px] text-ink-3 mb-0.5">⏳ Khai giảng sau</div><Countdown target={upcoming[0].starts_at} /></div>
+                  <div className="mt-3 rounded-lg bg-gold/20 border border-gold/40 py-2 px-3">
+                    <div className="text-[11px] font-semibold text-amber-700 mb-1">⏳ Khai giảng sau</div>
+                    <Countdown target={upcoming[0].starts_at} />
+                  </div>
                 )}
               </div>
               <LiveRegister slug={c.slug} price={c.price} comparePrice={c.compare_price} enrolled={enrolled} soldOut={soldOut} />

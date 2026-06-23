@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "@/components/Toaster";
+import ImageUpload from "@/components/ImageUpload";
 
 interface T { id: string; name: string; role: string | null; content: string; rating: number; avatar_url: string | null; }
 
@@ -49,7 +50,10 @@ export default function TestimonialManager({ courseId, onClose }: { courseId: st
             <input className={inp} placeholder="Vai trò (vd: Chủ shop online)" value={f.role} onChange={(e) => setF({ ...f, role: e.target.value })} />
             <textarea className={`${inp} sm:col-span-2`} rows={2} placeholder="Nội dung cảm nhận" value={f.content} onChange={(e) => setF({ ...f, content: e.target.value })} />
             <select className={inp} value={f.rating} onChange={(e) => setF({ ...f, rating: e.target.value })}>{[5, 4, 3].map((n) => <option key={n} value={n}>{n} sao</option>)}</select>
-            <input className={inp} placeholder="Ảnh đại diện (URL — tùy chọn)" value={f.avatar_url} onChange={(e) => setF({ ...f, avatar_url: e.target.value })} />
+            <div className="sm:col-span-2">
+              <label className="block text-[11px] text-ink-3 mb-1">Ảnh học viên (tùy chọn)</label>
+              <ImageUpload value={f.avatar_url} onChange={(u) => setF({ ...f, avatar_url: u })} size="sm" placeholder="Dán URL hoặc tải ảnh học viên" />
+            </div>
             <button onClick={add} className="sm:col-span-2 rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold py-2 cursor-pointer">+ Thêm đánh giá</button>
           </div>
         </div>

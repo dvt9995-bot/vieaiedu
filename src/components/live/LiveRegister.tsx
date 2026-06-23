@@ -51,7 +51,7 @@ export default function LiveRegister({ slug, price, comparePrice, enrolled, sold
   return (
     <div>
       <div className="flex items-baseline gap-2 mb-3">
-        <span className="text-3xl font-extrabold tracking-tight">{free ? "Miễn phí" : formatVND(price)}</span>
+        <span className="text-3xl font-extrabold tracking-tight text-accent">{free ? "Miễn phí" : formatVND(price)}</span>
         {!free && comparePrice && comparePrice > price && <span className="text-ink-3 line-through">{formatVND(comparePrice)}</span>}
       </div>
       {!free && (
