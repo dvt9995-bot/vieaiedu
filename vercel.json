@@ -4,6 +4,7 @@
     { "path": "/api/cron/reminders", "schedule": "0 1 * * *" },
     { "path": "/api/cron/blog", "schedule": "0 23 * * *" },
     { "path": "/api/cron/newsletter", "schedule": "0 0 * * 1" },
-    { "path": "/api/cron/live-reminders", "schedule": "*/15 * * * *" }
+    { "path": "/api/cron/live-reminders", "schedule": "*/15 * * * *" },
+    { "path": "/api/cron/live-recordings", "schedule": "0 * * * *" }
   ]
 }

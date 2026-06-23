@@ -40,6 +40,21 @@ export async function createBunnyVideo(title: string): Promise<{ libraryId: stri
   return { libraryId: String(lib), videoId: String(j.guid) };
 }
 
+// Tạo video + bảo Bunny TỰ TẢI từ URL nguồn (kèm headers xác thực). File nặng không qua server mình.
+// Dùng cho: tự kéo bản ghi Meet từ Google Drive về Bunny. Trả videoId (GUID) hoặc null.
+export async function fetchBunnyFromUrl(title: string, sourceUrl: string, headers?: Record<string, string>): Promise<string | null> {
+  const key = await getConfig("bunny_api_key", "BUNNY_STREAM_API_KEY");
+  const v = await createBunnyVideo(title);
+  if (!key || !v) return null;
+  const res = await fetch(`https://video.bunnycdn.com/library/${v.libraryId}/videos/${v.videoId}/fetch`, {
+    method: "POST",
+    headers: { AccessKey: key, "Content-Type": "application/json", accept: "application/json" },
+    body: JSON.stringify({ url: sourceUrl, headers: headers || {} }),
+  });
+  if (!res.ok) return null;
+  return v.videoId;
+}
+
 // Chữ ký phiên upload TUS — KHÔNG lộ API key ra trình duyệt, chỉ trả signature có hạn dùng.
 export async function bunnyUploadAuth(videoId: string, ttlSec = 3 * 3600): Promise<{ libraryId: string; videoId: string; expire: number; signature: string; endpoint: string } | null> {
   const lib = await getConfig("bunny_library_id", "BUNNY_STREAM_LIBRARY_ID");

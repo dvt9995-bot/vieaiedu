@@ -18,6 +18,16 @@ export default function JoinLiveButton({ sessionId, title, startsAt, durationMin
   const endsAt = start + durationMin * 60000 + GRACE_AFTER;
   const state: "early" | "open" | "ended" = now < opensAt ? "early" : now > endsAt ? "ended" : "open";
 
+  async function watchReplay() {
+    setBusy(true);
+    try {
+      const r = await fetch(`/api/live/replay?session=${sessionId}`);
+      const d = await r.json();
+      if (r.ok && d.url) window.open(d.url, "_blank", "noopener");
+      else if (d.error === "not_enrolled") toast("Bạn cần đăng ký khóa học này");
+      else toast("Bản ghi đang được xử lý, vui lòng quay lại sau");
+    } finally { setBusy(false); }
+  }
   async function join() {
     setBusy(true);
     try {
@@ -48,7 +58,7 @@ export default function JoinLiveButton({ sessionId, title, startsAt, durationMin
       ) : state === "early" ? (
         <span className="shrink-0 text-xs font-semibold text-ink-2 bg-bg-soft rounded-full px-3 py-1.5">{countdown}</span>
       ) : recordingUrl ? (
-        <a href={recordingUrl} target="_blank" rel="noreferrer" className="shrink-0 rounded-full border border-border-strong text-sm font-semibold px-4 py-2">▶ Xem lại</a>
+        <button onClick={watchReplay} disabled={busy} className="shrink-0 rounded-full border border-border-strong text-sm font-semibold px-4 py-2 cursor-pointer">▶ Xem lại</button>
       ) : (
         <span className="shrink-0 text-xs text-ink-3">Đã kết thúc</span>
       )}
