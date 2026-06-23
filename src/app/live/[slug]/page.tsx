@@ -19,7 +19,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const { slug } = await params;
   const c = await getLiveCourseBySlug(slug);
   if (!c) return { title: "Lớp học trực tiếp" };
-  return { title: `${c.title} — Lớp trực tiếp`, description: c.subtitle || c.description?.slice(0, 150), openGraph: { images: c.thumb ? [c.thumb] : [] } };
+  const url = `https://vieaiedu.vn/live/${slug}`;
+  const desc = c.subtitle || c.description?.slice(0, 160) || "Lớp học trực tiếp qua Google Meet — VIE AI EDU.";
+  return {
+    title: `${c.title} — Lớp trực tiếp`,
+    description: desc,
+    alternates: { canonical: url },
+    openGraph: { type: "website", url, title: `${c.title} — Lớp trực tiếp`, description: desc, images: c.thumb ? [c.thumb] : [] },
+  };
 }
 
 export default async function LiveCoursePage({ params }: { params: Promise<{ slug: string }> }) {
