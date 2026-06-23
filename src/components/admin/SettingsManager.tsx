@@ -100,7 +100,12 @@ export default function SettingsManager() {
   async function save() {
     setMsg("Đang lưu…");
     const r = await fetch("/api/admin/settings", { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ values: s }) }).then((x) => x.json());
-    if (r.ok) { setMsg("✓ Đã lưu. Thay đổi áp dụng ngay (không cần deploy)."); toast("Đã lưu cấu hình — áp dụng ngay"); }
+    if (r.ok) {
+      setMsg("✓ Đã lưu. Thay đổi áp dụng ngay (không cần deploy)."); toast("Đã lưu cấu hình — áp dụng ngay");
+      // Cập nhật lại trạng thái (nhãn ✓ + nút Kết nối Google hiện ngay sau khi lưu Client ID/Secret)
+      fetch("/api/admin/settings").then((x) => x.json()).then((d) => setStatus(d.status || {})).catch(() => {});
+      fetch("/api/admin/gcal").then((x) => x.json()).then((d) => setGcal(d.connected !== undefined ? d : null)).catch(() => {});
+    }
     else { setMsg(r.error || "Lỗi"); toast(r.error || "Lưu thất bại", "error"); }
   }
 
