@@ -4,14 +4,18 @@ import { formatVND } from "@/lib/format";
 import { toast } from "@/components/Toaster";
 import LessonManager from "./LessonManager";
 import LiveSessionManager from "@/components/teach/LiveSessionManager";
+import TestimonialManager from "@/components/teach/TestimonialManager";
 import CourseCoverModal from "./CourseCoverModal";
 import { slugify } from "@/lib/video";
 import { compressImage } from "@/lib/image";
 
-interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; compare_price?: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; }
-type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null };
+interface Faq { q: string; a: string }
+interface Row { id: string; slug: string; title: string; category: string; level: string; price: number; compare_price?: number; students: number; status: string; source?: string; instructor?: string; subtitle?: string; description?: string; thumb?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faq?: Faq[]; }
+type Form = Partial<Row> & { subtitle?: string; description?: string; compare_price?: number; thumb?: string; source?: string; assignment_title?: string; assignment_brief?: string; format?: string; capacity?: number | null; instructor_bio?: string; instructor_avatar?: string; guarantee?: string; faqText?: string };
 
 const empty: Form = { title: "", slug: "", category: "Cơ bản", level: "beginner", price: 0, status: "published", format: "video" };
+const parseFaq = (t: string): Faq[] => (t || "").split("\n").map((l) => { const i = l.indexOf("|"); return i < 0 ? null : { q: l.slice(0, i).trim(), a: l.slice(i + 1).trim() }; }).filter((x): x is Faq => !!x && !!x.q && !!x.a);
+const faqToText = (f?: Faq[]) => (f || []).map((x) => `${x.q} | ${x.a}`).join("\n");
 
 export default function CourseManager() {
   const [rows, setRows] = useState<Row[]>([]);
@@ -78,6 +82,7 @@ export default function CourseManager() {
     else toast(r.error || "Không xử lý được", "error");
   }
   const [managing, setManaging] = useState<Row | null>(null);
+  const [testimonialFor, setTestimonialFor] = useState<Row | null>(null);
 
   const load = useCallback(async () => {
     setLoading(true);
@@ -99,7 +104,7 @@ export default function CourseManager() {
     if (!form?.title || !form?.slug) { setMsg("Cần nhập tên + slug"); return toast("Cần nhập tên + slug", "error"); }
     const method = form.id ? "PATCH" : "POST";
     const r = await fetch("/api/admin/courses", {
-      method, headers: { "Content-Type": "application/json" }, body: JSON.stringify(form),
+      method, headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ...form, faq: parseFaq(form.faqText || "") }),
     }).then((x) => x.json());
     if (r.ok) { setForm(null); setMsg("Đã lưu."); toast("Đã lưu khóa học"); load(); } else { setMsg(r.error || "Lỗi lưu"); toast(r.error || "Lưu thất bại", "error"); }
   }
@@ -218,6 +223,22 @@ export default function CourseManager() {
             </div>
             <p className="text-ink-3 text-xs mt-1">Khuyến nghị tỉ lệ <b>16:9</b> — kích thước <b>1280×720</b> (hoặc 1920×1080). Ảnh tự nén tối ưu khi tải lên.</p>
           </div>
+
+          {/* Marketing / bán hàng (tăng chuyển đổi trang khóa) */}
+          <details className="sm:col-span-2 border border-border rounded-lg p-3 bg-surface">
+            <summary className="text-sm font-semibold cursor-pointer">🚀 Marketing / bán hàng — giảng viên, cam kết, FAQ (tùy chọn)</summary>
+            <div className="space-y-2 mt-3">
+              <input className={inp} placeholder="Ảnh đại diện giảng viên (URL)" value={form.instructor_avatar || ""} onChange={(e) => setForm({ ...form, instructor_avatar: e.target.value })} />
+              <textarea className={inp} rows={2} placeholder="Giới thiệu giảng viên (kinh nghiệm, thành tích…)" value={form.instructor_bio || ""} onChange={(e) => setForm({ ...form, instructor_bio: e.target.value })} />
+              <textarea className={inp} rows={2} placeholder="Cam kết/đảm bảo — để trống dùng mặc định" value={form.guarantee || ""} onChange={(e) => setForm({ ...form, guarantee: e.target.value })} />
+              <div>
+                <label className="block text-[11px] text-ink-3 mb-1">FAQ — mỗi dòng: <code className="bg-bg-soft px-1 rounded">Câu hỏi | Trả lời</code> (để trống dùng FAQ mặc định)</label>
+                <textarea className={`${inp} font-mono`} rows={3} placeholder={"Tôi mới bắt đầu học được không? | Được, khóa phù hợp người mới...\nLỡ buổi thì sao? | Có bản ghi xem lại..."} value={form.faqText || ""} onChange={(e) => setForm({ ...form, faqText: e.target.value })} />
+              </div>
+              <p className="text-[11px] text-ink-3">Đánh giá học viên: lưu khóa xong, bấm nút <b>★ Đánh giá</b> ở danh sách bên dưới.</p>
+            </div>
+          </details>
+
           <div className="sm:col-span-2 flex gap-2">
             <button onClick={save} className="rounded-full bg-ink text-white font-semibold text-sm px-4 py-2 cursor-pointer">Lưu khóa học</button>
             <button onClick={() => setForm(null)} className="rounded-full border border-border-strong text-sm px-4 py-2 cursor-pointer">Hủy</button>
@@ -242,7 +263,8 @@ export default function CourseManager() {
                 <td className="px-4 py-3 hidden sm:table-cell"><span className={`text-xs font-semibold ${c.status === "published" ? "text-success" : "text-ink-3"}`}>{c.status === "published" ? "Công khai" : "Nháp"}</span></td>
                 <td className="px-4 py-3 text-right whitespace-nowrap">
                   <button onClick={() => setManaging(c)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">{c.format === "live" ? "Buổi học" : "Bài học"}</button>
-                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, compare_price: c.compare_price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief, format: c.format, capacity: c.capacity })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
+                  <button onClick={() => setTestimonialFor(c)} className="text-ink-2 font-semibold cursor-pointer hover:text-ink mr-3">★ Đánh giá</button>
+                  <button onClick={() => openEdit({ id: c.id, title: c.title, slug: c.slug, category: c.category, level: c.level, price: c.price, compare_price: c.compare_price, status: c.status, source: c.source, subtitle: c.subtitle, description: c.description, instructor: c.instructor, assignment_title: c.assignment_title, assignment_brief: c.assignment_brief, format: c.format, capacity: c.capacity, instructor_bio: c.instructor_bio, instructor_avatar: c.instructor_avatar, guarantee: c.guarantee, faqText: faqToText(c.faq) })} className="text-accent font-semibold cursor-pointer hover:underline mr-3">Sửa</button>
                   <button onClick={() => del(c.id)} className="text-ink-3 font-semibold cursor-pointer hover:text-accent">Xóa</button>
                 </td>
               </tr>
@@ -254,6 +276,7 @@ export default function CourseManager() {
       {managing && (managing.format === "live"
         ? <LiveSessionManager courseId={managing.id} onClose={() => setManaging(null)} />
         : <LessonManager courseId={managing.id} onClose={() => setManaging(null)} />)}
+      {testimonialFor && <TestimonialManager courseId={testimonialFor.id} onClose={() => setTestimonialFor(null)} />}
     </div>
   );
 }

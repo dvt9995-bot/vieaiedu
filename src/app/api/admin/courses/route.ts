@@ -19,7 +19,7 @@ function pick(body: Record<string, unknown>) {
 export async function GET() {
   if (!(await isCurrentUserAdmin())) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, compare_price, students, status, source, subtitle, description, instructor, assignment_title, assignment_brief, format, capacity").order("position");
+  const { data } = await admin.from("courses").select("id, slug, title, category, level, price, compare_price, students, status, source, subtitle, description, instructor, assignment_title, assignment_brief, format, capacity, instructor_bio, instructor_avatar, faq, guarantee").order("position");
   return NextResponse.json({ courses: data ?? [] });
 }
 
