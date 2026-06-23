@@ -9,6 +9,12 @@ import { walletChange } from "@/lib/wallet";
 
 type Result = { error?: string };
 
+// Đường dẫn quay lại sau đăng nhập/đăng ký — chỉ chấp nhận path nội bộ an toàn (chống open-redirect).
+function safeNext(formData: FormData): string {
+  const n = String(formData.get("next") || "").trim();
+  return n.startsWith("/") && !n.startsWith("//") ? n : "/dashboard";
+}
+
 export async function signIn(_prev: Result, formData: FormData): Promise<Result> {
   if (!isSupabaseConfigured()) return { error: "Chưa cấu hình Supabase (điền NEXT_PUBLIC_SUPABASE_URL/ANON_KEY)." };
   const supabase = await createClient();
@@ -17,7 +23,7 @@ export async function signIn(_prev: Result, formData: FormData): Promise<Result>
     password: String(formData.get("password")),
   });
   if (error) return { error: error.message };
-  redirect("/dashboard");
+  redirect(safeNext(formData));
 }
 
 export async function signUp(_prev: Result, formData: FormData): Promise<Result> {
@@ -63,7 +69,7 @@ export async function signUp(_prev: Result, formData: FormData): Promise<Result>
   }
   // Tạo phiên đăng nhập ngay
   await supabase!.auth.signInWithPassword({ email, password });
-  redirect("/dashboard");
+  redirect(safeNext(formData));
 }
 
 export async function signInWithGoogle(): Promise<void> {

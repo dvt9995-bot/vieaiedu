@@ -38,6 +38,11 @@ export default function CoursePurchase({ course }: { course: Course }) {
 
   // Phễu: xem khóa học
   useEffect(() => { track("view_item", { item_id: course.slug, item_name: course.title, price: course.price, currency: "VND" }); }, [course.slug, course.title, course.price]);
+  // Tự mở lại mua sau khi đăng nhập/đăng ký (không để mất đơn)
+  useEffect(() => {
+    try { if (sessionStorage.getItem("vie:resumeBuy") === course.slug) { sessionStorage.removeItem("vie:resumeBuy"); setTimeout(() => onBuy(), 300); } } catch { /* noop */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   async function onToggleFavorite() {
     const next = !liked;
@@ -62,14 +67,14 @@ export default function CoursePurchase({ course }: { course: Course }) {
       if (free) {
         const r = await enrollFree(course.slug);
         if (r.ok) { track("purchase", { item_id: course.slug, value: 0, currency: "VND", method: "free" }); return router.push(`/learn/${course.slug}`); }
-        if (r.error === "auth") return open("login");
+        if (r.error === "auth") { try { sessionStorage.setItem("vie:resumeBuy", course.slug); } catch {} return open("register"); }
         return setMsg(r.error === "not_free" ? "Khóa này không miễn phí." : "Chưa ghi danh được, vui lòng thử lại.");
       }
       const res = await fetch("/api/checkout", {
         method: "POST", headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ slug: course.slug, couponCode: coupon, useWallet }),
       });
-      if (res.status === 401) return open("login");
+      if (res.status === 401) { try { sessionStorage.setItem("vie:resumeBuy", course.slug); } catch {} return open("register"); }
       const data = await res.json();
       if (data.enrolled) return router.push(`/learn/${course.slug}`);
       if (!res.ok) return setMsg(data.error || "Có lỗi xảy ra.");

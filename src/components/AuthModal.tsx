@@ -1,5 +1,6 @@
 "use client";
 import { createContext, useContext, useState, useActionState, type ReactNode } from "react";
+import { usePathname } from "next/navigation";
 import { authAction } from "@/app/auth/actions";
 
 type Mode = "login" | "register";
@@ -14,6 +15,7 @@ export function useAuthModal() {
 export default function AuthModalProvider({ children }: { children: ReactNode }) {
   const [mode, setMode] = useState<Mode | null>(null);
   const reg = mode === "register";
+  const pathname = usePathname();
   const [state, action, pending] = useActionState(authAction, {} as { error?: string });
 
   return (
@@ -41,6 +43,7 @@ export default function AuthModalProvider({ children }: { children: ReactNode })
 
             <form action={action} onSubmit={() => { try { sessionStorage.setItem("vie:auth", reg ? "sign_up" : "login"); } catch {} }}>
               <input type="hidden" name="mode" value={reg ? "register" : "login"} />
+              <input type="hidden" name="next" value={pathname || "/dashboard"} />
               {reg && (
                 <>
                   <label className="block text-xs font-semibold mt-4 mb-1.5">Họ và tên</label>

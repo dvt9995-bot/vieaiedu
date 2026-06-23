@@ -22,6 +22,11 @@ export default function LiveRegister({ slug, title, price, comparePrice, enrolle
   const poll = useRef<ReturnType<typeof setInterval> | null>(null);
   const free = price === 0;
   useEffect(() => () => { if (poll.current) clearInterval(poll.current); }, []);
+  // Sau khi đăng nhập/đăng ký xong (quay lại đúng trang) → TỰ MỞ LẠI thanh toán, không bắt user tìm lại
+  useEffect(() => {
+    try { if (!enrolled && sessionStorage.getItem("vie:resumeBuy") === slug) { sessionStorage.removeItem("vie:resumeBuy"); setTimeout(() => onRegister(), 300); } } catch { /* noop */ }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (enrolled) return (
     <div className="rounded-xl border border-success/30 bg-success/10 px-4 py-3 text-sm font-semibold text-success text-center">✓ Bạn đã đăng ký lớp này — xem lịch &amp; nút vào lớp bên dưới</div>
@@ -34,11 +39,11 @@ export default function LiveRegister({ slug, title, price, comparePrice, enrolle
       if (free) {
         const r = await enrollFree(slug);
         if (r.ok) { track("purchase", { item_id: slug, value: 0, method: "free" }); toast("Đăng ký thành công!"); return router.refresh(); }
-        if (r.error === "auth") return open("login");
+        if (r.error === "auth") { try { sessionStorage.setItem("vie:resumeBuy", slug); } catch {} return open("register"); }
         return setMsg("Chưa đăng ký được, vui lòng thử lại.");
       }
       const res = await fetch("/api/checkout", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ slug, couponCode: coupon, useWallet: true }) });
-      if (res.status === 401) return open("login");
+      if (res.status === 401) { try { sessionStorage.setItem("vie:resumeBuy", slug); } catch {} return open("register"); }
       const data = await res.json();
       if (data.enrolled) { toast("Đăng ký thành công!"); return router.refresh(); }
       if (!res.ok) return setMsg(data.error || "Có lỗi xảy ra.");
