@@ -1,6 +1,7 @@
 "use client";
 import { useEffect, useState } from "react";
 import StudentCard from "@/components/StudentCard";
+import OrderHistory from "@/components/OrderHistory";
 import { compressImage } from "@/lib/image";
 import { toast } from "@/components/Toaster";
 import {
@@ -117,6 +118,9 @@ export default function AccountClient() {
             </div>
             <a href="/wallet" className="inline-flex items-center gap-1 mt-3 text-sm font-semibold text-accent hover:underline">Quản lý ví, kiếm tiền &amp; rút tiền →</a>
           </section>
+
+          {/* Lịch sử mua hàng */}
+          <OrderHistory />
 
           {/* Mời bạn bè (referral) */}
           <section className="rounded-card border border-accent/25 bg-accent-weak p-6">
