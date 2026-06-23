@@ -17,3 +17,35 @@ export async function bunnyEmbedUrl(videoId: string, expiresInSec = 3 * 3600): P
   const token = crypto.createHash("sha256").update(key + path + expires).digest("hex");
   return `${base}?token=${token}&expires=${expires}`;
 }
+
+// ===== Upload trực tiếp browser → Bunny (giảng viên đăng video khóa thu phí) =====
+// Cần Stream API Key (bunny_api_key). Tạo "video object" phía server rồi ký chữ ký TUS để
+// trình duyệt tải file thẳng lên Bunny (không qua server mình → chịu file lớn + có tiến trình).
+export async function isBunnyUploadConfigured(): Promise<boolean> {
+  return !!(await getConfig("bunny_library_id", "BUNNY_STREAM_LIBRARY_ID")) && !!(await getConfig("bunny_api_key", "BUNNY_STREAM_API_KEY"));
+}
+
+export async function createBunnyVideo(title: string): Promise<{ libraryId: string; videoId: string } | null> {
+  const lib = await getConfig("bunny_library_id", "BUNNY_STREAM_LIBRARY_ID");
+  const key = await getConfig("bunny_api_key", "BUNNY_STREAM_API_KEY");
+  if (!lib || !key) return null;
+  const res = await fetch(`https://video.bunnycdn.com/library/${lib}/videos`, {
+    method: "POST",
+    headers: { AccessKey: key, "Content-Type": "application/json", accept: "application/json" },
+    body: JSON.stringify({ title: (title || "Bài học").slice(0, 200) }),
+  });
+  if (!res.ok) return null;
+  const j = await res.json().catch(() => null);
+  if (!j?.guid) return null;
+  return { libraryId: String(lib), videoId: String(j.guid) };
+}
+
+// Chữ ký phiên upload TUS — KHÔNG lộ API key ra trình duyệt, chỉ trả signature có hạn dùng.
+export async function bunnyUploadAuth(videoId: string, ttlSec = 3 * 3600): Promise<{ libraryId: string; videoId: string; expire: number; signature: string; endpoint: string } | null> {
+  const lib = await getConfig("bunny_library_id", "BUNNY_STREAM_LIBRARY_ID");
+  const key = await getConfig("bunny_api_key", "BUNNY_STREAM_API_KEY");
+  if (!lib || !key) return null;
+  const expire = Math.floor(Date.now() / 1000) + ttlSec;
+  const signature = crypto.createHash("sha256").update(String(lib) + key + expire + videoId).digest("hex");
+  return { libraryId: String(lib), videoId, expire, signature, endpoint: "https://video.bunnycdn.com/tusupload" };
+}

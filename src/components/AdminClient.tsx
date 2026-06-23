@@ -10,14 +10,16 @@ import CommunityModerator from "@/components/admin/CommunityModerator";
 import WithdrawManager from "@/components/admin/WithdrawManager";
 import OrderManager from "@/components/admin/OrderManager";
 import MarketingDashboard from "@/components/admin/MarketingDashboard";
+import InstructorManager from "@/components/admin/InstructorManager";
 import BroadcastForm from "@/components/admin/BroadcastForm";
 import AdminErrorBoundary from "@/components/admin/AdminErrorBoundary";
 
-type Tab = "overview" | "marketing" | "courses" | "orders" | "blog" | "users" | "coupons" | "withdraw" | "community" | "broadcast" | "settings";
+type Tab = "overview" | "marketing" | "courses" | "instructors" | "orders" | "blog" | "users" | "coupons" | "withdraw" | "community" | "broadcast" | "settings";
 const NAV: [Tab, string, string][] = [
   ["overview", "Tổng quan", "▦"],
   ["marketing", "Marketing", "📈"],
   ["courses", "Khóa học", "▤"],
+  ["instructors", "Giảng viên", "🎓"],
   ["orders", "Đơn hàng", "🧾"],
   ["blog", "Blog", "📰"],
   ["users", "Học viên", "◍"],
@@ -55,6 +57,7 @@ export default function AdminClient() {
             {tab === "overview" && <Dashboard onGo={(t) => setTab(t as Tab)} />}
             {tab === "marketing" && <MarketingDashboard />}
             {tab === "courses" && <CourseManager />}
+            {tab === "instructors" && <InstructorManager />}
             {tab === "orders" && <OrderManager />}
             {tab === "blog" && <BlogManager />}
             {tab === "users" && <UserManager />}
