@@ -39,14 +39,14 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
   const nextDateStr = upcoming[0] ? new Date(upcoming[0].starts_at).toLocaleString("vi-VN", { weekday: "long", day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Ho_Chi_Minh" }) : null;
 
   return (
-    <div className="container-x py-8">
+    <div className="container-x pt-5 pb-28 lg:py-8">
       <Link href="/live" className="text-sm text-ink-3 hover:text-ink">← Lớp học trực tiếp</Link>
-      <div className="grid lg:grid-cols-[1fr_380px] gap-8 mt-4 items-start">
+      <div className="grid lg:grid-cols-[1fr_380px] gap-6 lg:gap-8 mt-3 lg:mt-4 items-start">
         {/* CỘT TRÁI: giới thiệu + mô tả */}
         <div>
-          <span className="inline-flex items-center gap-1.5 text-xs font-bold text-accent bg-accent-weak rounded-full px-3 py-1">🔴 LỚP TRỰC TIẾP qua Google Meet</span>
-          <h1 className="text-3xl font-extrabold tracking-tight mt-3">{c.title}</h1>
-          {c.subtitle && <p className="text-lg text-ink-2 mt-2">{c.subtitle}</p>}
+          <span className="inline-flex items-center gap-1.5 text-[11px] sm:text-xs font-bold text-accent bg-accent-weak rounded-full px-3 py-1">🔴 LỚP TRỰC TIẾP qua Google Meet</span>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight mt-3 leading-snug">{c.title}</h1>
+          {c.subtitle && <p className="text-base sm:text-lg text-ink-2 mt-2">{c.subtitle}</p>}
           <div className="flex flex-wrap gap-3 mt-3 text-sm text-ink-3">
             {c.instructor && <span>Giảng viên: <b className="text-ink-2">{c.instructor}</b></span>}
             <span>📅 {c.sessions.length} buổi</span>
@@ -67,14 +67,14 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
           {/* Ảnh kết quả học viên khóa trước (bằng chứng) */}
           {c.resultImages && c.resultImages.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-2xl font-extrabold tracking-tight mb-1">Kết quả học viên khóa trước</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight mb-1">Kết quả học viên khóa trước</h2>
               <p className="text-ink-3 text-sm mb-4">Hình ảnh & video thực tế từ học viên đã tham gia.</p>
-              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                 {c.resultImages.map((url, i) => (
                   /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(url) ? (
-                    <video key={i} src={url} controls playsInline preload="metadata" className="w-full rounded-card border border-border bg-black aspect-[4/3] object-cover" />
+                    <video key={i} src={url} controls playsInline preload="metadata" className="w-full rounded-card border border-border bg-black aspect-[9/16] object-cover" />
                   ) : (
-                    <a key={i} href={url} target="_blank" rel="noreferrer" className="block rounded-card overflow-hidden border border-border bg-bg-soft aspect-[4/3] hover:opacity-90">
+                    <a key={i} href={url} target="_blank" rel="noreferrer" className="block rounded-card overflow-hidden border border-border bg-bg-soft aspect-[9/16] hover:opacity-90">
                       {/* eslint-disable-next-line @next/next/no-img-element */}
                       <img src={url} alt={`Kết quả học viên ${i + 1}`} className="w-full h-full object-cover" loading="lazy" />
                     </a>
@@ -87,7 +87,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
           {/* Đánh giá học viên (social proof) */}
           {c.testimonials && c.testimonials.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-2xl font-extrabold tracking-tight mb-4">Học viên nói gì</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight mb-4">Học viên nói gì</h2>
               <div className="grid sm:grid-cols-2 gap-4">
                 {c.testimonials.map((t, i) => (
                   <div key={i} className="rounded-card border border-border bg-surface p-5">
@@ -120,7 +120,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
           {/* FAQ */}
           {c.faq && c.faq.length > 0 && (
             <section className="mt-10">
-              <h2 className="text-2xl font-extrabold tracking-tight mb-4">Câu hỏi thường gặp</h2>
+              <h2 className="text-xl sm:text-2xl font-extrabold tracking-tight mb-4">Câu hỏi thường gặp</h2>
               <FaqAccordion items={c.faq} />
             </section>
           )}
