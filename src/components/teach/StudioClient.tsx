@@ -3,6 +3,7 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { toast } from "@/components/Toaster";
 import { formatVND } from "@/lib/format";
+import { compressImage } from "@/lib/image";
 import TeachLessonManager from "./TeachLessonManager";
 import LiveSessionManager from "./LiveSessionManager";
 
@@ -16,7 +17,7 @@ const STATUS: Record<string, { label: string; cls: string }> = {
   rejected: { label: "Cần chỉnh sửa", cls: "bg-accent-weak text-accent" },
 };
 const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
-const empty = { title: "", subtitle: "", description: "", price: "0", category: "", level: "Cơ bản", thumb: "", format: "video", capacity: "" };
+const empty = { title: "", subtitle: "", description: "", price: "0", compare_price: "", category: "", level: "Cơ bản", thumb: "", format: "video", capacity: "" };
 
 export default function StudioClient() {
   const [loading, setLoading] = useState(true);
@@ -28,8 +29,37 @@ export default function StudioClient() {
   const [editId, setEditId] = useState<string | null>(null);
   const [managing, setManaging] = useState<Course | null>(null);
   const [applyForm, setApplyForm] = useState({ full_name: "", expertise: "", bio: "", sample_links: "", motivation: "", agree_terms: false });
+  const [subBusy, setSubBusy] = useState(false);
+  const [descBusy, setDescBusy] = useState(false);
+  const [thumbBusy, setThumbBusy] = useState(false);
 
   const isInstructor = role === "instructor" || role === "admin";
+
+  async function uploadThumb(file?: File | null) {
+    if (!file) return;
+    if (!file.type.startsWith("image/")) return toast("Chỉ chấp nhận file ảnh (JPG/PNG/WebP)");
+    setThumbBusy(true);
+    try {
+      const small = await compressImage(file, 1600, 0.85);
+      if (small.size > 4_000_000) return toast("Ảnh quá lớn (>4MB sau khi nén)");
+      const fd = new FormData(); fd.append("file", small); fd.append("bucket", "blog");
+      const res = await fetch("/api/instructor/upload", { method: "POST", body: fd });
+      const r = await res.json().catch(() => ({}));
+      if (res.ok && r.url) { setForm((f) => ({ ...f, thumb: r.url })); toast("Đã tải ảnh bìa ✓"); }
+      else toast(r.error || "Tải ảnh thất bại");
+    } catch (e) { toast("Lỗi xử lý ảnh: " + ((e as Error)?.message || "thử lại")); }
+    finally { setThumbBusy(false); }
+  }
+  async function aiSuggest(field: "subtitle" | "description" | "beautify") {
+    if (!form.title.trim()) return toast("Nhập tên khóa học trước đã");
+    if (field === "beautify" && !form.description.trim()) return toast("Hãy nhập nội dung mô tả trước");
+    field === "subtitle" ? setSubBusy(true) : setDescBusy(true);
+    const r = await fetch("/api/instructor/course-suggest", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: form.title, field, text: form.description }) }).then((x) => x.json()).catch(() => ({}));
+    setSubBusy(false); setDescBusy(false);
+    if (r.subtitle) { setForm((f) => ({ ...f, subtitle: r.subtitle })); toast("✨ Đã gợi ý mô tả ngắn"); }
+    else if (r.description) { setForm((f) => ({ ...f, description: r.description })); toast(field === "beautify" ? "✨ Đã làm đẹp nội dung" : "✨ Đã viết mô tả chi tiết"); }
+    else toast(r.error || "AI chưa xử lý được");
+  }
 
   const loadCourses = useCallback(async () => {
     const r = await fetch("/api/instructor/courses").then((x) => x.json()).catch(() => ({}));
@@ -62,7 +92,7 @@ export default function StudioClient() {
     if (!res.ok) return toast(d.error || "Lỗi lưu khóa");
     toast(editId ? "Đã lưu khóa học" : "Đã tạo khóa học (nháp)"); setCreating(false); setEditId(null); setForm(empty); loadCourses();
   }
-  function openEdit(c: Course) { setEditId(c.id); setForm({ title: c.title, subtitle: c.subtitle || "", description: c.description || "", price: String(c.price || 0), category: c.category || "", level: c.level || "Cơ bản", thumb: c.thumb || "", format: c.format || "video", capacity: c.capacity ? String(c.capacity) : "" }); setCreating(true); }
+  function openEdit(c: Course) { setEditId(c.id); setForm({ title: c.title, subtitle: c.subtitle || "", description: c.description || "", price: String(c.price || 0), compare_price: c.compare_price ? String(c.compare_price) : "", category: c.category || "", level: c.level || "Cơ bản", thumb: c.thumb || "", format: c.format || "video", capacity: c.capacity ? String(c.capacity) : "" }); setCreating(true); }
   async function submitReview(c: Course) {
     const res = await fetch("/api/instructor/courses", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: c.id, action: "submit" }) });
     const d = await res.json();
@@ -161,14 +191,72 @@ export default function StudioClient() {
                 </div>
               )}
               <input className={inp} placeholder="Tiêu đề khóa học *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
-              <input className={inp} placeholder="Mô tả ngắn (subtitle)" value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} />
-              <textarea className={inp} rows={4} placeholder="Mô tả chi tiết" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
-              <div className="grid grid-cols-2 gap-3">
-                <input className={inp} type="number" placeholder="Giá (VND) — 0 = miễn phí" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
-                <select className={inp} value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })}><option>Cơ bản</option><option>Trung cấp</option><option>Nâng cao</option></select>
+
+              {/* Ảnh bìa: tải lên (khuyên dùng) + xem trước */}
+              <div>
+                <label className="block text-xs font-semibold text-ink-2 mb-1.5">Ảnh bìa khóa học</label>
+                {form.thumb && (
+                  /* eslint-disable-next-line @next/next/no-img-element */
+                  <img src={form.thumb} alt="Ảnh bìa" className="w-full max-w-[260px] aspect-video object-cover rounded-lg border border-border mb-2" />
+                )}
+                <div className="flex gap-2">
+                  <label className="rounded-lg border border-border-strong hover:border-accent text-sm font-semibold px-3.5 py-2 cursor-pointer inline-flex items-center whitespace-nowrap">
+                    {thumbBusy ? "Đang tải…" : "⬆ Tải ảnh lên"}
+                    <input type="file" accept="image/*" className="hidden" disabled={thumbBusy} onChange={(e) => { uploadThumb(e.target.files?.[0]); e.currentTarget.value = ""; }} />
+                  </label>
+                  {form.thumb && <button onClick={() => setForm({ ...form, thumb: "" })} className="text-sm text-accent font-semibold px-2 cursor-pointer">Xóa ảnh</button>}
+                </div>
+                <p className="text-ink-3 text-[11px] mt-1">Khuyến nghị tỉ lệ <b>16:9</b> — <b>1280×720</b>. Ảnh tự nén khi tải lên.</p>
               </div>
+
+              {/* Mô tả ngắn + AI gợi ý */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-ink-2">Mô tả ngắn (subtitle)</label>
+                  <button onClick={() => aiSuggest("subtitle")} disabled={subBusy} className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-60">{subBusy ? "Đang gợi ý…" : "✨ AI gợi ý"}</button>
+                </div>
+                <input className={inp} placeholder="Câu giới thiệu ngắn gọn, hấp dẫn" value={form.subtitle} onChange={(e) => setForm({ ...form, subtitle: e.target.value })} />
+              </div>
+
+              {/* Mô tả chi tiết + AI viết / làm đẹp */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs font-semibold text-ink-2">Mô tả chi tiết</label>
+                  <div className="flex gap-3">
+                    <button onClick={() => aiSuggest("description")} disabled={descBusy} className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-60">{descBusy ? "Đang xử lý…" : "✨ AI viết mới"}</button>
+                    <button onClick={() => aiSuggest("beautify")} disabled={descBusy} className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-60">🪄 Làm đẹp</button>
+                  </div>
+                </div>
+                <textarea className={`${inp} min-h-[140px] resize-y`} placeholder="Dạy gì, đạt được gì, phù hợp với ai… (Markdown: ## tiêu đề, - gạch đầu dòng, **in đậm**). Nhập ý thô rồi bấm 🪄 Làm đẹp để AI bố cục lại." value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+              </div>
+
               <input className={inp} placeholder="Danh mục (vd: Lập trình, AI, Marketing)" value={form.category} onChange={(e) => setForm({ ...form, category: e.target.value })} />
-              <input className={inp} placeholder="Ảnh bìa (URL — tùy chọn)" value={form.thumb} onChange={(e) => setForm({ ...form, thumb: e.target.value })} />
+              <select className={inp} value={form.level} onChange={(e) => setForm({ ...form, level: e.target.value })}><option>Cơ bản</option><option>Trung cấp</option><option>Nâng cao</option></select>
+
+              {/* Học phí: Miễn phí / Có phí + giá bán + giá gốc */}
+              <div>
+                <label className="block text-xs font-semibold text-ink-2 mb-1.5">Học phí</label>
+                <div className="flex gap-2 mb-2">
+                  <button type="button" onClick={() => setForm({ ...form, price: "0", compare_price: "" })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer ${Number(form.price) === 0 ? "border-success bg-success/10 text-success" : "border-border-strong text-ink-2"}`}>🆓 Miễn phí</button>
+                  <button type="button" onClick={() => setForm({ ...form, price: Number(form.price) > 0 ? form.price : "299000" })} className={`flex-1 rounded-lg border py-2 text-sm font-semibold cursor-pointer ${Number(form.price) > 0 ? "border-accent bg-accent-weak text-accent" : "border-border-strong text-ink-2"}`}>💳 Có phí</button>
+                </div>
+                {Number(form.price) > 0 && (
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-[11px] text-ink-3 mb-1">Giá bán thực (VND)</label>
+                      <input className={inp} type="number" placeholder="vd 299000" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] text-ink-3 mb-1">Giá gốc — gạch ngang (tùy chọn)</label>
+                      <input className={inp} type="number" placeholder="vd 599000" value={form.compare_price} onChange={(e) => setForm({ ...form, compare_price: e.target.value })} />
+                    </div>
+                  </div>
+                )}
+                {Number(form.compare_price) > Number(form.price) && Number(form.price) > 0 && (
+                  <p className="text-xs text-success mt-1.5">Hiển thị giảm <b>{Math.round((1 - Number(form.price) / Number(form.compare_price)) * 100)}%</b> trên thẻ khóa học.</p>
+                )}
+              </div>
+
               {form.format === "live" && <input className={inp} type="number" placeholder="Sức chứa (số chỗ tối đa — để trống = không giới hạn)" value={form.capacity} onChange={(e) => setForm({ ...form, capacity: e.target.value })} />}
               {form.format === "live" ? (
                 <p className="text-xs text-ink-3">🔴 Khóa LIVE: học qua Google Meet. Sau khi tạo, vào “Buổi học” để thêm lịch các buổi (link Meet tự sinh nếu admin đã kết nối Google).</p>
