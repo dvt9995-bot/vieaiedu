@@ -4,7 +4,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireInstructor, ownsCourse } from "@/lib/instructor-guard";
 import { slugify } from "@/lib/video";
 
-const FIELDS = ["title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "instructor", "format", "capacity"];
+const FIELDS = ["title", "subtitle", "description", "category", "level", "price", "compare_price", "thumb", "instructor", "format", "capacity", "instructor_bio", "instructor_avatar", "faq", "guarantee"];
 function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};
   for (const f of FIELDS) if (b[f] !== undefined) o[f] = b[f];
@@ -20,7 +20,7 @@ export async function GET() {
   const u = await requireInstructor();
   if (!u) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("courses").select("id, slug, title, subtitle, description, price, compare_price, status, review_status, review_note, total_minutes, thumb, category, level, instructor, format, capacity").eq("owner_id", u.uid).order("created_at", { ascending: false });
+  const { data } = await admin.from("courses").select("id, slug, title, subtitle, description, price, compare_price, status, review_status, review_note, total_minutes, thumb, category, level, instructor, format, capacity, instructor_bio, instructor_avatar, faq, guarantee").eq("owner_id", u.uid).order("created_at", { ascending: false });
   return NextResponse.json({ courses: data ?? [] });
 }
 

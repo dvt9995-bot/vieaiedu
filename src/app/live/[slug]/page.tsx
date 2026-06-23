@@ -8,6 +8,10 @@ import { mdToHtml } from "@/lib/md";
 import LiveRegister from "@/components/live/LiveRegister";
 import JoinLiveButton from "@/components/live/JoinLiveButton";
 import AnimatedProse from "@/components/live/AnimatedProse";
+import Countdown from "@/components/live/Countdown";
+import FaqAccordion from "@/components/live/FaqAccordion";
+import StickyCta from "@/components/live/StickyCta";
+import { formatVND } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +51,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
             {c.instructor && <span>Giảng viên: <b className="text-ink-2">{c.instructor}</b></span>}
             <span>📅 {c.sessions.length} buổi</span>
             {c.level && <span>🎯 {c.level}</span>}
+            {(c.registered || 0) > 0 && <span>👥 <b className="text-ink-2">{c.registered}</b> đã đăng ký</span>}
             {seatsLeft !== null && <span className={seatsLeft <= 5 ? "text-accent font-semibold" : ""}>💺 còn {seatsLeft} chỗ</span>}
           </div>
 
@@ -58,12 +63,79 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
           )}
 
           {c.description?.trim() && <div className="mt-6"><AnimatedProse html={mdToHtml(c.description)} /></div>}
+
+          {/* Đánh giá học viên (social proof) */}
+          {c.testimonials && c.testimonials.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-2xl font-extrabold tracking-tight mb-4">Học viên nói gì</h2>
+              <div className="grid sm:grid-cols-2 gap-4">
+                {c.testimonials.map((t, i) => (
+                  <div key={i} className="rounded-card border border-border bg-surface p-5">
+                    <div className="text-gold text-sm mb-2">{"★".repeat(Math.min(5, Math.max(1, t.rating)))}<span className="text-border-strong">{"★".repeat(5 - Math.min(5, Math.max(1, t.rating)))}</span></div>
+                    <p className="text-sm text-ink-2 leading-relaxed">“{t.content}”</p>
+                    <div className="flex items-center gap-2.5 mt-3 pt-3 border-t border-border">
+                      <div className="w-9 h-9 rounded-full bg-bg-soft overflow-hidden shrink-0">
+                        {/* eslint-disable-next-line @next/next/no-img-element */}
+                        {t.avatar ? <img src={t.avatar} alt={t.name} className="w-full h-full object-cover" /> : <span className="w-full h-full grid place-items-center text-ink-3 font-bold">{t.name.charAt(0)}</span>}
+                      </div>
+                      <div className="min-w-0"><div className="font-semibold text-sm truncate">{t.name}</div>{t.role && <div className="text-xs text-ink-3 truncate">{t.role}</div>}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </section>
+          )}
+
+          {/* Giảng viên */}
+          {(c.instructor || c.instructorBio) && (
+            <section className="mt-10">
+              <h2 className="text-2xl font-extrabold tracking-tight mb-4">Giảng viên</h2>
+              <div className="rounded-card border border-border bg-surface p-5 flex items-start gap-4">
+                <div className="w-16 h-16 rounded-full bg-bg-soft overflow-hidden shrink-0">
+                  {/* eslint-disable-next-line @next/next/no-img-element */}
+                  {c.instructorAvatar ? <img src={c.instructorAvatar} alt={c.instructor || "Giảng viên"} className="w-full h-full object-cover" /> : <span className="w-full h-full grid place-items-center text-2xl text-ink-3 font-bold">{(c.instructor || "G").charAt(0)}</span>}
+                </div>
+                <div>
+                  <div className="font-bold">{c.instructor || "Giảng viên VIE AI EDU"}</div>
+                  {c.instructorBio && <p className="text-sm text-ink-2 mt-1 leading-relaxed whitespace-pre-line">{c.instructorBio}</p>}
+                </div>
+              </div>
+            </section>
+          )}
+
+          {/* Cam kết / đảm bảo */}
+          <section className="mt-10">
+            <div className="rounded-card border border-success/30 bg-success/5 p-5 flex items-start gap-3">
+              <span className="text-2xl shrink-0">🛡️</span>
+              <div>
+                <div className="font-bold text-success">Cam kết từ VIE AI EDU</div>
+                <p className="text-sm text-ink-2 mt-1 leading-relaxed">{c.guarantee || "Học trực tiếp cùng giảng viên, hỏi đáp ngay trong buổi. Có bản ghi xem lại từng buổi — bạn không bao giờ bỏ lỡ. Hỗ trợ tận tình suốt khóa học."}</p>
+              </div>
+            </div>
+          </section>
+
+          {/* FAQ */}
+          {c.faq && c.faq.length > 0 && (
+            <section className="mt-10">
+              <h2 className="text-2xl font-extrabold tracking-tight mb-4">Câu hỏi thường gặp</h2>
+              <FaqAccordion items={c.faq} />
+            </section>
+          )}
+
+          {/* CTA lặp lại cuối nội dung */}
+          {!enrolled && (
+            <section className="mt-10 rounded-card bg-ink text-white p-6 text-center">
+              <div className="text-xl font-extrabold">Sẵn sàng bắt đầu?</div>
+              <p className="text-white/70 text-sm mt-1">{nextDateStr ? `Khai giảng ${nextDateStr}` : "Lớp đang mở đăng ký"}{seatsLeft !== null ? ` · còn ${seatsLeft} chỗ` : ""}</p>
+              <a href="#register" className="inline-block mt-4 rounded-full bg-accent hover:bg-accent-700 text-white font-semibold px-7 py-3">Đăng ký giữ chỗ ngay →</a>
+            </section>
+          )}
         </div>
 
         {/* CỘT PHẢI: đăng ký (CTA) + lịch học */}
         <aside className="space-y-4 lg:sticky lg:top-24">
           {/* Thẻ giá + kêu gọi mua hàng */}
-          <div className="rounded-card border-2 border-accent/30 bg-surface shadow-lg overflow-hidden">
+          <div id="register" className="rounded-card border-2 border-accent/30 bg-surface shadow-lg overflow-hidden scroll-mt-24">
             {/* Băng khẩn cấp */}
             <div className="bg-accent text-white text-center text-sm font-semibold py-2 px-3">
               {soldOut ? "⚠ Đã đầy chỗ — mở đợt sau"
@@ -74,6 +146,9 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
               <div className="text-center mb-3">
                 <div className="text-base font-extrabold text-ink">🎓 Giữ chỗ học trực tiếp cùng giảng viên</div>
                 <div className="text-xs text-ink-3 mt-0.5">Tương tác trực tiếp · hỏi đáp ngay · có video xem lại</div>
+                {!enrolled && upcoming[0] && (
+                  <div className="mt-3"><div className="text-[11px] text-ink-3 mb-0.5">⏳ Khai giảng sau</div><Countdown target={upcoming[0].starts_at} /></div>
+                )}
               </div>
               <LiveRegister slug={c.slug} price={c.price} comparePrice={c.compare_price} enrolled={enrolled} soldOut={soldOut} />
               {!enrolled && (
@@ -105,6 +180,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
           </div>
         </aside>
       </div>
+      {!enrolled && <StickyCta price={c.price} soldOut={soldOut} />}
     </div>
   );
 }
