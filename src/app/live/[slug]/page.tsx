@@ -181,15 +181,9 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
               <LiveRegister slug={c.slug} title={c.title} price={c.price} comparePrice={c.compare_price} enrolled={enrolled} soldOut={soldOut} />
               {!enrolled && (
                 <div className="mt-3 rounded-lg bg-bg-soft p-3 text-center text-xs text-ink-2">
-                  💬 Thanh toán an toàn qua SePay · Xác nhận tự động trong vài giây<br />Đăng ký xong nhận ngay <b>lịch học + nhắc giờ tự động</b>
+                  💬 Thanh toán an toàn qua SePay · nhận ngay <b>lịch học + nhắc giờ tự động</b>
                 </div>
               )}
-              <ul className="mt-4 pt-4 border-t border-border space-y-2 text-sm text-ink-2">
-                <li>✓ Học trực tiếp, tương tác real-time với giảng viên</li>
-                <li>✓ {c.sessions.length} buổi qua Google Meet</li>
-                <li>✓ Nhắc lịch tự động (email + thông báo)</li>
-                <li>✓ Xem lại bản ghi sau mỗi buổi</li>
-              </ul>
             </div>
           </div>
 

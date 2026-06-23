@@ -28,7 +28,7 @@ function mapCourse(c: Record<string, unknown>, sessions: LiveSession[], register
     description: (c.description as string) || undefined, thumb: (c.thumb as string) || undefined,
     price: (c.price as number) || 0, compare_price: (c.compare_price as number) || undefined,
     category: (c.category as string) || undefined, level: (c.level as string) || undefined,
-    instructor: (() => { const v = (c.instructor as string)?.trim(); return v && v !== "Long Nam" ? v : ""; })(),
+    instructor: ((c.instructor as string) || "").trim(),
     capacity: (c.capacity as number) ?? null, sessions, registered,
   };
 }
