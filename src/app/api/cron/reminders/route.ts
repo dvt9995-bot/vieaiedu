@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { notify, notifyAdmins } from "@/lib/notify";
-import { getCourseBySlug } from "@/lib/courses";
+import { getPurchasableCourse } from "@/lib/courses";
 import { walletChange } from "@/lib/wallet";
 import { setSetting } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
@@ -33,15 +33,36 @@ export async function GET(req: Request) {
     .eq("status", "pending").is("reminded_at", null)
     .lt("created_at", iso(now - 3600_000)).gt("created_at", iso(now - 48 * 3600_000)).limit(200);
   for (const o of orders || []) {
-    const course = await getCourseBySlug(o.course_slug as string);
+    const course = await getPurchasableCourse(o.course_slug as string); // live-aware (getCourseBySlug bỏ qua khóa live)
+    const href = course?.format === "live" ? `/live/${o.course_slug}` : `/courses/${o.course_slug}`;
     await notify({
       userId: o.user_id as string, type: "transactional",
       title: "Hoàn tất đăng ký khóa học của bạn 🎓",
       body: `Bạn còn một bước nữa để sở hữu khóa "${course?.title ?? o.course_slug}". Hoàn tất thanh toán để bắt đầu học ngay!`,
-      href: `/courses/${o.course_slug}`, email: true,
+      href, email: true,
     });
     await admin.from("orders").update({ reminded_at: iso(now) }).eq("id", o.id);
     abandoned++;
+  }
+
+  // 2b) Nhắc "bỏ giỏ" đơn SÀN: shop_orders pending 1–48h, chưa nhắc → in-app + email hoàn tất thanh toán
+  let abandonedShop = 0;
+  const { data: sorders } = await admin.from("shop_orders").select("id, buyer_id, code, total")
+    .eq("status", "pending").is("reminded_at", null)
+    .lt("created_at", iso(now - 3600_000)).gt("created_at", iso(now - 48 * 3600_000)).limit(200);
+  const seenBuyer = new Set<string>();
+  for (const o of sorders || []) {
+    if (o.buyer_id && !seenBuyer.has(o.buyer_id as string)) {
+      seenBuyer.add(o.buyer_id as string);
+      await notify({
+        userId: o.buyer_id as string, type: "transactional",
+        title: "Hoàn tất đơn hàng của bạn 🛍️",
+        body: `Đơn ${formatVND(o.total as number)} của bạn chưa thanh toán. Hoàn tất ngay để người bán giao hàng!`,
+        href: "/shop/orders", email: true,
+      });
+    }
+    await admin.from("shop_orders").update({ reminded_at: iso(now) }).eq("id", o.id);
+    abandonedShop++;
   }
 
   // 3) Nhắc người mới (2–4 ngày, chưa ghi danh, chưa nhắc)
@@ -85,5 +106,5 @@ export async function GET(req: Request) {
   // Đánh dấu cron đã chạy (để bảng sức khỏe theo dõi)
   await setSetting("cron_reminders_last", iso(now));
 
-  return NextResponse.json({ ok: true, reminded, abandoned, nudged, refunded, digest: { newUsers, newPosts, ordersN, revenue } });
+  return NextResponse.json({ ok: true, reminded, abandoned, abandonedShop, nudged, refunded, digest: { newUsers, newPosts, ordersN, revenue } });
 }

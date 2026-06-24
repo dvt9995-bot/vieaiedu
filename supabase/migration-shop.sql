@@ -150,3 +150,6 @@ insert into shop_categories (name, slug, fee_percent, position) values
 on conflict (slug) do nothing;
 
 select 'migration-shop OK' as status;
+
+-- Nhắc đơn chưa thanh toán (cron reminders)
+alter table shop_orders add column if not exists reminded_at timestamptz;

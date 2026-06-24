@@ -4,13 +4,16 @@ import StudentCard from "@/components/StudentCard";
 
 export interface DashData {
   name: string; studentCode: string; avatarUrl: string; joined: string; role: string;
-  courses: { slug: string; title: string; thumb: string; pct: number }[];
+  courses: { slug: string; title: string; thumb: string; pct: number; format?: string }[];
   certs: number; totalCompleted: number;
 }
 
+const hrefOf = (c: { slug: string; format?: string }) => c.format === "live" ? `/live/${c.slug}` : `/learn/${c.slug}`;
+
 export default function DashboardClient({ data }: { data: DashData }) {
   const { courses } = data;
-  const cont = courses.find((c) => c.pct < 100) || courses[0];
+  // Ưu tiên khóa video đang học dở; nếu không có thì khóa đầu tiên
+  const cont = courses.find((c) => c.format !== "live" && c.pct < 100) || courses.find((c) => c.format !== "live") || courses[0];
 
   return (
     <div className="container-x py-12">
@@ -26,7 +29,7 @@ export default function DashboardClient({ data }: { data: DashData }) {
             <div className="mt-3 w-64 max-w-full h-2 bg-white/15 rounded-full overflow-hidden"><div className="h-full bg-accent" style={{ width: `${cont.pct}%` }} /></div>
             <div className="text-white/60 text-sm mt-1.5">{cont.pct}% hoàn thành</div>
           </div>
-          <Link href={`/learn/${cont.slug}`} className="rounded-full bg-white text-ink hover:bg-neutral-100 font-semibold px-6 py-3 transition-colors">Học tiếp →</Link>
+          <Link href={hrefOf(cont)} className="rounded-full bg-white text-ink hover:bg-neutral-100 font-semibold px-6 py-3 transition-colors">{cont.format === "live" ? "Vào lớp →" : "Học tiếp →"}</Link>
         </div>
       ) : (
         <div className="rounded-card border border-border bg-bg-soft p-8 mb-10 text-center">
@@ -66,13 +69,22 @@ export default function DashboardClient({ data }: { data: DashData }) {
       ) : (
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
           {courses.map((c) => (
-            <Link key={c.slug} href={`/learn/${c.slug}`} className="rounded-card border border-border bg-surface p-5 hover:border-border-strong hover:shadow-soft transition-all">
-              <h3 className="font-bold mb-3">{c.title}</h3>
-              <div className="h-2 bg-bg-soft rounded-full overflow-hidden"><div className="h-full bg-success" style={{ width: `${c.pct}%` }} /></div>
-              <div className="flex justify-between text-sm mt-1.5">
-                <span className="text-ink-2">{c.pct}%</span>
-                <span className="text-accent font-semibold">{c.pct === 0 ? "Bắt đầu" : c.pct === 100 ? "Hoàn thành ✓" : "Tiếp tục"}</span>
-              </div>
+            <Link key={c.slug} href={hrefOf(c)} className="rounded-card border border-border bg-surface p-5 hover:border-border-strong hover:shadow-soft transition-all">
+              <h3 className="font-bold mb-3">{c.format === "live" && <span className="text-[10px] font-bold text-accent bg-accent-weak rounded-full px-2 py-0.5 mr-1.5 align-middle">🔴 LIVE</span>}{c.title}</h3>
+              {c.format === "live" ? (
+                <div className="flex justify-between text-sm mt-1.5">
+                  <span className="text-ink-2">Khóa học trực tiếp</span>
+                  <span className="text-accent font-semibold">Vào lớp →</span>
+                </div>
+              ) : (
+                <>
+                  <div className="h-2 bg-bg-soft rounded-full overflow-hidden"><div className="h-full bg-success" style={{ width: `${c.pct}%` }} /></div>
+                  <div className="flex justify-between text-sm mt-1.5">
+                    <span className="text-ink-2">{c.pct}%</span>
+                    <span className="text-accent font-semibold">{c.pct === 0 ? "Bắt đầu" : c.pct === 100 ? "Hoàn thành ✓" : "Tiếp tục"}</span>
+                  </div>
+                </>
+              )}
             </Link>
           ))}
         </div>

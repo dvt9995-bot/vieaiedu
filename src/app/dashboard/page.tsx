@@ -27,13 +27,16 @@ export default async function DashboardPage() {
   for (const r of lp ?? []) completedByCourse[r.course_slug as string] = (completedByCourse[r.course_slug as string] || 0) + 1;
 
   const slugs = (enr ?? []).map((e) => e.course_slug as string);
-  const courses = slugs.map((slug) => {
-    const c = allCourses.find((x) => x.slug === slug);
-    if (!c) return null;
-    const total = c.sections.flatMap((s) => s.lessons).length || 1;
-    const done = completedByCourse[slug] || 0;
-    return { slug, title: c.title, thumb: c.thumb, pct: Math.min(100, Math.round((done / total) * 100)) };
-  }).filter(Boolean) as DashData["courses"];
+  // Lấy TẤT CẢ khóa đã ghi danh trực tiếp từ DB (cả video LẪN live) — getCourses() chỉ trả khóa video nên khóa LIVE bị mất khỏi "Học của tôi".
+  const { data: encRows } = slugs.length
+    ? await supabase!.from("courses").select("slug, title, format").in("slug", slugs).eq("status", "published")
+    : { data: [] };
+  const courses = (encRows || []).map((c) => {
+    const full = allCourses.find((x) => x.slug === c.slug);          // chỉ khóa video có trong catalog cache (để tính tiến độ bài học)
+    const total = full ? (full.sections.flatMap((s) => s.lessons).length || 1) : 0;
+    const done = completedByCourse[c.slug as string] || 0;
+    return { slug: c.slug as string, title: c.title as string, thumb: full?.thumb || "", format: (c.format as string) || "video", pct: total ? Math.min(100, Math.round((done / total) * 100)) : 0 };
+  }) as DashData["courses"];
 
   const created = profile?.created_at ? new Date(profile.created_at as string) : new Date();
   const data: DashData = {
