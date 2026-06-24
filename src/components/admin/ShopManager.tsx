@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { toast } from "@/components/Toaster";
 import { formatVND } from "@/lib/format";
+import Button from "@/components/ui/Button";
 
 interface Ov { held: number; released_seller: number; fee_collected: number; refunded: number; orders_paid: number; revenue: number }
 interface Cnt { shops_pending: number; products_pending: number; disputes_open: number }
@@ -76,7 +77,7 @@ export default function ShopManager() {
           <div className="space-y-2">{shops.map((s) => { const owner = s.owner as Record<string, unknown> | null; return (
             <div key={s.id as string} className="border border-border rounded-lg p-3 flex flex-wrap items-center gap-x-3 gap-y-1">
               <div className="flex-1 min-w-[180px]"><div className="font-semibold text-sm">{s.name as string} <span className="text-xs text-ink-3">· {(owner?.full_name as string) || (owner?.email as string)}</span></div><div className="text-xs text-ink-3">{s.status as string}</div></div>
-              {s.status === "pending" && <button onClick={() => shopAct(s.id as string, "approve")} className="rounded-full bg-success text-white text-xs font-semibold px-3 py-1.5 cursor-pointer">Duyệt</button>}
+              {s.status === "pending" && <Button variant="success" size="sm" onClick={() => shopAct(s.id as string, "approve")}>Duyệt</Button>}
               {s.status === "approved" && <button onClick={() => shopAct(s.id as string, "suspend")} className="text-xs font-semibold text-accent cursor-pointer">Khóa</button>}
               {s.status === "suspended" && <button onClick={() => shopAct(s.id as string, "approve")} className="text-xs font-semibold text-success cursor-pointer">Mở lại</button>}
             </div>
@@ -92,7 +93,7 @@ export default function ShopManager() {
             <div key={p.id as string} className="border border-border rounded-lg p-3 flex flex-wrap items-center gap-x-3 gap-y-1">
               <div className="flex-1 min-w-[180px]"><div className="font-semibold text-sm">{p.title as string} <span className="text-xs text-ink-3">· {(p.type as string) === "digital" ? "Số" : "Vật lý"} · {formatVND((p.price as number) || 0)}</span></div><div className="text-xs text-ink-3">{(p.shops as Record<string, unknown>)?.name as string}</div></div>
               <a href={`/shop/p/${p.slug}`} target="_blank" rel="noreferrer" className="text-xs text-ink-2 hover:text-ink">Xem</a>
-              <button onClick={() => prodAct(p.id as string, "approve")} className="rounded-full bg-success text-white text-xs font-semibold px-3 py-1.5 cursor-pointer">Duyệt</button>
+              <Button variant="success" size="sm" onClick={() => prodAct(p.id as string, "approve")}>Duyệt</Button>
               <button onClick={() => prodAct(p.id as string, "reject")} className="text-xs font-semibold text-accent cursor-pointer">Từ chối</button>
             </div>
           ))}</div>
@@ -112,7 +113,7 @@ export default function ShopManager() {
           <div className="flex items-center gap-2 pt-2 border-t border-border">
             <input className="flex-1 px-3 py-2 rounded-lg border border-border-strong bg-surface text-sm" placeholder="Tên danh mục mới" value={newCat.name} onChange={(e) => setNewCat({ ...newCat, name: e.target.value })} />
             <input type="number" className="w-20 px-2 py-2 rounded-lg border border-border-strong bg-surface text-sm" value={newCat.fee_percent} onChange={(e) => setNewCat({ ...newCat, fee_percent: e.target.value })} />
-            <button onClick={addCat} className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2 cursor-pointer transition-colors">Thêm</button>
+            <Button variant="primary" onClick={addCat}>Thêm</Button>
           </div>
         </div>
       </div>

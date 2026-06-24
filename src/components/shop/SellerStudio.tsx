@@ -1,10 +1,10 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import Link from "next/link";
 import { toast } from "@/components/Toaster";
 import { formatVND } from "@/lib/format";
 import ImageUpload from "@/components/ImageUpload";
 import GalleryUpload from "@/components/GalleryUpload";
+import Button from "@/components/ui/Button";
 
 interface Shop { id: string; name: string; status: string; slug: string; description?: string; logo_url?: string; pickup_name?: string; pickup_phone?: string; pickup_address?: string }
 interface Cat { id: string; name: string; fee_percent: number }
@@ -105,7 +105,7 @@ export default function SellerStudio() {
         <div><label className="block text-xs font-semibold text-ink-2 mb-1">Logo shop (tùy chọn)</label><ImageUpload value={reg.logo_url} onChange={(u) => setReg({ ...reg, logo_url: u })} endpoint="/api/shop/upload" placeholder="Tải logo" /></div>
         <input className={inp} placeholder="Tên shop *" value={reg.name} onChange={(e) => setReg({ ...reg, name: e.target.value })} />
         <textarea className={inp} rows={3} placeholder="Giới thiệu shop" value={reg.description} onChange={(e) => setReg({ ...reg, description: e.target.value })} />
-        <button onClick={register} className="w-full rounded-full bg-accent hover:bg-accent-700 text-white font-semibold py-3 cursor-pointer">Gửi đăng ký mở shop</button>
+        <Button variant="primary" size="lg" fullWidth onClick={register}>Gửi đăng ký mở shop</Button>
       </div>
     </div>
   );
@@ -117,9 +117,9 @@ export default function SellerStudio() {
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div><div className="text-xs uppercase tracking-wider text-accent font-semibold">Kênh người bán</div><h1 className="text-2xl font-extrabold tracking-tight">{shop.name}</h1></div>
         <div className="flex gap-2">
-          <button onClick={openSettings} className="rounded-full border border-border-strong text-sm font-semibold px-4 py-2 cursor-pointer">⚙ Cài đặt shop</button>
-          <Link href="/wallet" className="rounded-full border border-border-strong text-sm font-semibold px-4 py-2">💰 Ví &amp; rút tiền</Link>
-          {tab === "products" && <button onClick={openNew} className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2 cursor-pointer">+ Sản phẩm</button>}
+          <Button variant="secondary" onClick={openSettings}>⚙ Cài đặt shop</Button>
+          <Button variant="secondary" href="/wallet">💰 Ví &amp; rút tiền</Button>
+          {tab === "products" && <Button variant="primary" onClick={openNew}>+ Sản phẩm</Button>}
         </div>
       </div>
       {!shop.pickup_address && <div className="rounded-lg bg-accent-weak text-accent text-sm px-4 py-2.5 mb-4 flex items-center justify-between gap-3"><span>📍 Bạn chưa khai báo <b>địa chỉ kho lấy hàng</b> — cần để tạo vận đơn. <button onClick={openSettings} className="underline font-semibold cursor-pointer">Khai báo ngay</button></span></div>}
@@ -223,7 +223,7 @@ export default function SellerStudio() {
                 </>
               )}
               <div><label className="block text-[11px] text-ink-3 mb-1">Phân loại/biến thể — mỗi dòng: <code className="bg-bg-soft px-1 rounded">Tên: giá trị1, giá trị2</code></label><textarea className={`${inp} font-mono`} rows={2} placeholder={"Size: S, M, L\nMàu: Đen, Trắng"} value={form.optionsText} onChange={(e) => setForm({ ...form, optionsText: e.target.value })} /></div>
-              <div className="flex gap-2 pt-1"><button onClick={save} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">{editId ? "Lưu" : "Tạo"}</button><button onClick={() => setEditing(false)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button></div>
+              <div className="flex gap-2 pt-1"><Button variant="primary" onClick={save}>{editId ? "Lưu" : "Tạo"}</Button><Button variant="secondary" onClick={() => setEditing(false)}>Hủy</Button></div>
             </div>
           </div>
         </div>
@@ -249,7 +249,7 @@ export default function SellerStudio() {
                   <textarea className={inp} rows={2} placeholder="Địa chỉ kho (số nhà, đường, phường/xã, quận/huyện, tỉnh/thành)" value={shopForm.pickup_address} onChange={(e) => setShopForm({ ...shopForm, pickup_address: e.target.value })} />
                 </div>
               </div>
-              <div className="flex gap-2 pt-1"><button onClick={saveShop} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">Lưu</button><button onClick={() => setSettingsOpen(false)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button></div>
+              <div className="flex gap-2 pt-1"><Button variant="primary" onClick={saveShop}>Lưu</Button><Button variant="secondary" onClick={() => setSettingsOpen(false)}>Hủy</Button></div>
             </div>
           </div>
         </div>

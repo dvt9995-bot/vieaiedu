@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getProducts, getShopCategories } from "@/lib/shop";
 import { formatVND } from "@/lib/format";
+import { buttonClass } from "@/lib/button";
 import ShopFilter from "@/components/shop/ShopFilter";
 
 export const metadata: Metadata = { title: "Shop — Sản phẩm số & vật lý", description: "Mua sản phẩm số, công cụ AI, template và sản phẩm vật lý từ cộng đồng VIE AI EDU." };
@@ -19,8 +20,8 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
           <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-extrabold tracking-tight mt-1">Chợ sản phẩm số &amp; vật lý</h1>
         </div>
         <div className="flex gap-2">
-          <Link href="/shop/cart" className="rounded-full border border-border-strong hover:border-accent text-sm font-semibold px-4 py-2">🛒 Giỏ hàng</Link>
-          <Link href="/seller" className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2">Bán hàng cùng tôi</Link>
+          <Link href="/shop/cart" className={buttonClass({ variant: "secondary" })}>🛒 Giỏ hàng</Link>
+          <Link href="/seller" className={buttonClass({ variant: "primary" })}>Bán hàng cùng tôi</Link>
         </div>
       </div>
 

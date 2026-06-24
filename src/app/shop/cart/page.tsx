@@ -54,7 +54,7 @@ export default function CartPage() {
             <div className="flex justify-between text-sm mb-1"><span className="text-ink-2">Tạm tính</span><span className="font-semibold">{formatVND(subtotal)}</span></div>
             {shipping > 0 && <div className="flex justify-between text-sm mb-1"><span className="text-ink-2">Phí vận chuyển</span><span className="font-semibold">{formatVND(shipping)}</span></div>}
             <div className="flex justify-between text-lg font-extrabold mt-2 pt-2 border-t border-border"><span>Tổng</span><span className="text-accent">{formatVND(subtotal + shipping)}</span></div>
-            <div className="mt-4"><ShopCheckout needAddress={hasPhysical} label="Thanh toán" className="w-full rounded-full bg-accent hover:bg-accent-700 text-white font-semibold py-3 cursor-pointer disabled:opacity-60" /></div>
+            <div className="mt-4"><ShopCheckout needAddress={hasPhysical} label="Thanh toán" className="w-full" /></div>
             <p className="text-center text-xs text-ink-3 mt-2">🛡️ Sàn giữ tiền tới khi bạn nhận hàng/sản phẩm · Thanh toán SePay</p>
           </div>
         </div>

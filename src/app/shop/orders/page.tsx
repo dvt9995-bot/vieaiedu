@@ -4,6 +4,7 @@ import Link from "next/link";
 import { formatVND } from "@/lib/format";
 import { trackingUrl, carrierName } from "@/lib/carriers";
 import { toast } from "@/components/Toaster";
+import Button from "@/components/ui/Button";
 
 interface Item { id: string; title: string; type: string; price: number; qty: number; variant?: string; digital_url?: string | null; digital_note?: string | null; product_id?: string }
 interface Order { id: string; code: string; total: number; status: string; escrow_status: string; has_physical: boolean; tracking_code?: string; carrier?: string; created_at: string; shops?: { name: string }; shop_order_items: Item[] }
@@ -86,7 +87,7 @@ export default function ShopOrdersPage() {
             <h3 className="font-bold text-lg mb-3">Đánh giá sản phẩm</h3>
             <select className="w-full mb-2 px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm" value={rv.rating} onChange={(e) => setRv({ ...rv, rating: e.target.value })}>{[5, 4, 3, 2, 1].map((n) => <option key={n} value={n}>{n} sao</option>)}</select>
             <textarea className="w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm" rows={3} placeholder="Cảm nhận của bạn…" value={rv.body} onChange={(e) => setRv({ ...rv, body: e.target.value })} />
-            <div className="flex gap-2 mt-3"><button onClick={submitReview} className="rounded-full bg-accent text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">Gửi</button><button onClick={() => setReviewing(null)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button></div>
+            <div className="flex gap-2 mt-3"><Button variant="primary" onClick={submitReview}>Gửi</Button><Button variant="secondary" onClick={() => setReviewing(null)}>Hủy</Button></div>
           </div>
         </div>
       )}

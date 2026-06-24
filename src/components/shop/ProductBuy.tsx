@@ -2,6 +2,7 @@
 import { useState } from "react";
 import { toast } from "@/components/Toaster";
 import { useAuthModal } from "@/components/AuthModal";
+import Button from "@/components/ui/Button";
 import ShopCheckout from "./ShopCheckout";
 
 interface Opt { name: string; values: string[] }
@@ -41,8 +42,8 @@ export default function ProductBuy({ productId, type, price, options, soldOut }:
         </div>
       )}
       <div className="flex gap-2 pt-1">
-        <ShopCheckout items={[{ product_id: productId, qty, variant }]} needAddress={physical} label={price > 0 ? "Mua ngay" : "Nhận miễn phí"} className="flex-1 rounded-full bg-accent hover:bg-accent-700 text-white font-semibold py-3 cursor-pointer disabled:opacity-60" onAuthNeeded={() => {}} />
-        <button onClick={addToCart} disabled={soldOut} className="rounded-full border border-border-strong hover:border-accent font-semibold px-5 py-3 cursor-pointer disabled:opacity-60">🛒 Giỏ</button>
+        <ShopCheckout items={[{ product_id: productId, qty, variant }]} needAddress={physical} label={price > 0 ? "Mua ngay" : "Nhận miễn phí"} className="flex-1" onAuthNeeded={() => {}} />
+        <Button variant="secondary" size="lg" onClick={addToCart} disabled={soldOut}>🛒 Giỏ</Button>
       </div>
       {soldOut && <p className="text-accent text-sm text-center">Sản phẩm tạm hết hàng</p>}
     </div>
