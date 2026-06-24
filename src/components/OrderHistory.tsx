@@ -6,7 +6,7 @@ interface Order { id: string; title: string; slug: string; format: string; statu
 
 const ST: Record<string, { label: string; cls: string }> = {
   paid: { label: "Đã thanh toán", cls: "bg-success/15 text-success" },
-  pending: { label: "Chờ thanh toán", cls: "bg-gold/15 text-amber-700" },
+  pending: { label: "Chờ thanh toán", cls: "bg-gold/15 text-warning" },
   cancelled: { label: "Đã hủy", cls: "bg-bg-soft text-ink-3" },
 };
 const fdate = (s?: string | null) => s ? new Date(s).toLocaleString("vi-VN", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit", timeZone: "Asia/Ho_Chi_Minh" }) : "";

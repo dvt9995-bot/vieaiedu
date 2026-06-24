@@ -62,7 +62,7 @@ export default function InstructorManager() {
                     {a.sample_links && <p className="text-xs text-ink-3 mt-1 break-all">🔗 {a.sample_links}</p>}
                     {a.motivation && <p className="text-xs text-ink-3 mt-1">💡 {a.motivation}</p>}
                   </div>
-                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${a.status === "pending" ? "bg-gold/15 text-amber-700" : a.status === "approved" ? "bg-success/15 text-success" : "bg-accent-weak text-accent"}`}>{a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : "Từ chối"}</span>
+                  <span className={`text-[11px] font-semibold px-2 py-0.5 rounded-full shrink-0 ${a.status === "pending" ? "bg-gold/15 text-warning" : a.status === "approved" ? "bg-success/15 text-success" : "bg-accent-weak text-accent"}`}>{a.status === "pending" ? "Chờ duyệt" : a.status === "approved" ? "Đã duyệt" : "Từ chối"}</span>
                 </div>
                 {a.status === "pending" && (
                   <div className="flex gap-2 mt-3">

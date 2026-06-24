@@ -77,7 +77,7 @@ export default function SettingsManager() {
       const src = typed && !st?.set ? "mới nhập" : st?.source === "env" ? "qua env" : "đã lưu";
       return <span className="text-[11px] font-semibold text-success bg-success/10 rounded-full px-2 py-0.5 shrink-0">✓ Đã cấu hình{src ? ` · ${src}` : ""}</span>;
     }
-    return <span className="text-[11px] font-semibold text-amber-700 bg-gold/15 rounded-full px-2 py-0.5 shrink-0">⚠ Chưa cấu hình</span>;
+    return <span className="text-[11px] font-semibold text-warning bg-gold/15 rounded-full px-2 py-0.5 shrink-0">⚠ Chưa cấu hình</span>;
   }
 
   async function uploadHero(file: File, key: "hero_bg_image" | "hero_bg_video") {
@@ -150,7 +150,7 @@ export default function SettingsManager() {
                 <div className="text-xs">
                   <b>Trạng thái kết nối: </b>
                   {gcal?.connected ? <span className="text-success font-semibold">✓ Đã kết nối — link Meet tự sinh</span>
-                    : <span className="text-amber-700 font-semibold">⚠ Chưa kết nối</span>}
+                    : <span className="text-warning font-semibold">⚠ Chưa kết nối</span>}
                   <div className="text-ink-3 mt-0.5">Nhập Client ID/Secret ở trên → bấm <b>Lưu tất cả</b> → rồi bấm Kết nối.</div>
                 </div>
                 {gcal?.hasClient

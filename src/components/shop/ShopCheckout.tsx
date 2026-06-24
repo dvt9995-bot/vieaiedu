@@ -50,7 +50,7 @@ export default function ShopCheckout({ items, needAddress, label, className, onA
               <textarea className="w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm" rows={2} placeholder="Địa chỉ chi tiết" value={addr.address} onChange={(e) => setAddr({ ...addr, address: e.target.value })} />
             </div>
             <div className="flex gap-2 mt-3">
-              <button onClick={() => { if (!addr.name || !addr.phone || !addr.address) return toast("Nhập đủ địa chỉ"); go(addr); }} className="rounded-full bg-accent text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">Tiếp tục</button>
+              <button onClick={() => { if (!addr.name || !addr.phone || !addr.address) return toast("Nhập đủ địa chỉ"); go(addr); }} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 cursor-pointer transition-colors">Tiếp tục</button>
               <button onClick={() => setAddr(null)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button>
             </div>
           </div>

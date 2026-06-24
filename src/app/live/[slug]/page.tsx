@@ -173,7 +173,7 @@ export default async function LiveCoursePage({ params }: { params: Promise<{ slu
                 <div className="text-xs text-ink-3 mt-0.5">Tương tác trực tiếp · hỏi đáp ngay · có video xem lại</div>
                 {!enrolled && upcoming[0] && (
                   <div className="mt-3 rounded-lg bg-gold/20 border border-gold/40 py-2 px-3">
-                    <div className="text-[11px] font-semibold text-amber-700 mb-1">⏳ Khai giảng sau</div>
+                    <div className="text-[11px] font-semibold text-warning mb-1">⏳ Khai giảng sau</div>
                     <Countdown target={upcoming[0].starts_at} />
                   </div>
                 )}

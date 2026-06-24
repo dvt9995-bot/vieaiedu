@@ -20,9 +20,9 @@ export default async function LivePage() {
   const myUpcoming = mine.flatMap((c) => c.sessions.map((s) => ({ c, s }))).filter((x) => new Date(x.s.starts_at).getTime() > Date.now() - 6 * 3600 * 1000).sort((a, b) => +new Date(a.s.starts_at) - +new Date(b.s.starts_at));
 
   return (
-    <div className="container-x py-10">
+    <div className="container-x py-12">
       <div className="text-xs uppercase tracking-wider text-accent font-semibold">🔴 Trực tiếp qua Google Meet</div>
-      <h1 className="text-3xl font-extrabold tracking-tight mt-1">Lớp học trực tiếp</h1>
+      <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-extrabold tracking-tight mt-1">Lớp học trực tiếp</h1>
       <p className="text-ink-2 mt-2 max-w-2xl">Học trực tiếp, tương tác thời gian thực với giảng viên qua Google Meet. Đăng ký trên app — đến giờ bấm “Vào lớp”, hệ thống tự nhắc lịch.</p>
 
       {/* Lịch học của tôi */}

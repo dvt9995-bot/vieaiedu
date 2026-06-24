@@ -25,7 +25,7 @@ export default function ProductBuy({ productId, type, price, options, soldOut }:
           <label className="block text-xs font-semibold text-ink-2 mb-1">{o.name}</label>
           <div className="flex gap-2 flex-wrap">
             {o.values.map((v) => (
-              <button key={v} onClick={() => setSel({ ...sel, [o.name]: v })} className={`text-sm rounded-lg border px-3 py-1.5 cursor-pointer ${(sel[o.name] || o.values[0]) === v ? "border-accent bg-accent-weak text-accent font-semibold" : "border-border-strong text-ink-2"}`}>{v}</button>
+              <button key={v} onClick={() => setSel({ ...sel, [o.name]: v })} className={`text-sm rounded-full border px-3.5 py-1.5 cursor-pointer transition-colors ${(sel[o.name] || o.values[0]) === v ? "border-accent bg-accent-weak text-accent font-semibold" : "border-border-strong text-ink-2 hover:border-accent"}`}>{v}</button>
             ))}
           </div>
         </div>

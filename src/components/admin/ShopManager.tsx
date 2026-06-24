@@ -112,7 +112,7 @@ export default function ShopManager() {
           <div className="flex items-center gap-2 pt-2 border-t border-border">
             <input className="flex-1 px-3 py-2 rounded-lg border border-border-strong bg-surface text-sm" placeholder="Tên danh mục mới" value={newCat.name} onChange={(e) => setNewCat({ ...newCat, name: e.target.value })} />
             <input type="number" className="w-20 px-2 py-2 rounded-lg border border-border-strong bg-surface text-sm" value={newCat.fee_percent} onChange={(e) => setNewCat({ ...newCat, fee_percent: e.target.value })} />
-            <button onClick={addCat} className="rounded-full bg-accent text-white text-sm font-semibold px-4 cursor-pointer">Thêm</button>
+            <button onClick={addCat} className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2 cursor-pointer transition-colors">Thêm</button>
           </div>
         </div>
       </div>

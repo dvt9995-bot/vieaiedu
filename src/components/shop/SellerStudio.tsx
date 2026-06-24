@@ -131,7 +131,7 @@ export default function SellerStudio() {
           ))}
         </div>
       )}
-      {lowStock.length > 0 && <div className="rounded-lg bg-gold/15 border border-gold/40 text-amber-700 text-sm px-4 py-2 mb-4">⚠️ Sắp hết hàng: {lowStock.map((p) => `${p.title} (còn ${p.stock})`).join(", ")}</div>}
+      {lowStock.length > 0 && <div className="rounded-lg bg-gold/15 border border-gold/40 text-warning text-sm px-4 py-2 mb-4">⚠️ Sắp hết hàng: {lowStock.map((p) => `${p.title} (còn ${p.stock})`).join(", ")}</div>}
 
       <div className="flex gap-2 mb-4">
         {(["products", "orders"] as const).map((t) => <button key={t} onClick={() => setTab(t)} className={`text-sm font-semibold rounded-full px-4 py-2 cursor-pointer ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2"}`}>{t === "products" ? "Sản phẩm" : `Đơn hàng (${orders.length})`}</button>)}
@@ -145,7 +145,7 @@ export default function SellerStudio() {
                 <div className="flex-1 min-w-[180px]">
                   <div className="font-semibold text-sm">{p.title} <span className="text-xs text-ink-3">· {p.type === "digital" ? "Số" : "Vật lý"} · {formatVND(p.price)}</span></div>
                   <div className="text-xs">
-                    <span className={p.review_status === "approved" ? "text-success" : p.review_status === "rejected" ? "text-accent" : "text-amber-700"}>{p.review_status === "approved" ? "✓ Đã duyệt" : p.review_status === "rejected" ? "Bị từ chối" : p.status === "draft" ? "Nháp" : "Chờ duyệt"}</span>
+                    <span className={p.review_status === "approved" ? "text-success" : p.review_status === "rejected" ? "text-accent" : "text-warning"}>{p.review_status === "approved" ? "✓ Đã duyệt" : p.review_status === "rejected" ? "Bị từ chối" : p.status === "draft" ? "Nháp" : "Chờ duyệt"}</span>
                     <span className="text-ink-3"> · đã bán {p.sold_count}</span>{p.review_note ? <span className="text-accent"> · {p.review_note}</span> : null}
                   </div>
                 </div>
@@ -163,7 +163,7 @@ export default function SellerStudio() {
           <div className="grid gap-3">
             {orders.map((o) => (
               <div key={o.id} className="rounded-card border border-border bg-surface p-4">
-                <div className="flex items-center justify-between mb-1"><span className="font-semibold text-sm">{o.code ? <span className="text-ink-3 font-normal">#{o.code} · </span> : null}{formatVND(o.total)}</span><span className={`text-xs ${o.status === "paid" ? "text-amber-700" : o.status === "shipped" ? "text-accent" : "text-ink-3"}`}>{o.status === "paid" ? "Chờ giao" : o.status === "shipped" ? "Đang giao" : o.status}</span></div>
+                <div className="flex items-center justify-between mb-1"><span className="font-semibold text-sm">{o.code ? <span className="text-ink-3 font-normal">#{o.code} · </span> : null}{formatVND(o.total)}</span><span className={`text-xs ${o.status === "paid" ? "text-warning" : o.status === "shipped" ? "text-accent" : "text-ink-3"}`}>{o.status === "paid" ? "Chờ giao" : o.status === "shipped" ? "Đang giao" : o.status}</span></div>
                 {o.shop_order_items.map((it, i) => <div key={i} className="text-sm text-ink-2">{it.title}{it.variant ? <span className="text-ink-3"> ({it.variant})</span> : null} ×{it.qty}{it.shop_products?.weight ? <span className="text-ink-3 text-xs"> · {it.shop_products.weight}g</span> : null}</div>)}
                 {o.has_physical && (
                   <div className="mt-2 rounded-lg bg-bg-soft border border-border p-2.5 text-xs">

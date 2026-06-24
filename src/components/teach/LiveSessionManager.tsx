@@ -54,7 +54,7 @@ export default function LiveSessionManager({ courseId, onClose }: { courseId: st
           <button onClick={onClose} className="text-ink-3 hover:text-ink text-2xl leading-none cursor-pointer">×</button>
         </div>
         <div className="p-5 space-y-3">
-          <div className={`text-xs rounded-lg px-3 py-2 ${gcal ? "bg-success/10 text-success" : "bg-gold/15 text-amber-700"}`}>
+          <div className={`text-xs rounded-lg px-3 py-2 ${gcal ? "bg-success/10 text-success" : "bg-gold/15 text-warning"}`}>
             {gcal ? "✓ Đã kết nối Google — link Meet tự sinh khi tạo buổi." : "⚠ Chưa kết nối Google tự động — bạn cần dán link Meet thủ công cho mỗi buổi (Admin có thể kết nối Google để tự sinh)."}
           </div>
 

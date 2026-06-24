@@ -12,11 +12,11 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
   const [products, cats] = await Promise.all([getProducts({ category: sp.cat, q: sp.q, type: sp.type, sort: sp.sort }), getShopCategories()]);
 
   return (
-    <div className="container-x py-10">
+    <div className="container-x py-12">
       <div className="flex items-center justify-between flex-wrap gap-3">
         <div>
           <div className="text-xs uppercase tracking-wider text-accent font-semibold">🛍️ Shop</div>
-          <h1 className="text-3xl font-extrabold tracking-tight mt-1">Chợ sản phẩm số &amp; vật lý</h1>
+          <h1 className="text-[clamp(1.8rem,4vw,3rem)] font-extrabold tracking-tight mt-1">Chợ sản phẩm số &amp; vật lý</h1>
         </div>
         <div className="flex gap-2">
           <Link href="/shop/cart" className="rounded-full border border-border-strong hover:border-accent text-sm font-semibold px-4 py-2">🛒 Giỏ hàng</Link>

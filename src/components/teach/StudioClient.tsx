@@ -16,7 +16,7 @@ interface Course { id: string; slug: string; title: string; subtitle?: string; d
 
 const STATUS: Record<string, { label: string; cls: string }> = {
   draft: { label: "Nháp", cls: "bg-bg-soft text-ink-2" },
-  pending: { label: "Chờ duyệt", cls: "bg-gold/15 text-amber-700" },
+  pending: { label: "Chờ duyệt", cls: "bg-gold/15 text-warning" },
   approved: { label: "Đã duyệt · công khai", cls: "bg-success/15 text-success" },
   rejected: { label: "Cần chỉnh sửa", cls: "bg-accent-weak text-accent" },
 };

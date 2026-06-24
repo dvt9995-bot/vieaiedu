@@ -10,7 +10,7 @@ interface O {
 
 const STATUS: Record<string, [string, string]> = {
   paid: ["Đã thanh toán", "bg-success/10 text-success"],
-  pending: ["Chờ thanh toán", "bg-gold/15 text-[#9a6b00]"],
+  pending: ["Chờ thanh toán", "bg-gold/15 text-warning"],
   expired: ["Hết hạn", "bg-bg-soft text-ink-3"],
 };
 

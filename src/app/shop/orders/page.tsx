@@ -9,9 +9,9 @@ interface Item { id: string; title: string; type: string; price: number; qty: nu
 interface Order { id: string; code: string; total: number; status: string; escrow_status: string; has_physical: boolean; tracking_code?: string; carrier?: string; created_at: string; shops?: { name: string }; shop_order_items: Item[] }
 
 const ST: Record<string, { label: string; cls: string }> = {
-  pending: { label: "Chờ thanh toán", cls: "bg-gold/15 text-amber-700" },
+  pending: { label: "Chờ thanh toán", cls: "bg-gold/15 text-warning" },
   paid: { label: "Đã thanh toán", cls: "bg-success/15 text-success" },
-  shipped: { label: "Đang giao", cls: "bg-blue-500/15 text-blue-600" },
+  shipped: { label: "Đang giao", cls: "bg-accent-weak text-accent" },
   delivered: { label: "Đã giao", cls: "bg-success/15 text-success" },
   completed: { label: "Hoàn tất", cls: "bg-success/15 text-success" },
   disputed: { label: "Đang khiếu nại", cls: "bg-accent-weak text-accent" },

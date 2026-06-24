@@ -26,7 +26,7 @@ export default async function ProductPage({ params }: { params: Promise<{ slug: 
   const soldOut = p.type === "physical" && p.stock != null && p.stock <= 0;
 
   return (
-    <div className="container-x py-8">
+    <div className="container-x py-10">
       <Link href="/shop" className="text-sm text-ink-3 hover:text-ink">← Shop</Link>
       <div className="grid lg:grid-cols-[1fr_380px] gap-8 mt-4 items-start">
         <div className="min-w-0">
