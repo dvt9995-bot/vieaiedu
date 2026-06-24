@@ -68,15 +68,23 @@ export async function POST(req: Request) {
           { order_id: o.id, shop_id: o.shop_id, type: "hold", amount: o.total, note: "Tạm giữ khi thanh toán" },
           { order_id: o.id, shop_id: o.shop_id, type: "fee", amount: o.fee_amount, note: "Phí sàn" },
         ]);
-        const { data: items } = await admin.from("shop_order_items").select("product_id, qty").eq("order_id", o.id);
+        const { data: items } = await admin.from("shop_order_items").select("product_id, qty, title").eq("order_id", o.id);
+        const lowStock: string[] = [];
         for (const it of items || []) {
           if (!it.product_id) continue;
           const { data: p } = await admin.from("shop_products").select("stock, sold_count").eq("id", it.product_id).maybeSingle();
-          if (p) { const patch: Record<string, unknown> = { sold_count: ((p.sold_count as number) || 0) + (it.qty as number) }; if (p.stock != null) patch.stock = Math.max(0, (p.stock as number) - (it.qty as number)); await admin.from("shop_products").update(patch).eq("id", it.product_id); }
+          if (p) {
+            const patch: Record<string, unknown> = { sold_count: ((p.sold_count as number) || 0) + (it.qty as number) };
+            if (p.stock != null) { const ns = Math.max(0, (p.stock as number) - (it.qty as number)); patch.stock = ns; if ((p.stock as number) > 3 && ns <= 3) lowStock.push(`${it.title} (còn ${ns})`); }
+            await admin.from("shop_products").update(patch).eq("id", it.product_id);
+          }
         }
         const { data: shop } = await admin.from("shops").select("owner_id").eq("id", o.shop_id).maybeSingle();
         if (o.buyer_id) await notify({ userId: o.buyer_id as string, type: "transactional", title: "Thanh toán thành công 🎉", body: o.has_physical ? "Đơn đã thanh toán — người bán sẽ giao sớm, theo dõi ở Đơn của tôi." : "Đơn đã thanh toán — vào Đơn của tôi để nhận sản phẩm số.", href: "/shop/orders" });
-        if (shop?.owner_id) await notify({ userId: shop.owner_id as string, type: "transactional", title: "🛒 Bạn có đơn hàng mới", body: `Đơn ${formatVND(o.total as number)} — vào Kênh người bán xử lý.`, href: "/seller" });
+        if (shop?.owner_id) {
+          await notify({ userId: shop.owner_id as string, type: "transactional", title: "🛒 Bạn có đơn hàng mới", body: `Đơn ${formatVND(o.total as number)} — vào Kênh người bán xử lý.`, href: "/seller" });
+          if (lowStock.length) await notify({ userId: shop.owner_id as string, type: "system", title: "⚠️ Sản phẩm sắp hết hàng", body: lowStock.join(", ") + ". Nhớ nhập thêm hàng!", href: "/seller" });
+        }
       }
       if (done) await notifyAdmins("🛒 Đơn sàn mới", `${done} đơn · ${formatVND(sum)}`, "/admin");
       return NextResponse.json({ success: true, matched: true, shop: done });

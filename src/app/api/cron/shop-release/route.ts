@@ -14,6 +14,9 @@ export async function GET(req: Request) {
   if (!admin) return NextResponse.json({ error: "unconfigured" }, { status: 503 });
 
   const nowIso = new Date().toISOString();
+  // Tự hủy đơn chưa thanh toán quá 24h (dọn rác)
+  await admin.from("shop_orders").update({ status: "cancelled" }).eq("status", "pending").lt("created_at", new Date(Date.now() - 24 * 3600000).toISOString());
+
   const { data: due } = await admin.from("shop_orders")
     .select("id, shop_id, seller_amount, total, status")
     .eq("escrow_status", "held").lte("release_at", nowIso).neq("status", "disputed").limit(200);

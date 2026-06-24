@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { formatVND } from "@/lib/format";
+import { trackingUrl, carrierName } from "@/lib/carriers";
 import { toast } from "@/components/Toaster";
 
 interface Item { id: string; title: string; type: string; price: number; qty: number; variant?: string; digital_url?: string | null; digital_note?: string | null; product_id?: string }
@@ -56,7 +57,7 @@ export default function ShopOrdersPage() {
                   <div className="min-w-0">
                     <div className="font-medium">{it.title} <span className="text-ink-3">×{it.qty}</span></div>
                     {it.variant && <div className="text-xs text-ink-3">{it.variant}</div>}
-                    {it.type === "digital" && paid && it.digital_url && <a href={it.digital_url} target="_blank" rel="noreferrer" className="text-accent text-xs font-semibold">⬇ Tải / Truy cập sản phẩm</a>}
+                    {it.type === "digital" && paid && it.digital_url && <a href={`/api/shop/download?item=${it.id}`} target="_blank" rel="noreferrer" className="text-accent text-xs font-semibold">⬇ Tải / Truy cập sản phẩm (bảo mật)</a>}
                     {it.type === "digital" && paid && it.digital_note && <div className="text-xs text-ink-2 mt-0.5">{it.digital_note}</div>}
                     {paid && it.product_id && <button onClick={() => setReviewing({ order: o.id, product: it.product_id! })} className="text-ink-3 hover:text-accent text-xs font-semibold mt-0.5 cursor-pointer block">★ Đánh giá</button>}
                   </div>
@@ -66,7 +67,9 @@ export default function ShopOrdersPage() {
               <div className="flex items-center justify-between mt-2 pt-2 border-t border-border">
                 <span className="text-sm">Tổng: <b className="text-accent">{formatVND(o.total)}</b></span>
                 <div className="flex gap-2">
-                  {o.tracking_code && <span className="text-xs text-ink-3 self-center">VĐ: {o.tracking_code}</span>}
+                  {o.tracking_code && (trackingUrl(o.carrier, o.tracking_code)
+                    ? <a href={trackingUrl(o.carrier, o.tracking_code)} target="_blank" rel="noreferrer" className="text-xs font-semibold text-accent self-center">🚚 Theo dõi ({carrierName(o.carrier)})</a>
+                    : <span className="text-xs text-ink-3 self-center">VĐ: {o.tracking_code} {carrierName(o.carrier)}</span>)}
                   {o.escrow_status === "held" && ["paid", "shipped", "delivered"].includes(o.status) && <button onClick={() => act(o.id, "confirm")} className="text-xs font-semibold text-success cursor-pointer">✓ Đã nhận</button>}
                   {o.escrow_status === "held" && o.status !== "disputed" && <button onClick={() => { const r = prompt("Lý do khiếu nại:"); if (r) act(o.id, "dispute", r); }} className="text-xs font-semibold text-accent cursor-pointer">Khiếu nại</button>}
                   {o.status === "pending" && <span className="text-xs text-ink-3">Mã CK: {o.code}</span>}

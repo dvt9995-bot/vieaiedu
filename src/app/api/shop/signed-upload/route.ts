@@ -11,8 +11,9 @@ export async function POST(req: Request) {
   const admin = createAdminClient()!;
   const { ext } = await req.json().catch(() => ({}));
   const safeExt = String(ext || "zip").toLowerCase().replace(/[^a-z0-9]/g, "").slice(0, 6) || "zip";
-  const path = `digital-${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${safeExt}`;
-  const { data, error } = await admin.storage.from("hero").createSignedUploadUrl(path);
+  const path = `${user.id}/${Date.now()}-${Math.random().toString(36).slice(2, 7)}.${safeExt}`;
+  const { data, error } = await admin.storage.from("shopfiles").createSignedUploadUrl(path);
   if (error) return NextResponse.json({ error: error.message }, { status: 500 });
-  return NextResponse.json({ ok: true, path: data.path, token: data.token, publicUrl: admin.storage.from("hero").getPublicUrl(path).data.publicUrl });
+  // bucket "shopfiles" RIÊNG TƯ → lưu path (kèm tiền tố "file:") để tải qua link ký
+  return NextResponse.json({ ok: true, bucket: "shopfiles", path: data.path, token: data.token, value: `file:${data.path}` });
 }

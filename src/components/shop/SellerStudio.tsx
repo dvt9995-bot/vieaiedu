@@ -20,17 +20,20 @@ export default function SellerStudio() {
   const [tab, setTab] = useState<"products" | "orders">("products");
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [ov, setOv] = useState<{ revenue: number; pending_escrow: number; received: number; orders: number } | null>(null);
+  const [lowStock, setLowStock] = useState<{ title: string; stock: number }[]>([]);
   const [reg, setReg] = useState({ name: "", description: "", logo_url: "" });
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
 
   const loadAll = useCallback(async () => {
-    const [p, o] = await Promise.all([
+    const [p, o, ovr] = await Promise.all([
       fetch("/api/shop/products").then((r) => r.json()).catch(() => ({})),
       fetch("/api/seller/orders").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/seller/overview").then((r) => r.json()).catch(() => ({})),
     ]);
-    setProducts(p.products || []); setOrders(o.orders || []);
+    setProducts(p.products || []); setOrders(o.orders || []); setOv(ovr.overview || null); setLowStock(ovr.lowStock || []);
   }, []);
   useEffect(() => {
     (async () => {
@@ -64,7 +67,13 @@ export default function SellerStudio() {
   }
   async function submitReview(id: string) { await fetch("/api/shop/products", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action: "submit" }) }); toast("Đã gửi duyệt"); loadAll(); }
   async function del(id: string) { if (!confirm("Xóa sản phẩm?")) return; await fetch(`/api/shop/products?id=${id}`, { method: "DELETE" }); toast("Đã xóa"); loadAll(); }
-  async function ship(o: Order) { const t = prompt("Mã vận đơn (tùy chọn):") || ""; await fetch("/api/seller/orders", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: o.id, tracking_code: t }) }); toast("Đã đánh dấu giao hàng"); loadAll(); }
+  async function ship(o: Order) {
+    const carrier = prompt("Hãng vận chuyển (nhập: ghn / ghtk / vtp / jt / spx / vnpost / other):", "ghn");
+    if (carrier === null) return;
+    const t = prompt("Mã vận đơn:") || "";
+    await fetch("/api/seller/orders", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: o.id, tracking_code: t, carrier: carrier.trim().toLowerCase() }) });
+    toast("Đã đánh dấu giao hàng"); loadAll();
+  }
 
   const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
   if (loading) return <div className="container-x py-16 text-center text-ink-3">Đang tải…</div>;
@@ -95,6 +104,16 @@ export default function SellerStudio() {
           {tab === "products" && <button onClick={openNew} className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2 cursor-pointer">+ Sản phẩm</button>}
         </div>
       </div>
+      {/* Dashboard doanh thu */}
+      {ov && (
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
+          {[["💰 Tiền đã nhận (ví)", formatVND(ov.received)], ["🔒 Chờ giải ngân", formatVND(ov.pending_escrow)], ["📊 Tổng doanh thu", formatVND(ov.revenue)], ["🧾 Đơn đã bán", String(ov.orders)]].map(([l, v], i) => (
+            <div key={i} className="rounded-card border border-border bg-surface p-4"><div className="text-xl font-extrabold tracking-tight">{v}</div><div className="text-ink-3 text-xs mt-0.5">{l}</div></div>
+          ))}
+        </div>
+      )}
+      {lowStock.length > 0 && <div className="rounded-lg bg-gold/15 border border-gold/40 text-amber-700 text-sm px-4 py-2 mb-4">⚠️ Sắp hết hàng: {lowStock.map((p) => `${p.title} (còn ${p.stock})`).join(", ")}</div>}
+
       <div className="flex gap-2 mb-4">
         {(["products", "orders"] as const).map((t) => <button key={t} onClick={() => setTab(t)} className={`text-sm font-semibold rounded-full px-4 py-2 cursor-pointer ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2"}`}>{t === "products" ? "Sản phẩm" : `Đơn hàng (${orders.length})`}</button>)}
       </div>
@@ -159,8 +178,9 @@ export default function SellerStudio() {
                 </div>
               ) : (
                 <>
-                  <input className={inp} placeholder="Link/file giao (dán URL hoặc tải lên)" value={form.digital_url} onChange={(e) => setForm({ ...form, digital_url: e.target.value })} />
-                  <label className="inline-flex items-center gap-2 text-sm cursor-pointer rounded-lg border border-border-strong px-3 py-2 w-fit">⬆ Tải file số<input type="file" className="hidden" onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; const ext = (f.name.split(".").pop() || "zip"); const sig = await fetch("/api/shop/signed-upload", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ext }) }).then((x) => x.json()); if (!sig.token) return toast("Lỗi tạo link"); const { createClient } = await import("@/lib/supabase/client"); const c = createClient(); const { error } = await c!.storage.from("hero").uploadToSignedUrl(sig.path, sig.token, f); if (error) return toast("Tải lỗi: " + error.message); setForm((cur) => ({ ...cur, digital_url: sig.publicUrl })); toast("Đã tải file ✓"); e.currentTarget.value = ""; }} /></label>
+                  <input className={inp} placeholder="Link giao (Google Drive…) — hoặc tải file bên dưới" value={form.digital_url.startsWith("file:") ? "📎 (đã tải file lên — bảo mật)" : form.digital_url} onChange={(e) => setForm({ ...form, digital_url: e.target.value })} readOnly={form.digital_url.startsWith("file:")} />
+                  <label className="inline-flex items-center gap-2 text-sm cursor-pointer rounded-lg border border-border-strong px-3 py-2 w-fit">⬆ Tải file số (bảo mật)<input type="file" className="hidden" onChange={async (e) => { const f = e.target.files?.[0]; if (!f) return; toast("Đang tải file…"); const ext = (f.name.split(".").pop() || "zip"); const sig = await fetch("/api/shop/signed-upload", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ ext }) }).then((x) => x.json()); if (!sig.token) return toast("Lỗi tạo link"); const { createClient } = await import("@/lib/supabase/client"); const c = createClient(); const { error } = await c!.storage.from(sig.bucket).uploadToSignedUrl(sig.path, sig.token, f); if (error) return toast("Tải lỗi: " + error.message); setForm((cur) => ({ ...cur, digital_url: sig.value })); toast("Đã tải file ✓ (bảo mật)"); e.currentTarget.value = ""; }} /></label>
+                  {form.digital_url.startsWith("file:") && <button type="button" onClick={() => setForm({ ...form, digital_url: "" })} className="text-xs text-accent cursor-pointer w-fit">Xóa file đã tải</button>}
                   <textarea className={inp} rows={2} placeholder="Hướng dẫn/license cho người mua (hiện sau khi mua)" value={form.digital_note} onChange={(e) => setForm({ ...form, digital_note: e.target.value })} />
                 </>
               )}
