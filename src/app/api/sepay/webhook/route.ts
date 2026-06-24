@@ -52,6 +52,35 @@ export async function POST(req: Request) {
       if (don.user_id) await notify({ userId: don.user_id as string, type: "transactional", title: "Cảm ơn bạn đã ủng hộ ❤️", body: "Sự ủng hộ của bạn giúp duy trì & phát triển cộng đồng VIE AI EDU. Cảm ơn bạn rất nhiều!", href: "/" });
       return NextResponse.json({ success: true, matched: true, donation: true });
     }
+    // Thử khớp ĐƠN SÀN (mã SHO... — nhiều shop_orders chung 1 mã)
+    const { data: sorders } = await admin.from("shop_orders").select("*").eq("status", "pending").limit(300);
+    const group = (sorders ?? []).filter((o) => o.code && content.toUpperCase().includes(o.code as string));
+    if (group.length) {
+      const sum = group.reduce((n, o) => n + (o.total as number), 0);
+      if (!amount || amount < sum) return NextResponse.json({ success: true, matched: true, note: "shop amount too low" });
+      const releaseAt = new Date(Date.now() + 3 * 86400000).toISOString();
+      let done = 0;
+      for (const o of group) {
+        const { data: paid } = await admin.from("shop_orders").update({ status: "paid", escrow_status: "held", paid_at: new Date().toISOString(), release_at: releaseAt }).eq("id", o.id).eq("status", "pending").select("id");
+        if (!paid || !paid.length) continue;
+        done++;
+        await admin.from("escrow_ledger").insert([
+          { order_id: o.id, shop_id: o.shop_id, type: "hold", amount: o.total, note: "Tạm giữ khi thanh toán" },
+          { order_id: o.id, shop_id: o.shop_id, type: "fee", amount: o.fee_amount, note: "Phí sàn" },
+        ]);
+        const { data: items } = await admin.from("shop_order_items").select("product_id, qty").eq("order_id", o.id);
+        for (const it of items || []) {
+          if (!it.product_id) continue;
+          const { data: p } = await admin.from("shop_products").select("stock, sold_count").eq("id", it.product_id).maybeSingle();
+          if (p) { const patch: Record<string, unknown> = { sold_count: ((p.sold_count as number) || 0) + (it.qty as number) }; if (p.stock != null) patch.stock = Math.max(0, (p.stock as number) - (it.qty as number)); await admin.from("shop_products").update(patch).eq("id", it.product_id); }
+        }
+        const { data: shop } = await admin.from("shops").select("owner_id").eq("id", o.shop_id).maybeSingle();
+        if (o.buyer_id) await notify({ userId: o.buyer_id as string, type: "transactional", title: "Thanh toán thành công 🎉", body: o.has_physical ? "Đơn đã thanh toán — người bán sẽ giao sớm, theo dõi ở Đơn của tôi." : "Đơn đã thanh toán — vào Đơn của tôi để nhận sản phẩm số.", href: "/shop/orders" });
+        if (shop?.owner_id) await notify({ userId: shop.owner_id as string, type: "transactional", title: "🛒 Bạn có đơn hàng mới", body: `Đơn ${formatVND(o.total as number)} — vào Kênh người bán xử lý.`, href: "/seller" });
+      }
+      if (done) await notifyAdmins("🛒 Đơn sàn mới", `${done} đơn · ${formatVND(sum)}`, "/admin");
+      return NextResponse.json({ success: true, matched: true, shop: done });
+    }
     return NextResponse.json({ success: true, matched: false });
   }
 

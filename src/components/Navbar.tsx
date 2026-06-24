@@ -13,14 +13,16 @@ import { track } from "@/lib/analytics";
 const links = [
   { href: "/courses", label: "Khóa học" },
   { href: "/live", label: "Lớp trực tiếp" },
+  { href: "/shop", label: "Shop" },
   { href: "/blog", label: "Tin tức" },
   { href: "/community", label: "Cộng đồng" },
-  { href: "/gioi-thieu", label: "Giới thiệu" },
 ];
 // Mục cá nhân — gom vào menu avatar
 const userLinks = [
   { href: "/dashboard", label: "Học của tôi" },
+  { href: "/shop/orders", label: "Đơn mua hàng" },
   { href: "/teach", label: "Khu giảng viên" },
+  { href: "/seller", label: "Kênh người bán" },
   { href: "/wallet", label: "Ví & Kiếm tiền" },
   { href: "/wishlist", label: "Yêu thích" },
   { href: "/account", label: "Cài đặt tài khoản" },
