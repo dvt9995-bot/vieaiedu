@@ -54,7 +54,7 @@ function mapProduct(p: Record<string, unknown>): ShopProduct {
 }
 
 // Danh sách sản phẩm đã duyệt (cho trang /shop). categorySlug optional.
-export async function getProducts(opts: { category?: string; q?: string; shopSlug?: string } = {}): Promise<ShopProduct[]> {
+export async function getProducts(opts: { category?: string; q?: string; shopSlug?: string; type?: string; sort?: string } = {}): Promise<ShopProduct[]> {
   const admin = createAdminClient();
   if (!admin) return [];
   let catId: string | null = null;
@@ -63,11 +63,19 @@ export async function getProducts(opts: { category?: string; q?: string; shopSlu
     catId = (c?.id as string) || null;
     if (!catId) return [];
   }
+  const sortMap: Record<string, { col: string; asc: boolean }> = {
+    new: { col: "created_at", asc: false },
+    price_asc: { col: "price", asc: true },
+    price_desc: { col: "price", asc: false },
+    best: { col: "sold_count", asc: false },
+  };
+  const srt = sortMap[opts.sort || "new"] || sortMap.new;
   let query = admin.from("shop_products")
     .select("*, shops!inner(name, slug, logo_url, status), shop_categories(name, slug)")
     .eq("status", "published").eq("review_status", "approved").eq("shops.status", "approved")
-    .order("created_at", { ascending: false }).limit(60);
+    .order(srt.col, { ascending: srt.asc }).limit(60);
   if (catId) query = query.eq("category_id", catId);
+  if (opts.type === "digital" || opts.type === "physical") query = query.eq("type", opts.type);
   if (opts.q) query = query.ilike("title", `%${opts.q}%`);
   const { data } = await query;
   return (data ?? []).map(mapProduct);

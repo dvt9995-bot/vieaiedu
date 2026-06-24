@@ -2,13 +2,14 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { getProducts, getShopCategories } from "@/lib/shop";
 import { formatVND } from "@/lib/format";
+import ShopFilter from "@/components/shop/ShopFilter";
 
 export const metadata: Metadata = { title: "Shop — Sản phẩm số & vật lý", description: "Mua sản phẩm số, công cụ AI, template và sản phẩm vật lý từ cộng đồng VIE AI EDU." };
 export const dynamic = "force-dynamic";
 
-export default async function ShopPage({ searchParams }: { searchParams: Promise<{ cat?: string; q?: string }> }) {
+export default async function ShopPage({ searchParams }: { searchParams: Promise<{ cat?: string; q?: string; type?: string; sort?: string }> }) {
   const sp = await searchParams;
-  const [products, cats] = await Promise.all([getProducts({ category: sp.cat, q: sp.q }), getShopCategories()]);
+  const [products, cats] = await Promise.all([getProducts({ category: sp.cat, q: sp.q, type: sp.type, sort: sp.sort }), getShopCategories()]);
 
   return (
     <div className="container-x py-10">
@@ -23,12 +24,10 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
         </div>
       </div>
 
-      {/* Danh mục */}
-      <div className="flex gap-2 flex-wrap mt-5">
-        <Link href="/shop" className={`text-sm font-semibold rounded-full px-3.5 py-1.5 border ${!sp.cat ? "border-accent bg-accent-weak text-accent" : "border-border text-ink-2"}`}>Tất cả</Link>
-        {cats.map((c) => (
-          <Link key={c.id} href={`/shop?cat=${c.slug}`} className={`text-sm font-semibold rounded-full px-3.5 py-1.5 border ${sp.cat === c.slug ? "border-accent bg-accent-weak text-accent" : "border-border text-ink-2"}`}>{c.name}</Link>
-        ))}
+      {/* Bộ lọc phễu (đồng bộ toàn app) */}
+      <div className="flex items-center gap-2 flex-wrap mt-5">
+        <ShopFilter cats={cats} cat={sp.cat} type={sp.type} sort={sp.sort} />
+        <span className="text-sm text-ink-3">{products.length} sản phẩm</span>
       </div>
 
       {products.length === 0 ? (
