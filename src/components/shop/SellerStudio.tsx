@@ -6,12 +6,13 @@ import { formatVND } from "@/lib/format";
 import ImageUpload from "@/components/ImageUpload";
 import GalleryUpload from "@/components/GalleryUpload";
 
-interface Shop { id: string; name: string; status: string; slug: string }
+interface Shop { id: string; name: string; status: string; slug: string; description?: string; logo_url?: string; pickup_name?: string; pickup_phone?: string; pickup_address?: string }
 interface Cat { id: string; name: string; fee_percent: number }
 interface Product { id: string; title: string; type: string; price: number; status: string; review_status: string; review_note?: string; sold_count: number; stock?: number | null }
-interface Order { id: string; total: number; status: string; has_physical: boolean; ship_name?: string; ship_phone?: string; ship_address?: string; shop_order_items: { title: string; qty: number }[] }
+interface OrderItem { title: string; qty: number; variant?: string | null; shop_products?: { weight?: number | null; dimensions?: string | null } | null }
+interface Order { id: string; code?: string; total: number; subtotal?: number; shipping_fee?: number; status: string; carrier?: string | null; tracking_code?: string | null; has_physical: boolean; ship_name?: string; ship_phone?: string; ship_address?: string; shop_order_items: OrderItem[] }
 
-const empty = { type: "digital", title: "", description: "", price: "0", compare_price: "", category_id: "", stock: "", shipping_fee: "0", media: [] as string[], digital_url: "", digital_note: "", optionsText: "" };
+const empty = { type: "digital", title: "", description: "", price: "0", compare_price: "", category_id: "", stock: "", shipping_fee: "0", weight: "", dimensions: "", media: [] as string[], digital_url: "", digital_note: "", optionsText: "" };
 
 export default function SellerStudio() {
   const [loading, setLoading] = useState(true);
@@ -23,6 +24,8 @@ export default function SellerStudio() {
   const [ov, setOv] = useState<{ revenue: number; pending_escrow: number; received: number; orders: number } | null>(null);
   const [lowStock, setLowStock] = useState<{ title: string; stock: number }[]>([]);
   const [reg, setReg] = useState({ name: "", description: "", logo_url: "" });
+  const [settingsOpen, setSettingsOpen] = useState(false);
+  const [shopForm, setShopForm] = useState({ name: "", description: "", logo_url: "", pickup_name: "", pickup_phone: "", pickup_address: "" });
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
@@ -54,7 +57,7 @@ export default function SellerStudio() {
   function openNew() { setEditId(null); setForm(empty); setEditing(true); }
   function openEdit(p: Product & Record<string, unknown>) {
     setEditId(p.id);
-    setForm({ type: p.type, title: p.title, description: (p.description as string) || "", price: String(p.price || 0), compare_price: p.compare_price ? String(p.compare_price) : "", category_id: (p.category_id as string) || "", stock: p.stock != null ? String(p.stock) : "", shipping_fee: String((p.shipping_fee as number) || 0), media: Array.isArray(p.media) ? (p.media as string[]) : [], digital_url: (p.digital_url as string) || "", digital_note: (p.digital_note as string) || "", optionsText: Array.isArray(p.options) ? (p.options as { name: string; values: string[] }[]).map((o) => `${o.name}: ${o.values.join(", ")}`).join("\n") : "" });
+    setForm({ type: p.type, title: p.title, description: (p.description as string) || "", price: String(p.price || 0), compare_price: p.compare_price ? String(p.compare_price) : "", category_id: (p.category_id as string) || "", stock: p.stock != null ? String(p.stock) : "", shipping_fee: String((p.shipping_fee as number) || 0), weight: p.weight != null ? String(p.weight) : "", dimensions: (p.dimensions as string) || "", media: Array.isArray(p.media) ? (p.media as string[]) : [], digital_url: (p.digital_url as string) || "", digital_note: (p.digital_note as string) || "", optionsText: Array.isArray(p.options) ? (p.options as { name: string; values: string[] }[]).map((o) => `${o.name}: ${o.values.join(", ")}`).join("\n") : "" });
     setEditing(true);
   }
   async function save() {
@@ -74,6 +77,20 @@ export default function SellerStudio() {
     await fetch("/api/seller/orders", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id: o.id, tracking_code: t, carrier: carrier.trim().toLowerCase() }) });
     toast("Đã đánh dấu giao hàng"); loadAll();
   }
+  function openSettings() { setShopForm({ name: shop?.name || "", description: shop?.description || "", logo_url: shop?.logo_url || "", pickup_name: shop?.pickup_name || "", pickup_phone: shop?.pickup_phone || "", pickup_address: shop?.pickup_address || "" }); setSettingsOpen(true); }
+  async function saveShop() {
+    if (!shopForm.name.trim()) return toast("Nhập tên shop");
+    const res = await fetch("/api/shop/register", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify(shopForm) });
+    const d = await res.json(); if (!res.ok) return toast(d.error || "Lỗi");
+    setShop((s) => s ? { ...s, ...shopForm } : s); setSettingsOpen(false); toast("Đã lưu hồ sơ shop");
+  }
+  // Thông tin giao hàng để chủ shop copy sang app vận chuyển (GHN/GHTK…)
+  function shipInfo(o: Order) {
+    const items = o.shop_order_items.map((it) => `- ${it.title}${it.variant ? ` (${it.variant})` : ""} ×${it.qty}${it.shop_products?.weight ? ` · ${it.shop_products.weight}g` : ""}${it.shop_products?.dimensions ? ` · ${it.shop_products.dimensions}` : ""}`).join("\n");
+    const totalW = o.shop_order_items.reduce((n, it) => n + ((it.shop_products?.weight || 0) * it.qty), 0);
+    return `ĐƠN ${o.code || o.id.slice(0, 8)}\n— NGƯỜI NHẬN —\n${o.ship_name || ""} · ${o.ship_phone || ""}\n${o.ship_address || ""}\n— HÀNG —\n${items}\nTổng KL: ${totalW ? totalW + "g" : "(chưa nhập)"}\nThu hộ (COD): 0đ (đã thanh toán online)`;
+  }
+  async function copyShip(o: Order) { try { await navigator.clipboard.writeText(shipInfo(o)); toast("Đã copy thông tin giao hàng ✓"); } catch { toast("Không copy được"); } }
 
   const inp = "w-full px-3 py-2.5 rounded-lg border border-border-strong bg-surface text-sm outline-none focus:border-accent";
   if (loading) return <div className="container-x py-16 text-center text-ink-3">Đang tải…</div>;
@@ -100,10 +117,12 @@ export default function SellerStudio() {
       <div className="flex items-center justify-between mb-5 flex-wrap gap-3">
         <div><div className="text-xs uppercase tracking-wider text-accent font-semibold">Kênh người bán</div><h1 className="text-2xl font-extrabold tracking-tight">{shop.name}</h1></div>
         <div className="flex gap-2">
+          <button onClick={openSettings} className="rounded-full border border-border-strong text-sm font-semibold px-4 py-2 cursor-pointer">⚙ Cài đặt shop</button>
           <Link href="/wallet" className="rounded-full border border-border-strong text-sm font-semibold px-4 py-2">💰 Ví &amp; rút tiền</Link>
           {tab === "products" && <button onClick={openNew} className="rounded-full bg-accent hover:bg-accent-700 text-white text-sm font-semibold px-4 py-2 cursor-pointer">+ Sản phẩm</button>}
         </div>
       </div>
+      {!shop.pickup_address && <div className="rounded-lg bg-accent-weak text-accent text-sm px-4 py-2.5 mb-4 flex items-center justify-between gap-3"><span>📍 Bạn chưa khai báo <b>địa chỉ kho lấy hàng</b> — cần để tạo vận đơn. <button onClick={openSettings} className="underline font-semibold cursor-pointer">Khai báo ngay</button></span></div>}
       {/* Dashboard doanh thu */}
       {ov && (
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
@@ -144,10 +163,22 @@ export default function SellerStudio() {
           <div className="grid gap-3">
             {orders.map((o) => (
               <div key={o.id} className="rounded-card border border-border bg-surface p-4">
-                <div className="flex items-center justify-between mb-1"><span className="font-semibold text-sm">{formatVND(o.total)}</span><span className="text-xs text-ink-3">{o.status}</span></div>
-                {o.shop_order_items.map((it, i) => <div key={i} className="text-sm text-ink-2">{it.title} ×{it.qty}</div>)}
-                {o.has_physical && <div className="text-xs text-ink-3 mt-1">📍 {o.ship_name} · {o.ship_phone} · {o.ship_address}</div>}
-                {o.has_physical && o.status === "paid" && <button onClick={() => ship(o)} className="mt-2 rounded-full bg-ink text-white text-xs font-semibold px-4 py-1.5 cursor-pointer">📦 Đánh dấu đã giao</button>}
+                <div className="flex items-center justify-between mb-1"><span className="font-semibold text-sm">{o.code ? <span className="text-ink-3 font-normal">#{o.code} · </span> : null}{formatVND(o.total)}</span><span className={`text-xs ${o.status === "paid" ? "text-amber-700" : o.status === "shipped" ? "text-accent" : "text-ink-3"}`}>{o.status === "paid" ? "Chờ giao" : o.status === "shipped" ? "Đang giao" : o.status}</span></div>
+                {o.shop_order_items.map((it, i) => <div key={i} className="text-sm text-ink-2">{it.title}{it.variant ? <span className="text-ink-3"> ({it.variant})</span> : null} ×{it.qty}{it.shop_products?.weight ? <span className="text-ink-3 text-xs"> · {it.shop_products.weight}g</span> : null}</div>)}
+                {o.has_physical && (
+                  <div className="mt-2 rounded-lg bg-bg-soft border border-border p-2.5 text-xs">
+                    <div className="font-semibold text-ink">📍 Giao tới:</div>
+                    <div className="text-ink-2">{o.ship_name} · {o.ship_phone}</div>
+                    <div className="text-ink-2">{o.ship_address}</div>
+                  </div>
+                )}
+                {o.tracking_code && <div className="text-xs text-ink-3 mt-1.5">🚚 {o.carrier?.toUpperCase()} · {o.tracking_code}</div>}
+                {o.has_physical && o.status === "paid" && (
+                  <div className="flex gap-2 mt-2">
+                    <button onClick={() => copyShip(o)} className="rounded-full border border-border-strong text-xs font-semibold px-4 py-1.5 cursor-pointer">📋 Copy thông tin giao</button>
+                    <button onClick={() => ship(o)} className="rounded-full bg-ink text-white text-xs font-semibold px-4 py-1.5 cursor-pointer">📦 Đã gửi hàng + mã VĐ</button>
+                  </div>
+                )}
               </div>
             ))}
           </div>
@@ -172,10 +203,17 @@ export default function SellerStudio() {
                 <input className={inp} type="number" placeholder="Giá gốc (gạch ngang)" value={form.compare_price} onChange={(e) => setForm({ ...form, compare_price: e.target.value })} />
               </div>
               {form.type === "physical" ? (
-                <div className="grid grid-cols-2 gap-2">
-                  <input className={inp} type="number" placeholder="Tồn kho" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
-                  <input className={inp} type="number" placeholder="Phí ship (đ)" value={form.shipping_fee} onChange={(e) => setForm({ ...form, shipping_fee: e.target.value })} />
-                </div>
+                <>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input className={inp} type="number" placeholder="Tồn kho" value={form.stock} onChange={(e) => setForm({ ...form, stock: e.target.value })} />
+                    <input className={inp} type="number" placeholder="Phí ship (đ) — 0 = freeship/thu khi giao" value={form.shipping_fee} onChange={(e) => setForm({ ...form, shipping_fee: e.target.value })} />
+                  </div>
+                  <div className="grid grid-cols-2 gap-2">
+                    <input className={inp} type="number" placeholder="Cân nặng (gram)" value={form.weight} onChange={(e) => setForm({ ...form, weight: e.target.value })} />
+                    <input className={inp} placeholder="Kích thước D×R×C (cm)" value={form.dimensions} onChange={(e) => setForm({ ...form, dimensions: e.target.value })} />
+                  </div>
+                  <p className="text-[11px] text-ink-3">💡 Cân nặng &amp; kích thước giúp bạn tạo vận đơn chính xác trên app GHN/GHTK. Phí ship không bắt buộc.</p>
+                </>
               ) : (
                 <>
                   <input className={inp} placeholder="Link giao (Google Drive…) — hoặc tải file bên dưới" value={form.digital_url.startsWith("file:") ? "📎 (đã tải file lên — bảo mật)" : form.digital_url} onChange={(e) => setForm({ ...form, digital_url: e.target.value })} readOnly={form.digital_url.startsWith("file:")} />
@@ -186,6 +224,32 @@ export default function SellerStudio() {
               )}
               <div><label className="block text-[11px] text-ink-3 mb-1">Phân loại/biến thể — mỗi dòng: <code className="bg-bg-soft px-1 rounded">Tên: giá trị1, giá trị2</code></label><textarea className={`${inp} font-mono`} rows={2} placeholder={"Size: S, M, L\nMàu: Đen, Trắng"} value={form.optionsText} onChange={(e) => setForm({ ...form, optionsText: e.target.value })} /></div>
               <div className="flex gap-2 pt-1"><button onClick={save} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">{editId ? "Lưu" : "Tạo"}</button><button onClick={() => setEditing(false)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button></div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal cài đặt shop */}
+      {settingsOpen && (
+        <div className="fixed inset-0 z-[260] flex items-center justify-center p-4 bg-[rgba(11,12,14,.5)] backdrop-blur-sm" onClick={(e) => e.target === e.currentTarget && setSettingsOpen(false)}>
+          <div className="bg-surface rounded-card border border-border shadow-lg w-full max-w-[480px] max-h-[88vh] overflow-auto p-5">
+            <h3 className="font-bold text-lg mb-1">Cài đặt shop</h3>
+            <div className="space-y-3 mt-3">
+              <div><label className="block text-[11px] text-ink-3 mb-1">Logo shop</label><ImageUpload value={shopForm.logo_url} onChange={(u) => setShopForm({ ...shopForm, logo_url: u })} endpoint="/api/shop/upload" placeholder="Tải logo" /></div>
+              <input className={inp} placeholder="Tên shop *" value={shopForm.name} onChange={(e) => setShopForm({ ...shopForm, name: e.target.value })} />
+              <textarea className={inp} rows={2} placeholder="Giới thiệu shop" value={shopForm.description} onChange={(e) => setShopForm({ ...shopForm, description: e.target.value })} />
+              <div className="pt-2 border-t border-border">
+                <div className="text-sm font-semibold mb-1">📍 Địa chỉ kho lấy hàng</div>
+                <p className="text-[11px] text-ink-3 mb-2">Dùng làm điểm lấy hàng khi bạn tạo vận đơn (GHN/GHTK…).</p>
+                <div className="space-y-2">
+                  <div className="grid grid-cols-2 gap-2">
+                    <input className={inp} placeholder="Tên người gửi" value={shopForm.pickup_name} onChange={(e) => setShopForm({ ...shopForm, pickup_name: e.target.value })} />
+                    <input className={inp} placeholder="SĐT lấy hàng" value={shopForm.pickup_phone} onChange={(e) => setShopForm({ ...shopForm, pickup_phone: e.target.value })} />
+                  </div>
+                  <textarea className={inp} rows={2} placeholder="Địa chỉ kho (số nhà, đường, phường/xã, quận/huyện, tỉnh/thành)" value={shopForm.pickup_address} onChange={(e) => setShopForm({ ...shopForm, pickup_address: e.target.value })} />
+                </div>
+              </div>
+              <div className="flex gap-2 pt-1"><button onClick={saveShop} className="rounded-full bg-accent hover:bg-accent-700 text-white font-semibold text-sm px-5 py-2.5 cursor-pointer">Lưu</button><button onClick={() => setSettingsOpen(false)} className="rounded-full border border-border-strong text-sm px-4 py-2.5 cursor-pointer">Hủy</button></div>
             </div>
           </div>
         </div>

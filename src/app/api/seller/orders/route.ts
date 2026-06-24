@@ -8,7 +8,7 @@ export async function GET() {
   const u = await requireSeller();
   if (!u) return NextResponse.json({ error: "forbidden" }, { status: 403 });
   const admin = createAdminClient()!;
-  const { data } = await admin.from("shop_orders").select("*, shop_order_items(*)").eq("shop_id", u.shopId).neq("status", "pending").order("created_at", { ascending: false }).limit(100);
+  const { data } = await admin.from("shop_orders").select("*, shop_order_items(*, shop_products(weight, dimensions))").eq("shop_id", u.shopId).neq("status", "pending").order("created_at", { ascending: false }).limit(100);
   return NextResponse.json({ orders: data ?? [] });
 }
 

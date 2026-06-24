@@ -34,3 +34,19 @@ export async function POST(req: Request) {
   await notifyAdmins("🏪 Đăng ký mở shop mới", `"${b.name}" chờ duyệt.`, "/admin");
   return NextResponse.json({ ok: true, status: "pending" });
 }
+
+// Cập nhật hồ sơ shop (chủ shop) — gồm địa chỉ kho lấy hàng để tự lên đơn vận chuyển
+export async function PATCH(req: Request) {
+  const s = await createClient();
+  if (!s) return NextResponse.json({ error: "unconfigured" }, { status: 503 });
+  const { data: { user } } = await s.auth.getUser();
+  if (!user) return NextResponse.json({ error: "auth" }, { status: 401 });
+  const admin = createAdminClient()!;
+  const b = await req.json();
+  const patch: Record<string, unknown> = {};
+  for (const f of ["name", "description", "logo_url", "pickup_name", "pickup_phone", "pickup_address"]) if (b[f] !== undefined) patch[f] = b[f];
+  if (!Object.keys(patch).length) return NextResponse.json({ ok: true });
+  const { error } = await admin.from("shops").update(patch).eq("owner_id", user.id);
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 });
+  return NextResponse.json({ ok: true });
+}

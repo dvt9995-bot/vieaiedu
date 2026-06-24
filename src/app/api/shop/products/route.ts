@@ -3,11 +3,11 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireSeller } from "@/lib/shop";
 import { slugify } from "@/lib/video";
 
-const FIELDS = ["type", "title", "description", "price", "compare_price", "category_id", "stock", "media", "options", "digital_url", "digital_note", "shipping_fee"];
+const FIELDS = ["type", "title", "description", "price", "compare_price", "category_id", "stock", "media", "options", "digital_url", "digital_note", "shipping_fee", "weight", "dimensions"];
 function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};
   for (const f of FIELDS) if (b[f] !== undefined) o[f] = b[f];
-  for (const n of ["price", "compare_price", "stock", "shipping_fee"]) if (o[n] !== undefined && o[n] !== null && o[n] !== "") o[n] = parseInt(String(o[n])) || 0; else if (o[n] === "") o[n] = null;
+  for (const n of ["price", "compare_price", "stock", "shipping_fee", "weight"]) if (o[n] !== undefined && o[n] !== null && o[n] !== "") o[n] = parseInt(String(o[n])) || 0; else if (o[n] === "") o[n] = null;
   if (o.type !== undefined && o.type !== "physical") o.type = "digital";
   return o;
 }
