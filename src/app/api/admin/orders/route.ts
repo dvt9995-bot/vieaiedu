@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { isCurrentUserAdmin } from "@/lib/admin-guard";
 import { notify } from "@/lib/notify";
+import { fulfillCourseOrder } from "@/lib/fulfill";
 
 // Danh sách đơn hàng (admin)
 export async function GET(req: Request) {
@@ -35,11 +36,14 @@ export async function PATCH(req: Request) {
   if (!o) return NextResponse.json({ error: "Không tìm thấy đơn" }, { status: 404 });
 
   if (action === "mark_paid") {
-    const { data: rows } = await admin.from("orders").update({ status: "paid", paid_at: new Date().toISOString() }).eq("id", id).neq("status", "paid").select("id");
-    if (!rows || rows.length === 0) return NextResponse.json({ error: "Đơn đã ở trạng thái đã thanh toán" }, { status: 409 });
+    // Xác nhận tay = chạy Y HỆT webhook tự động: ghi danh + hoa hồng + thông báo "Thanh toán thành công" + email biên lai.
+    if (o.status === "paid") return NextResponse.json({ error: "Đơn đã ở trạng thái đã thanh toán" }, { status: 409 });
+    const r = await fulfillCourseOrder(admin, id as string, "admin");
+    if (!r.ok) return NextResponse.json({ error: "Không xử lý được đơn" }, { status: 500 });
+    return NextResponse.json({ ok: true });
   }
-  // Ghi danh (idempotent)
+  // action === "enroll": chỉ ghi danh lại (đơn đã thu tiền nhưng học viên chưa vào được khóa)
   await admin.from("enrollments").upsert({ user_id: o.user_id, course_slug: o.course_slug }, { onConflict: "user_id,course_slug" });
-  await notify({ userId: o.user_id as string, type: "transactional", title: "Đã kích hoạt khóa học 🎉", body: `Quản trị viên đã xác nhận & ghi danh khóa cho bạn. Vào học ngay!`, href: `/learn/${o.course_slug}`, email: false });
+  await notify({ userId: o.user_id as string, type: "transactional", title: "Đã kích hoạt khóa học 🎉", body: `Quản trị viên đã ghi danh khóa cho bạn. Vào học ngay!`, href: `/learn/${o.course_slug}`, email: false });
   return NextResponse.json({ ok: true });
 }

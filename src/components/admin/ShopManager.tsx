@@ -15,21 +15,28 @@ export default function ShopManager() {
   const [products, setProducts] = useState<Record<string, unknown>[]>([]);
   const [cats, setCats] = useState<Record<string, unknown>[]>([]);
   const [disputes, setDisputes] = useState<Record<string, unknown>[]>([]);
+  const [pendingOrders, setPendingOrders] = useState<Record<string, unknown>[]>([]);
   const [newCat, setNewCat] = useState({ name: "", fee_percent: "10" });
 
   const load = useCallback(async () => {
-    const [o, s, p, c, d] = await Promise.all([
+    const [o, s, p, c, d, po] = await Promise.all([
       fetch("/api/admin/shop-overview").then((r) => r.json()).catch(() => ({})),
       fetch("/api/admin/shops").then((r) => r.json()).catch(() => ({})),
       fetch("/api/admin/shop-products").then((r) => r.json()).catch(() => ({})),
       fetch("/api/admin/shop-categories").then((r) => r.json()).catch(() => ({})),
       fetch("/api/admin/shop-disputes").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/admin/shop-orders?status=pending").then((r) => r.json()).catch(() => ({})),
     ]);
     setOv(o.overview || null); setCnt(o.counts || null); setRecent(o.recent || []);
-    setShops(s.shops || []); setProducts(p.products || []); setCats(c.categories || []); setDisputes(d.disputes || []);
+    setShops(s.shops || []); setProducts(p.products || []); setCats(c.categories || []); setDisputes(d.disputes || []); setPendingOrders(po.orders || []);
   }, []);
   useEffect(() => { load(); }, [load]);
 
+  async function confirmShopPaid(code: string) {
+    if (!confirm(`Xác nhận đã NHẬN TIỀN cho đơn ${code}? Hệ thống sẽ giữ tiền, trừ kho và báo người mua + người bán.`)) return;
+    const r = await fetch("/api/admin/shop-orders", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ code, action: "mark_paid" }) }).then((x) => x.json()).catch(() => ({}));
+    if (r.ok) toast(`Đã xác nhận ${r.done} đơn`); else toast(r.error || "Lỗi"); load();
+  }
   async function shopAct(id: string, action: string) { const note = action === "suspend" ? prompt("Lý do khóa:") || "" : ""; await fetch("/api/admin/shops", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action, note }) }); toast("Đã cập nhật"); load(); }
   async function prodAct(id: string, action: string) { const note = action === "reject" ? prompt("Góp ý:") || "" : ""; await fetch("/api/admin/shop-products", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action, note }) }); toast("Đã cập nhật"); load(); }
   async function disputeAct(id: string, action: string) { if (!confirm(action === "refund" ? "Hoàn tiền người mua?" : "Trả tiền người bán?")) return; await fetch("/api/admin/shop-disputes", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action }) }); toast("Đã xử lý"); load(); }
@@ -50,6 +57,33 @@ export default function ShopManager() {
           ))}
         </div>
       )}
+
+      {/* Đơn chờ xác nhận thanh toán (xác nhận tay khi webhook quá giờ) */}
+      {pendingOrders.length > 0 && (() => {
+        const groups = Array.from(new Set(pendingOrders.map((o) => o.code as string)));
+        return (
+          <div className={card}>
+            <div className="text-sm font-semibold mb-1 text-warning">⏳ Đơn chờ xác nhận thanh toán ({groups.length})</div>
+            <p className="text-xs text-ink-3 mb-3">Khách báo đã chuyển khoản nhưng webhook chưa tự khớp (quá giờ/sai nội dung). Đối chiếu sao kê ngân hàng rồi bấm xác nhận — hệ thống sẽ chạy y hệt tự động.</p>
+            <div className="space-y-2">
+              {groups.map((code) => {
+                const ods = pendingOrders.filter((o) => o.code === code);
+                const total = ods.reduce((n, o) => n + ((o.total as number) || 0), 0);
+                const buyer = (ods[0]?.profiles as Record<string, unknown>)?.full_name as string;
+                return (
+                  <div key={code} className="border border-border rounded-lg p-3 flex flex-wrap items-center gap-x-3 gap-y-1">
+                    <div className="flex-1 min-w-[200px]">
+                      <div className="text-sm font-semibold">{formatVND(total)} <span className="font-mono text-xs text-ink-3">#{code}</span></div>
+                      <div className="text-xs text-ink-2">{buyer || "Khách"} · {ods.map((o) => (o.shops as Record<string, unknown>)?.name as string).join(", ")} · {ods.flatMap((o) => (o.shop_order_items as { title: string; qty: number }[]) || []).map((it) => `${it.title}×${it.qty}`).join(", ")}</div>
+                    </div>
+                    <Button variant="success" size="sm" onClick={() => confirmShopPaid(code)}>✓ Đã nhận tiền</Button>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })()}
 
       {/* Tranh chấp */}
       {disputes.length > 0 && (
