@@ -7,6 +7,7 @@ if (dsn) Sentry.init({
   ignoreErrors: [
     /zalo/i, /zaloJSV2/, /@context.*toLowerCase/i,        // extension Zalo + parser structured-data
     /Can't find variable: (zalo|fbq|ttq|gtag|webkit)/i,
+    /webkit\.messageHandlers/i, /messageHandlers\[.*\]\.postMessage/i,  // cầu nối native của in-app browser FB/IG/iOS
     "ResizeObserver loop", /chrome-extension:\/\//, /moz-extension:\/\//, /safari-extension/i,
     "Non-Error promise rejection captured", /Load failed/, "Failed to fetch",
   ],
