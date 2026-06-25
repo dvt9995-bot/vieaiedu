@@ -179,6 +179,13 @@
       .steps .step::after,.steps .step::before{display:none !important}
     }
     @media(prefers-reduced-motion:reduce){.flow-io .io-arrow,.steps .step:not(:last-child)::after,.steps .step:not(:last-child)::before{animation:none}}
+    /* Hình thức học */
+    .fmt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(210px,1fr));gap:16px;margin-top:34px}
+    .fmt-ic{font-size:30px;line-height:1;margin-bottom:10px}
+    #format .aud{transition:transform .25s,box-shadow .25s}
+    #format .aud:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(20,24,35,.14);border-color:rgba(200,23,32,.3)}
+    .fmt-outcome{margin-top:24px;background:linear-gradient(135deg,#fff4f4,#fff);border:1px solid rgba(200,23,32,.25);border-left:5px solid var(--red);border-radius:16px;padding:18px 20px;font-size:16px;color:var(--ink)}
+    .fmt-outcome b{color:var(--red)}
     .income-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
     .income-card{border:1px solid var(--line);border-radius:30px;overflow:hidden;background:#fff;box-shadow:var(--shadow);transition:.25s ease}
     .income-card:hover{transform:translateY(-5px)}
@@ -413,6 +420,22 @@
       </div>
     </section>
 
+    <section id="format">
+      <div class="container">
+        <div class="kicker">Hình thức học</div>
+        <h2>Học trực tiếp qua Zoom — <span style="color:var(--red)">làm tới đâu, hiểu tới đó</span></h2>
+        <p class="section-lead">Không phải video quay sẵn để bạn tự mò. Bạn vào lớp Zoom, giảng viên cầm tay chỉ từng bước và bạn thực chiến ngay trong buổi học.</p>
+        <div class="fmt-grid">
+          <div class="aud reveal"><div class="fmt-ic">🔴</div><b>Học TRỰC TIẾP qua Zoom</b><span>Vào lớp tương tác thời gian thực, hỏi là được trả lời ngay — không học một mình.</span></div>
+          <div class="aud reveal"><div class="fmt-ic">👨‍🏫</div><b>Giảng viên cầm tay từng bước</b><span>Hướng dẫn chi tiết từng thao tác, không bỏ sót, người mới cũng theo kịp.</span></div>
+          <div class="aud reveal"><div class="fmt-ic">🛠️</div><b>Thực chiến ngay trên lớp</b><span>Vừa học vừa làm theo trực tiếp trên Zoom, vướng đâu được sửa tại chỗ.</span></div>
+          <div class="aud reveal"><div class="fmt-ic">🚀</div><b>Tự setup hệ thống của riêng bạn</b><span>Học xong bạn TỰ TAY dựng được hệ thống xây kênh tự động cho chính mình.</span></div>
+          <div class="aud reveal"><div class="fmt-ic">♾️</div><b>Video record — xem lại trọn đời</b><span>Mỗi buổi đều có bản ghi lưu trong tài khoản, ôn lại bất cứ lúc nào, mãi mãi.</span></div>
+        </div>
+        <div class="fmt-outcome reveal">🎯 <b>Cam kết đầu ra:</b> Kết thúc khóa học, bạn tự tay vận hành được một hệ thống tạo video &amp; xây kênh tự động bằng AI cho riêng mình.</div>
+      </div>
+    </section>
+
     <section id="income">
       <div class="container">
         <div class="kicker">Tiền đến từ đâu?</div>
@@ -511,7 +534,9 @@
           <div class="offer-box">
             <h3 style="margin-top:0;color:#fff">Bạn nhận được trọn bộ</h3>
             <div class="rights">
-              <div class="right"><b>✓</b><span>Video hướng dẫn từng bước — học trọn đời</span></div>
+              <div class="right"><b>✓</b><span>Học <b style="color:#fff">trực tiếp qua Zoom</b> — giảng viên cầm tay từng bước</span></div>
+              <div class="right"><b>✓</b><span>Thực chiến ngay trên lớp — tự setup hệ thống của riêng bạn</span></div>
+              <div class="right"><b>✓</b><span>Video record mỗi buổi — <b style="color:#fff">xem lại trọn đời</b></span></div>
               <div class="right"><b>✓</b><span>Bộ prompt giao việc cho AI (dùng được ngay)</span></div>
               <div class="right"><b>✓</b><span>Quy trình tạo video & phát triển đa nền tảng</span></div>
               <div class="right"><b>✓</b><span>Mẫu kế hoạch nội dung + checklist triển khai</span></div>
