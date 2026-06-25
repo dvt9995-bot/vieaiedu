@@ -8,6 +8,12 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "**.supabase.co" },
     ],
   },
+  async rewrites() {
+    return [
+      // Landing page tĩnh (chạy quảng cáo) — URL sạch không cần đuôi .html
+      { source: "/lp/ai-reels-auto-income", destination: "/lp/ai-reels-auto-income.html" },
+    ];
+  },
 };
 
 export default withSentryConfig(nextConfig, {

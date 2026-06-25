@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPurchasableCourse } from "@/lib/courses";
 import { firstSessionLabel } from "@/lib/live";
-import { sendOrderReceipt } from "@/lib/email";
+import { sendOrderReceipt, sendCourseWelcome } from "@/lib/email";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
@@ -61,11 +61,27 @@ export async function fulfillCourseOrder(admin: Admin, orderId: string, source: 
     href: courseHref, email: false,
   });
 
-  // Email biên lai (nếu cấu hình Resend)
+  // Email cho người mua
   try {
     const { data: u } = await admin.auth.admin.getUserById(order.user_id);
     const email = u.user?.email;
-    if (email && course) await sendOrderReceipt(email, course.title, order.amount);
+    if (email) {
+      if (order.source === "landing") {
+        // Mua qua landing → tài khoản tạo tự động: gửi email chào mừng + link đăng nhập 1-chạm + hướng dẫn vào học
+        const site = process.env.NEXT_PUBLIC_SITE_URL || "https://vieaiedu.vn";
+        let loginLink = `${site}/login`;
+        try {
+          const { data: link } = await admin.auth.admin.generateLink({ type: "magiclink", email, options: { redirectTo: `${site}/auth/callback?next=/dashboard` } });
+          if (link?.properties?.action_link) loginLink = link.properties.action_link;
+        } catch {}
+        const isLive = course?.format === "live";
+        const firstSession = isLive ? (await firstSessionLabel(order.course_slug)) || undefined : undefined;
+        const { data: prof } = await admin.from("profiles").select("full_name").eq("id", order.user_id).maybeSingle();
+        await sendCourseWelcome(email, { name: prof?.full_name as string, courseTitle, amount: order.amount, loginLink, isLive, firstSession });
+      } else if (course) {
+        await sendOrderReceipt(email, course.title, order.amount);
+      }
+    }
   } catch {}
 
   return { ok: true as const, fulfilled: true, courseTitle };
