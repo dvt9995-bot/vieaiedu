@@ -9,12 +9,18 @@ let lastNotifyAt = 0; // throttle toàn cục: tránh dồn nhiều lỗi khác 
 
 export async function POST(req: Request) {
   if (!rateLimit(`logerr:${clientIp(req)}`, 10, 60_000)) return NextResponse.json({ ok: false }, { status: 429 });
-  const { message, url } = await req.json().catch(() => ({}));
+  const { message, url, ua } = await req.json().catch(() => ({}));
   if (!message) return NextResponse.json({ ok: false }, { status: 400 });
 
   // Luôn ghi nhật ký lỗi (để admin xem tần suất)
   const admin = createAdminClient();
   if (admin) await admin.from("error_logs").insert({ message: String(message).slice(0, 500), url: url ? String(url).slice(0, 300) : null });
+
+  // Bỏ QUA cảnh báo (vẫn ghi log) khi lỗi từ TRÌNH DUYỆT TRONG ỨNG DỤNG (FB/IG/Zalo/Line/TikTok)
+  // hoặc message thuộc nhóm nhiễu bên thứ ba — webview tự tiêm script gây lỗi generic, không sửa được.
+  const inApp = /FBAN|FBAV|FB_IAB|Instagram|Zalo|Line\/|musical_ly|Messenger/i.test(String(ua || ""));
+  const noisy = /reading '?catch'?|Java object is gone|postMessage|messageHandlers|@context|zalo/i.test(String(message));
+  if (inApp || noisy) return NextResponse.json({ ok: true, logged: true, skippedAlert: inApp ? "in-app-browser" : "noisy" });
 
   const key = String(message).slice(0, 120);
   const now = Date.now();

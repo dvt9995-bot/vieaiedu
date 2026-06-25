@@ -6,7 +6,7 @@ export default function GlobalError({ error, reset }: { error: Error & { digest?
   useEffect(() => {
     fetch("/api/log-error", {
       method: "POST", headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ message: `${error?.message || "Unknown"}${error?.digest ? ` (${error.digest})` : ""}`, url: typeof window !== "undefined" ? window.location.pathname : "" }),
+      body: JSON.stringify({ message: `${error?.message || "Unknown"}${error?.digest ? ` (${error.digest})` : ""}`, url: typeof window !== "undefined" ? window.location.pathname : "", ua: typeof navigator !== "undefined" ? navigator.userAgent : "" }),
     }).catch(() => {});
   }, [error]);
 
