@@ -10,17 +10,20 @@ export async function GET(req: Request) {
   const admin = createAdminClient()!;
   const status = new URL(req.url).searchParams.get("status");
   let q = admin.from("orders")
-    .select("id, user_id, course_slug, amount, wallet_used, coupon_code, status, sepay_ref, paid_at, created_at, profiles(full_name, student_code)")
+    .select("id, user_id, course_slug, amount, wallet_used, coupon_code, status, sepay_ref, paid_at, created_at, source, profiles(full_name, student_code, phone, email)")
     .order("created_at", { ascending: false }).limit(200);
   if (status && status !== "all") q = q.eq("status", status);
   const { data } = await q;
-  const items = (data || []).map((o) => ({
-    id: o.id, course_slug: o.course_slug, amount: o.amount, wallet_used: o.wallet_used,
-    coupon_code: o.coupon_code, status: o.status, sepay_ref: o.sepay_ref, paid_at: o.paid_at, created_at: o.created_at,
-    user_id: o.user_id,
-    name: (o as { profiles?: { full_name?: string } }).profiles?.full_name || "Học viên",
-    student_code: (o as { profiles?: { student_code?: string } }).profiles?.student_code || "—",
-  }));
+  const items = (data || []).map((o) => {
+    const p = (o as { profiles?: { full_name?: string; student_code?: string; phone?: string; email?: string } }).profiles;
+    return {
+      id: o.id, course_slug: o.course_slug, amount: o.amount, wallet_used: o.wallet_used,
+      coupon_code: o.coupon_code, status: o.status, sepay_ref: o.sepay_ref, paid_at: o.paid_at, created_at: o.created_at,
+      user_id: o.user_id, source: (o as { source?: string }).source || null,
+      name: p?.full_name || "Học viên", student_code: p?.student_code || "—",
+      phone: p?.phone || null, email: p?.email || null,
+    };
+  });
   return NextResponse.json({ items });
 }
 

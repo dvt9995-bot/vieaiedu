@@ -6,6 +6,7 @@ import { toast } from "@/components/Toaster";
 interface O {
   id: string; course_slug: string; amount: number; wallet_used: number; coupon_code: string | null;
   status: string; sepay_ref: string | null; paid_at: string | null; created_at: string; name: string; student_code: string;
+  phone?: string | null; email?: string | null; source?: string | null;
 }
 
 const STATUS: Record<string, [string, string]> = {
@@ -62,7 +63,11 @@ export default function OrderManager() {
               const [lbl, cls] = STATUS[o.status] || [o.status, "bg-bg-soft text-ink-3"];
               return (
                 <tr key={o.id} className="border-b border-border last:border-0">
-                  <td className="px-4 py-3"><div className="font-medium">{o.name}</div><div className="text-ink-3 text-xs font-mono">{o.student_code}</div></td>
+                  <td className="px-4 py-3">
+                    <div className="font-medium">{o.name}{o.source === "landing" && <span className="ml-1.5 text-[10px] font-bold text-warning bg-gold/15 rounded-full px-1.5 py-0.5 align-middle">LANDING</span>}</div>
+                    <div className="text-ink-3 text-xs font-mono">{o.student_code}</div>
+                    {(o.phone || o.email) && <div className="text-xs mt-0.5 flex flex-wrap gap-x-2">{o.phone && <a href={`tel:${o.phone}`} className="text-accent hover:underline">📞 {o.phone}</a>}{o.email && <span className="text-ink-3">{o.email}</span>}</div>}
+                  </td>
                   <td className="px-4 py-3 text-ink-2">{o.course_slug}{o.coupon_code && <span className="ml-1 text-xs text-accent">·{o.coupon_code}</span>}</td>
                   <td className="px-4 py-3 text-right whitespace-nowrap"><b>{formatVND((o.amount || 0) + (o.wallet_used || 0))}</b>{o.wallet_used > 0 && <div className="text-ink-3 text-[11px]">ví {formatVND(o.wallet_used)}</div>}</td>
                   <td className="px-4 py-3"><span className={`text-xs font-bold px-2 py-1 rounded-full whitespace-nowrap ${cls}`}>{lbl}</span></td>
