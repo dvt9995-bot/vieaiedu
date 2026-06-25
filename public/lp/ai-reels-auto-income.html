@@ -7,8 +7,27 @@
   <meta name="description" content="Nhắn tin giao việc, AI hỗ trợ tạo video và xây kênh Facebook Reels, YouTube Shorts, TikTok; kết hợp kiếm tiền từ lượt xem và Shopee Affiliate.">
   <meta name="keywords" content="xây kênh tự động bằng AI, kiếm tiền Facebook Reels, YouTube Shorts, Shopee Affiliate, TikTok Affiliate, tạo video bằng AI">
   <meta property="og:title" content="AI Reels Auto Income – Xây kênh tự động đa nền tảng bằng AI">
-  <meta property="og:description" content="Từ một tin nhắn đến video hoàn thiện, đăng đa nền tảng và triển khai Affiliate.">
+  <meta property="og:description" content="Học trực tiếp qua Zoom, giảng viên cầm tay từng bước. Học xong tự setup hệ thống xây kênh tự động bằng AI. Video record xem lại trọn đời.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://vieaiedu.vn/lp/ai-reels-auto-income">
+  <meta property="og:image" content="https://vieaiedu.vn/og.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:locale" content="vi_VN">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="AI Reels Auto Income – Xây kênh tự động bằng AI">
+  <meta name="twitter:description" content="Học trực tiếp qua Zoom, tự setup hệ thống xây kênh tự động bằng AI.">
+  <meta name="twitter:image" content="https://vieaiedu.vn/og.png">
+  <link rel="icon" href="/logo.png" type="image/png">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="canonical" href="https://vieaiedu.vn/lp/ai-reels-auto-income">
   <meta name="theme-color" content="#b5121b">
+  <!-- Google Analytics 4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8F1H0WE4GF"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8F1H0WE4GF');</script>
+  <!-- Meta Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','600820699707738');fbq('track','PageView');</script>
+  <noscript><img height="1" width="1" style="display:none" src="https://www.facebook.com/tr?id=600820699707738&ev=PageView&noscript=1"/></noscript>
   <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Course", "name": "AI Reels Auto Income", "description": "Khóa học xây kênh nội dung tự động đa nền tảng bằng AI, tạo video, đăng Facebook Reels, YouTube Shorts, TikTok và triển khai Shopee Affiliate.", "provider": {"@type": "Organization", "name": "VIE AI EDU"}, "inLanguage": "vi"}</script>
 
   <style>
@@ -669,6 +688,10 @@
       btn.addEventListener('click', () => btn.parentElement.classList.toggle('open'));
     });
 
+    // ===== Tracking: xem sản phẩm =====
+    try { if (window.fbq) fbq('track', 'ViewContent', { content_name: 'AI Reels Auto Income', content_category: 'course', value: 999000, currency: 'VND' }); } catch (e) {}
+    try { if (window.gtag) gtag('event', 'view_item', { currency: 'VND', value: 999000, items: [{ item_name: 'AI Reels Auto Income' }] }); } catch (e) {}
+
     // ===== Checkout tự động qua SePay =====
     (function () {
       var form = document.getElementById('leadForm');
@@ -710,14 +733,16 @@
             document.getElementById('payWait').style.display = 'block';
             document.getElementById('payDone').style.display = 'none';
             ov.style.display = 'flex';
-            if (window.fbq) { try { fbq('track', 'InitiateCheckout', { value: d.amount, currency: 'VND' }); } catch (e) {} }
+            try { if (window.fbq) fbq('track', 'InitiateCheckout', { value: d.amount, currency: 'VND' }); } catch (e) {}
+            try { if (window.gtag) gtag('event', 'begin_checkout', { currency: 'VND', value: d.amount }); } catch (e) {}
             poll = setInterval(function () {
               fetch('/api/lp/checkout?code=' + encodeURIComponent(d.code)).then(function (r) { return r.json(); }).then(function (s) {
                 if (s && s.paid) {
                   clearInterval(poll);
                   document.getElementById('payWait').style.display = 'none';
                   document.getElementById('payDone').style.display = 'block';
-                  if (window.fbq) { try { fbq('track', 'Purchase', { value: d.amount, currency: 'VND' }); } catch (e) {} }
+                  // Chuyển sang trang cảm ơn (sự kiện Purchase bắn tại đó)
+                  setTimeout(function () { window.location.href = '/lp/cam-on?value=' + d.amount; }, 1200);
                 }
               }).catch(function () {});
             }, 4000);

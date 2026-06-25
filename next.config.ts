@@ -12,6 +12,7 @@ const nextConfig: NextConfig = {
     return [
       // Landing page tĩnh (chạy quảng cáo) — URL sạch không cần đuôi .html
       { source: "/lp/ai-reels-auto-income", destination: "/lp/ai-reels-auto-income.html" },
+      { source: "/lp/cam-on", destination: "/lp/cam-on.html" },
     ];
   },
 };

@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Cảm ơn bạn đã đăng ký — VIE AI EDU</title>
+  <meta name="robots" content="noindex">
+  <link rel="icon" href="/logo.png" type="image/png">
+  <meta name="theme-color" content="#b5121b">
+  <!-- GA4 -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-8F1H0WE4GF"></script>
+  <script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}gtag('js',new Date());gtag('config','G-8F1H0WE4GF');</script>
+  <!-- Meta Pixel -->
+  <script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init','600820699707738');fbq('track','PageView');</script>
+  <style>
+    :root{--red:#c81720;--ink:#111318;--muted:#626976;--line:#e7e9ee}
+    *{box-sizing:border-box}
+    body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;background:radial-gradient(circle at 50% -10%,#fff3f3,#fff 38%);color:var(--ink);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:22px;line-height:1.6}
+    .card{background:#fff;border:1px solid var(--line);border-radius:26px;box-shadow:0 30px 80px rgba(20,24,35,.14);max-width:520px;width:100%;padding:36px 28px;text-align:center}
+    .check{width:78px;height:78px;border-radius:50%;background:linear-gradient(135deg,#16a34a,#34d27b);display:grid;place-items:center;margin:0 auto 18px;font-size:40px;color:#fff;box-shadow:0 14px 32px rgba(22,163,74,.35)}
+    h1{font-size:26px;font-weight:900;margin:0 0 8px;letter-spacing:-.02em}
+    .lead{color:var(--muted);font-size:15.5px;margin:0 0 22px}
+    .steps{text-align:left;background:#f7f8fa;border:1px solid var(--line);border-radius:16px;padding:18px 18px 18px 16px;margin:0 0 22px}
+    .steps li{margin:0 0 10px;padding-left:4px;font-size:14.5px}
+    .steps li:last-child{margin-bottom:0}
+    .steps b{color:var(--red)}
+    .btn{display:block;width:100%;text-decoration:none;font-weight:800;font-size:16px;padding:15px;border-radius:999px;margin-bottom:12px;transition:transform .15s}
+    .btn:hover{transform:translateY(-2px)}
+    .btn-red{background:var(--red);color:#fff;box-shadow:0 12px 28px rgba(200,23,32,.3)}
+    .btn-zalo{background:#0068ff;color:#fff;box-shadow:0 12px 28px rgba(0,104,255,.3)}
+    .btn-ghost{background:none;color:var(--muted);box-shadow:none;font-weight:600;font-size:14px;padding:8px}
+    .note{font-size:12.5px;color:#9aa0ab;margin-top:6px}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <div class="check">✓</div>
+    <h1>Thanh toán thành công! 🎉</h1>
+    <p class="lead">Cảm ơn bạn đã đăng ký khóa <b>AI Reels Auto Income</b>. Tài khoản học đã được tạo và kích hoạt tự động.</p>
+    <ol class="steps">
+      <li>📩 <b>Kiểm tra email</b> (cả mục Quảng cáo/Spam) — có <b>nút đăng nhập 1 chạm</b> và hướng dẫn vào học.</li>
+      <li>🔐 Bấm nút trong email để <b>đăng nhập</b>, sau đó đặt mật khẩu trong mục Cài đặt tài khoản.</li>
+      <li>🔴 Khóa học <b>trực tiếp qua Zoom</b> — vào mục “Học của tôi”, đến giờ bấm “Vào lớp”. Hệ thống sẽ nhắc trước buổi học.</li>
+      <li>♾️ Mỗi buổi đều có <b>video record xem lại trọn đời</b> trong tài khoản.</li>
+    </ol>
+    <a class="btn btn-red" href="/dashboard">Vào khu học của tôi →</a>
+    <a class="btn btn-zalo" href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener" id="zalo">💬 Tham gia cộng đồng Zalo (800+)</a>
+    <a class="btn btn-ghost" href="/">← Về trang chủ</a>
+    <p class="note">Cần hỗ trợ? Nhắn nhóm Zalo hoặc email — đội ngũ VIE AI EDU luôn sẵn sàng.</p>
+  </div>
+  <script>
+    (function () {
+      var v = parseInt(new URLSearchParams(location.search).get('value')) || 999000;
+      try { if (window.fbq) fbq('track', 'Purchase', { value: v, currency: 'VND', content_name: 'AI Reels Auto Income' }); } catch (e) {}
+      try { if (window.gtag) gtag('event', 'purchase', { currency: 'VND', value: v, transaction_id: 'lp-' + Date.now() }); } catch (e) {}
+      var z = document.getElementById('zalo');
+      if (z) z.addEventListener('click', function () { try { if (window.fbq) fbq('trackCustom', 'JoinZalo'); } catch (e) {} });
+    })();
+  </script>
+</body>
+</html>
