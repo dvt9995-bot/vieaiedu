@@ -169,10 +169,10 @@
     @keyframes flowline{0%{background-position:140% 0}100%{background-position:-140% 0}}
     @keyframes flowarrow{0%,100%{opacity:.45}50%{opacity:1}}
     /* Mỗi hàng có 6 cột trên desktop → không có "đầu hàng" cần ẩn. Khi xuống 3/2 cột, ẩn nối ở cuối mỗi hàng */
-    @media(max-width:980px){
+    @media(max-width:1050px){
       .steps .step:nth-child(3n)::after,.steps .step:nth-child(3n)::before{display:none}
     }
-    @media(max-width:680px){
+    @media(max-width:700px){
       .steps .step{padding:42px 16px 18px;min-height:0}
       .steps .step:hover{transform:translateY(-5px) scale(1.02)}
       .steps .step:hover .ico{transform:none}
