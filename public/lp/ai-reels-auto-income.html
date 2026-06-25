@@ -209,6 +209,23 @@
     #format .aud:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(20,24,35,.14);border-color:rgba(200,23,32,.3)}
     .fmt-outcome{margin-top:24px;background:linear-gradient(135deg,#fff4f4,#fff);border:1px solid rgba(200,23,32,.25);border-left:5px solid var(--red);border-radius:16px;padding:18px 20px;font-size:16px;color:var(--ink)}
     .fmt-outcome b{color:var(--red)}
+    /* Kết quả & feedback học viên */
+    .result-gallery{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:30px}
+    .result-gallery .item{position:relative;aspect-ratio:9/16;border-radius:16px;overflow:hidden;border:1px solid var(--line);background:#f1f2f4;display:block}
+    .result-gallery .item img,.result-gallery .item video{width:100%;height:100%;object-fit:cover;display:block}
+    .testi-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:26px}
+    .testi{border:1px solid var(--line);background:#fff;border-radius:18px;padding:18px;box-shadow:var(--shadow-sm)}
+    .testi .stars{color:var(--gold);font-size:14px;letter-spacing:1px;margin-bottom:8px}
+    .testi p{margin:0;color:#414750;font-size:14.5px;line-height:1.6}
+    .testi .who{display:flex;align-items:center;gap:10px;margin-top:12px;padding-top:12px;border-top:1px solid var(--line)}
+    .testi .av{width:38px;height:38px;border-radius:50%;background:#fff2c8;display:grid;place-items:center;font-weight:900;color:var(--red);overflow:hidden;flex:0 0 auto}
+    .testi .av img{width:100%;height:100%;object-fit:cover}
+    .testi .nm{font-weight:800;font-size:14px;color:var(--ink)}
+    .testi .ro{font-size:12.5px;color:var(--muted)}
+    @media(max-width:700px){
+      .result-gallery{grid-template-columns:repeat(2,1fr);gap:10px}
+      .testi-grid{grid-template-columns:1fr}
+    }
     /* ============ TỐI ƯU MOBILE (đa số traffic) ============ */
     @media(max-width:700px){
       /* Typography gọn, dễ đọc, không tràn */
@@ -603,6 +620,16 @@
       </div>
     </section>
 
+    <section id="results" hidden>
+      <div class="container">
+        <div class="kicker">Kết quả &amp; cảm nhận học viên</div>
+        <h2>Học viên đã làm được gì sau khóa học</h2>
+        <p class="section-lead">Hình ảnh, video kết quả và cảm nhận thực tế từ học viên các khóa trước.</p>
+        <div id="resultGallery" class="result-gallery"></div>
+        <div id="testiList" class="testi-grid"></div>
+      </div>
+    </section>
+
     <section class="offer" id="register">
       <div class="container">
         <div class="kicker" style="color:var(--gold2)">Đăng ký ngay hôm nay</div>
@@ -782,6 +809,34 @@
       });
       art.addEventListener('mouseleave', () => card.style.transform='rotateY(-5deg) rotateX(2deg)');
     }
+
+    // ===== Kết quả & feedback học viên (lấy từ khóa LIVE) =====
+    (function () {
+      var esc = function (s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (m) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[m]; }); };
+      fetch('/api/lp/social-proof').then(function (r) { return r.json(); }).then(function (d) {
+        var imgs = (d && d.resultImages) || [], tes = (d && d.testimonials) || [];
+        if (!imgs.length && !tes.length) return;
+        var g = document.getElementById('resultGallery');
+        if (imgs.length) {
+          g.innerHTML = imgs.slice(0, 8).map(function (u) {
+            return /\.(mp4|webm|mov|m4v|ogg)(\?|$)/i.test(u)
+              ? '<div class="item"><video src="' + esc(u) + '" controls playsinline preload="metadata"></video></div>'
+              : '<a class="item" href="' + esc(u) + '" target="_blank" rel="noreferrer"><img src="' + esc(u) + '" alt="Kết quả học viên" loading="lazy"></a>';
+          }).join('');
+        } else { g.style.display = 'none'; }
+        var t = document.getElementById('testiList');
+        if (tes.length) {
+          t.innerHTML = tes.slice(0, 6).map(function (x) {
+            var r = Math.min(5, Math.max(1, x.rating || 5));
+            var av = x.avatar ? '<img src="' + esc(x.avatar) + '" alt="' + esc(x.name) + '">' : esc((x.name || '?').charAt(0));
+            return '<div class="testi"><div class="stars">' + '★'.repeat(r) + '</div><p>“' + esc(x.content) + '”</p>'
+              + '<div class="who"><div class="av">' + av + '</div><div><div class="nm">' + esc(x.name) + '</div>'
+              + (x.role ? '<div class="ro">' + esc(x.role) + '</div>' : '') + '</div></div></div>';
+          }).join('');
+        } else { t.style.display = 'none'; }
+        document.getElementById('results').hidden = false;
+      }).catch(function () {});
+    })();
 
     // ===== Popup cộng đồng Zalo (1 lần/phiên: sau 18s hoặc khi có ý định rời trang) =====
     (function () {
