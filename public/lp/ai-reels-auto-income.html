@@ -186,6 +186,55 @@
     #format .aud:hover{transform:translateY(-6px);box-shadow:0 22px 44px rgba(20,24,35,.14);border-color:rgba(200,23,32,.3)}
     .fmt-outcome{margin-top:24px;background:linear-gradient(135deg,#fff4f4,#fff);border:1px solid rgba(200,23,32,.25);border-left:5px solid var(--red);border-radius:16px;padding:18px 20px;font-size:16px;color:var(--ink)}
     .fmt-outcome b{color:var(--red)}
+    /* ============ TỐI ƯU MOBILE (đa số traffic) ============ */
+    @media(max-width:700px){
+      /* Typography gọn, dễ đọc, không tràn */
+      h1{font-size:33px!important;letter-spacing:-.03em;margin:14px 0;word-break:break-word}
+      h2{font-size:25px!important;letter-spacing:-.02em;line-height:1.18}
+      .lead{font-size:16px}
+      .section-lead{font-size:15.5px}
+      section{padding:44px 0!important}
+      .kicker{font-size:12px}
+      /* Hero: hiện giá trị + CTA sớm hơn */
+      .hero{padding-top:30px!important}
+      .hero-art{min-height:330px!important}
+      .cta-row{gap:10px}
+      .cta-row .btn{width:100%;font-size:16px;padding:15px}
+      /* Quy trình: 1 cột dọc, đọc theo thứ tự dễ hiểu */
+      .steps{grid-template-columns:1fr!important;gap:13px}
+      .steps .step{min-height:0;padding:18px 18px 16px}
+      .step b{top:16px;left:16px}
+      .flow-io{flex-direction:column;gap:8px}
+      .flow-io .io-pill{width:100%;justify-content:center}
+      .flow-io .io-arrow{transform:rotate(90deg);font-size:18px}
+      /* Khối thu nhập / module / feature */
+      .income-copy{padding:20px}
+      .income-copy h3{font-size:21px}
+      .module{padding:18px}
+      .feature{padding:14px}
+      /* Khối đăng ký: form lên TRƯỚC quyền lợi để giảm ma sát */
+      .offer-grid{gap:18px}
+      .offer-box{order:2;padding:20px}
+      .form-card{order:1;padding:22px;border-radius:22px}
+      .price{font-size:34px}
+      .price-old{font-size:17px}
+      .form-card .btn-red{font-size:16px;padding:15px}
+      input{min-height:50px;font-size:16px}    /* 16px: chống iOS auto-zoom khi focus */
+      .trust-row{gap:5px 10px;font-size:12px}
+      /* FAQ + footer */
+      .faq button{padding:16px;font-size:15px}
+      /* Sticky CTA: cao & rõ hơn, chừa đúng chỗ */
+      .sticky{padding:9px 12px env(safe-area-inset-bottom)}
+      .sticky .btn{padding:15px;font-size:16px}
+      footer{padding-bottom:96px!important}
+    }
+    @media(max-width:400px){
+      h1{font-size:29px!important}
+      h2{font-size:22px!important}
+      .price{font-size:30px}
+      .platforms{grid-template-columns:1fr 1fr}
+      section{padding:38px 0!important}
+    }
     .income-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
     .income-card{border:1px solid var(--line);border-radius:30px;overflow:hidden;background:#fff;box-shadow:var(--shadow);transition:.25s ease}
     .income-card:hover{transform:translateY(-5px)}
