@@ -255,6 +255,29 @@
       *{animation:none!important;transition:none!important;scroll-behavior:auto!important}
       .reveal{opacity:1;transform:none}
     }
+    /* ===== CRO: form ưu đãi + cộng đồng Zalo ===== */
+    .urgency-badge{display:inline-block;background:linear-gradient(90deg,#c81720,#e8351f);color:#fff;font-weight:900;font-size:13px;letter-spacing:.02em;padding:7px 14px;border-radius:999px;margin-bottom:14px;box-shadow:0 6px 18px rgba(200,23,32,.3)}
+    .price-row{display:flex;align-items:baseline;gap:12px;margin:4px 0 8px;flex-wrap:wrap}
+    .price-old{font-size:20px;color:var(--muted);text-decoration:line-through;font-weight:700}
+    .slots{background:#fff7ed;border:1px solid #fed7aa;color:#9a3412;font-weight:700;font-size:13px;padding:9px 12px;border-radius:10px;margin-bottom:14px}
+    .trust-row{display:flex;flex-wrap:wrap;gap:6px 14px;margin-top:13px;font-size:12.5px;color:var(--muted);font-weight:600}
+    .form-card .btn-red{width:100%;font-size:17px;padding:16px;animation:cta-pulse 2.4s ease-in-out infinite}
+    @keyframes cta-pulse{0%,100%{box-shadow:0 10px 26px rgba(200,23,32,.28)}50%{box-shadow:0 10px 34px rgba(200,23,32,.55)}}
+    .zalo-join{display:inline-flex;align-items:center;gap:8px;background:#0068ff;color:#fff;font-weight:800;font-size:14.5px;padding:12px 18px;border-radius:999px;text-decoration:none;box-shadow:0 8px 22px rgba(0,104,255,.32);transition:transform .15s}
+    .zalo-join:hover{transform:translateY(-2px)}
+    /* Popup Zalo */
+    .zpop-ov{position:fixed;inset:0;z-index:10000;display:none;align-items:center;justify-content:center;background:rgba(12,15,22,.62);padding:18px;backdrop-filter:blur(3px)}
+    .zpop-ov.show{display:flex;animation:zfade .25s ease}
+    @keyframes zfade{from{opacity:0}to{opacity:1}}
+    .zpop{background:#fff;border-radius:22px;max-width:380px;width:100%;padding:28px 24px;text-align:center;position:relative;box-shadow:0 30px 90px rgba(0,0,0,.4);animation:zpopin .3s cubic-bezier(.2,.9,.3,1.3)}
+    @keyframes zpopin{from{transform:scale(.9) translateY(10px);opacity:.5}to{transform:none;opacity:1}}
+    .zpop-x{position:absolute;top:12px;right:14px;border:0;background:none;font-size:24px;line-height:1;color:#9aa0ab;cursor:pointer}
+    .zpop-ic{width:64px;height:64px;border-radius:18px;background:#0068ff;display:grid;place-items:center;font-size:32px;margin:0 auto 14px;box-shadow:0 12px 28px rgba(0,104,255,.34)}
+    .zpop h3{margin:0 0 6px;font-size:21px;font-weight:900;color:var(--ink)}
+    .zpop p{margin:0 0 16px;color:var(--muted);font-size:14.5px;line-height:1.55}
+    .zpop .members{display:inline-block;background:#e7f0ff;color:#0052cc;font-weight:800;font-size:13px;padding:5px 12px;border-radius:999px;margin-bottom:14px}
+    .zpop .zalo-join{width:100%;justify-content:center;font-size:16px;padding:14px}
+    .zpop-later{display:block;margin-top:12px;color:#9aa0ab;font-size:13px;background:none;border:0;cursor:pointer;width:100%}
   </style>
 </head>
 <body>
@@ -445,31 +468,51 @@
 
     <section class="offer" id="register">
       <div class="container">
-        <div class="kicker" style="color:var(--gold2)">Đăng ký nhận thông tin</div>
-        <h2>Bắt đầu xây hệ thống kênh tự động bằng AI</h2>
-        <p class="section-lead">Điền thông tin để nhận tư vấn về nội dung khóa học, lộ trình thực hành và cách triển khai phù hợp.</p>
+        <div class="kicker" style="color:var(--gold2)">Đăng ký ngay hôm nay</div>
+        <h2>Sở hữu hệ thống kênh tự động bằng AI — <span style="color:var(--gold2)">kích hoạt tức thì</span></h2>
+        <p class="section-lead">Hoàn tất thanh toán, hệ thống <b style="color:#fff">tự tạo tài khoản</b> và gửi email kích hoạt khóa học trong vài giây — không cần chờ tư vấn.</p>
         <div class="offer-grid">
           <div class="offer-box">
-            <h3 style="margin-top:0;color:#fff">Quyền lợi dự kiến</h3>
+            <h3 style="margin-top:0;color:#fff">Bạn nhận được trọn bộ</h3>
             <div class="rights">
-              <div class="right"><b>✓</b><span>Video hướng dẫn từng bước</span></div>
-              <div class="right"><b>✓</b><span>Bộ prompt giao việc cho AI</span></div>
-              <div class="right"><b>✓</b><span>Quy trình tạo video và phát triển đa nền tảng</span></div>
-              <div class="right"><b>✓</b><span>Mẫu kế hoạch nội dung và checklist triển khai</span></div>
-              <div class="right"><b>✓</b><span>Hướng dẫn kết hợp Facebook Reels, YouTube và Shopee Affiliate</span></div>
+              <div class="right"><b>✓</b><span>Video hướng dẫn từng bước — học trọn đời</span></div>
+              <div class="right"><b>✓</b><span>Bộ prompt giao việc cho AI (dùng được ngay)</span></div>
+              <div class="right"><b>✓</b><span>Quy trình tạo video & phát triển đa nền tảng</span></div>
+              <div class="right"><b>✓</b><span>Mẫu kế hoạch nội dung + checklist triển khai</span></div>
+              <div class="right"><b>✓</b><span>Kết hợp Facebook Reels, YouTube Shorts, TikTok & Shopee Affiliate</span></div>
+            </div>
+            <div style="margin-top:22px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14)">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:10px">
+                <div style="display:flex" aria-hidden="true">
+                  <span style="width:30px;height:30px;border-radius:50%;background:#f4bd2a;border:2px solid #191d25;display:inline-grid;place-items:center;font-size:14px">🧑‍💻</span>
+                  <span style="width:30px;height:30px;border-radius:50%;background:#34c759;border:2px solid #191d25;margin-left:-9px;display:inline-grid;place-items:center;font-size:14px">👩‍🎨</span>
+                  <span style="width:30px;height:30px;border-radius:50%;background:#0a84ff;border:2px solid #191d25;margin-left:-9px;display:inline-grid;place-items:center;font-size:14px">🧑‍🚀</span>
+                </div>
+                <b style="color:#fff;font-size:15px">800+ học viên đang thực chiến cùng nhau</b>
+              </div>
+              <p style="color:#d4d9e2;font-size:14px;margin:0 0 12px">Vào nhóm Zalo nhận tài liệu mẫu, hỏi đáp và cập nhật công cụ AI mới mỗi tuần — miễn phí.</p>
+              <a href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener" class="zalo-join" data-zalo>💬 Tham gia cộng đồng Zalo (800+)</a>
             </div>
           </div>
           <div class="form-card">
-            <div class="price-label">HỌC PHÍ</div>
-            <div class="price">999.000đ</div>
+            <div class="urgency-badge">🔥 Ưu đãi khai giảng — giảm 50%</div>
+            <div class="price-label">HỌC PHÍ TRỌN ĐỜI</div>
+            <div class="price-row">
+              <span class="price">999.000đ</span>
+              <span class="price-old">1.990.000đ</span>
+            </div>
+            <div class="slots">⚡ Chỉ còn <b>17</b> suất với giá ưu đãi · áp dụng hôm nay</div>
             <form id="leadForm">
               <input name="name" placeholder="Họ và tên *" required>
               <input name="phone" placeholder="Số điện thoại / Zalo *" required pattern="[0-9+\s]{8,15}">
               <input name="email" type="email" placeholder="Email (để nhận tài khoản & khóa học) *" required>
-              <button class="btn btn-red" type="submit">ĐĂNG KÝ &amp; THANH TOÁN</button>
+              <button class="btn btn-red" type="submit">ĐĂNG KÝ &amp; THANH TOÁN NGAY →</button>
               <div class="success" id="success"></div>
             </form>
-            <p class="micro">Thanh toán an toàn qua chuyển khoản (SePay). Hệ thống tự tạo tài khoản & gửi email kích hoạt khóa học ngay sau khi nhận được thanh toán.</p>
+            <div class="trust-row">
+              <span>🔒 Bảo mật</span><span>⚡ Kích hoạt tự động</span><span>♻️ Hoàn 100% nếu buổi đầu không hài lòng</span>
+            </div>
+            <p class="micro">Thanh toán qua chuyển khoản ngân hàng (SePay) — quét QR, hệ thống tự xác nhận. Tài khoản & email kích hoạt gửi tự động ngay sau khi nhận thanh toán.</p>
           </div>
         </div>
       </div>
@@ -594,6 +637,36 @@
       });
       art.addEventListener('mouseleave', () => card.style.transform='rotateY(-5deg) rotateX(2deg)');
     }
+
+    // ===== Popup cộng đồng Zalo (1 lần/phiên: sau 18s hoặc khi có ý định rời trang) =====
+    (function () {
+      var ZALO = 'https://zalo.me/g/tbriir577';
+      var ov = document.createElement('div');
+      ov.className = 'zpop-ov';
+      ov.innerHTML = '<div class="zpop" role="dialog" aria-label="Tham gia cộng đồng Zalo">'
+        + '<button class="zpop-x" aria-label="Đóng">&times;</button>'
+        + '<div class="zpop-ic">💬</div>'
+        + '<div class="members">🟢 800+ thành viên đang hoạt động</div>'
+        + '<h3>Tham gia cộng đồng AI miễn phí</h3>'
+        + '<p>Nhận tài liệu mẫu, bộ prompt, hỏi đáp trực tiếp và cập nhật công cụ AI mới mỗi tuần cùng 800+ học viên VIE AI EDU.</p>'
+        + '<a href="' + ZALO + '" target="_blank" rel="noopener" class="zalo-join" data-zalo>Tham gia nhóm Zalo ngay →</a>'
+        + '<button class="zpop-later">Để sau</button>'
+        + '</div>';
+      document.body.appendChild(ov);
+      var shown = false;
+      function close() { ov.classList.remove('show'); }
+      function openPop() {
+        if (shown || sessionStorage.getItem('vie:zalopop')) return;
+        shown = true; try { sessionStorage.setItem('vie:zalopop', '1'); } catch (e) {}
+        ov.classList.add('show');
+      }
+      ov.querySelector('.zpop-x').onclick = close;
+      ov.querySelector('.zpop-later').onclick = close;
+      ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+      ov.querySelector('[data-zalo]').addEventListener('click', function () { if (window.fbq) { try { fbq('trackCustom', 'JoinZalo'); } catch (e) {} } setTimeout(close, 300); });
+      setTimeout(openPop, 18000);
+      document.addEventListener('mouseout', function (e) { if (e.clientY <= 0) openPop(); });
+    })();
   </script>
 </body>
 </html>
