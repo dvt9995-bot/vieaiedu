@@ -145,11 +145,37 @@
     .dark h2{color:#fff}
     .dark .section-lead{color:#d2d7df}
     .dark .kicker{color:var(--gold2)}
-    .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:14px;margin-top:34px}
-    .step{padding:18px;border-radius:22px;min-height:172px;border:1px solid rgba(255,255,255,.13);background:rgba(255,255,255,.07);box-shadow:0 20px 46px rgba(0,0,0,.18)}
-    .step b{display:grid;place-items:center;width:44px;height:44px;border-radius:15px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#302200;margin-bottom:13px}
-    .step h3{margin:0 0 7px;color:#fff;font-size:17px;line-height:1.25}
-    .step p{margin:0;color:#d4d9e2;font-size:13px}
+    /* Dải input → output phía trên quy trình */
+    .flow-io{display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:26px}
+    .flow-io .io-pill{display:inline-flex;align-items:center;gap:9px;padding:11px 18px;border-radius:999px;font-weight:800;font-size:14px;border:1px solid rgba(255,255,255,.16);background:rgba(255,255,255,.06);color:#fff}
+    .flow-io .io-pill .em{font-size:20px}
+    .flow-io .io-in{border-color:rgba(244,189,42,.5);box-shadow:0 0 0 3px rgba(244,189,42,.12)}
+    .flow-io .io-out{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#302200;border:0}
+    .flow-io .io-arrow{color:var(--gold2);font-weight:900;font-size:20px;animation:flowarrow 1.5s ease-in-out infinite}
+    /* Pipeline 3D */
+    .steps{display:grid;grid-template-columns:repeat(6,1fr);gap:24px 30px;margin-top:42px;perspective:1500px}
+    .steps .step{position:relative;padding:22px 18px 20px;border-radius:22px;min-height:194px;border:1px solid rgba(255,255,255,.14);background:linear-gradient(160deg,rgba(255,255,255,.11),rgba(255,255,255,.035));box-shadow:0 26px 52px rgba(0,0,0,.32);transform-style:preserve-3d;transform:rotateY(-13deg) rotateX(6deg) translateZ(-90px);opacity:0;transition:transform .6s cubic-bezier(.2,.85,.25,1),box-shadow .4s,opacity .6s}
+    .steps .step.show{opacity:1;transform:rotateY(-13deg) rotateX(6deg)}
+    .steps .step.show:nth-child(1){transition-delay:.05s}.steps .step.show:nth-child(2){transition-delay:.13s}.steps .step.show:nth-child(3){transition-delay:.21s}.steps .step.show:nth-child(4){transition-delay:.29s}.steps .step.show:nth-child(5){transition-delay:.37s}.steps .step.show:nth-child(6){transition-delay:.45s}
+    .steps .step:hover{transform:rotateY(0) rotateX(0) translateZ(30px) scale(1.04);box-shadow:0 36px 74px rgba(244,189,42,.22),0 0 0 1px rgba(244,189,42,.45);z-index:5}
+    .step .ico{font-size:30px;display:block;margin-bottom:8px;transform:translateZ(46px);filter:drop-shadow(0 10px 16px rgba(0,0,0,.45))}
+    .step b{position:absolute;top:14px;right:14px;display:grid;place-items:center;width:34px;height:34px;border-radius:11px;background:linear-gradient(135deg,var(--gold),var(--gold2));color:#302200;font-size:15px;transform:translateZ(54px);box-shadow:0 10px 20px rgba(244,189,42,.42)}
+    .step h3{margin:0 0 7px;color:#fff;font-size:16.5px;line-height:1.25;transform:translateZ(26px)}
+    .step p{margin:0;color:#d4d9e2;font-size:13px;transform:translateZ(14px)}
+    /* Đường nối + mũi tên chạy giữa các bước */
+    .steps .step:not(:last-child)::after{content:"";position:absolute;top:50%;right:-30px;width:30px;height:2px;background:linear-gradient(90deg,var(--gold2),transparent);background-size:220% 100%;animation:flowline 1.6s linear infinite}
+    .steps .step:not(:last-child)::before{content:"▶";position:absolute;top:50%;right:-14px;transform:translateY(-50%);color:var(--gold2);font-size:12px;z-index:3;animation:flowarrow 1.6s ease-in-out infinite}
+    @keyframes flowline{0%{background-position:140% 0}100%{background-position:-140% 0}}
+    @keyframes flowarrow{0%,100%{opacity:.4;transform:translateY(-50%) translateX(0)}50%{opacity:1;transform:translateY(-50%) translateX(5px)}}
+    @media(max-width:960px){
+      .steps .step,.steps .step.show{transform:none}
+      .steps .step{opacity:0;transform:translateY(22px)}
+      .steps .step.show{opacity:1;transform:none}
+      .steps .step:hover{transform:translateY(-5px) scale(1.02)}
+      .steps .step:not(:last-child)::after,.steps .step:not(:last-child)::before{display:none}
+      .step .ico,.step b,.step h3,.step p{transform:none}
+    }
+    @media(prefers-reduced-motion:reduce){.flow-io .io-arrow,.steps .step:not(:last-child)::after,.steps .step:not(:last-child)::before{animation:none}}
     .income-grid{display:grid;grid-template-columns:1fr 1fr;gap:24px;margin-top:34px}
     .income-card{border:1px solid var(--line);border-radius:30px;overflow:hidden;background:#fff;box-shadow:var(--shadow);transition:.25s ease}
     .income-card:hover{transform:translateY(-5px)}
@@ -366,13 +392,20 @@
         <div class="kicker">Quy trình vận hành</div>
         <h2>Một tin nhắn – AI hỗ trợ hoàn thành quy trình tạo video</h2>
         <p class="section-lead">Bạn giao việc bằng ngôn ngữ thông thường, kiểm tra kết quả và sử dụng video để xây kênh trên nhiều nền tảng.</p>
+        <div class="flow-io">
+          <span class="io-pill io-in"><span class="em">💬</span> Bạn nhắn 1 yêu cầu</span>
+          <span class="io-arrow">⟶</span>
+          <span class="io-pill"><span class="em">🤖</span> AI chạy 6 bước tự động</span>
+          <span class="io-arrow">⟶</span>
+          <span class="io-pill io-out"><span class="em">💰</span> Video sẵn sàng kiếm tiền</span>
+        </div>
         <div class="steps">
-          <article class="step reveal"><b>1</b><h3>Nhắn tin yêu cầu</h3><p>Nhập chủ đề, thời lượng, phong cách và mục tiêu video.</p></article>
-          <article class="step reveal"><b>2</b><h3>AI lên ý tưởng</h3><p>Gợi ý góc nội dung phù hợp với người xem mục tiêu.</p></article>
-          <article class="step reveal"><b>3</b><h3>Viết kịch bản</h3><p>Tạo hook, lời thoại, CTA và bố cục giữ chân người xem.</p></article>
-          <article class="step reveal"><b>4</b><h3>Tạo video hoàn thiện</h3><p>Kết hợp hình ảnh, giọng đọc, phụ đề, âm thanh và hiệu ứng.</p></article>
-          <article class="step reveal"><b>5</b><h3>Chuẩn bị đăng đa nền tảng</h3><p>Tạo phiên bản phù hợp với Reels, Shorts, TikTok và Instagram.</p></article>
-          <article class="step reveal"><b>6</b><h3>Gắn link Affiliate</h3><p>Kết nối nội dung với sản phẩm phù hợp để tạo cơ hội nhận hoa hồng.</p></article>
+          <article class="step reveal"><b>1</b><span class="ico">💬</span><h3>Nhắn tin yêu cầu</h3><p>Nhập chủ đề, thời lượng, phong cách và mục tiêu video.</p></article>
+          <article class="step reveal"><b>2</b><span class="ico">💡</span><h3>AI lên ý tưởng</h3><p>Gợi ý góc nội dung phù hợp với người xem mục tiêu.</p></article>
+          <article class="step reveal"><b>3</b><span class="ico">✍️</span><h3>Viết kịch bản</h3><p>Tạo hook, lời thoại, CTA và bố cục giữ chân người xem.</p></article>
+          <article class="step reveal"><b>4</b><span class="ico">🎬</span><h3>Tạo video hoàn thiện</h3><p>Kết hợp hình ảnh, giọng đọc, phụ đề, âm thanh và hiệu ứng.</p></article>
+          <article class="step reveal"><b>5</b><span class="ico">📲</span><h3>Đăng đa nền tảng</h3><p>Tạo phiên bản phù hợp Reels, Shorts, TikTok và Instagram.</p></article>
+          <article class="step reveal"><b>6</b><span class="ico">🔗</span><h3>Gắn link Affiliate</h3><p>Kết nối nội dung với sản phẩm phù hợp để nhận hoa hồng.</p></article>
         </div>
       </div>
     </section>
