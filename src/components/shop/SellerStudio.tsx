@@ -12,7 +12,7 @@ interface Product { id: string; title: string; type: string; price: number; stat
 interface OrderItem { title: string; qty: number; variant?: string | null; shop_products?: { weight?: number | null; dimensions?: string | null } | null }
 interface Order { id: string; code?: string; total: number; subtotal?: number; shipping_fee?: number; status: string; carrier?: string | null; tracking_code?: string | null; has_physical: boolean; ship_name?: string; ship_phone?: string; ship_address?: string; shop_order_items: OrderItem[] }
 
-const empty = { type: "digital", title: "", description: "", price: "0", compare_price: "", category_id: "", stock: "", shipping_fee: "0", weight: "", dimensions: "", media: [] as string[], digital_url: "", digital_note: "", optionsText: "" };
+const empty = { type: "digital", title: "", description: "", price: "0", compare_price: "", category_id: "", stock: "", shipping_fee: "0", weight: "", dimensions: "", media: [] as string[], digital_url: "", digital_note: "", optionsText: "", variantsText: "", sale_ends_at: "" };
 
 export default function SellerStudio() {
   const [loading, setLoading] = useState(true);
@@ -22,6 +22,7 @@ export default function SellerStudio() {
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [ov, setOv] = useState<{ revenue: number; pending_escrow: number; received: number; orders: number } | null>(null);
+  const [analytics, setAnalytics] = useState<{ views: number; conversion: number; top: { title: string; views: number; sold: number }[] } | null>(null);
   const [lowStock, setLowStock] = useState<{ title: string; stock: number }[]>([]);
   const [reg, setReg] = useState({ name: "", description: "", logo_url: "" });
   const [settingsOpen, setSettingsOpen] = useState(false);
@@ -58,7 +59,7 @@ export default function SellerStudio() {
       fetch("/api/seller/orders").then((r) => r.json()).catch(() => ({})),
       fetch("/api/seller/overview").then((r) => r.json()).catch(() => ({})),
     ]);
-    setProducts(p.products || []); setOrders(o.orders || []); setOv(ovr.overview || null); setLowStock(ovr.lowStock || []);
+    setProducts(p.products || []); setOrders(o.orders || []); setOv(ovr.overview || null); setLowStock(ovr.lowStock || []); setAnalytics(ovr.analytics || null);
   }, []);
   useEffect(() => {
     (async () => {
@@ -79,16 +80,27 @@ export default function SellerStudio() {
   function openNew() { setEditId(null); setForm(empty); setEditing(true); }
   function openEdit(p: Product & Record<string, unknown>) {
     setEditId(p.id);
-    setForm({ type: p.type, title: p.title, description: (p.description as string) || "", price: String(p.price || 0), compare_price: p.compare_price ? String(p.compare_price) : "", category_id: (p.category_id as string) || "", stock: p.stock != null ? String(p.stock) : "", shipping_fee: String((p.shipping_fee as number) || 0), weight: p.weight != null ? String(p.weight) : "", dimensions: (p.dimensions as string) || "", media: Array.isArray(p.media) ? (p.media as string[]) : [], digital_url: (p.digital_url as string) || "", digital_note: (p.digital_note as string) || "", optionsText: Array.isArray(p.options) ? (p.options as { name: string; values: string[] }[]).map((o) => `${o.name}: ${o.values.join(", ")}`).join("\n") : "" });
+    const vt = Array.isArray(p.variants) ? (p.variants as { label: string; price: number; stock: number }[]).map((v) => `${v.label} | ${v.price} | ${v.stock}`).join("\n") : "";
+    const sa = p.sale_ends_at ? new Date(p.sale_ends_at as string).toISOString().slice(0, 16) : "";
+    setForm({ type: p.type, title: p.title, description: (p.description as string) || "", price: String(p.price || 0), compare_price: p.compare_price ? String(p.compare_price) : "", category_id: (p.category_id as string) || "", stock: p.stock != null ? String(p.stock) : "", shipping_fee: String((p.shipping_fee as number) || 0), weight: p.weight != null ? String(p.weight) : "", dimensions: (p.dimensions as string) || "", media: Array.isArray(p.media) ? (p.media as string[]) : [], digital_url: (p.digital_url as string) || "", digital_note: (p.digital_note as string) || "", optionsText: Array.isArray(p.options) ? (p.options as { name: string; values: string[] }[]).map((o) => `${o.name}: ${o.values.join(", ")}`).join("\n") : "", variantsText: vt, sale_ends_at: sa });
     setEditing(true);
   }
   async function save() {
     if (!form.title.trim()) return toast("Nhập tên sản phẩm");
     const options = form.optionsText.split("\n").map((l) => { const i = l.indexOf(":"); return i < 0 ? null : { name: l.slice(0, i).trim(), values: l.slice(i + 1).split(",").map((v) => v.trim()).filter(Boolean) }; }).filter((x): x is { name: string; values: string[] } => !!x && x.values.length > 0);
-    const body = { ...form, options, ...(editId ? { id: editId } : {}) };
+    const variants = form.variantsText.split("\n").map((l) => { const [label, price, stock] = l.split("|").map((s) => s.trim()); return label ? { label, price: parseInt(price) || 0, stock: parseInt(stock) || 0 } : null; }).filter(Boolean);
+    const sale_ends_at = form.sale_ends_at ? new Date(form.sale_ends_at).toISOString() : null;
+    const body = { ...form, options, variants, sale_ends_at, ...(editId ? { id: editId } : {}) };
     const res = await fetch("/api/shop/products", { method: editId ? "PATCH" : "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     const d = await res.json(); if (!res.ok) return toast(d.error || "Lỗi");
     toast(editId ? "Đã lưu" : "Đã tạo sản phẩm (nháp)"); setEditing(false); loadAll();
+  }
+  async function aiImage() {
+    if (!form.title.trim()) return toast("Nhập tên sản phẩm trước");
+    setAi("img"); toast("Đang tạo ảnh AI…");
+    const r = await fetch("/api/shop/product-image", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ title: form.title }) }).then((x) => x.json()).catch(() => ({}));
+    setAi("");
+    if (r.ok && r.url) { setForm((f) => ({ ...f, media: [...f.media, r.url] })); toast("Đã thêm ảnh AI ✓"); } else toast(r.error || "AI lỗi");
   }
   async function submitReview(id: string) { await fetch("/api/shop/products", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, action: "submit" }) }); toast("Đã gửi duyệt"); loadAll(); }
   async function del(id: string) { if (!confirm("Xóa sản phẩm?")) return; await fetch(`/api/shop/products?id=${id}`, { method: "DELETE" }); toast("Đã xóa"); loadAll(); }
@@ -155,6 +167,21 @@ export default function SellerStudio() {
       )}
       {lowStock.length > 0 && <div className="rounded-lg bg-gold/15 border border-gold/40 text-warning text-sm px-4 py-2 mb-4">⚠️ Sắp hết hàng: {lowStock.map((p) => `${p.title} (còn ${p.stock})`).join(", ")}</div>}
 
+      {/* Phân tích */}
+      {analytics && (analytics.views > 0 || analytics.top.length > 0) && (
+        <div className="rounded-card border border-border bg-surface p-4 mb-4">
+          <div className="flex flex-wrap gap-x-6 gap-y-1 mb-3 text-sm"><span>👁 Tổng lượt xem: <b>{analytics.views}</b></span><span>📈 Tỉ lệ chuyển đổi: <b className="text-accent">{analytics.conversion}%</b></span></div>
+          {analytics.top.length > 0 && (
+            <div>
+              <div className="text-xs font-bold uppercase tracking-wider text-ink-3 mb-1.5">Sản phẩm nổi bật</div>
+              <div className="space-y-1 text-sm">
+                {analytics.top.map((t, i) => <div key={i} className="flex items-center justify-between border-b border-border pb-1 last:border-0"><span className="truncate">{t.title}</span><span className="text-ink-3 shrink-0 ml-2">👁 {t.views} · đã bán {t.sold}</span></div>)}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
       <div className="flex gap-2 mb-4">
         {(["products", "orders"] as const).map((t) => <button key={t} onClick={() => setTab(t)} className={`text-sm font-semibold rounded-full px-4 py-2 cursor-pointer ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2"}`}>{t === "products" ? "Sản phẩm" : `Đơn hàng (${orders.length})`}</button>)}
       </div>
@@ -220,7 +247,10 @@ export default function SellerStudio() {
                 <input className={inp} placeholder="Tên sản phẩm *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
                 <button type="button" onClick={aiName} disabled={!!ai} className="mt-1.5 text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-50">{ai === "name" ? "✨ Đang nghĩ tên…" : "✨ AI gợi ý tên"}</button>
               </div>
-              <div><label className="block text-[11px] text-ink-3 mb-1">Ảnh sản phẩm (nhiều ảnh)</label><GalleryUpload value={form.media} onChange={(u) => setForm({ ...form, media: u })} endpoint="/api/shop/upload" /></div>
+              <div>
+                <div className="flex items-center justify-between mb-1"><label className="text-[11px] text-ink-3">Ảnh sản phẩm (nhiều ảnh)</label><button type="button" onClick={aiImage} disabled={!!ai} className="text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-50">{ai === "img" ? "🎨 Đang tạo ảnh…" : "🎨 Tạo ảnh bằng AI"}</button></div>
+                <GalleryUpload value={form.media} onChange={(u) => setForm({ ...form, media: u })} endpoint="/api/shop/upload" />
+              </div>
               <div>
                 <div className="flex items-center justify-between mb-1"><label className="text-[11px] text-ink-3">Mô tả (hỗ trợ Markdown)</label>
                   <div className="flex gap-3 text-xs font-semibold">
@@ -255,7 +285,9 @@ export default function SellerStudio() {
                   <textarea className={inp} rows={2} placeholder="Hướng dẫn/license cho người mua (hiện sau khi mua)" value={form.digital_note} onChange={(e) => setForm({ ...form, digital_note: e.target.value })} />
                 </>
               )}
-              <div><label className="block text-[11px] text-ink-3 mb-1">Phân loại/biến thể — mỗi dòng: <code className="bg-bg-soft px-1 rounded">Tên: giá trị1, giá trị2</code></label><textarea className={`${inp} font-mono`} rows={2} placeholder={"Size: S, M, L\nMàu: Đen, Trắng"} value={form.optionsText} onChange={(e) => setForm({ ...form, optionsText: e.target.value })} /></div>
+              <div><label className="block text-[11px] text-ink-3 mb-1">Phân loại hiển thị (không giá riêng) — mỗi dòng: <code className="bg-bg-soft px-1 rounded">Tên: giá trị1, giá trị2</code></label><textarea className={`${inp} font-mono`} rows={2} placeholder={"Size: S, M, L\nMàu: Đen, Trắng"} value={form.optionsText} onChange={(e) => setForm({ ...form, optionsText: e.target.value })} /></div>
+              <div><label className="block text-[11px] text-ink-3 mb-1">Biến thể CÓ giá &amp; kho riêng — mỗi dòng: <code className="bg-bg-soft px-1 rounded">Nhãn | giá | tồn</code></label><textarea className={`${inp} font-mono`} rows={2} placeholder={"Gói Cơ bản | 199000 | 50\nGói Pro | 399000 | 20"} value={form.variantsText} onChange={(e) => setForm({ ...form, variantsText: e.target.value })} /><p className="text-[11px] text-ink-3 mt-1">💡 Khi có biến thể giá riêng, khách chọn biến thể → dùng giá & tồn của biến thể đó.</p></div>
+              <div><label className="block text-[11px] text-ink-3 mb-1">⏰ Flash sale — hạn ưu đãi (để trống nếu không đặt hạn)</label><input className={inp} type="datetime-local" value={form.sale_ends_at} onChange={(e) => setForm({ ...form, sale_ends_at: e.target.value })} /><p className="text-[11px] text-ink-3 mt-1">Đặt “Giá gốc (gạch ngang)” cao hơn giá bán để hiện badge giảm giá + đồng hồ đếm.</p></div>
               <div className="flex gap-2 pt-1"><Button variant="primary" onClick={save}>{editId ? "Lưu" : "Tạo"}</Button><Button variant="secondary" onClick={() => setEditing(false)}>Hủy</Button></div>
             </div>
           </div>
