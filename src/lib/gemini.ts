@@ -142,6 +142,38 @@ const STYLE_DIRECTION: Record<CoverStyle, string> = {
   flat: "STYLE: clean flat vector illustration — bold simple shapes, crisp edges, modern flat design, generous spacing, no heavy gradients.",
 };
 
+// ===== AI cho SẢN PHẨM SÀN (shop) =====
+// Gợi ý TÊN sản phẩm hấp dẫn từ mô tả/ý tưởng ngắn của người bán.
+export async function suggestProductName(hint: string, type?: string): Promise<string | null> {
+  const kind = type === "physical" ? "sản phẩm vật lý" : "sản phẩm số (file/công cụ/template)";
+  const t = await geminiText(`Đặt MỘT tên ${kind} bán trên sàn TMĐT, dựa trên gợi ý: "${hint}".
+Yêu cầu: tiếng Việt, 6–14 từ, rõ lợi ích/công dụng, thu hút, tự nhiên. Chỉ trả về đúng 1 tên, không ngoặc kép, không giải thích.`, 120);
+  return t ? t.split("\n")[0].replace(/^["'“”\-\d.\s]+|["'“”]+$/g, "").slice(0, 140) : null;
+}
+
+// Viết MÔ TẢ bán hàng cho sản phẩm — Markdown có cấu trúc, hướng chuyển đổi.
+export async function suggestProductDescription(title: string, type?: string): Promise<string | null> {
+  const kind = type === "physical" ? "sản phẩm vật lý" : "sản phẩm số (file/công cụ/template/khóa nhỏ)";
+  return geminiText(`Viết MÔ TẢ bán hàng cho ${kind} tên "${title}" đăng trên sàn TMĐT VIE AI EDU.
+Tiếng Việt, thuyết phục, hướng chuyển đổi mua hàng. Bao gồm: sản phẩm là gì, lợi ích/kết quả người mua nhận được, điểm nổi bật, phù hợp với ai, lý do nên mua ngay.
+${MD_RULE}
+Chỉ trả về nội dung Markdown, không lời dẫn.`, 5000);
+}
+
+// Làm đẹp / chuẩn hóa mô tả sản phẩm người bán đã nhập — GIỮ NGUYÊN ý, chỉ định dạng lại.
+export async function beautifyProductDescription(title: string, raw: string): Promise<string | null> {
+  return geminiText(`Biên tập lại MÔ TẢ sản phẩm "${title}" dưới đây cho chuyên nghiệp, mạch lạc, dễ đọc và tăng tỉ lệ mua.
+QUAN TRỌNG: GIỮ NGUYÊN mọi chi tiết người bán đã viết — KHÔNG lược bỏ, KHÔNG tóm tắt. Chỉ định dạng lại: chia mục "## ", gạch đầu dòng, in đậm từ khóa, tách đoạn. Không bịa thông tin sai.
+${MD_RULE}
+
+NỘI DUNG GỐC (giữ đầy đủ):
+"""
+${raw.slice(0, 8000)}
+"""
+
+Chỉ trả về Markdown đã biên tập, không lời dẫn.`, 8000);
+}
+
 // Sinh ẢNH BÌA khóa học bằng Gemini (Nano Banana Pro). refs = ảnh tham chiếu có VAI TRÒ.
 export async function generateCoverImage(title: string, refs: ImgRef[] = [], opts: { style?: CoverStyle; withText?: boolean } = {}): Promise<{ data: string; mime: string } | null> {
   const key = await getConfig("gemini_api_key", "GEMINI_API_KEY");

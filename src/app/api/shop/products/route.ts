@@ -8,6 +8,8 @@ function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};
   for (const f of FIELDS) if (b[f] !== undefined) o[f] = b[f];
   for (const n of ["price", "compare_price", "stock", "shipping_fee", "weight"]) if (o[n] !== undefined && o[n] !== null && o[n] !== "") o[n] = parseInt(String(o[n])) || 0; else if (o[n] === "") o[n] = null;
+  // category_id là cột UUID — chuỗi rỗng "" gây lỗi insert; ép về null khi chưa chọn danh mục
+  if (o.category_id === "") o.category_id = null;
   if (o.type !== undefined && o.type !== "physical") o.type = "digital";
   return o;
 }

@@ -29,6 +29,28 @@ export default function SellerStudio() {
   const [form, setForm] = useState(empty);
   const [editId, setEditId] = useState<string | null>(null);
   const [editing, setEditing] = useState(false);
+  const [ai, setAi] = useState("");   // "name" | "desc" | "beautify" khi đang chạy AI
+
+  async function aiCall(field: string, extra: Record<string, unknown> = {}) {
+    const r = await fetch("/api/shop/ai", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ field, type: form.type, title: form.title, ...extra }) }).then((x) => x.json()).catch(() => ({}));
+    return r;
+  }
+  async function aiName() {
+    const hint = form.title.trim() || (prompt("Nhập vài từ mô tả sản phẩm để AI đặt tên:") || "").trim();
+    if (!hint) return;
+    setAi("name"); const r = await aiCall("name", { hint }); setAi("");
+    if (r.ok && r.name) setForm((f) => ({ ...f, title: r.name })); else toast(r.error || "AI lỗi");
+  }
+  async function aiDesc() {
+    if (!form.title.trim()) return toast("Nhập tên sản phẩm trước");
+    setAi("desc"); const r = await aiCall("description"); setAi("");
+    if (r.ok && r.description) setForm((f) => ({ ...f, description: r.description })); else toast(r.error || "AI lỗi");
+  }
+  async function aiBeautify() {
+    if (!form.description.trim()) return toast("Chưa có mô tả để làm đẹp");
+    setAi("beautify"); const r = await aiCall("beautify", { text: form.description }); setAi("");
+    if (r.ok && r.description) setForm((f) => ({ ...f, description: r.description })); else toast(r.error || "AI lỗi");
+  }
 
   const loadAll = useCallback(async () => {
     const [p, o, ovr] = await Promise.all([
@@ -194,9 +216,20 @@ export default function SellerStudio() {
               <div className="grid grid-cols-2 gap-2">
                 {[["digital", "📦 Sản phẩm số"], ["physical", "🚚 Vật lý"]].map(([v, l]) => <button key={v} type="button" onClick={() => setForm({ ...form, type: v })} className={`rounded-lg border py-2 text-sm font-semibold cursor-pointer ${form.type === v ? "border-accent bg-accent-weak text-accent" : "border-border-strong text-ink-2"}`}>{l}</button>)}
               </div>
-              <input className={inp} placeholder="Tên sản phẩm *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+              <div>
+                <input className={inp} placeholder="Tên sản phẩm *" value={form.title} onChange={(e) => setForm({ ...form, title: e.target.value })} />
+                <button type="button" onClick={aiName} disabled={!!ai} className="mt-1.5 text-xs font-semibold text-accent hover:underline cursor-pointer disabled:opacity-50">{ai === "name" ? "✨ Đang nghĩ tên…" : "✨ AI gợi ý tên"}</button>
+              </div>
               <div><label className="block text-[11px] text-ink-3 mb-1">Ảnh sản phẩm (nhiều ảnh)</label><GalleryUpload value={form.media} onChange={(u) => setForm({ ...form, media: u })} endpoint="/api/shop/upload" /></div>
-              <textarea className={inp} rows={4} placeholder="Mô tả (hỗ trợ Markdown)" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+              <div>
+                <div className="flex items-center justify-between mb-1"><label className="text-[11px] text-ink-3">Mô tả (hỗ trợ Markdown)</label>
+                  <div className="flex gap-3 text-xs font-semibold">
+                    <button type="button" onClick={aiDesc} disabled={!!ai} className="text-accent hover:underline cursor-pointer disabled:opacity-50">{ai === "desc" ? "✨ Đang viết…" : "✨ AI viết mô tả"}</button>
+                    <button type="button" onClick={aiBeautify} disabled={!!ai} className="text-accent hover:underline cursor-pointer disabled:opacity-50">{ai === "beautify" ? "🪄 Đang làm đẹp…" : "🪄 Làm đẹp"}</button>
+                  </div>
+                </div>
+                <textarea className={inp} rows={5} placeholder="Mô tả (hỗ trợ Markdown) — hoặc bấm ✨ AI viết mô tả" value={form.description} onChange={(e) => setForm({ ...form, description: e.target.value })} />
+              </div>
               <select className={inp} value={form.category_id} onChange={(e) => setForm({ ...form, category_id: e.target.value })}><option value="">— Danh mục —</option>{cats.map((c) => <option key={c.id} value={c.id}>{c.name} (phí {c.fee_percent}%)</option>)}</select>
               <div className="grid grid-cols-2 gap-2">
                 <input className={inp} type="number" placeholder="Giá bán (đ)" value={form.price} onChange={(e) => setForm({ ...form, price: e.target.value })} />
