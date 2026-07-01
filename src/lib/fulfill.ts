@@ -1,7 +1,7 @@
 import { createAdminClient } from "@/lib/supabase/admin";
 import { getPurchasableCourse } from "@/lib/courses";
 import { firstSessionLabel } from "@/lib/live";
-import { sendOrderReceipt, sendCourseWelcome } from "@/lib/email";
+import { sendOrderReceipt, sendCourseWelcome, sendGenericEmail } from "@/lib/email";
 import { notify, notifyAdmins } from "@/lib/notify";
 import { getConfig } from "@/lib/settings";
 import { formatVND } from "@/lib/format";
@@ -116,11 +116,17 @@ export async function fulfillShopOrder(admin: Admin, orderId: string) {
     }
   }
 
-  const { data: shop } = await admin.from("shops").select("owner_id").eq("id", o.shop_id).maybeSingle();
+  const { data: shop } = await admin.from("shops").select("owner_id, name").eq("id", o.shop_id).maybeSingle();
   if (o.buyer_id) await notify({ userId: o.buyer_id as string, type: "transactional", title: "Thanh toán thành công 🎉", body: o.has_physical ? "Đơn đã thanh toán — người bán sẽ giao sớm, theo dõi ở Đơn của tôi." : "Đơn đã thanh toán — vào Đơn của tôi để nhận sản phẩm số.", href: "/shop/orders" });
   if (shop?.owner_id) {
     await notify({ userId: shop.owner_id as string, type: "transactional", title: "🛒 Bạn có đơn hàng mới", body: `Đơn ${formatVND(o.total as number)} — vào Kênh người bán xử lý.`, href: "/seller" });
     if (lowStock.length) await notify({ userId: shop.owner_id as string, type: "system", title: "⚠️ Sản phẩm sắp hết hàng", body: lowStock.join(", ") + ". Nhớ nhập thêm hàng!", href: "/seller" });
+    // Email cho người bán (nếu có cấu hình Resend + email)
+    try {
+      const { data: prof } = await admin.from("profiles").select("email").eq("id", shop.owner_id).maybeSingle();
+      const itemList = (items || []).map((it) => `${it.title} ×${it.qty}`).join(", ");
+      if (prof?.email) await sendGenericEmail(prof.email as string, `🛒 Đơn hàng mới ${formatVND(o.total as number)}`, "Bạn có đơn hàng mới trên sàn", `Đơn: <b>${itemList}</b><br/>Tổng: <b>${formatVND(o.total as number)}</b>${o.has_physical ? " (có sản phẩm vật lý — cần giao hàng)" : ""}.<br/>Vào Kênh người bán để xử lý.`, "/seller");
+    } catch {}
   }
   return { ok: true as const, fulfilled: true, total: o.total as number };
 }

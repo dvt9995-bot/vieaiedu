@@ -18,9 +18,10 @@ export default function SellerStudio() {
   const [loading, setLoading] = useState(true);
   const [shop, setShop] = useState<Shop | null>(null);
   const [cats, setCats] = useState<Cat[]>([]);
-  const [tab, setTab] = useState<"products" | "orders">("products");
+  const [tab, setTab] = useState<"products" | "orders" | "qa">("products");
   const [products, setProducts] = useState<Product[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [qa, setQa] = useState<{ id: string; product: string; question: string; answer?: string | null; name: string }[]>([]);
   const [ov, setOv] = useState<{ revenue: number; pending_escrow: number; received: number; orders: number } | null>(null);
   const [analytics, setAnalytics] = useState<{ views: number; conversion: number; top: { title: string; views: number; sold: number }[] } | null>(null);
   const [lowStock, setLowStock] = useState<{ title: string; stock: number }[]>([]);
@@ -54,13 +55,19 @@ export default function SellerStudio() {
   }
 
   const loadAll = useCallback(async () => {
-    const [p, o, ovr] = await Promise.all([
+    const [p, o, ovr, q] = await Promise.all([
       fetch("/api/shop/products").then((r) => r.json()).catch(() => ({})),
       fetch("/api/seller/orders").then((r) => r.json()).catch(() => ({})),
       fetch("/api/seller/overview").then((r) => r.json()).catch(() => ({})),
+      fetch("/api/shop/qa?seller=1").then((r) => r.json()).catch(() => ({})),
     ]);
-    setProducts(p.products || []); setOrders(o.orders || []); setOv(ovr.overview || null); setLowStock(ovr.lowStock || []); setAnalytics(ovr.analytics || null);
+    setProducts(p.products || []); setOrders(o.orders || []); setOv(ovr.overview || null); setLowStock(ovr.lowStock || []); setAnalytics(ovr.analytics || null); setQa(q.items || []);
   }, []);
+  async function answerQa(id: string) {
+    const a = prompt("Trả lời câu hỏi:"); if (!a || !a.trim()) return;
+    await fetch("/api/shop/qa", { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ id, answer: a }) });
+    toast("Đã trả lời"); loadAll();
+  }
   useEffect(() => {
     (async () => {
       const [r, c] = await Promise.all([fetch("/api/shop/register").then((x) => x.json()).catch(() => ({})), fetch("/api/shop/categories").then((x) => x.json()).catch(() => ({}))]);
@@ -183,7 +190,7 @@ export default function SellerStudio() {
       )}
 
       <div className="flex gap-2 mb-4">
-        {(["products", "orders"] as const).map((t) => <button key={t} onClick={() => setTab(t)} className={`text-sm font-semibold rounded-full px-4 py-2 cursor-pointer ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2"}`}>{t === "products" ? "Sản phẩm" : `Đơn hàng (${orders.length})`}</button>)}
+        {(["products", "orders", "qa"] as const).map((t) => { const unanswered = qa.filter((q) => !q.answer).length; return <button key={t} onClick={() => setTab(t)} className={`text-sm font-semibold rounded-full px-4 py-2 cursor-pointer ${tab === t ? "bg-accent-weak text-accent" : "text-ink-2"}`}>{t === "products" ? "Sản phẩm" : t === "orders" ? `Đơn hàng (${orders.length})` : `Hỏi đáp${unanswered ? ` (${unanswered})` : ""}`}</button>; })}
       </div>
 
       {tab === "products" ? (
@@ -207,7 +214,7 @@ export default function SellerStudio() {
             ))}
           </div>
         )
-      ) : (
+      ) : tab === "orders" ? (
         orders.length === 0 ? <div className="rounded-card border border-border bg-surface p-10 text-center text-ink-3">Chưa có đơn nào.</div> : (
           <div className="grid gap-3">
             {orders.map((o) => (
@@ -228,6 +235,19 @@ export default function SellerStudio() {
                     <button onClick={() => ship(o)} className="rounded-full bg-ink text-white text-xs font-semibold px-4 py-1.5 cursor-pointer">📦 Đã gửi hàng + mã VĐ</button>
                   </div>
                 )}
+              </div>
+            ))}
+          </div>
+        )
+      ) : (
+        qa.length === 0 ? <div className="rounded-card border border-border bg-surface p-10 text-center text-ink-3">Chưa có câu hỏi nào từ khách.</div> : (
+          <div className="grid gap-2">
+            {qa.map((q) => (
+              <div key={q.id} className="rounded-card border border-border bg-surface p-4">
+                <div className="text-xs text-ink-3 mb-0.5">{q.product}</div>
+                <div className="text-sm"><b>{q.name}:</b> {q.question}</div>
+                {q.answer ? <div className="mt-2 pl-3 border-l-2 border-accent text-sm text-ink-2"><b className="text-accent">Bạn:</b> {q.answer}</div>
+                  : <button onClick={() => answerQa(q.id)} className="mt-2 rounded-full bg-accent hover:bg-accent-700 text-white text-xs font-semibold px-4 py-1.5 cursor-pointer">Trả lời</button>}
               </div>
             ))}
           </div>

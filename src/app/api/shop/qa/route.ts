@@ -4,12 +4,24 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireSeller } from "@/lib/shop";
 import { notify } from "@/lib/notify";
 
-// GET ?product_id= : danh sách hỏi đáp công khai của 1 sản phẩm
+// GET ?product_id= : hỏi đáp công khai 1 SP. GET ?seller=1 : tất cả câu hỏi SP của shop mình (chưa trả lời lên đầu).
 export async function GET(req: Request) {
-  const pid = new URL(req.url).searchParams.get("product_id");
-  if (!pid) return NextResponse.json({ items: [] });
+  const url = new URL(req.url);
   const admin = createAdminClient();
   if (!admin) return NextResponse.json({ items: [] });
+  if (url.searchParams.get("seller") === "1") {
+    const u = await requireSeller();
+    if (!u) return NextResponse.json({ error: "forbidden" }, { status: 403 });
+    const { data: prods } = await admin.from("shop_products").select("id, title").eq("shop_id", u.shopId);
+    const pmap = new Map((prods || []).map((p) => [p.id as string, p.title as string]));
+    if (!pmap.size) return NextResponse.json({ items: [] });
+    const { data } = await admin.from("shop_product_qa").select("id, product_id, question, answer, answered_at, created_at, profiles(full_name)").in("product_id", [...pmap.keys()]).order("created_at", { ascending: false }).limit(100);
+    const items = (data ?? []).map((q) => ({ id: q.id, product: pmap.get(q.product_id as string) || "", question: q.question, answer: q.answer, answered_at: q.answered_at, name: (q.profiles as { full_name?: string })?.full_name || "Khách" }));
+    items.sort((a, b) => (a.answer ? 1 : 0) - (b.answer ? 1 : 0)); // chưa trả lời lên đầu
+    return NextResponse.json({ items });
+  }
+  const pid = url.searchParams.get("product_id");
+  if (!pid) return NextResponse.json({ items: [] });
   const { data } = await admin.from("shop_product_qa").select("id, question, answer, answered_at, created_at, profiles(full_name)").eq("product_id", pid).order("created_at", { ascending: false }).limit(50);
   const items = (data ?? []).map((q) => ({ id: q.id, question: q.question, answer: q.answer, answered_at: q.answered_at, created_at: q.created_at, name: (q.profiles as { full_name?: string })?.full_name || "Khách" }));
   return NextResponse.json({ items });
