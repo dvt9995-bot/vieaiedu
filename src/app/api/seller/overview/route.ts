@@ -16,5 +16,12 @@ export async function GET() {
     orders: rows.filter((o) => o.status !== "pending").length,
   };
   const lowStock = (await admin.from("shop_products").select("title, stock").eq("shop_id", u.shopId).eq("type", "physical").not("stock", "is", null).lte("stock", 3)).data || [];
-  return NextResponse.json({ overview, lowStock });
+  const { data: prods } = await admin.from("shop_products").select("title, views, sold_count").eq("shop_id", u.shopId).order("views", { ascending: false });
+  const totalViews = (prods || []).reduce((n, p) => n + ((p.views as number) || 0), 0);
+  const analytics = {
+    views: totalViews,
+    conversion: totalViews > 0 ? Math.round((overview.orders / totalViews) * 1000) / 10 : 0,
+    top: (prods || []).slice(0, 5).map((p) => ({ title: p.title, views: (p.views as number) || 0, sold: (p.sold_count as number) || 0 })),
+  };
+  return NextResponse.json({ overview, lowStock, analytics });
 }

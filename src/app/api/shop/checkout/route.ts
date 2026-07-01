@@ -25,8 +25,14 @@ export async function POST(req: Request) {
   if (!inItems.length) return NextResponse.json({ error: "Giỏ hàng trống" }, { status: 400 });
 
   const ids = [...new Set(inItems.map((i) => i.product_id))];
-  const { data: products } = await admin.from("shop_products").select("id, shop_id, type, title, price, stock, shipping_fee, digital_url, digital_note, category_id, status, review_status, shops(status)").in("id", ids);
+  const { data: products } = await admin.from("shop_products").select("id, shop_id, type, title, price, stock, shipping_fee, digital_url, digital_note, category_id, status, review_status, variants, shops(status)").in("id", ids);
   const pmap = new Map((products || []).map((p) => [p.id, p]));
+  // Khớp biến thể theo label → dùng giá & tồn của biến thể (nếu có)
+  const variantOf = (p: Record<string, unknown>, label?: string) => {
+    const vs = Array.isArray(p.variants) ? (p.variants as { label: string; price: number; stock: number }[]) : [];
+    return label ? vs.find((v) => v.label === label) : undefined;
+  };
+  const unitPrice = (p: Record<string, unknown>, label?: string) => { const v = variantOf(p, label); return (v && v.price > 0) ? v.price : (p.price as number); };
   const cats = await admin.from("shop_categories").select("id, fee_percent");
   const feeMap = new Map((cats.data || []).map((c) => [c.id, Number(c.fee_percent) || 0]));
 
@@ -38,7 +44,9 @@ export async function POST(req: Request) {
     if (!p || p.status !== "published" || p.review_status !== "approved" || (p.shops as { status?: string })?.status !== "approved") continue;
     if (p.type === "physical") {
       hasPhysicalAny = true;
-      if (p.stock != null && it.qty > (p.stock as number)) return NextResponse.json({ error: `"${p.title}" không đủ hàng (còn ${p.stock})` }, { status: 409 });
+      const v = variantOf(p, it.variant);
+      const avail = v ? v.stock : (p.stock as number | null);
+      if (avail != null && it.qty > avail) return NextResponse.json({ error: `"${p.title}"${v ? ` (${v.label})` : ""} không đủ hàng (còn ${avail})` }, { status: 409 });
     }
     const arr = byShop.get(p.shop_id as string) || []; arr.push({ ...it, qty: Math.max(1, it.qty) }); byShop.set(p.shop_id as string, arr);
   }
@@ -53,11 +61,12 @@ export async function POST(req: Request) {
     const orderItems: Record<string, unknown>[] = [];
     for (const it of items) {
       const p = pmap.get(it.product_id) as Record<string, unknown>;
-      const line = (p.price as number) * it.qty;
+      const unit = unitPrice(p, it.variant);
+      const line = unit * it.qty;
       subtotal += line;
       fee += Math.round(line * (feeMap.get(p.category_id as string) || 0) / 100);
       if (p.type === "physical") { physical = true; shipping += (p.shipping_fee as number) || 0; }
-      orderItems.push({ product_id: p.id, title: p.title, type: p.type, price: p.price, qty: it.qty, variant: it.variant || null, digital_url: p.type === "digital" ? p.digital_url : null, digital_note: p.type === "digital" ? p.digital_note : null });
+      orderItems.push({ product_id: p.id, title: p.title, type: p.type, price: unit, qty: it.qty, variant: it.variant || null, digital_url: p.type === "digital" ? p.digital_url : null, digital_note: p.type === "digital" ? p.digital_note : null });
     }
     const total = subtotal + shipping;
     const seller_amount = subtotal - fee + shipping;

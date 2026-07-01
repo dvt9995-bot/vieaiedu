@@ -3,13 +3,18 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import { requireSeller } from "@/lib/shop";
 import { slugify } from "@/lib/video";
 
-const FIELDS = ["type", "title", "description", "price", "compare_price", "category_id", "stock", "media", "options", "digital_url", "digital_note", "shipping_fee", "weight", "dimensions"];
+const FIELDS = ["type", "title", "description", "price", "compare_price", "category_id", "stock", "media", "options", "digital_url", "digital_note", "shipping_fee", "weight", "dimensions", "variants", "sale_ends_at"];
 function pick(b: Record<string, unknown>) {
   const o: Record<string, unknown> = {};
   for (const f of FIELDS) if (b[f] !== undefined) o[f] = b[f];
   for (const n of ["price", "compare_price", "stock", "shipping_fee", "weight"]) if (o[n] !== undefined && o[n] !== null && o[n] !== "") o[n] = parseInt(String(o[n])) || 0; else if (o[n] === "") o[n] = null;
   // category_id là cột UUID — chuỗi rỗng "" gây lỗi insert; ép về null khi chưa chọn danh mục
   if (o.category_id === "") o.category_id = null;
+  if (o.sale_ends_at === "") o.sale_ends_at = null;
+  // variants: chuẩn hóa mảng {label, price, stock}
+  if (o.variants !== undefined) o.variants = Array.isArray(o.variants)
+    ? (o.variants as { label?: string; price?: unknown; stock?: unknown }[]).map((v) => ({ label: String(v.label || "").slice(0, 60), price: parseInt(String(v.price)) || 0, stock: parseInt(String(v.stock)) || 0 })).filter((v) => v.label)
+    : [];
   if (o.type !== undefined && o.type !== "physical") o.type = "digital";
   return o;
 }
