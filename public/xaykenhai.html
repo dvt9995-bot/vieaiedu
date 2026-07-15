@@ -5,8 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="color-scheme" content="dark">
 <meta name="theme-color" content="#05070F">
+<!-- Meta (Facebook) Pixel — chỉ track PageView/Lead/InitiateCheckout ở đây;
+     sự kiện Purchase CHỈ bắn khi thanh toán xác nhận thành công (xem script cuối trang) -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '600820699707738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=600820699707738&ev=PageView&noscript=1"></noscript>
 <title>AI Agent Builder — Xây kênh video tự động | Magic AI</title>
 <meta name="description" content="Khoá học 5 buổi Zoom: sở hữu nhân viên AI tự làm video, tự xây kênh YouTube/TikTok. Dùng để xây thương hiệu cá nhân, bán hàng, affiliate, kênh kiếm tiền nền tảng — không cần biết công nghệ.">
+<meta name="robots" content="index,follow">
+<!-- Favicon -->
+<link rel="icon" href="/xaykenhai-assets/brand/favicon.ico" sizes="any">
+<link rel="icon" type="image/svg+xml" href="/xaykenhai-assets/brand/favicon.svg">
+<link rel="apple-touch-icon" href="/xaykenhai-assets/brand/apple-touch-icon.png">
+<link rel="icon" type="image/png" sizes="192x192" href="/xaykenhai-assets/brand/icon-192.png">
 <!-- Open Graph / share preview -->
 <link rel="canonical" href="https://vieaiedu.vn/xaykenhai">
 <meta property="og:url" content="https://vieaiedu.vn/xaykenhai">
@@ -15,9 +37,12 @@
 <meta property="og:site_name" content="Magic AI">
 <meta property="og:title" content="AI Agent Builder — Xây kênh video tự động | Magic AI">
 <meta property="og:description" content="Nhắn 1 tin — AI Agent tự làm video, tự đăng kênh YouTube/TikTok. Dùng cho thương hiệu cá nhân, bán hàng, affiliate, kênh kiếm tiền. Khoá 5 buổi Zoom, chỉ từ 999.000đ.">
-<!-- TODO: thêm og:image 1200x630 khi có ảnh share (đặt cạnh file này, vd og-image.jpg) -->
-<!-- <meta property="og:image" content="https://vieaiedu.vn/xaykenhai/og-image.jpg"> -->
+<meta property="og:image" content="https://vieaiedu.vn/xaykenhai-assets/brand/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Magic AI — Sở hữu nhân viên AI tự làm video, tự xây kênh cho bạn">
 <meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://vieaiedu.vn/xaykenhai-assets/brand/og-image.jpg">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -2043,6 +2068,10 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
 
 /* ============ THANH TOÁN SEPAY + LEAD ZALO (backend: apps-script/magic-ai-backend.gs) ============ */
 (function(){
+  /* Facebook Pixel — track theo phễu (Lead/InitiateCheckout ngay), riêng Purchase
+     CHỈ bắn ở đúng 1 chỗ: khi polling xác nhận thanh toán thành công (xem startPoll bên dưới) */
+  function fbTrack(ev, params){ if(typeof fbq !== 'undefined') fbq('track', ev, params || {}); }
+
   /* ==== CẤU HÌNH — điền khi sẵn sàng, để trống mọi thứ vẫn không vỡ trang ==== */
   const API_URL = 'https://script.google.com/macros/s/AKfycbzQC7S33F7eHjcn7czPbCxoAfRKugtgqMUNb3aY11XDwEzobQVgwYPs07kec7qLaB0hZA/exec';
   const ZALO_GROUP_URL = 'https://zalo.me/g/tbriir577';
@@ -2154,6 +2183,7 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
       $('coQrWrap').style.display = 'none';
     }
     showStep(2);
+    fbTrack('InitiateCheckout', { value: P.price, currency: 'VND', content_name: P.name, content_category: 'AI Agent Builder', content_ids: [planCode] });
     startPoll(phoneN, planCode);
   });
   $('coCopy').addEventListener('click', function(){ copyText(code, this); });
@@ -2172,6 +2202,9 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
           if(ZALO_GROUP_URL){ z.href = ZALO_GROUP_URL; z.style.display = 'inline-flex'; }
           else{ z.style.display = 'none'; }
           showStep(3);
+          /* Purchase — CHỈ bắn ở đây, đúng lúc trang "cảm ơn" (bước 3) hiện ra
+             sau khi hệ thống xác nhận đã nhận được tiền thật, không bắn sớm hơn */
+          fbTrack('Purchase', { value: PLANS[plan].price, currency: 'VND', content_name: PLANS[plan].name, content_category: 'AI Agent Builder', content_ids: [planCode], order_id: code });
         }
       });
     }, 6000);
@@ -2193,6 +2226,7 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
     if(!name || !phone){ $('zErr').classList.add('on'); return; }
     $('zErr').classList.remove('on');
     post({action:'lead', name, phone: normPhone(phone), source:'landing_zalo_popup', page: location.href, ...UTM});
+    fbTrack('Lead', { content_name: 'Zalo tư vấn', content_category: 'AI Agent Builder' });
     if(ZALO_GROUP_URL){
       window.open(ZALO_GROUP_URL, '_blank');
       closeZalo();
