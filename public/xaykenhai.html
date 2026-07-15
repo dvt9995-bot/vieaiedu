@@ -556,6 +556,138 @@ footer a{color:var(--dim)}
 .vstack .chip{font-size:13px;color:var(--txt)}
 .vstack .chip::before{content:'✓';color:var(--green);font-weight:800;margin-right:7px}
 
+/* ===== CÔNG NGHỆ / AI ORBIT ===== */
+.aiflow{display:flex;align-items:center;justify-content:center;gap:14px;margin-top:44px;flex-wrap:wrap}
+.af-step{
+  flex:1 1 0;min-width:180px;max-width:230px;text-align:center;padding:20px 16px;
+  background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;
+}
+.af-n{
+  width:32px;height:32px;border-radius:50%;margin:0 auto 10px;
+  display:flex;align-items:center;justify-content:center;
+  background:linear-gradient(140deg,var(--cyan),var(--blue));color:#04121a;
+  font-family:'IBM Plex Mono',monospace;font-weight:800;font-size:14px;
+  box-shadow:0 0 16px rgba(34,211,238,.35);
+}
+.af-t{font-size:13.5px;font-weight:600;color:var(--txt);line-height:1.4}
+.af-arrow{flex:none;color:var(--cyan);font-size:20px;font-weight:700;opacity:.8}
+
+.ai-orbit{position:relative;width:100%;max-width:600px;aspect-ratio:1/1;margin:64px auto 0}
+.ao-center{
+  position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);z-index:9;
+  width:108px;height:108px;border-radius:50%;text-align:center;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:radial-gradient(circle at 35% 30%,rgba(34,211,238,.95),rgba(59,130,246,.55) 55%,rgba(139,92,246,.22) 100%);
+  box-shadow:0 0 0 1px rgba(34,211,238,.5),0 0 60px rgba(34,211,238,.45),0 0 110px rgba(59,130,246,.3);
+}
+.ao-center::before{
+  content:'';position:absolute;inset:-14px;border-radius:50%;border:1px solid rgba(34,211,238,.4);
+  animation:ao-pulse-ring 3.6s ease-out infinite;
+}
+.ao-center b{display:block;font-size:13px;font-weight:800;color:#04121a;line-height:1.25;position:relative}
+.ao-center span{display:block;font-size:9px;font-weight:700;color:rgba(4,18,26,.75);text-transform:uppercase;letter-spacing:.05em;margin-top:1px;position:relative}
+@keyframes ao-pulse-ring{
+  0%{transform:scale(.85);opacity:.9}
+  100%{transform:scale(1.22);opacity:0}
+}
+.ao-spokes{position:absolute;inset:0;z-index:1;pointer-events:none}
+.ao-spokes span{
+  position:absolute;top:50%;left:50%;width:50%;height:1px;transform-origin:0 50%;
+  background:linear-gradient(90deg,rgba(34,211,238,.45),transparent);
+}
+.ao-ring{position:absolute;inset:0;z-index:2}
+.ao-chip{
+  position:absolute;top:50%;left:50%;width:0;height:0;
+  animation-name:ao-orbit;animation-timing-function:linear;animation-iteration-count:infinite;
+  animation-duration:var(--dur);animation-delay:var(--delay);
+}
+@keyframes ao-orbit{from{transform:rotate(0deg) translateX(var(--r))}to{transform:rotate(360deg) translateX(var(--r))}}
+.ao-ring.rev .ao-chip{animation-direction:reverse}
+.ao-dot{
+  position:absolute;top:0;left:0;
+  animation-name:ao-counter;animation-timing-function:linear;animation-iteration-count:infinite;
+  animation-duration:var(--dur);animation-delay:var(--delay);
+}
+@keyframes ao-counter{from{transform:translate(-50%,-50%) rotate(0deg)}to{transform:translate(-50%,-50%) rotate(-360deg)}}
+.ao-ring.rev .ao-dot{animation-direction:reverse}
+.ao-depth{
+  position:absolute;top:0;left:0;
+  animation-name:ao-depth-scale;animation-timing-function:linear;animation-iteration-count:infinite;
+  animation-duration:var(--dur);animation-delay:var(--delay);
+}
+@keyframes ao-depth-scale{
+  0%,100%{transform:translate(-50%,-50%) scale(1.16);opacity:1}
+  50%{transform:translate(-50%,-50%) scale(.6);opacity:.36}
+}
+.ao-btn{
+  position:relative;display:flex;align-items:center;justify-content:center;
+  width:52px;height:52px;border-radius:50%;
+  background:#0E1424;border:1px solid var(--glass-b);
+  text-decoration:none;color:var(--txt);cursor:pointer;
+  transition:transform .2s ease,border-color .2s ease,background .2s ease;
+}
+.ao-btn:hover,.ao-btn:focus-visible{transform:scale(1.18);border-color:rgba(34,211,238,.65);background:rgba(34,211,238,.14);outline:none;z-index:15}
+.ao-btn svg{width:24px;height:24px;fill:currentColor;flex:none}
+.ao-btn .ao-txt{font-size:10.5px;font-weight:800;letter-spacing:.01em}
+.ao-chip:hover,.ao-chip:hover .ao-dot,.ao-chip:hover .ao-depth,.ao-chip:focus-within,.ao-chip:focus-within .ao-dot,.ao-chip:focus-within .ao-depth{animation-play-state:paused}
+.ao-tip{
+  position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%) translateY(4px);
+  background:rgba(5,7,15,.96);border:1px solid var(--glass-b);border-radius:10px;
+  padding:8px 12px;font-size:11.5px;font-weight:700;white-space:nowrap;color:var(--txt);
+  opacity:0;pointer-events:none;transition:opacity .2s ease,transform .2s ease;z-index:25;
+  box-shadow:0 14px 34px rgba(0,0,0,.55);
+}
+.ao-tip i{display:block;font-style:normal;font-weight:500;color:var(--dim);font-size:10.5px;margin-top:2px}
+.ao-btn:hover + .ao-tip,.ao-btn:focus-visible + .ao-tip,.ao-tip.on{opacity:1;transform:translateX(-50%) translateY(0);pointer-events:auto}
+.ai-orbit:not(.in-view) .ao-chip,.ai-orbit:not(.in-view) .ao-dot,.ai-orbit:not(.in-view) .ao-depth,.ai-orbit:not(.in-view) .ao-center{animation-play-state:paused}
+
+/* Marquee (mobile) — ẩn mặc định, bật ở @media(max-width:900px) */
+.ai-marquee{display:none}
+.am-center{text-align:center;margin-bottom:20px}
+.am-center b{display:block;font-size:14px;font-weight:800;color:var(--txt)}
+.am-center span{display:block;font-size:11px;color:var(--dim);margin-top:2px}
+.am-row{overflow:hidden;-webkit-mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent);mask-image:linear-gradient(90deg,transparent,#000 8%,#000 92%,transparent)}
+.am-row + .am-row{margin-top:14px}
+.am-inner{display:flex;width:max-content;animation:am-scroll var(--dur) linear infinite}
+.am-row.rev .am-inner{animation-direction:reverse}
+@keyframes am-scroll{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.am-set{display:flex;gap:11px;flex:none;padding:4px 6px}
+.am-chip{
+  flex:none;display:flex;align-items:center;justify-content:center;
+  width:46px;height:46px;border-radius:50%;
+  background:rgba(255,255,255,.055);border:1px solid var(--glass-b);color:var(--txt);
+}
+.am-chip svg{width:21px;height:21px;fill:currentColor}
+.am-chip .ao-txt{font-size:9.5px;font-weight:800}
+.ai-marquee:not(.in-view) .am-inner{animation-play-state:paused}
+
+/* Danh sách nhóm — nội dung thật, luôn hiển thị (fallback reduced-motion) */
+.ai-groups{margin-top:56px;display:flex;flex-direction:column;gap:18px}
+.ai-group{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding:16px 18px;background:var(--glass);border:1px solid var(--glass-b);border-radius:14px}
+.ai-group-label{flex:none;font-size:11px;font-weight:800;letter-spacing:.09em;text-transform:uppercase;color:var(--cyan);width:168px}
+.ai-group-chips{display:flex;flex-wrap:wrap;gap:8px;flex:1}
+.ai-pill{
+  display:inline-flex;align-items:center;gap:7px;padding:6px 12px 6px 8px;border-radius:999px;
+  background:rgba(255,255,255,.04);border:1px solid var(--glass-b);font-size:12.5px;font-weight:600;color:var(--dim);
+}
+.ai-pill .ao-mini{width:20px;height:20px;border-radius:50%;display:flex;align-items:center;justify-content:center;background:rgba(255,255,255,.07);flex:none}
+.ai-pill .ao-mini svg{width:12px;height:12px;fill:var(--txt)}
+.ai-pill .ao-mini .ao-txt{font-size:7px;font-weight:800;color:var(--txt)}
+.ai-pill b{color:var(--txt);font-weight:700}
+
+.ai-closing{max-width:640px;margin:40px auto 0;text-align:center;font-size:14.5px;color:var(--dim);line-height:1.6}
+.ai-closing strong{color:var(--txt)}
+.ai-cta{text-align:center;margin-top:30px}
+.ai-legal{max-width:640px;margin:18px auto 0;text-align:center;font-size:11px;color:var(--dim-2);line-height:1.5}
+#cong-nghe::before{
+  content:'';position:absolute;inset:0;z-index:0;pointer-events:none;
+  background:url('/xaykenhai-assets/decor/ai-network-bg.webp') center 38%/cover no-repeat;
+  opacity:.22;
+  -webkit-mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000 40%,transparent 85%);
+  mask-image:radial-gradient(ellipse 70% 60% at 50% 40%,#000 40%,transparent 85%);
+}
+#cong-nghe .wrap{position:relative;z-index:1}
+
 /* ===== VIDEO DEMOS: sản phẩm agent tự làm ===== */
 .vrow{
   display:grid;grid-auto-flow:column;gap:14px;margin-top:22px;
@@ -679,11 +811,29 @@ footer a{color:var(--dim)}
   h2{font-size:clamp(23px,6.6vw,30px)}
   .sub{font-size:15px}
   .cost-note{font-size:13.5px;padding:16px 18px}
+  .aiflow{flex-direction:column;gap:8px;margin-top:32px;align-items:stretch}
+  .af-step{
+    display:flex;align-items:center;gap:14px;text-align:left;
+    max-width:100%;width:100%;min-width:0;padding:12px 16px;
+    border-left:2px solid rgba(34,211,238,.4);border-radius:12px;
+  }
+  .af-n{margin:0;flex:none}
+  .af-arrow{display:none}
+  .ai-orbit{display:none}
+  .ai-marquee{display:block}
+  .ai-groups{margin-top:40px;gap:14px}
+  .ai-group{flex-direction:column;align-items:flex-start;gap:10px;padding:16px}
+  .ai-group-label{width:auto}
+  #cong-nghe::before{
+    -webkit-mask-image:radial-gradient(ellipse 100% 26% at 50% 20%,#000 30%,transparent 85%);
+    mask-image:radial-gradient(ellipse 100% 26% at 50% 20%,#000 30%,transparent 85%);
+  }
 }
 @media(prefers-reduced-motion:reduce){
   *{animation:none!important;transition:none!important;scroll-behavior:auto}
   .rv,.msg,.videocard{opacity:1!important;transform:none!important}
   #bg3d{display:none}
+  .ai-orbit,.ai-marquee{display:none!important}
 }
 </style>
 </head>
@@ -737,6 +887,19 @@ footer a{color:var(--dim)}
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/>
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
     </symbol>
+    <symbol id="i-claude" viewBox="0 0 24 24"><path d="m4.7144 15.9555 4.7174-2.6471.079-.2307-.079-.1275h-.2307l-.7893-.0486-2.6956-.0729-2.3375-.0971-2.2646-.1214-.5707-.1215-.5343-.7042.0546-.3522.4797-.3218.686.0608 1.5179.1032 2.2767.1578 1.6514.0972 2.4468.255h.3886l.0546-.1579-.1336-.0971-.1032-.0972L6.973 9.8356l-2.55-1.6879-1.3356-.9714-.7225-.4918-.3643-.4614-.1578-1.0078.6557-.7225.8803.0607.2246.0607.8925.686 1.9064 1.4754 2.4893 1.8336.3643.3035.1457-.1032.0182-.0728-.164-.2733-1.3539-2.4467-1.445-2.4893-.6435-1.032-.17-.6194c-.0607-.255-.1032-.4674-.1032-.7285L6.287.1335 6.6997 0l.9957.1336.419.3642.6192 1.4147 1.0018 2.2282 1.5543 3.0296.4553.8985.2429.8318.091.255h.1579v-.1457l.1275-1.706.2368-2.0947.2307-2.6957.0789-.7589.3764-.9107.7468-.4918.5828.2793.4797.686-.0668.4433-.2853 1.8517-.5586 2.9021-.3643 1.9429h.2125l.2429-.2429.9835-1.3053 1.6514-2.0643.7286-.8196.85-.9046.5464-.4311h1.0321l.759 1.1293-.34 1.1657-1.0625 1.3478-.8804 1.1414-1.2628 1.7-.7893 1.36.0729.1093.1882-.0183 2.8535-.607 1.5421-.2794 1.8396-.3157.8318.3886.091.3946-.3278.8075-1.967.4857-2.3072.4614-3.4364.8136-.0425.0304.0486.0607 1.5482.1457.6618.0364h1.621l3.0175.2247.7892.522.4736.6376-.079.4857-1.2142.6193-1.6393-.3886-3.825-.9107-1.3113-.3279h-.1822v.1093l1.0929 1.0686 2.0035 1.8092 2.5075 2.3314.1275.5768-.3218.4554-.34-.0486-2.2039-1.6575-.85-.7468-1.9246-1.621h-.1275v.17l.4432.6496 2.3436 3.5214.1214 1.0807-.17.3521-.6071.2125-.6679-.1214-1.3721-1.9246L14.38 17.959l-1.1414-1.9428-.1397.079-.674 7.2552-.3156.3703-.7286.2793-.6071-.4614-.3218-.7468.3218-1.4753.3886-1.9246.3157-1.53.2853-1.9004.17-.6314-.0121-.0425-.1397.0182-1.4328 1.9672-2.1796 2.9446-1.7243 1.8456-.4128.164-.7164-.3704.0667-.6618.4008-.5889 2.386-3.0357 1.4389-1.882.929-1.0868-.0062-.1579h-.0546l-6.3385 4.1164-1.1293.1457-.4857-.4554.0608-.7467.2307-.2429 1.9064-1.3114Z"/></symbol>
+    <symbol id="i-openai" viewBox="0 0 24 24"><path d="M22.2819 9.8211a5.9847 5.9847 0 0 0-.5157-4.9108 6.0462 6.0462 0 0 0-6.5098-2.9A6.0651 6.0651 0 0 0 4.9807 4.1818a5.9847 5.9847 0 0 0-3.9977 2.9 6.0462 6.0462 0 0 0 .7427 7.0966 5.98 5.98 0 0 0 .511 4.9107 6.051 6.051 0 0 0 6.5146 2.9001A5.9847 5.9847 0 0 0 13.2599 24a6.0557 6.0557 0 0 0 5.7718-4.2058 5.9894 5.9894 0 0 0 3.9977-2.9001 6.0557 6.0557 0 0 0-.7475-7.0729zm-9.022 12.6081a4.4755 4.4755 0 0 1-2.8764-1.0408l.1419-.0804 4.7783-2.7582a.7948.7948 0 0 0 .3927-.6813v-6.7369l2.02 1.1686a.071.071 0 0 1 .038.052v5.5826a4.504 4.504 0 0 1-4.4945 4.4944zm-9.6607-4.1254a4.4708 4.4708 0 0 1-.5346-3.0137l.142.0852 4.783 2.7582a.7712.7712 0 0 0 .7806 0l5.8428-3.3685v2.3324a.0804.0804 0 0 1-.0332.0615L9.74 19.9502a4.4992 4.4992 0 0 1-6.1408-1.6464zM2.3408 7.8956a4.485 4.485 0 0 1 2.3655-1.9728V11.6a.7664.7664 0 0 0 .3879.6765l5.8144 3.3543-2.0201 1.1685a.0757.0757 0 0 1-.071 0l-4.8303-2.7865A4.504 4.504 0 0 1 2.3408 7.872zm16.5963 3.8558L13.1038 8.364 15.1192 7.2a.0757.0757 0 0 1 .071 0l4.8303 2.7913a4.4944 4.4944 0 0 1-.6765 8.1042v-5.6772a.79.79 0 0 0-.407-.667zm2.0107-3.0231l-.142-.0852-4.7735-2.7818a.7759.7759 0 0 0-.7854 0L9.409 9.2297V6.8974a.0662.0662 0 0 1 .0284-.0615l4.8303-2.7866a4.4992 4.4992 0 0 1 6.6802 4.66zM8.3065 12.863l-2.02-1.1638a.0804.0804 0 0 1-.038-.0567V6.0742a4.4992 4.4992 0 0 1 7.3757-3.4537l-.142.0805L8.704 5.459a.7948.7948 0 0 0-.3927.6813zm1.0976-2.3654l2.602-1.4998 2.6069 1.4998v2.9994l-2.5974 1.4997-2.6067-1.4997Z"/></symbol>
+    <symbol id="i-gemini" viewBox="0 0 24 24"><path d="M11.04 19.32Q12 21.51 12 24q0-2.49.93-4.68.96-2.19 2.58-3.81t3.81-2.55Q21.51 12 24 12q-2.49 0-4.68-.93a12.3 12.3 0 0 1-3.81-2.58 12.3 12.3 0 0 1-2.58-3.81Q12 2.49 12 0q0 2.49-.96 4.68-.93 2.19-2.55 3.81a12.3 12.3 0 0 1-3.81 2.58Q2.49 12 0 12q2.49 0 4.68.96 2.19.93 3.81 2.55t2.55 3.81"/></symbol>
+    <symbol id="i-elevenlabs" viewBox="0 0 24 24"><path d="M4.6035 0v24h4.9317V0zm9.8613 0v24h4.9317V0z"/></symbol>
+    <symbol id="i-ffmpeg" viewBox="0 0 24 24"><path d="M21.72 17.91V6.5l-.53-.49L9.05 18.52l-1.29-.06L24 1.53l-.33-.95-11.93 1-5.75 6.6v-.23l4.7-5.39-1.38-.77-9.11.77v2.85l1.91.46v.01l.19-.01-.56.66v10.6c.609-.126 1.22-.241 1.83-.36L14.12 5.22l.83-.04L0 21.44l9.67.82 1.35-.77 6.82-6.74v2.15l-5.72 5.57 11.26.95.35-.94v-3.16l-3.29-.18c.434-.403.858-.816 1.28-1.23z"/></symbol>
+    <symbol id="i-suno" viewBox="0 0 24 24"><path d="M16.5 0C20.642 0 24 5.373 24 12h-9c0 6.627-3.358 12-7.5 12C3.358 24 0 18.627 0 12h9c0-6.627 3.358-12 7.5-12Z"/></symbol>
+    <symbol id="i-midjourney" viewBox="0 0 24 24"><path d="M22.369 17.676c-1.387 1.259-3.17 2.378-5.332 3.417.044.03.086.057.13.083l.018.01.019.012c.216.123.42.184.641.184.222 0 .426-.061.642-.184l.018-.011.019-.011c.14-.084.266-.178.492-.366l.178-.148c.279-.232.426-.342.625-.456.304-.174.612-.266.949-.266.337 0 .645.092.949.266l.023.014c.188.109.334.219.602.442l.178.148c.221.184.346.278.483.36l.028.017.018.01c.21.12.407.181.62.185h.022a.31.31 0 110 .618c-.337 0-.645-.092-.95-.266a3.137 3.137 0 01-.09-.054l-.022-.014-.022-.013-.02-.014a5.356 5.356 0 01-.49-.377l-.159-.132a3.836 3.836 0 00-.483-.36l-.027-.017-.019-.01a1.256 1.256 0 00-.641-.185c-.222 0-.426.061-.641.184l-.02.011-.018.011c-.14.084-.266.178-.492.366l-.158.132a5.125 5.125 0 01-.51.39l-.022.014-.022.014-.09.054a1.868 1.868 0 01-.95.266c-.337 0-.644-.092-.949-.266a3.137 3.137 0 01-.09-.054l-.022-.014-.022-.013-.026-.017a4.881 4.881 0 01-.425-.325.308.308 0 01-.12-.1l-.098-.081a3.836 3.836 0 00-.483-.36l-.027-.017-.019-.01a1.256 1.256 0 00-.641-.185c-.222 0-.426.061-.642.184l-.018.011-.019.011c-.14.084-.266.178-.492.366l-.158.132a5.125 5.125 0 01-.51.39l-.023.014-.022.014-.09.054A1.868 1.868 0 0112 22c-.337 0-.645-.092-.949-.266a3.137 3.137 0 01-.09-.054l-.022-.014-.022-.013-.021-.014a5.356 5.356 0 01-.49-.377l-.158-.132a3.836 3.836 0 00-.483-.36l-.028-.017-.018-.01a1.256 1.256 0 00-.642-.185c-.221 0-.425.061-.641.184l-.019.011-.018.011c-.141.084-.266.178-.492.366l-.158.132a5.125 5.125 0 01-.511.39l-.022.014-.022.014-.09.054a1.868 1.868 0 01-.986.264c-.746-.09-1.319-.38-1.89-.866l-.035-.03c-.047-.041-.118-.106-.192-.174l-.196-.181-.107-.1-.011-.01a1.531 1.531 0 00-.336-.253.313.313 0 00-.095-.03h-.005c-.119.022-.238.059-.361.11a.308.308 0 01-.077.061l-.008.005a.309.309 0 01-.126.034 5.66 5.66 0 00-.774.518l-.416.324-.055.043a6.542 6.542 0 01-.324.236c-.305.207-.552.315-.8.315a.31.31 0 01-.01-.618h.01c.09 0 .235-.062.438-.198l.04-.027c.077-.054.163-.117.27-.199l.385-.301.06-.047c.268-.206.506-.373.73-.505l-.633-1.21a.309.309 0 01.254-.451l20.287-1.305a.309.309 0 01.228.537zm-1.118.14L2.369 19.03l.423.809c.128-.045.256-.078.388-.1a.31.31 0 01.052-.005c.132 0 .26.032.386.093.153.073.294.179.483.35l.016.015.092.086.144.134.097.089c.065.06.125.114.16.144.485.418.948.658 1.554.736h.011a1.25 1.25 0 00.6-.172l.021-.011.019-.011.018-.011c.141-.084.266-.178.492-.366l.178-.148c.279-.232.426-.342.625-.456.305-.174.612-.266.95-.266.336 0 .644.092.948.266l.023.014c.188.109.335.219.603.442l.177.148c.222.184.346.278.484.36l.027.017.019.01c.215.124.42.185.641.185.222 0 .426-.061.641-.184l.019-.011.018-.011c.141-.084.267-.178.493-.366l.177-.148c.28-.232.427-.342.626-.456.304-.174.612-.266.949-.266.337 0 .644.092.949.266l.025.015c.187.109.334.22.603.443 1.867-.878 3.448-1.811 4.73-2.832l.02-.016zM3.653 2.026C6.073 3.06 8.69 4.941 10.8 7.258c2.46 2.7 4.109 5.828 4.637 9.149a.31.31 0 01-.421.335c-2.348-.945-4.54-1.258-6.59-1.02-1.739.2-3.337.792-4.816 1.703-.294.182-.62-.182-.405-.454 1.856-2.355 2.581-4.99 2.343-7.794-.195-2.292-1.031-4.61-2.284-6.709a.31.31 0 01.388-.442zM10.04 4.45c1.778.543 3.892 2.102 5.782 4.243 1.984 2.248 3.552 4.934 4.347 7.582a.31.31 0 01-.401.38l-.022-.01-.386-.154a10.594 10.594 0 00-.291-.112l-.016-.006c-.68-.247-1.199-.291-1.944-.101a.31.31 0 01-.375-.218C15.378 11.123 13.073 7.276 9.775 5c-.291-.201-.072-.653.266-.55zM4.273 2.996l.008.015c1.028 1.94 1.708 4.031 1.885 6.113.213 2.513-.31 4.906-1.673 7.092l-.02.031.003-.001c1.198-.581 2.47-.969 3.825-1.132l.055-.006c1.981-.23 4.083.029 6.309.837l.066.025-.007-.039c-.593-2.95-2.108-5.737-4.31-8.179l-.07-.078c-1.785-1.96-3.944-3.6-6.014-4.65l-.057-.028zm7.92 3.238l.048.048c2.237 2.295 3.885 5.431 4.974 9.191l.038.132.022-.004c.71-.133 1.284-.063 1.963.18l.027.01.066.024.046.018-.025-.073c-.811-2.307-2.208-4.62-3.936-6.594l-.058-.065c-1.02-1.155-2.103-2.132-3.15-2.856l-.015-.011z"></path></symbol>
+    <symbol id="i-kling" viewBox="0 0 24 24"><path clip-rule="evenodd" d="M5.493 21.234c-1.112-1.451-1.109-4.263-.081-7.459l-4.557-2.63a1.683 1.683 0 01-.85-1.304 1.505 1.505 0 01.08-.622 13.18 13.18 0 011.037-2.255c3.476-6.02 10.916-8.23 16.619-4.938.46.266.82.67 1.081 1.184.785 1.545.685 4.096-.234 6.954l4.557 2.631c.339.196.596.492.736.832a1.53 1.53 0 01.034 1.093 13.146 13.146 0 01-1.037 2.255c-3.476 6.02-10.916 8.23-16.619 4.938a2.6 2.6 0 01-.766-.68zm11.096-6.615c-2.073 3.591-5.808 5.316-8.343 3.852-1.267-.731-1.994-2.122-2.145-3.778-.095-1.035.036-2.173.4-3.32.217-.684.517-1.37.902-2.039l.008-.014c2.073-3.59 5.808-5.315 8.343-3.852.633.366 1.13.895 1.49 1.54.986 1.772.922 4.415-.285 6.914-.111.23-.232.457-.362.683l-.008.014z"></path></symbol>
+    <symbol id="i-runway" viewBox="0 0 24 24"><path d="M17.86 22.992c-2.669.245-4.887-2.876-6.597-4.454C10.398 24.759 1 24.177 1 17.86V6.15c0-.921.244-1.861.733-2.65C2.635 1.977 4.383.98 6.15 1h11.71c6.316 0 6.918 9.398.677 10.243l2.97 2.951c3.252 3.064.808 8.929-3.646 8.797zm-1.428-3.721c1.842 1.898 4.774-1.034 2.876-2.876l-5.132-5.132H11.3v2.876l4.436 4.436.696.696zM4.12 17.842c-.037 2.632 4.117 2.632 4.06 0V6.132c.038-1.316-1.353-2.35-2.612-1.955-.057.019-.113.037-.15.056-.79.301-1.335 1.09-1.317 1.936v11.673h.02zm13.74-9.68c2.632.037 2.632-4.098 0-4.06h-6.973c.526 1.109.395 2.857.413 4.06h6.56z"></path></symbol>
+    <symbol id="i-flux" viewBox="0 0 24 24"><path d="M0 20.683L12.01 2.5 24 20.683h-2.233L12.009 5.878 3.471 18.806h12.122l1.239 1.877H0z"></path><path d="M8.069 16.724l2.073-3.115 2.074 3.115H8.069zM18.24 20.683l-5.668-8.707h2.177l5.686 8.707h-2.196zM19.74 11.676l2.13-3.19 2.13 3.19h-4.26z"></path></symbol>
+    <symbol id="i-nanobanana" viewBox="0 0 24 24"><path d="M8.342 13.16H3.455c-.513 0-.772-.639-.408-1.012l1.608-1.653a3.166 3.166 0 014.565 0l.513.527.006-.015.038.017c.735-1.93.786-2.809.783-5.007v-.275c-.01-1.782-.02-3.935 1.965-4.22 2.603-.375 4.504 4.219 4.815 8.299a3.166 3.166 0 013.38.774l1.609 1.653c.365.375.106 1.012-.407 1.012H19.27c.072.264.11.542.11.828v5.664c0 .914-.994 1.292-1.602.576-.229-.27-1.067-1.25-2.155-2.52-2.92 4.183-10.266 6.462-12.34 3.006a.915.915 0 01-.05 0h-.743a.991.991 0 110-1.982h.246c.014-1.687 1.23-3.148 2.846-3.783a7.448 7.448 0 002.76-1.889zm7.543-2.145c0-.127-.001-.256-.005-.388a15.693 15.693 0 00-.632-3.939c-.38-1.282-.887-2.33-1.425-2.992-.545-.671-.906-.715-1.085-.69-.223.032-.292.098-.322.129-.05.052-.135.176-.209.45-.152.567-.15 1.286-.147 2.186v.244c.002 1.134-.009 2.028-.145 2.92a11.292 11.292 0 01-.537 2.08h4.507zm-3.468 3.056c-1.636 3.166-4.981 4.71-8.118 4.87a.562.562 0 00.057 1.124c3.294-.169 6.921-1.749 8.845-5.081l-.784-.913z"></path></symbol>
+    <symbol id="i-instagram" viewBox="0 0 24 24"><path d="M7.0301.084c-1.2768.0602-2.1487.264-2.911.5634-.7888.3075-1.4575.72-2.1228 1.3877-.6652.6677-1.075 1.3368-1.3802 2.127-.2954.7638-.4956 1.6365-.552 2.914-.0564 1.2775-.0689 1.6882-.0626 4.947.0062 3.2586.0206 3.6671.0825 4.9473.061 1.2765.264 2.1482.5635 2.9107.308.7889.72 1.4573 1.388 2.1228.6679.6655 1.3365 1.0743 2.1285 1.38.7632.295 1.6361.4961 2.9134.552 1.2773.056 1.6884.069 4.9462.0627 3.2578-.0062 3.668-.0207 4.9478-.0814 1.28-.0607 2.147-.2652 2.9098-.5633.7889-.3086 1.4578-.72 2.1228-1.3881.665-.6682 1.0745-1.3378 1.3795-2.1284.2957-.7632.4966-1.636.552-2.9124.056-1.2809.0692-1.6898.063-4.948-.0063-3.2583-.021-3.6668-.0817-4.9465-.0607-1.2797-.264-2.1487-.5633-2.9117-.3084-.7889-.72-1.4568-1.3876-2.1228C21.2982 1.33 20.628.9208 19.8378.6165 19.074.321 18.2017.1197 16.9244.0645 15.6471.0093 15.236-.005 11.977.0014 8.718.0076 8.31.0215 7.0301.0839m.1402 21.6932c-1.17-.0509-1.8053-.2453-2.2287-.408-.5606-.216-.96-.4771-1.3819-.895-.422-.4178-.6811-.8186-.9-1.378-.1644-.4234-.3624-1.058-.4171-2.228-.0595-1.2645-.072-1.6442-.079-4.848-.007-3.2037.0053-3.583.0607-4.848.05-1.169.2456-1.805.408-2.2282.216-.5613.4762-.96.895-1.3816.4188-.4217.8184-.6814 1.3783-.9003.423-.1651 1.0575-.3614 2.227-.4171 1.2655-.06 1.6447-.072 4.848-.079 3.2033-.007 3.5835.005 4.8495.0608 1.169.0508 1.8053.2445 2.228.408.5608.216.96.4754 1.3816.895.4217.4194.6816.8176.9005 1.3787.1653.4217.3617 1.056.4169 2.2263.0602 1.2655.0739 1.645.0796 4.848.0058 3.203-.0055 3.5834-.061 4.848-.051 1.17-.245 1.8055-.408 2.2294-.216.5604-.4763.96-.8954 1.3814-.419.4215-.8181.6811-1.3783.9-.4224.1649-1.0577.3617-2.2262.4174-1.2656.0595-1.6448.072-4.8493.079-3.2045.007-3.5825-.006-4.848-.0608M16.953 5.5864A1.44 1.44 0 1 0 18.39 4.144a1.44 1.44 0 0 0-1.437 1.4424M5.8385 12.012c.0067 3.4032 2.7706 6.1557 6.173 6.1493 3.4026-.0065 6.157-2.7701 6.1506-6.1733-.0065-3.4032-2.771-6.1565-6.174-6.1498-3.403.0067-6.156 2.771-6.1496 6.1738M8 12.0077a4 4 0 1 1 4.008 3.9921A3.9996 3.9996 0 0 1 8 12.0077"/></symbol>
+    <symbol id="i-threads" viewBox="0 0 24 24"><path d="M12.186 24h-.007c-3.581-.024-6.334-1.205-8.184-3.509C2.35 18.44 1.5 15.586 1.472 12.01v-.017c.03-3.579.879-6.43 2.525-8.482C5.845 1.205 8.6.024 12.18 0h.014c2.746.02 5.043.725 6.826 2.098 1.677 1.29 2.858 3.13 3.509 5.467l-2.04.569c-1.104-3.96-3.898-5.984-8.304-6.015-2.91.022-5.11.936-6.54 2.717C4.307 6.504 3.616 8.914 3.589 12c.027 3.086.718 5.496 2.057 7.164 1.43 1.783 3.631 2.698 6.54 2.717 2.623-.02 4.358-.631 5.8-2.045 1.647-1.613 1.618-3.593 1.09-4.798-.31-.71-.873-1.3-1.634-1.75-.192 1.352-.622 2.446-1.284 3.272-.886 1.102-2.14 1.704-3.73 1.79-1.202.065-2.361-.218-3.259-.801-1.063-.689-1.685-1.74-1.752-2.964-.065-1.19.408-2.285 1.33-3.082.88-.76 2.119-1.207 3.583-1.291a13.853 13.853 0 0 1 3.02.142c-.126-.742-.375-1.332-.75-1.757-.513-.586-1.308-.883-2.359-.89h-.029c-.844 0-1.992.232-2.721 1.32L7.734 7.847c.98-1.454 2.568-2.256 4.478-2.256h.044c3.194.02 5.097 1.975 5.287 5.388.108.046.216.094.321.142 1.49.7 2.58 1.761 3.154 3.07.797 1.82.871 4.79-1.548 7.158-1.85 1.81-4.094 2.628-7.277 2.65Zm1.003-11.69c-.242 0-.487.007-.739.021-1.836.103-2.98.946-2.916 2.143.067 1.256 1.452 1.839 2.784 1.767 1.224-.065 2.818-.543 3.086-3.71a10.5 10.5 0 0 0-2.215-.221z"/></symbol>
   </defs>
 </svg>
 
@@ -855,6 +1018,265 @@ footer a{color:var(--dim)}
       <div class="stat glass rv"><div class="n grad" data-count="5" data-suffix=" buổi">0</div><div class="l">Zoom trực tiếp là bạn sở hữu hệ thống hoàn chỉnh</div></div>
       <div class="stat glass rv"><div class="n grad" data-count="24" data-suffix="/7">0</div><div class="l">agent trực làm việc — không lười, không than mệt</div></div>
     </div>
+  </div>
+</section>
+
+<!-- CÔNG NGHỆ: hệ thống chạy bằng những AI mạnh nhất -->
+<section id="cong-nghe">
+  <div class="wrap">
+    <div style="text-align:center"><span class="eyebrow rv">Bên trong cỗ máy</span></div>
+    <h2 class="rv" style="text-align:center">Hệ thống của bạn chạy bằng <span class="grad">những AI mạnh nhất thế giới</span></h2>
+    <p class="sub rv" style="text-align:center;margin-left:auto;margin-right:auto">Bạn không cần học từng tool. AI Agent là "quản lý" — nó tự gọi đúng AI chuyên biệt cho từng công đoạn, bạn chỉ việc giao đề bài.</p>
+
+    <div class="aiflow rv">
+      <div class="af-step"><div class="af-n">1</div><div class="af-t">Bạn nhắn 1 tin</div></div>
+      <div class="af-arrow">→</div>
+      <div class="af-step"><div class="af-n">2</div><div class="af-t">Agent (OpenClaw + Claude) phân tích &amp; lập kế hoạch</div></div>
+      <div class="af-arrow">→</div>
+      <div class="af-step"><div class="af-n">3</div><div class="af-t">Agent điều phối các AI chuyên biệt làm từng phần</div></div>
+      <div class="af-arrow">→</div>
+      <div class="af-step"><div class="af-n">4</div><div class="af-t">Video hoàn chỉnh tự động đăng đa nền tảng</div></div>
+    </div>
+
+    <!-- ORBIT 3D (desktop) -->
+    <div class="ai-orbit" id="aiOrbit">
+      <div class="ao-spokes" aria-hidden="true"><span style="transform:rotate(20deg)"></span><span style="transform:rotate(140deg)"></span><span style="transform:rotate(255deg)"></span></div>
+
+      <div class="ao-ring" id="aoRing1">
+        <div class="ao-chip" style="--r:90px;--dur:20s;--delay:-0.000s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="OpenClaw — bộ não điều phối, tự lập kế hoạch và giao việc cho các AI khác"><span class="ao-txt">OC</span></button>
+          <span class="ao-tip">OpenClaw<i>Bộ não điều phối</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:90px;--dur:20s;--delay:-5.000s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Claude, Anthropic — tư duy, viết kịch bản, ra quyết định"><svg><use href="#i-claude"/></svg></button>
+          <span class="ao-tip">Claude<i>Tư duy &amp; viết kịch bản</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:90px;--dur:20s;--delay:-10.000s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="ChatGPT, OpenAI — xử lý ngôn ngữ và nội dung"><svg><use href="#i-openai"/></svg></button>
+          <span class="ao-tip">ChatGPT<i>Xử lý ngôn ngữ &amp; nội dung</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:90px;--dur:20s;--delay:-15.000s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Gemini, Google — phân tích đa phương tiện, tổng hợp thông tin"><svg><use href="#i-gemini"/></svg></button>
+          <span class="ao-tip">Gemini<i>Phân tích đa phương tiện</i></span>
+        </div></div></div>
+      </div>
+
+      <div class="ao-ring rev" id="aoRing2">
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-0.000s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Midjourney — tạo hình ảnh nghệ thuật độ chi tiết cao"><svg><use href="#i-midjourney"/></svg></button>
+          <span class="ao-tip">Midjourney<i>Tạo hình ảnh nghệ thuật</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-3.556s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Nano Banana, Gemini — chỉnh sửa và tạo ảnh siêu nhanh"><svg><use href="#i-nanobanana"/></svg></button>
+          <span class="ao-tip">Nano Banana<i>Chỉnh &amp; tạo ảnh siêu nhanh</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-7.111s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Flux — tạo ảnh AI mã nguồn mở, chất lượng ảnh thực"><svg><use href="#i-flux"/></svg></button>
+          <span class="ao-tip">Flux<i>Ảnh AI mã nguồn mở</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-10.667s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="GPT Image, OpenAI — tạo ảnh theo mô tả chi tiết"><svg><use href="#i-openai"/></svg></button>
+          <span class="ao-tip">GPT Image<i>Tạo ảnh theo mô tả</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-14.222s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Veo 3, Google DeepMind — tạo video chuyển động chân thực nhất"><span class="ao-txt">V3</span></button>
+          <span class="ao-tip">Veo 3<i>Video chuyển động chân thực</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-17.778s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Gemini Omni, Google Flow — chỉnh video AI đa phương thức, hiểu ngữ cảnh từng bước chỉnh sửa"><svg><use href="#i-gemini"/></svg></button>
+          <span class="ao-tip">Gemini Omni<i>Google Flow — chỉnh video đa phương thức</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-21.333s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Kling AI — tạo video chuyển động vật lý mượt"><svg><use href="#i-kling"/></svg></button>
+          <span class="ao-tip">Kling AI<i>Chuyển động vật lý mượt</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-24.889s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="HeyGen — tạo avatar AI nói chuyện như người thật"><span class="ao-txt">HG</span></button>
+          <span class="ao-tip">HeyGen<i>Avatar AI nói như người thật</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:168px;--dur:32s;--delay:-28.444s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Runway — chỉnh sửa và hiệu ứng video chuyên nghiệp"><svg><use href="#i-runway"/></svg></button>
+          <span class="ao-tip">Runway<i>Hiệu ứng video chuyên nghiệp</i></span>
+        </div></div></div>
+      </div>
+
+      <div class="ao-ring" id="aoRing3">
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-0.000s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="ElevenLabs — giọng đọc AI tự nhiên nhất thế giới"><svg><use href="#i-elevenlabs"/></svg></button>
+          <span class="ao-tip">ElevenLabs<i>Giọng đọc AI tự nhiên nhất</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-3.455s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Vbee — giọng đọc tiếng Việt chuẩn, nhiều ngữ điệu"><span class="ao-txt">Vb</span></button>
+          <span class="ao-tip">Vbee<i>Giọng đọc tiếng Việt chuẩn</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-6.909s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="OpenAI TTS — giọng đọc AI đa ngôn ngữ chất lượng cao"><svg><use href="#i-openai"/></svg></button>
+          <span class="ao-tip">OpenAI TTS<i>Giọng đọc đa ngôn ngữ</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-10.364s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Suno — tạo nhạc nền AI theo cảm xúc video"><svg><use href="#i-suno"/></svg></button>
+          <span class="ao-tip">Suno<i>Nhạc nền AI theo cảm xúc</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-13.818s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Remotion — dựng phim bằng code, chính xác từng khung hình"><span class="ao-txt">Rm</span></button>
+          <span class="ao-tip">Remotion<i>Dựng phim bằng code</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-17.273s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="FFmpeg — xử lý, ghép, xuất video mọi định dạng"><svg><use href="#i-ffmpeg"/></svg></button>
+          <span class="ao-tip">FFmpeg<i>Xử lý &amp; xuất video</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-20.727s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="YouTube API — tự động đăng thẳng lên kênh YouTube"><svg><use href="#i-youtube"/></svg></button>
+          <span class="ao-tip">YouTube API<i>Tự động đăng video</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-24.182s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="TikTok API — tự động đăng thẳng lên kênh TikTok"><svg><use href="#i-tiktok"/></svg></button>
+          <span class="ao-tip">TikTok API<i>Tự động đăng video</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-27.636s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Facebook API — tự động đăng Reels &amp; bài viết lên Fanpage"><svg><use href="#i-facebook"/></svg></button>
+          <span class="ao-tip">Facebook API<i>Tự động đăng Reels &amp; bài viết</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-31.091s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Instagram API — tự động đăng Reels lên Instagram"><svg><use href="#i-instagram"/></svg></button>
+          <span class="ao-tip">Instagram API<i>Tự động đăng Reels</i></span>
+        </div></div></div>
+        <div class="ao-chip" style="--r:232px;--dur:38s;--delay:-34.545s"><div class="ao-dot"><div class="ao-depth">
+          <button class="ao-btn" type="button" aria-label="Threads API — tự động đăng bài lên Threads"><svg><use href="#i-threads"/></svg></button>
+          <span class="ao-tip">Threads API<i>Tự động đăng bài viết</i></span>
+        </div></div></div>
+      </div>
+
+      <div class="ao-center">
+        <b>AI Agent</b><span>của bạn</span>
+      </div>
+    </div>
+
+    <!-- MARQUEE (mobile) -->
+    <div class="ai-marquee" id="aiMarquee" aria-hidden="true">
+      <div class="am-center"><b>AI Agent của bạn</b><span>tự gọi đúng AI cho từng việc</span></div>
+      <div class="am-row" style="--dur:30s">
+        <div class="am-inner">
+          <div class="am-set">
+            <span class="am-chip"><span class="ao-txt">OC</span></span>
+            <span class="am-chip"><svg><use href="#i-claude"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-openai"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-gemini"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-midjourney"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-nanobanana"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-flux"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-openai"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">V3</span></span>
+            <span class="am-chip"><svg><use href="#i-gemini"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-kling"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">HG</span></span>
+            <span class="am-chip"><svg><use href="#i-runway"/></svg></span>
+          </div>
+          <div class="am-set" aria-hidden="true">
+            <span class="am-chip"><span class="ao-txt">OC</span></span>
+            <span class="am-chip"><svg><use href="#i-claude"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-openai"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-gemini"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-midjourney"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-nanobanana"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-flux"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-openai"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">V3</span></span>
+            <span class="am-chip"><svg><use href="#i-gemini"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-kling"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">HG</span></span>
+            <span class="am-chip"><svg><use href="#i-runway"/></svg></span>
+          </div>
+        </div>
+      </div>
+      <div class="am-row rev" style="--dur:32s">
+        <div class="am-inner">
+          <div class="am-set">
+            <span class="am-chip"><svg><use href="#i-elevenlabs"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">Vb</span></span>
+            <span class="am-chip"><svg><use href="#i-openai"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-suno"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">Rm</span></span>
+            <span class="am-chip"><svg><use href="#i-ffmpeg"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-youtube"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-tiktok"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-facebook"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-instagram"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-threads"/></svg></span>
+          </div>
+          <div class="am-set" aria-hidden="true">
+            <span class="am-chip"><svg><use href="#i-elevenlabs"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">Vb</span></span>
+            <span class="am-chip"><svg><use href="#i-openai"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-suno"/></svg></span>
+            <span class="am-chip"><span class="ao-txt">Rm</span></span>
+            <span class="am-chip"><svg><use href="#i-ffmpeg"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-youtube"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-tiktok"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-facebook"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-instagram"/></svg></span>
+            <span class="am-chip"><svg><use href="#i-threads"/></svg></span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Danh sách nhóm — nội dung thật, luôn hiển thị -->
+    <div class="ai-groups">
+      <div class="ai-group rv">
+        <span class="ai-group-label">Bộ não điều phối</span>
+        <div class="ai-group-chips">
+          <span class="ai-pill"><span class="ao-mini"><span class="ao-txt">OC</span></span><b>OpenClaw</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-claude"/></svg></span><b>Claude</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-openai"/></svg></span><b>ChatGPT</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-gemini"/></svg></span><b>Gemini</b></span>
+        </div>
+      </div>
+      <div class="ai-group rv">
+        <span class="ai-group-label">Tạo hình ảnh</span>
+        <div class="ai-group-chips">
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-midjourney"/></svg></span><b>Midjourney</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-nanobanana"/></svg></span><b>Nano Banana</b> (Gemini)</span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-flux"/></svg></span><b>Flux</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-openai"/></svg></span><b>GPT Image</b></span>
+        </div>
+      </div>
+      <div class="ai-group rv">
+        <span class="ai-group-label">Tạo video &amp; avatar</span>
+        <div class="ai-group-chips">
+          <span class="ai-pill"><span class="ao-mini"><span class="ao-txt">V3</span></span><b>Veo 3</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-gemini"/></svg></span><b>Gemini Omni</b> (Google Flow)</span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-kling"/></svg></span><b>Kling AI</b></span>
+          <span class="ai-pill"><span class="ao-mini"><span class="ao-txt">HG</span></span><b>HeyGen</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-runway"/></svg></span><b>Runway</b></span>
+        </div>
+      </div>
+      <div class="ai-group rv">
+        <span class="ai-group-label">Giọng đọc &amp; âm thanh</span>
+        <div class="ai-group-chips">
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-elevenlabs"/></svg></span><b>ElevenLabs</b></span>
+          <span class="ai-pill"><span class="ao-mini"><span class="ao-txt">Vb</span></span><b>Vbee</b> (giọng Việt)</span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-openai"/></svg></span><b>OpenAI TTS</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-suno"/></svg></span><b>Suno</b> (nhạc nền)</span>
+        </div>
+      </div>
+      <div class="ai-group rv">
+        <span class="ai-group-label">Dựng phim &amp; xuất bản đa nền tảng</span>
+        <div class="ai-group-chips">
+          <span class="ai-pill"><span class="ao-mini"><span class="ao-txt">Rm</span></span><b>Remotion</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-ffmpeg"/></svg></span><b>FFmpeg</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-youtube"/></svg></span><b>YouTube</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-tiktok"/></svg></span><b>TikTok</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-facebook"/></svg></span><b>Facebook</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-instagram"/></svg></span><b>Instagram</b></span>
+          <span class="ai-pill"><span class="ao-mini"><svg><use href="#i-threads"/></svg></span><b>Threads</b></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="ai-closing rv"><strong>Tool chỉ là linh kiện.</strong> Tool mới ra — agent thay linh kiện, hệ thống vẫn chạy. Đó là lý do bạn học nguyên lý, không học thuộc tool.</p>
+    <div class="ai-cta rv"><a class="btn btn-hot" href="#dang-ky">Sở hữu hệ thống này — từ 999.000đ</a></div>
+    <p class="ai-legal">Logo thuộc về các thương hiệu tương ứng, dùng để minh hoạ công nghệ hệ thống sử dụng — không hàm ý quan hệ đối tác.</p>
   </div>
 </section>
 
@@ -1849,6 +2271,34 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
   document.getElementById('lbClose').addEventListener('click', close);
   lb.addEventListener('click', e=>{ if(e.target===lb) close(); });
   document.addEventListener('keydown', e=>{ if(e.key==='Escape' && lb.classList.contains('on')) close(); });
+})();
+
+/* ============ AI ORBIT: pause khi ngoài màn hình + tap tooltip mobile ============ */
+(function(){
+  const orbit = document.getElementById('aiOrbit');
+  const marquee = document.getElementById('aiMarquee');
+  const targets = [orbit, marquee].filter(Boolean);
+  if(!targets.length) return;
+  const io = new IntersectionObserver(entries=>{
+    entries.forEach(en=>en.target.classList.toggle('in-view', en.isIntersecting));
+  }, {threshold:.1});
+  targets.forEach(t=>io.observe(t));
+
+  /* Tap để hiện tooltip trên thiết bị cảm ứng (hover không hoạt động) */
+  if(orbit){
+    orbit.querySelectorAll('.ao-btn').forEach(btn=>{
+      btn.addEventListener('click', e=>{
+        e.preventDefault();
+        const tip = btn.nextElementSibling;
+        const already = tip.classList.contains('on');
+        orbit.querySelectorAll('.ao-tip.on').forEach(t=>t.classList.remove('on'));
+        if(!already) tip.classList.add('on');
+      });
+    });
+    document.addEventListener('click', e=>{
+      if(!orbit.contains(e.target)) orbit.querySelectorAll('.ao-tip.on').forEach(t=>t.classList.remove('on'));
+    });
+  }
 })();
 
 /* ============ STICKY MOBILE CTA ============ */
