@@ -44,6 +44,7 @@
       "@type": "FAQPage",
       "mainEntity": [
         { "@type": "Question", "name": "Gói 999k, khoá học 2.999k và VIP 7.999k khác nhau thế nào?", "acceptedAnswer": { "@type": "Answer", "text": "999k: shop build sẵn hệ thống tự động theo chủ đề kênh của bạn, bàn giao trong 3 ngày. 2.999k: tự tay build qua 5 buổi Zoom — sở hữu cả hệ thống lẫn kỹ năng. 7.999k: Long Nam tư vấn và build trực tiếp 1:1 theo nhu cầu." } },
+        { "@type": "Question", "name": "Nếu học xong 5 buổi mà tôi vẫn chưa làm được thì sao?", "acceptedAnswer": { "@type": "Answer", "text": "Khoá AI Agent Builder cam kết hoàn tiền 100% nếu sau khi học hết 5 buổi bạn vẫn chưa sở hữu được hệ thống xây kênh làm video AI tự động của riêng mình." } },
         { "@type": "Question", "name": "Học xong, tôi dùng hệ thống này vào việc gì?", "acceptedAnswer": { "@type": "Answer", "text": "Xây thương hiệu cá nhân, bán hàng cho shop bằng video UGC, affiliate, xây kênh nội dung bật kiếm tiền nền tảng, làm dịch vụ video cho doanh nghiệp, hoặc nhân bản nhiều kênh. Buổi 5 định hướng theo mục tiêu riêng — khoá không cam kết con số thu nhập." } },
         { "@type": "Question", "name": "Tôi không biết gì về công nghệ, có học được không?", "acceptedAnswer": { "@type": "Answer", "text": "Được. Khoá thiết kế cho người bắt đầu từ con số 0, thao tác chính là nhắn tin giao việc cho agent. Nếu bạn dùng được Zalo, bạn học được khoá này." } },
         { "@type": "Question", "name": "Học xong tôi có kiếm được tiền ngay không?", "acceptedAnswer": { "@type": "Answer", "text": "Khoá không dạy kiếm tiền online và không hứa hẹn thu nhập. Khoá dạy bạn xây hệ thống sản xuất nội dung tự động — kiếm tiền là phần ứng dụng khi bạn thành thạo, buổi 5 định hướng lộ trình này." } },
@@ -374,7 +375,38 @@ nav .btn{padding:9px 18px;font-size:13.5px;min-height:40px;border-radius:10px}
   box-shadow:0 6px 18px rgba(244,63,94,.5);
 }
 .seats{margin-top:14px;font-size:12px;color:var(--gold);font-weight:600;text-align:center}
+.grt-mini{margin-top:9px;font-size:11.5px;color:var(--green);font-weight:600;text-align:center}
 .guarantee{margin-top:24px;font-size:13.5px;color:var(--dim-2);max-width:520px;margin-left:auto;margin-right:auto;text-align:center}
+
+/* ===== GUARANTEE BANNER (trên bảng giá) ===== */
+.grt-banner{
+  display:flex;align-items:center;gap:18px;margin:28px auto 0;max-width:760px;
+  background:linear-gradient(135deg,rgba(52,211,153,.12),rgba(34,211,238,.06));
+  border:1px solid rgba(52,211,153,.35);border-radius:18px;padding:20px 24px;
+}
+.grt-banner .grt-ic{
+  flex:none;width:48px;height:48px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  background:rgba(52,211,153,.16);color:var(--green);
+}
+.grt-banner .grt-ic svg{width:24px;height:24px}
+.grt-banner b{font-size:15.5px;color:var(--txt);display:block;margin-bottom:3px}
+.grt-banner p{font-size:13.5px;color:var(--dim);line-height:1.5}
+
+/* ===== FLOATING ZALO BUTTON ===== */
+.zalo-float{
+  position:fixed;right:20px;bottom:24px;z-index:90;
+  display:flex;align-items:center;gap:8px;
+  background:#0068FF;color:#fff;text-decoration:none;
+  padding:12px 18px 12px 13px;border-radius:999px;
+  box-shadow:0 10px 30px rgba(0,104,255,.45);
+  font-size:13.5px;font-weight:700;
+  transition:transform .2s ease,box-shadow .2s ease;
+}
+.zalo-float:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(0,104,255,.55)}
+.zalo-float svg{width:22px;height:22px;fill:#fff;flex:none}
+@media(max-width:900px){
+  .zalo-float{bottom:96px;right:14px;padding:11px 14px 11px 11px;font-size:13px}
+}
 
 /* ===== LEAD FORM (999k) ===== */
 .leadform{
@@ -700,6 +732,10 @@ footer a{color:var(--dim)}
     </symbol>
     <symbol id="i-layers" viewBox="0 0 24 24">
       <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3l9 5-9 5-9-5zM3 13l9 5 9-5M3 17.5l9 5 9-5"/>
+    </symbol>
+    <symbol id="i-shield" viewBox="0 0 24 24">
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M12 3l7 3v6c0 4.5-3 7.5-7 9-4-1.5-7-4.5-7-9V6l7-3z"/>
+      <path fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4"/>
     </symbol>
   </defs>
 </svg>
@@ -1319,6 +1355,14 @@ footer a{color:var(--dim)}
       <span class="chip">Nhóm Zalo hỗ trợ trong &amp; sau khoá</span>
     </div>
 
+    <div class="grt-banner rv">
+      <div class="grt-ic"><svg><use href="#i-shield"/></svg></div>
+      <div>
+        <b>Cam kết hoàn tiền 100%</b>
+        <p>Khoá AI Agent Builder: học hết 5 buổi mà bạn vẫn chưa sở hữu được hệ thống xây kênh làm video AI tự động của riêng mình — hoàn lại toàn bộ học phí, không hỏi lý do.</p>
+      </div>
+    </div>
+
     <div class="tiers">
       <!-- TIER 1: 999k TEMPLATE -->
       <div class="tier t1 rv">
@@ -1351,7 +1395,8 @@ footer a{color:var(--dim)}
           <li>Kênh chạy thật của chính bạn khi kết thúc khoá</li>
         </ul>
         <button class="btn btn-hot" type="button" data-checkout="course">Đăng ký giữ chỗ — thanh toán ngay</button>
-        <div class="seats">⚡ Lớp giới hạn số lượng · <a href="#" data-zalo style="color:var(--cyan)">hoặc nhắn Zalo để được tư vấn trước</a></div>
+        <div class="seats">🔥 Lớp tối đa 30 học viên — còn <b>12 chỗ</b> · <a href="#" data-zalo style="color:var(--cyan)">nhắn Zalo tư vấn trước</a></div>
+        <div class="grt-mini">🛡️ Hoàn tiền 100% nếu sau 5 buổi chưa sở hữu được hệ thống</div>
       </div>
 
       <!-- TIER 3: 7.999k VIP 1:1 -->
@@ -1381,6 +1426,10 @@ footer a{color:var(--dim)}
     <div style="text-align:center"><span class="eyebrow rv">Câu hỏi thường gặp</span></div>
     <h2 class="rv" style="text-align:center">Trước khi đăng ký, bạn có thể đang thắc mắc…</h2>
     <div class="faqlist rv">
+      <details>
+        <summary>🛡️ Nếu học xong 5 buổi mà tôi vẫn chưa làm được thì sao?</summary>
+        <div class="body">Khoá <strong style="color:var(--txt)">AI Agent Builder (2.999k)</strong> cam kết <strong style="color:var(--txt)">hoàn tiền 100%</strong> nếu sau khi học hết 5 buổi bạn vẫn chưa sở hữu được hệ thống xây kênh làm video AI tự động của riêng mình. Bạn chỉ cần tham gia đầy đủ và thực hành theo hướng dẫn trong khoá.</div>
+      </details>
       <details>
         <summary>Gói 999k, khoá học 2.999k và VIP 7.999k khác nhau thế nào?</summary>
         <div class="body"><strong style="color:var(--txt)">999k</strong>: bạn không cần học gì — shop làm sẵn hệ thống tự động sản xuất đúng dạng video theo chủ đề kênh của bạn, bàn giao trong 3 ngày, nhận về dùng ngay. <strong style="color:var(--txt)">2.999k</strong>: bạn tự tay build qua 5 buổi Zoom — sở hữu cả hệ thống lẫn kỹ năng để tự mở rộng, đổi dạng video, mở kênh mới mãi về sau. <strong style="color:var(--txt)">7.999k</strong>: Long Nam tư vấn và build trực tiếp 1:1 theo đúng nhu cầu của bạn — cách nhanh nhất để có kênh chuẩn theo ý mình.</div>
@@ -1422,7 +1471,7 @@ footer a{color:var(--dim)}
   <div class="glow"></div>
   <div class="wrap">
     <h2 class="rv">Tối nay bạn có thể lại mất 6 tiếng làm 1 video.<br><span class="grad-hot">Hoặc bắt đầu xây hệ thống chỉ cần 1 tin nhắn.</span></h2>
-    <p class="rv">Một hệ thống — dùng cho thương hiệu cá nhân, bán hàng, affiliate hay kênh kiếm tiền của riêng bạn. Lớp khai giảng tháng 8 giới hạn số lượng học viên — giữ chỗ ngay để nhận hướng dẫn chuẩn bị trước buổi 1.</p>
+    <p class="rv">Một hệ thống — dùng cho thương hiệu cá nhân, bán hàng, affiliate hay kênh kiếm tiền của riêng bạn. Lớp khai giảng tháng 8 tối đa 30 học viên — chỉ còn 12 chỗ, giữ chỗ ngay để nhận hướng dẫn chuẩn bị trước buổi 1. Yên tâm hoàn tiền 100% nếu sau 5 buổi bạn chưa sở hữu được hệ thống.</p>
     <button class="btn btn-hot rv" type="button" data-checkout="course">Đăng ký giữ chỗ — 2.999.000đ</button>
   </div>
 </section>
@@ -1430,6 +1479,12 @@ footer a{color:var(--dim)}
 <footer>
   <div class="wrap">© 2026 Magic AI · Khoá AI Agent Builder cùng Long Nam · Liên hệ qua <a href="#" data-zalo>nhóm Zalo</a></div>
 </footer>
+
+<!-- FLOATING ZALO — link thẳng vào nhóm, không qua popup -->
+<a class="zalo-float" href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener" aria-label="Vào nhóm Zalo Magic AI để được hỗ trợ trực tiếp">
+  <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.03 2 11c0 2.83 1.44 5.35 3.7 7.02L5 22l4.34-2.3c.84.2 1.73.3 2.66.3 5.52 0 10-4.03 10-9S17.52 2 12 2z"/></svg>
+  <span>Nhóm Zalo</span>
+</a>
 
 <!-- STICKY MOBILE CTA -->
 <div class="sticky-cta" id="stickyCta">
