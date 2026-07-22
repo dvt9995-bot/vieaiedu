@@ -2103,6 +2103,25 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
       return saved || cur;
     }catch(e){ return {utm_source:'',utm_medium:'',utm_campaign:''}; }
   })();
+  /* FBC/FBP first-touch — gửi kèm đơn để Conversions API quy đơn về ĐÚNG quảng cáo.
+     Thiếu 2 giá trị này thì Meta chỉ khớp mờ qua email/SĐT, đơn dễ không được tính cho ad nào.
+     _fbc chỉ tồn tại khi khách vào từ link có ?fbclid=... — nếu pixel chưa kịp ghi cookie thì
+     tự dựng theo đúng format Meta quy định: fb.1.<timestamp>.<fbclid>. Lưu localStorage vì
+     khách hay quay lại bằng đường khác (gõ tay, bookmark) làm mất fbclid trên URL. */
+  const FBIDS = (()=>{
+    const ck = n=>{ const m = document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m ? decodeURIComponent(m[2]) : ''; };
+    try{
+      const saved = JSON.parse(localStorage.getItem('mgc_fbids')||'null') || {};
+      const q = new URLSearchParams(location.search);
+      const fbclid = q.get('fbclid') || '';
+      let fbc = ck('_fbc') || saved.fbc || '';
+      if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+      const fbp = ck('_fbp') || saved.fbp || '';
+      const out = { fbc, fbp };
+      if(fbc || fbp) localStorage.setItem('mgc_fbids', JSON.stringify(out));
+      return out;
+    }catch(e){ return { fbc:'', fbp:'' }; }
+  })();
   const normPhone = p=>{ let d=String(p).replace(/\D/g,''); if(d.startsWith('84')&&d.length>10) d='0'+d.slice(2); if(d.length===9) d='0'+d; return d; };
   function post(payload){
     if(!API_URL){ console.warn('[magic] API_URL chưa cấu hình — dữ liệu chưa được lưu:', payload); return; }
@@ -2174,7 +2193,7 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
     const phoneN = normPhone(phone);
     code = 'MAGICAI ' + phoneN + ' ' + planCode;
     post({action:'order', plan: planCode, name, phone: phoneN, email, topic,
-          source:'landing_checkout_popup', page: location.href, ...UTM});
+          source:'landing_checkout_popup', page: location.href, ...UTM, ...FBIDS});
 
     $('coAmount').textContent = vnd(P.price);
     $('coContent').textContent = code;
@@ -2194,8 +2213,37 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
   });
   $('coCopy').addEventListener('click', function(){ copyText(code, this); });
 
+  /* ---- ĐƠN ĐANG CHỜ: nhớ qua các lần tải trang ----
+     Khách chuyển khoản trên điện thoại thường bị hệ điều hành kill tab landing khi mở app
+     ngân hàng. Lúc quay lại, trang đã reload sạch → pixel Purchase client không bao giờ bắn.
+     Lưu đơn vào localStorage để lần vào sau còn kiểm tra lại và bắn bù (CAPI phía server vẫn
+     là đường chính; đây chỉ để Meta có thêm tín hiệu từ trình duyệt, khớp tốt hơn). */
+  function savePending(phoneN, planCode, orderCode){
+    try{ localStorage.setItem('mgc_pending', JSON.stringify({ phone:phoneN, plan:planCode, code:orderCode, at:Date.now() })); }catch(e){}
+  }
+  function clearPending(){ try{ localStorage.removeItem('mgc_pending'); }catch(e){} }
+
+  function recoverPending(){
+    if(!API_URL) return;
+    let p = null;
+    try{ p = JSON.parse(localStorage.getItem('mgc_pending')||'null'); }catch(e){ return; }
+    if(!p || !p.phone || !p.plan) return;
+    // Quá 7 ngày thì bỏ — ngoài cửa sổ nhận sự kiện của Meta, bắn cũng vô nghĩa
+    if(Date.now() - (p.at||0) > 7*24*60*60*1000){ clearPending(); return; }
+    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan, res=>{
+      if(res && res.status === 'paid'){
+        const P = PLANS[String(p.plan).toLowerCase()];
+        if(P) fbTrack('Purchase', { value: P.price, currency: 'VND', content_name: P.name, content_category: 'AI Agent Builder', content_ids: [p.plan], order_id: p.code }, p.code);
+        post({ action: 'confirm_purchase', phone: p.phone, plan: p.plan });
+        clearPending();
+      }
+    });
+  }
+  recoverPending();
+
   function startPoll(phoneN, planCode){
     if(!API_URL) return; // chưa có backend: khách vẫn CK thủ công được, xác nhận qua email/Zalo
+    savePending(phoneN, planCode, code);
     if(pollTimer) clearInterval(pollTimer);
     pollTimer = setInterval(()=>{
       jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode, res=>{
@@ -2212,10 +2260,10 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
              sau khi hệ thống xác nhận đã nhận được tiền thật, không bắn sớm hơn.
              eventID = code (trùng "Nội dung CK") để dedupe với Purchase server-side (CAPI). */
           fbTrack('Purchase', { value: PLANS[plan].price, currency: 'VND', content_name: PLANS[plan].name, content_category: 'AI Agent Builder', content_ids: [planCode], order_id: code }, code);
-          /* Báo backend bắn thêm Purchase qua Conversions API (dự phòng nếu khách tắt tab/chặn pixel
-             trước khi kịp thấy bước này) — KHÔNG dùng webhook SePay để bắn CAPI vì webhook đó nhận
-             mọi giao dịch chuyển khoản vào tài khoản, kể cả khoản không liên quan tới landing page. */
+          /* Đường PHỤ: webhook SePay đã bắn CAPI ngay khi tiền về (không cần trình duyệt khách).
+             Gọi thêm ở đây chỉ để phòng webhook lỗi/chậm — backend tự bỏ qua nếu đã bắn rồi. */
           post({ action: 'confirm_purchase', phone: phoneN, plan: planCode });
+          clearPending();
         }
       });
     }, 6000);
