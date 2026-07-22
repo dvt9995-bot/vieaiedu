@@ -2108,20 +2108,25 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
      _fbc chỉ tồn tại khi khách vào từ link có ?fbclid=... — nếu pixel chưa kịp ghi cookie thì
      tự dựng theo đúng format Meta quy định: fb.1.<timestamp>.<fbclid>. Lưu localStorage vì
      khách hay quay lại bằng đường khác (gõ tay, bookmark) làm mất fbclid trên URL. */
-  const FBIDS = (()=>{
+  /* PHẢI gọi lúc GỬI ĐƠN, không tính sẵn 1 lần khi tải trang: pixel Facebook ghi cookie _fbp
+     bất đồng bộ, chạy sớm quá thì cookie chưa tồn tại và ta gửi đi chuỗi rỗng (đã bị chính lỗi
+     này lúc kiểm thử 22/07). Đọc tươi mỗi lần gọi, hợp nhất với giá trị đã lưu trước đó. */
+  function getFbIds(){
     const ck = n=>{ const m = document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m ? decodeURIComponent(m[2]) : ''; };
     try{
       const saved = JSON.parse(localStorage.getItem('mgc_fbids')||'null') || {};
-      const q = new URLSearchParams(location.search);
-      const fbclid = q.get('fbclid') || '';
+      const fbclid = new URLSearchParams(location.search).get('fbclid') || '';
       let fbc = ck('_fbc') || saved.fbc || '';
-      if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+      if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid;   // format Meta quy định
       const fbp = ck('_fbp') || saved.fbp || '';
       const out = { fbc, fbp };
       if(fbc || fbp) localStorage.setItem('mgc_fbids', JSON.stringify(out));
       return out;
     }catch(e){ return { fbc:'', fbp:'' }; }
-  })();
+  }
+  /* Chốt first-touch sớm: nếu khách vào từ link quảng cáo (?fbclid=...) thì lưu ngay,
+     phòng khi họ điều hướng lung tung làm mất fbclid trước lúc bấm mua. */
+  try{ if(new URLSearchParams(location.search).get('fbclid')) getFbIds(); }catch(e){}
   const normPhone = p=>{ let d=String(p).replace(/\D/g,''); if(d.startsWith('84')&&d.length>10) d='0'+d.slice(2); if(d.length===9) d='0'+d; return d; };
   function post(payload){
     if(!API_URL){ console.warn('[magic] API_URL chưa cấu hình — dữ liệu chưa được lưu:', payload); return; }
@@ -2193,7 +2198,7 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
     const phoneN = normPhone(phone);
     code = 'MAGICAI ' + phoneN + ' ' + planCode;
     post({action:'order', plan: planCode, name, phone: phoneN, email, topic,
-          source:'landing_checkout_popup', page: location.href, ...UTM, ...FBIDS});
+          source:'landing_checkout_popup', page: location.href, ...UTM, ...getFbIds()});
 
     $('coAmount').textContent = vnd(P.price);
     $('coContent').textContent = code;
