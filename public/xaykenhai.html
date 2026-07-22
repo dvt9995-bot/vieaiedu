@@ -2212,6 +2212,10 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
              sau khi hệ thống xác nhận đã nhận được tiền thật, không bắn sớm hơn.
              eventID = code (trùng "Nội dung CK") để dedupe với Purchase server-side (CAPI). */
           fbTrack('Purchase', { value: PLANS[plan].price, currency: 'VND', content_name: PLANS[plan].name, content_category: 'AI Agent Builder', content_ids: [planCode], order_id: code }, code);
+          /* Báo backend bắn thêm Purchase qua Conversions API (dự phòng nếu khách tắt tab/chặn pixel
+             trước khi kịp thấy bước này) — KHÔNG dùng webhook SePay để bắn CAPI vì webhook đó nhận
+             mọi giao dịch chuyển khoản vào tài khoản, kể cả khoản không liên quan tới landing page. */
+          post({ action: 'confirm_purchase', phone: phoneN, plan: planCode });
         }
       });
     }, 6000);
