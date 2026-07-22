@@ -2069,8 +2069,14 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
 /* ============ THANH TOÁN SEPAY + LEAD ZALO (backend: apps-script/magic-ai-backend.gs) ============ */
 (function(){
   /* Facebook Pixel — track theo phễu (Lead/InitiateCheckout ngay), riêng Purchase
-     CHỈ bắn ở đúng 1 chỗ: khi polling xác nhận thanh toán thành công (xem startPoll bên dưới) */
-  function fbTrack(ev, params){ if(typeof fbq !== 'undefined') fbq('track', ev, params || {}); }
+     CHỈ bắn ở đúng 1 chỗ: khi polling xác nhận thanh toán thành công (xem startPoll bên dưới).
+     eventID (khi có) dùng để Meta dedupe với Purchase bắn song song từ server (Conversions API,
+     xem apps-script/magic-ai-backend.gs → sendFbPurchaseCAPI_) — tránh đếm 1 đơn thành 2. */
+  function fbTrack(ev, params, eventID){
+    if(typeof fbq === 'undefined') return;
+    if(eventID) fbq('track', ev, params || {}, {eventID: eventID});
+    else fbq('track', ev, params || {});
+  }
 
   /* ==== CẤU HÌNH — điền khi sẵn sàng, để trống mọi thứ vẫn không vỡ trang ==== */
   const API_URL = 'https://script.google.com/macros/s/AKfycbzQC7S33F7eHjcn7czPbCxoAfRKugtgqMUNb3aY11XDwEzobQVgwYPs07kec7qLaB0hZA/exec';
@@ -2203,8 +2209,9 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
           else{ z.style.display = 'none'; }
           showStep(3);
           /* Purchase — CHỈ bắn ở đây, đúng lúc trang "cảm ơn" (bước 3) hiện ra
-             sau khi hệ thống xác nhận đã nhận được tiền thật, không bắn sớm hơn */
-          fbTrack('Purchase', { value: PLANS[plan].price, currency: 'VND', content_name: PLANS[plan].name, content_category: 'AI Agent Builder', content_ids: [planCode], order_id: code });
+             sau khi hệ thống xác nhận đã nhận được tiền thật, không bắn sớm hơn.
+             eventID = code (trùng "Nội dung CK") để dedupe với Purchase server-side (CAPI). */
+          fbTrack('Purchase', { value: PLANS[plan].price, currency: 'VND', content_name: PLANS[plan].name, content_category: 'AI Agent Builder', content_ids: [planCode], order_id: code }, code);
         }
       });
     }, 6000);
