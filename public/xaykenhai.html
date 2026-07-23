@@ -2250,7 +2250,7 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
         const P = PLANS[String(p.plan).toLowerCase()];
         post({ action: 'confirm_purchase', phone: p.phone, plan: p.plan });
         clearPending();
-        if(P) goToCamOn(p.code, p.plan, P.price, P.name);
+        if(P) goToCamOn(p.code, p.plan, res.value || P.price, P.name);
       }
     });
   }
@@ -2268,7 +2268,7 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
              Gọi thêm ở đây chỉ để phòng webhook lỗi/chậm — backend tự bỏ qua nếu đã bắn rồi. */
           post({ action: 'confirm_purchase', phone: phoneN, plan: planCode });
           clearPending();
-          goToCamOn(code, planCode, PLANS[plan].price, PLANS[plan].name);
+          goToCamOn(code, planCode, res.value || PLANS[plan].price, PLANS[plan].name);
         }
       });
     }, 6000);
