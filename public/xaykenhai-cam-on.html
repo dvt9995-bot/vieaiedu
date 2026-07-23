@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#05070F">
+<meta name="robots" content="noindex">
+<!-- Meta (Facebook) Pixel — trang RIÊNG, chỉ tồn tại sau khi thanh toán thành công.
+     PageView tự bắn khi tải trang; Purchase bắn ở script cuối trang, đọc dữ liệu đơn
+     từ query string (?oc=...&p=...&v=...&n=...) — không đọc/lưu dữ liệu nhạy cảm nào khác. -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '600820699707738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=600820699707738&ev=PageView&noscript=1"></noscript>
+<title>Cảm ơn bạn đã đăng ký — Magic AI</title>
+<style>
+:root{
+  --bg:#05070F; --bg-2:#0A0E1E;
+  --glass:rgba(255,255,255,.045); --glass-b:rgba(255,255,255,.10);
+  --cyan:#22D3EE; --blue:#3B82F6; --green:#34D399; --gold:#FBBF24;
+  --txt:#E8EDFB; --dim:#93A0C2; --dim-2:#5E6A8C;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{
+  min-height:100vh; display:flex; align-items:center; justify-content:center; padding:24px;
+  background:radial-gradient(1200px 600px at 50% -10%, #0e1530 0%, var(--bg) 55%) var(--bg);
+  font-family:'Be Vietnam Pro',system-ui,-apple-system,"Segoe UI",Roboto,Arial,sans-serif;
+  color:var(--txt); line-height:1.6;
+}
+.card{
+  max-width:480px; width:100%; text-align:center; padding:40px 28px;
+  background:var(--glass); border:1px solid var(--glass-b); border-radius:24px;
+  backdrop-filter:blur(12px);
+}
+.check{
+  width:76px; height:76px; border-radius:50%; margin:0 auto 20px; font-size:38px;
+  display:grid; place-items:center; color:#04140f;
+  background:linear-gradient(135deg,var(--green),#22c98f);
+  box-shadow:0 16px 36px rgba(52,211,153,.35);
+}
+h1{font-size:24px; font-weight:800; margin-bottom:8px}
+.lead{color:var(--dim); font-size:15px; margin-bottom:26px}
+.order{
+  text-align:left; background:rgba(255,255,255,.03); border:1px solid var(--glass-b);
+  border-radius:14px; padding:16px 18px; margin-bottom:24px; font-size:14px;
+}
+.order div{display:flex; justify-content:space-between; gap:12px; padding:5px 0}
+.order span:first-child{color:var(--dim)}
+.order span:last-child{font-weight:700; text-align:right}
+.btn{
+  display:block; width:100%; text-decoration:none; font-weight:700; font-size:15.5px;
+  padding:15px; border-radius:999px; margin-bottom:12px; transition:transform .15s;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-zalo{background:#0068ff; color:#fff; box-shadow:0 12px 28px rgba(0,104,255,.3)}
+.btn-ghost{background:none; color:var(--dim); box-shadow:none; font-weight:600; font-size:14px; padding:8px}
+.note{font-size:12.5px; color:var(--dim-2); margin-top:8px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="check">✓</div>
+    <h1 id="title">Thanh toán thành công!</h1>
+    <p class="lead" id="lead">Cảm ơn bạn đã đăng ký. Team Magic AI đã nhận được đơn của bạn.</p>
+    <div class="order" id="orderBox" style="display:none">
+      <div><span>Gói</span><span id="oPlan">—</span></div>
+      <div><span>Số tiền</span><span id="oValue">—</span></div>
+      <div><span>Mã đơn</span><span id="oCode">—</span></div>
+    </div>
+    <a class="btn btn-zalo" id="zaloBtn" href="#" target="_blank" rel="noopener">💬 Vào nhóm ngay</a>
+    <a class="btn btn-ghost" href="/xaykenhai">← Về trang khoá học</a>
+    <p class="note">Kiểm tra email (kể cả mục Spam) để xem xác nhận đơn đầy đủ. Cần hỗ trợ? Nhắn nhóm Zalo.</p>
+  </div>
+
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var oc = q.get('oc') || '';               // Nội dung CK / mã đơn — dùng làm eventID dedupe với CAPI
+  var p  = (q.get('p')  || '').toUpperCase(); // TEMPLATE | COURSE | VIP
+  var v  = parseInt(q.get('v'), 10) || 0;    // số tiền VND
+  var n  = q.get('n')  || '';                // tên gói hiển thị
+
+  var LABELS = { TEMPLATE:'Template Hệ Thống', COURSE:'Khoá AI Agent Builder', VIP:'VIP 1:1 cùng Long Nam' };
+  var label = n || LABELS[p] || 'Gói Magic AI';
+
+  var ZALO_GROUP_URL   = 'https://zalo.me/g/tbriir577';        // tư vấn chung — dùng cho TEMPLATE
+  var COURSE_GROUP_URL = 'https://zalo.me/g/pe9cu5e9dgyh23eaejbe'; // nhóm học riêng — COURSE/VIP
+
+  if (p === 'TEMPLATE') {
+    document.getElementById('lead').textContent =
+      'Cảm ơn bạn đã đăng ký ' + label + '. Team sẽ liên hệ trong hôm nay để trao đổi dạng video mong muốn — hệ thống bàn giao trong 3 ngày.';
+    document.getElementById('zaloBtn').href = ZALO_GROUP_URL;
+    document.getElementById('zaloBtn').textContent = '💬 Nhắn Zalo trao đổi ngay';
+  } else {
+    document.getElementById('lead').textContent =
+      'Cảm ơn bạn đã đăng ký ' + label + '. Thông tin đăng nhập hệ thống học vieaiedu.vn sẽ được gửi qua email.';
+    document.getElementById('zaloBtn').href = COURSE_GROUP_URL;
+    document.getElementById('zaloBtn').textContent = '💬 Vào nhóm học ngay';
+  }
+
+  if (oc || v) {
+    document.getElementById('orderBox').style.display = 'block';
+    document.getElementById('oPlan').textContent  = label;
+    document.getElementById('oValue').textContent = v ? v.toLocaleString('vi-VN') + 'đ' : '—';
+    document.getElementById('oCode').textContent  = oc || '—';
+  }
+
+  /* Purchase — bắn DUY NHẤT tại đây trên trang cảm ơn có URL riêng, đúng chuẩn khuyến nghị
+     của Meta (landing page thật, không phải trạng thái ẩn/hiện trong popup).
+     eventID = oc (trùng "Nội dung CK") để dedupe với Purchase server-side (CAPI) bắn từ
+     webhook SePay/Apps Script — tránh đếm 1 đơn thành 2 khi cả 2 đường cùng bắn. */
+  try {
+    if (window.fbq && v > 0) {
+      fbq('track', 'Purchase', {
+        value: v, currency: 'VND',
+        content_name: label, content_category: 'AI Agent Builder',
+        content_ids: [p], order_id: oc
+      }, oc ? { eventID: oc } : undefined);
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

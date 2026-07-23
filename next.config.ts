@@ -15,6 +15,8 @@ const nextConfig: NextConfig = {
       { source: "/lp/cam-on", destination: "/lp/cam-on.html" },
       // Landing "AI Agent Builder" (Magic AI / Long Nam) — checkout SePay popup
       { source: "/xaykenhai", destination: "/xaykenhai.html" },
+      // Trang cảm ơn RIÊNG (URL thật) sau khi thanh toán — nơi bắn Purchase pixel chuẩn nhất
+      { source: "/xaykenhai/cam-on", destination: "/xaykenhai-cam-on.html" },
     ];
   },
 };

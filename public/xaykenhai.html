@@ -2080,7 +2080,8 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
 
   /* ==== CẤU HÌNH — điền khi sẵn sàng, để trống mọi thứ vẫn không vỡ trang ==== */
   const API_URL = 'https://script.google.com/macros/s/AKfycbzQC7S33F7eHjcn7czPbCxoAfRKugtgqMUNb3aY11XDwEzobQVgwYPs07kec7qLaB0hZA/exec';
-  const ZALO_GROUP_URL = 'https://zalo.me/g/tbriir577';
+  const ZALO_GROUP_URL = 'https://zalo.me/g/tbriir577'; // nhóm tư vấn chung — dùng TRƯỚC khi mua (nút nổi + popup lead)
+  const COURSE_GROUP_URL = 'https://zalo.me/g/pe9cu5e9dgyh23eaejbe'; // nhóm học riêng — chỉ mời SAU khi mua thành công
   const BANK = { acc:'0868816826', bank:'MBBank', owner:'ĐẶNG VĂN TUẤN' }; // TK MB Bank đã kết nối SePay
   const PLANS = {
     template:{ name:'Template Hệ Thống',     price:999000,  topic:true,
@@ -2228,6 +2229,15 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
   }
   function clearPending(){ try{ localStorage.removeItem('mgc_pending'); }catch(e){} }
 
+  /* Trang cảm ơn RIÊNG (URL thật /xaykenhai/cam-on) — nơi DUY NHẤT bắn Purchase pixel client-side,
+     đúng chuẩn Meta khuyến nghị (landing page thật, không phải trạng thái ẩn/hiện trong popup).
+     Redirect thay vì showStep(3) tại chỗ để: (1) có URL thật khách có thể quay lại/mở từ email,
+     (2) tránh phụ thuộc popup còn mở hay không khi tính đã "xác nhận". */
+  function goToCamOn(orderCode, planCode, price, label){
+    const params = new URLSearchParams({ oc: orderCode || '', p: planCode || '', v: price || '', n: label || '' });
+    location.href = '/xaykenhai/cam-on?' + params.toString();
+  }
+
   function recoverPending(){
     if(!API_URL) return;
     let p = null;
@@ -2238,9 +2248,9 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
     jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan, res=>{
       if(res && res.status === 'paid'){
         const P = PLANS[String(p.plan).toLowerCase()];
-        if(P) fbTrack('Purchase', { value: P.price, currency: 'VND', content_name: P.name, content_category: 'AI Agent Builder', content_ids: [p.plan], order_id: p.code }, p.code);
         post({ action: 'confirm_purchase', phone: p.phone, plan: p.plan });
         clearPending();
+        if(P) goToCamOn(p.code, p.plan, P.price, P.name);
       }
     });
   }
@@ -2254,21 +2264,11 @@ const isMobile = window.matchMedia('(max-width: 900px)').matches;
       jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode, res=>{
         if(res && res.status === 'paid'){
           clearInterval(pollTimer); pollTimer = null;
-          $('coDone').textContent = (plan === 'template')
-            ? 'Đơn của bạn đã xác nhận. Email xác nhận đã được gửi — team sẽ liên hệ trong hôm nay để trao đổi dạng video và bàn giao trong 3 ngày.'
-            : 'Đơn của bạn đã xác nhận. Kiểm tra email (kể cả mục Spam) để nhận xác nhận đơn và thông tin đăng nhập hệ thống học tập vieaiedu.vn.';
-          const z = $('coZalo');
-          if(ZALO_GROUP_URL){ z.href = ZALO_GROUP_URL; z.style.display = 'inline-flex'; }
-          else{ z.style.display = 'none'; }
-          showStep(3);
-          /* Purchase — CHỈ bắn ở đây, đúng lúc trang "cảm ơn" (bước 3) hiện ra
-             sau khi hệ thống xác nhận đã nhận được tiền thật, không bắn sớm hơn.
-             eventID = code (trùng "Nội dung CK") để dedupe với Purchase server-side (CAPI). */
-          fbTrack('Purchase', { value: PLANS[plan].price, currency: 'VND', content_name: PLANS[plan].name, content_category: 'AI Agent Builder', content_ids: [planCode], order_id: code }, code);
           /* Đường PHỤ: webhook SePay đã bắn CAPI ngay khi tiền về (không cần trình duyệt khách).
              Gọi thêm ở đây chỉ để phòng webhook lỗi/chậm — backend tự bỏ qua nếu đã bắn rồi. */
           post({ action: 'confirm_purchase', phone: phoneN, plan: planCode });
           clearPending();
+          goToCamOn(code, planCode, PLANS[plan].price, PLANS[plan].name);
         }
       });
     }, 6000);
