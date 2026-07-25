@@ -88,10 +88,13 @@ h2 .g{color:var(--gold)}
 
 /* ---------- NAV ---------- */
 .nav{position:sticky;top:0;z-index:60;background:rgba(11,15,23,.82);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
-.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
-.logo{font-weight:900;font-size:16px;letter-spacing:.5px;color:var(--txt);text-decoration:none}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px;gap:10px}
+.logo{font-weight:900;font-size:16px;letter-spacing:.5px;color:var(--txt);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .logo b{color:var(--gold)}
-.nav .btn{padding:10px 20px;font-size:14px;border-radius:10px}
+.logo .full{display:inline}
+.logo .short{display:none}
+.nav .btn{padding:10px 20px;font-size:14px;border-radius:10px;white-space:nowrap;flex:none}
+.nav .btn .short{display:none}
 
 /* ---------- HERO ----------
    Chuẩn bố cục: toàn bộ thông điệp + CTA + số liệu tin cậy phải nằm TRỌN màn hình đầu
@@ -249,6 +252,7 @@ h1 .g{color:var(--gold)}
 .sticky .txt{font-size:13.5px;color:var(--dim)}
 .sticky .txt b{color:var(--txt)}
 .sticky .btn{padding:12px 24px;font-size:14.5px;white-space:nowrap}
+.sticky .zalo-mini{display:none;align-items:center;justify-content:center;width:46px;height:46px;border-radius:12px;background:#0068ff;color:#fff;flex:none;font-size:20px}
 .zalo-fl{position:fixed;right:18px;bottom:86px;z-index:70;width:54px;height:54px;border-radius:50%;background:#0068ff;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;text-decoration:none;box-shadow:0 12px 30px rgba(0,104,255,.45)}
 
 /* ---------- CHECKOUT MODAL ---------- */
@@ -358,8 +362,18 @@ h1 .g{color:var(--gold)}
   .rev-body{grid-template-columns:1fr}
   .rev-main{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
 }
+@media(max-width:640px){
+  .logo .full{display:none}
+  .logo .short{display:inline}
+  .nav .btn .full{display:none}
+  .nav .btn .short{display:inline}
+  .nav .wrap{height:54px}
+  .nav .btn{padding:9px 15px;font-size:13px}
+  /* Zalo nổi tắt trên mobile — hay đè lên chữ khi cuộn; gộp vào thanh sticky thay thế */
+  .zalo-fl{display:none}
+}
 @media(max-width:520px){
-  section{padding:56px 0}
+  section{padding:42px 0}
   .badge-live{font-size:11px;white-space:normal;line-height:1.5;text-align:left}
   .trust{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
   .trust .n{font-size:16px}
@@ -367,10 +381,29 @@ h1 .g{color:var(--gold)}
   .auto-grid{grid-template-columns:1fr}
   .guar{flex-direction:column;text-align:center}
   .sticky .txt{display:none}
-  .sticky .btn{width:100%;padding:13px 20px}
+  .sticky .in{gap:10px}
+  .sticky .btn{flex:1;padding:13px 14px}
+  .sticky .zalo-mini{display:flex}
   .hero-cta{flex-direction:column}
   .hero-cta .btn{width:100%}
-  .wr{grid-template-columns:1fr}
+  /* Nhịp dọc chặt hơn — giảm khoảng trắng chết giữa các khối */
+  .turn{margin-top:22px;padding:20px 18px}
+  .kicker{margin-bottom:2px}
+  h2{margin:6px 0 8px}
+  .gift-band{margin-top:16px;padding:16px 18px}
+  .case-note{margin-top:14px}
+  /* War-room: GIỮ 2 cột trên điện thoại (không dồn 1 cột) để không kéo dài trang;
+     thu gọn từng thẻ nhân viên để 2 cột vẫn đọc thoải mái */
+  .wr-stage{margin:24px 0 10px}
+  .agent{padding:10px 11px}
+  .agent .av{width:26px;height:26px;font-size:13px;border-radius:7px}
+  .agent .nm{font-size:12px}
+  .agent .rl{display:none}
+  .agent .st{font-size:11px;min-height:14px}
+  .wr-hub{padding:13px}
+  .wr-msg{font-size:12px;padding:8px 10px}
+  .wr-ticker{padding:9px 12px}
+  .wr-ticker .tk-line{font-size:10.5px}
   .dept-sum{flex-direction:column;align-items:flex-start;gap:8px}
   .dept-sum .big{font-size:15px;white-space:normal}
   .stats-row{grid-template-columns:1fr;gap:10px}
@@ -385,8 +418,8 @@ h1 .g{color:var(--gold)}
 
 <nav class="nav">
   <div class="wrap">
-    <a class="logo" href="#top">LONG NAM · <b>AI AGENT SALES</b></a>
-    <a class="btn btn-gold" href="#dang-ky">Giữ chỗ — còn 12 suất</a>
+    <a class="logo" href="#top"><span class="full">LONG NAM · <b>AI AGENT SALES</b></span><span class="short"><b>AI AGENT SALES</b></span></a>
+    <a class="btn btn-gold" href="#dang-ky"><span class="full">Giữ chỗ — còn 12 suất</span><span class="short">Giữ chỗ</span></a>
   </div>
 </nav>
 
@@ -723,6 +756,7 @@ h1 .g{color:var(--gold)}
 <div class="sticky" id="sticky">
   <div class="in">
     <span class="txt">🔥 <b>AI Agent Sales</b> — lớp Zoom chỉ còn <b>12 chỗ</b> · quà khoá video AI 999K mở ngay</span>
+    <a class="zalo-mini" href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener" aria-label="Nhắn Zalo tư vấn" data-lead="zalo-sticky">💬</a>
     <a class="btn btn-gold" href="#dang-ky" data-lead="sticky">Giữ chỗ ngay</a>
   </div>
 </div>
@@ -821,8 +855,12 @@ h1 .g{color:var(--gold)}
     }
     setTimeout(step, delay);
   }
+  var lastEventIdx = -1;
   function tick(){
-    var e = EVENTS[Math.floor(Math.random()*EVENTS.length)];
+    var idx;
+    do { idx = Math.floor(Math.random()*EVENTS.length); } while(idx === lastEventIdx && EVENTS.length > 1);
+    lastEventIdx = idx;
+    var e = EVENTS[idx];
     var d = new Date();
     var hh = ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
     var line = document.createElement('div');
@@ -892,11 +930,17 @@ h1 .g{color:var(--gold)}
   var st = document.getElementById('sticky');
   var hero = document.querySelector('.hero');
   var price = document.getElementById('dang-ky');
+  var final = document.querySelector('.final');
+  function inView(el, pad){
+    var r = el.getBoundingClientRect();
+    return r.top < window.innerHeight - (pad||0) && r.bottom > 200;
+  }
   function upd(){
     var pastHero = window.scrollY > hero.offsetHeight - 80;
-    var r = price.getBoundingClientRect();
-    var inPrice = r.top < window.innerHeight && r.bottom > 200;
-    st.classList.toggle('on', pastHero && !inPrice);
+    /* Ẩn thanh sticky khi CTA vàng CHÍNH đã hiện sẵn trên màn hình (khối giá hoặc
+       khối chốt cuối) — tránh 2 nút "Giữ chỗ ngay" đứng chồng nhau lúc cuộn. */
+    var onOwnCta = inView(price) || inView(final);
+    st.classList.toggle('on', pastHero && !onOwnCta);
   }
   window.addEventListener('scroll', upd, {passive:true}); upd();
 })();
