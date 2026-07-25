@@ -74,11 +74,15 @@ section{padding:74px 0;position:relative}
 h2{font-size:clamp(26px,4.6vw,40px);font-weight:900;line-height:1.22;margin:10px 0 10px;letter-spacing:-.5px}
 h2 .g{color:var(--gold)}
 .sub{color:var(--dim);font-size:16px;max-width:640px}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:16.5px;padding:17px 34px;border-radius:14px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s;will-change:transform}
-.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#141005;box-shadow:0 14px 40px rgba(245,185,66,.30)}
-.btn-gold:hover{transform:translateY(-2px);box-shadow:0 18px 50px rgba(245,185,66,.42)}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font-weight:800;font-size:15.5px;padding:15px 26px;border-radius:12px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s,background .16s,border-color .16s;will-change:transform;line-height:1.25}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#141005;box-shadow:0 10px 30px rgba(245,185,66,.28)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 16px 42px rgba(245,185,66,.4)}
+.btn-gold::after{content:"→";font-weight:900;transition:transform .16s}
+.btn-gold:hover::after{transform:translateX(3px)}
 .btn-ghost{background:var(--glass);border:1px solid var(--glass-b);color:var(--txt);font-weight:700}
 .btn-ghost:hover{border-color:rgba(245,185,66,.5)}
+.btn-outline{background:rgba(245,185,66,.05);border:1.5px solid rgba(245,185,66,.5);color:var(--gold);font-weight:800}
+.btn-outline:hover{background:rgba(245,185,66,.12);border-color:var(--gold);transform:translateY(-2px)}
 .rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
 .rv.on{opacity:1;transform:none}
 
@@ -274,11 +278,67 @@ h1 .g{color:var(--gold)}
 .spinner{width:16px;height:16px;border:2px solid rgba(245,185,66,.25);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ---------- WAR-ROOM: mô phỏng 5 NV hoạt động quanh chat lệnh ---------- */
+.wr-stage{margin:36px 0 14px;perspective:1400px}
+.wr{transform:rotateX(4deg);transform-style:preserve-3d;display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:18px;align-items:stretch}
+.wr-col{display:flex;flex-direction:column;gap:18px;justify-content:center}
+.wr-hub{background:linear-gradient(180deg,#121A2C,#0E1524);border:1px solid rgba(245,185,66,.45);border-radius:18px;padding:16px;box-shadow:0 24px 70px rgba(0,0,0,.5),0 0 40px rgba(245,185,66,.07);display:flex;flex-direction:column;gap:10px;position:relative}
+.wr-hub .hd{display:flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1.2px;color:var(--dim2);text-transform:uppercase;border-bottom:1px solid rgba(255,255,255,.07);padding-bottom:9px}
+.wr-hub .hd .on-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.6s infinite}
+.wr-msg{font-size:13px;line-height:1.5;padding:9px 12px;border-radius:11px;max-width:92%}
+.wr-msg.u{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#141005;font-weight:700;margin-left:auto;border-bottom-right-radius:3px}
+.wr-msg.a{background:rgba(255,255,255,.06);border:1px solid var(--glass-b);border-bottom-left-radius:3px;color:var(--txt)}
+.wr-msg.a b{color:var(--green)}
+.agent{position:relative;background:var(--glass);border:1px solid var(--glass-b);border-radius:15px;padding:13px 15px;transition:transform .3s,border-color .3s;overflow:hidden}
+.agent::before{content:"";position:absolute;top:50%;width:26px;height:2px;background:linear-gradient(90deg,transparent,rgba(245,185,66,.7));animation:linkflow 2.2s linear infinite}
+.wr-col.L .agent::before{right:-26px}
+.wr-col.R .agent::before{left:-26px;transform:scaleX(-1)}
+@keyframes linkflow{0%{opacity:.15}50%{opacity:1}100%{opacity:.15}}
+.agent.working{border-color:rgba(245,185,66,.55);transform:translateZ(18px);box-shadow:0 14px 40px rgba(0,0,0,.45),0 0 26px rgba(245,185,66,.10)}
+.agent .top{display:flex;align-items:center;gap:9px;margin-bottom:6px}
+.agent .av{width:32px;height:32px;border-radius:9px;display:grid;place-items:center;font-size:16px;background:rgba(245,185,66,.12);border:1px solid rgba(245,185,66,.35);flex:none}
+.agent .nm{font-size:13px;font-weight:800}
+.agent .rl{font-size:10px;color:var(--dim2);font-family:'IBM Plex Mono',monospace;letter-spacing:.6px}
+.agent .st{font-size:12px;color:var(--dim);min-height:18px;display:flex;align-items:center;gap:6px}
+.agent .st.done{color:var(--green);font-weight:700}
+.agent .st .dots::after{content:"";animation:dots 1.2s steps(4,end) infinite}
+@keyframes dots{0%{content:""}25%{content:"."}50%{content:".."}75%{content:"..."}}
+.agent .bar{height:3px;border-radius:99px;background:rgba(255,255,255,.07);margin-top:8px;overflow:hidden}
+.agent .bar i{display:block;height:100%;width:30%;border-radius:99px;background:linear-gradient(90deg,var(--gold),var(--gold-2));transition:width .5s ease}
+.wr-ticker{margin-top:16px;background:#0A0F1B;border:1px solid rgba(255,255,255,.07);border-radius:13px;padding:11px 16px;font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim);overflow:hidden}
+.wr-ticker .tk-hd{color:var(--dim2);font-size:10px;letter-spacing:1.2px;margin-bottom:7px}
+.wr-ticker .tk-line{display:flex;gap:8px;padding:2.5px 0;opacity:0;transform:translateY(-6px);transition:all .4s}
+.wr-ticker .tk-line.on{opacity:1;transform:none}
+.wr-ticker .tk-line .t{color:var(--dim2);flex:none}
+.wr-ticker .tk-line .ok{color:var(--green)}
+
+/* ---------- REVENUE DASHBOARD ---------- */
+.rev{margin-top:32px;background:linear-gradient(180deg,#101827,#0D1420);border:1px solid rgba(245,185,66,.4);border-radius:20px;overflow:hidden}
+.rev-hd{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:13px 20px;border-bottom:1px solid rgba(255,255,255,.07);font-family:'IBM Plex Mono',monospace;font-size:11px;letter-spacing:1.2px;color:var(--dim2);text-transform:uppercase}
+.rev-hd .live{display:inline-flex;align-items:center;gap:7px;color:var(--green)}
+.rev-hd .live i{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green);animation:blink 1.6s infinite}
+.rev-body{display:grid;grid-template-columns:1.05fr 1fr;gap:0}
+.rev-main{padding:26px 28px;border-right:1px solid rgba(255,255,255,.07)}
+.rev-main .lbl{font-size:12.5px;color:var(--dim2);margin-bottom:4px}
+.rev-main .big{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(30px,4.2vw,44px);color:var(--gold);letter-spacing:-.5px;text-shadow:0 0 34px rgba(245,185,66,.3)}
+.rev-main .per{display:inline-flex;margin-top:10px;background:rgba(96,165,250,.12);border:1px solid rgba(96,165,250,.4);color:var(--blue);font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:999px}
+.rev-chart{padding:22px 24px 14px;display:flex;flex-direction:column}
+.rev-chart .cl{font-size:11px;color:var(--dim2);font-family:'IBM Plex Mono',monospace;letter-spacing:1px;margin-bottom:10px}
+.rev-bars{display:flex;align-items:flex-end;gap:7px;height:120px;flex:1}
+.rev-bars i{flex:1;border-radius:5px 5px 2px 2px;background:linear-gradient(180deg,var(--gold),rgba(245,185,66,.25));min-height:4px;height:0;transition:height .9s cubic-bezier(.2,.7,.2,1);box-shadow:0 0 14px rgba(245,185,66,.12)}
+.rev-bars i:last-child{background:linear-gradient(180deg,#FFD886,var(--gold));box-shadow:0 0 22px rgba(245,185,66,.35)}
+.rev-chart .cnote{font-size:10.5px;color:var(--dim2);margin-top:9px}
+.rev-foot{display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid rgba(255,255,255,.07)}
+.rev-foot .rf{padding:16px 18px;text-align:center;border-right:1px solid rgba(255,255,255,.07)}
+.rev-foot .rf:last-child{border-right:none}
+.rev-foot .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(17px,2.4vw,22px);color:var(--gold)}
+.rev-foot .l{font-size:11.5px;color:var(--dim2);margin-top:2px}
+
 /* ---------- RESPONSIVE ---------- */
 @media(max-width:900px){
   .hero .wrap{grid-template-columns:1fr;gap:34px}
   .portrait-zone{max-width:430px;margin:0 auto}
-  .chat-float{left:-8px}
+  .chat-float{position:static;width:100%;margin-top:14px;left:auto;bottom:auto}
   /* Mobile: thẻ tên chuyển thành dải chân panel — không tranh chỗ với card chat */
   .p-cap{position:static;max-width:none;text-align:center;background:rgba(255,255,255,.03);border:none;border-top:1px solid rgba(255,255,255,.08);border-radius:0;padding:12px 16px}
   .pain-grid{grid-template-columns:1fr}
@@ -292,6 +352,11 @@ h1 .g{color:var(--gold)}
   .price-grid{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto}
   .pcard.hot{transform:none}
   .stats-row{grid-template-columns:repeat(3,1fr)}
+  .wr{transform:none;grid-template-columns:1fr 1fr}
+  .wr-col.C{grid-column:1/-1;order:-1}
+  .agent::before{display:none}
+  .rev-body{grid-template-columns:1fr}
+  .rev-main{border-right:none;border-bottom:1px solid rgba(255,255,255,.07)}
 }
 @media(max-width:520px){
   section{padding:56px 0}
@@ -302,7 +367,17 @@ h1 .g{color:var(--gold)}
   .auto-grid{grid-template-columns:1fr}
   .guar{flex-direction:column;text-align:center}
   .sticky .txt{display:none}
-  .sticky .btn{width:100%}
+  .sticky .btn{width:100%;padding:13px 20px}
+  .hero-cta{flex-direction:column}
+  .hero-cta .btn{width:100%}
+  .wr{grid-template-columns:1fr}
+  .dept-sum{flex-direction:column;align-items:flex-start;gap:8px}
+  .dept-sum .big{font-size:15px;white-space:normal}
+  .stats-row{grid-template-columns:1fr;gap:10px}
+  .rev-foot{grid-template-columns:1fr}
+  .rev-foot .rf{border-right:none;border-bottom:1px solid rgba(255,255,255,.07);padding:13px}
+  .rev-foot .rf:last-child{border-bottom:none}
+  .final .btn{width:100%}
 }
 </style>
 </head>
@@ -371,7 +446,53 @@ h1 .g{color:var(--gold)}
   <div class="wrap">
     <span class="kicker rv">Phòng marketing của bạn</span>
     <h2 class="rv">5 nhân viên AI — <span class="g">lương 0đ/tháng</span></h2>
-    <p class="sub rv">Đúng những vị trí một phòng marketing đầy đủ phải thuê. Khác ở chỗ: làm 24/7, không nghỉ việc, không cần quản lý.</p>
+    <p class="sub rv">Đúng những vị trí một phòng marketing đầy đủ phải thuê. Khác ở chỗ: làm 24/7, không nghỉ việc, không cần quản lý. Đây là cách cả phòng vận hành quanh <b style="color:var(--txt)">một tin nhắn của bạn</b>:</p>
+
+    <!-- WAR-ROOM: mô phỏng hệ thống đang chạy — 5 NV hoạt động quanh chat lệnh -->
+    <div class="wr-stage rv" id="warroom" aria-label="Mô phỏng 5 nhân viên AI đang làm việc quanh tin nhắn giao việc">
+      <div class="wr">
+        <div class="wr-col L">
+          <div class="agent" data-agent="content" data-states='["Đang viết 3 bài bán hàng","Đang tạo ảnh minh hoạ","✓ 21 bài đã lên lịch cả tuần"]'>
+            <div class="top"><span class="av">✍️</span><div><div class="nm">NV Content</div><div class="rl">COPYWRITER</div></div></div>
+            <div class="st"><span class="txt-st">Chờ lệnh</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="agent" data-agent="video" data-states='["Đang dựng video từ ảnh sản phẩm","Đang xuất bản 9:16","✓ Đăng Reels · YouTube · TikTok"]'>
+            <div class="top"><span class="av">🎬</span><div><div class="nm">NV Video</div><div class="rl">VIDEO MAKER</div></div></div>
+            <div class="st"><span class="txt-st">Chờ lệnh</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+        </div>
+        <div class="wr-col C">
+          <div class="wr-hub">
+            <div class="hd"><span class="on-dot"></span> SẾP GIAO VIỆC — 1 TIN NHẮN</div>
+            <div class="wr-msg u">Tuần này đẩy mạnh sản phẩm mới: 3 bài/ngày, video mỗi ngày, ads 500K/ngày. Báo cáo 7:00 sáng.</div>
+            <div class="wr-msg a"><b>✓</b> Đã nhận. Cả phòng bắt đầu làm việc — sếp cứ nghỉ ngơi.</div>
+          </div>
+          <div class="agent" data-agent="ads" data-states='["Đang phân tích sản phẩm & đối tượng","Đang lên chiến dịch + target","✓ Chiến dịch ACTIVE — theo dõi 24/7"]'>
+            <div class="top"><span class="av">🎯</span><div><div class="nm">NV Quảng cáo ⭐</div><div class="rl">MEDIA BUYER — NHÂN VIÊN RA ĐƠN</div></div></div>
+            <div class="st"><span class="txt-st">Chờ lệnh</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+        </div>
+        <div class="wr-col R">
+          <div class="agent" data-agent="sale" data-states='["Đang trả lời 6 inbox + 4 comment","Đang tư vấn theo tài liệu sản phẩm","✓ Chốt thêm 1 đơn — kể cả nửa đêm"]'>
+            <div class="top"><span class="av">💬</span><div><div class="nm">NV Tư vấn & Chốt đơn</div><div class="rl">SALES 24/7</div></div></div>
+            <div class="st"><span class="txt-st">Chờ lệnh</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+          <div class="agent" data-agent="cskh" data-states='["Đang nhắn lại 12 khách cũ","Đang tổng hợp đơn & chi phí ads","✓ 7:00 — báo cáo đã gửi Zalo sếp"]'>
+            <div class="top"><span class="av">📊</span><div><div class="nm">NV CSKH & Báo cáo</div><div class="rl">CSKH + REPORT</div></div></div>
+            <div class="st"><span class="txt-st">Chờ lệnh</span></div>
+            <div class="bar"><i></i></div>
+          </div>
+        </div>
+      </div>
+      <div class="wr-ticker" id="wrTicker" aria-hidden="true">
+        <div class="tk-hd">NHẬT KÝ HỆ THỐNG — THỜI GIAN THỰC</div>
+      </div>
+    </div>
+
     <div class="dept rv">
       <div class="dept-row head"><span>#</span><span>Vị trí</span><span>Công việc mỗi ngày</span><span style="text-align:right">Chi phí</span></div>
       <div class="dept-row">
@@ -428,10 +549,27 @@ h1 .g{color:var(--gold)}
       <span><b>④</b> 21/21 bài lên lịch đăng tự động</span>
       <span><b>⑤</b> Khách tự làm 18 video trong một buổi sáng</span>
     </div>
-    <div class="stats-row rv">
-      <div class="stat"><div class="n">59.757.100đ</div><div class="l">doanh thu thực nhận 15–25/07 (10 ngày) — sản phẩm xaykenhai</div></div>
-      <div class="stat"><div class="n">2.298.350đ</div><div class="l">trung bình mỗi giao dịch — hệ thống tự chốt, tự thu tiền</div></div>
-      <div class="stat"><div class="n">21/21</div><div class="l">bài lên lịch tự động ngay trong buổi học</div></div>
+    <div class="rev rv" id="revBoard">
+      <div class="rev-hd"><span>SỐ LIỆU THẬT · HỆ TỰ ĐỘNG XAYKENHAI</span><span class="live"><i></i>15 → 25/07/2026</span></div>
+      <div class="rev-body">
+        <div class="rev-main">
+          <div class="lbl">Doanh thu thực nhận trong 10 ngày</div>
+          <div class="big"><span class="cnt" data-target="59757100" data-suffix="đ">0đ</span></div>
+          <div class="per">Ø <span class="cnt" data-target="2298350" data-suffix="đ / giao dịch">0</span></div>
+        </div>
+        <div class="rev-chart">
+          <div class="cl">LUỸ KẾ DOANH THU — 10 NGÀY</div>
+          <div class="rev-bars" id="revBars" aria-hidden="true">
+            <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+          </div>
+          <div class="cnote">Biểu đồ minh hoạ tiến trình luỹ kế theo tổng doanh thu thực 59.757.100đ.</div>
+        </div>
+      </div>
+      <div class="rev-foot">
+        <div class="rf"><div class="n"><span class="cnt" data-target="26">0</span> giao dịch</div><div class="l">hệ thống tự chốt, tự thu tiền</div></div>
+        <div class="rf"><div class="n">1.000+</div><div class="l">bài & video đã đăng hoàn toàn tự động</div></div>
+        <div class="rf"><div class="n">21/21</div><div class="l">bài lên lịch tự động ngay trong buổi học</div></div>
+      </div>
     </div>
     <div class="case-note rv">
       <span>🎯</span>
@@ -507,7 +645,7 @@ h1 .g{color:var(--gold)}
           <li>Nhóm cộng đồng hỗ trợ</li>
           <li class="gift"><b>Quà: khoá video AI 999K</b> — mở ngay</li>
         </ul>
-        <button class="btn btn-ghost" data-checkout="AGENT999">Chọn gói Tự học</button>
+        <button class="btn btn-outline" data-checkout="AGENT999">Chọn gói Tự học</button>
       </div>
       <div class="pcard hot rv">
         <div class="tag">ĐƯỢC CHỌN NHIỀU NHẤT · CHỈ CÒN 12 CHỖ</div>
@@ -534,7 +672,7 @@ h1 .g{color:var(--gold)}
           <li><b>Hệ thống chạy được mới nghiệm thu</b></li>
           <li class="gift"><b>Quà: khoá video AI 999K</b> — mở ngay</li>
         </ul>
-        <button class="btn btn-ghost" data-checkout="AGENT7999">Đăng ký Build 1:1</button>
+        <button class="btn btn-outline" data-checkout="AGENT7999">Đăng ký Build 1:1</button>
       </div>
     </div>
     <p class="slots rv">⏳ Lớp Zoom giới hạn <b>đúng 12 học viên</b> để Long Nam kèm được từng người — đủ chỗ là đóng đăng ký, không mở thêm.</p>
@@ -643,6 +781,110 @@ h1 .g{color:var(--gold)}
   }
   setTimeout(play, 700);
   setInterval(play, 9000);
+})();
+
+/* ============ WAR-ROOM: 5 NV làm việc như thật ============ */
+(function(){
+  var wr = document.getElementById('warroom');
+  if(!wr) return;
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var agents = [].slice.call(wr.querySelectorAll('.agent'));
+  var ticker = document.getElementById('wrTicker');
+  var EVENTS = [
+    ['NV Content','đăng bài 07:00 lên fanpage','ok'],
+    ['NV Quảng cáo','CPM giảm 12% — giữ nhóm quảng cáo A','ok'],
+    ['NV Tư vấn','khách hỏi giá → đã gửi báo giá + xin SĐT','ok'],
+    ['NV Video','video mới đã lên Reels · 9:16','ok'],
+    ['NV CSKH','nhắn lại 12 khách cũ — 2 khách quay lại','ok'],
+    ['NV Quảng cáo','+1 đơn từ chiến dịch tự động','ok'],
+    ['NV Báo cáo','tổng hợp đơn & chi phí — sẵn sàng 7:00','ok'],
+    ['NV Tư vấn','chốt 1 đơn lúc 23:41 — sếp đang ngủ','ok']
+  ];
+  function cycleAgent(el, delay){
+    var states = JSON.parse(el.dataset.states);
+    var stEl = el.querySelector('.txt-st'), stBox = el.querySelector('.st'), bar = el.querySelector('.bar i');
+    var i = -1;
+    function step(){
+      i = (i + 1) % (states.length + 1);
+      if(i < states.length){
+        var s = states[i], done = s.indexOf('✓') === 0;
+        el.classList.add('working');
+        stBox.classList.toggle('done', done);
+        stEl.innerHTML = done ? s : s + '<span class="dots"></span>';
+        bar.style.width = done ? '100%' : (25 + i*30) + '%';
+        setTimeout(step, done ? 2600 : 1900);
+      }else{
+        el.classList.remove('working'); stBox.classList.remove('done');
+        stEl.textContent = 'Nhận việc mới'; bar.style.width = '12%';
+        setTimeout(step, 900);
+      }
+    }
+    setTimeout(step, delay);
+  }
+  function tick(){
+    var e = EVENTS[Math.floor(Math.random()*EVENTS.length)];
+    var d = new Date();
+    var hh = ('0'+d.getHours()).slice(-2)+':'+('0'+d.getMinutes()).slice(-2);
+    var line = document.createElement('div');
+    line.className = 'tk-line';
+    line.innerHTML = '<span class="t">['+hh+']</span><span><b style="color:var(--txt)">'+e[0]+':</b> '+e[1]+' <span class="ok">✓</span></span>';
+    var hd = ticker.querySelector('.tk-hd');
+    hd.insertAdjacentElement('afterend', line);
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){ line.classList.add('on'); }); });
+    var lines = ticker.querySelectorAll('.tk-line');
+    if(lines.length > 4) lines[lines.length-1].remove();
+  }
+  var started = false;
+  new IntersectionObserver(function(es, o){
+    if(!es[0].isIntersecting || started) return;
+    started = true; o.disconnect();
+    if(reduced){
+      agents.forEach(function(el){
+        var states = JSON.parse(el.dataset.states);
+        el.querySelector('.txt-st').textContent = states[states.length-1];
+        el.querySelector('.st').classList.add('done');
+        el.querySelector('.bar i').style.width = '100%';
+      });
+      tick(); tick(); tick();
+      return;
+    }
+    agents.forEach(function(el, k){ cycleAgent(el, 500 + k*700); });
+    tick(); setInterval(tick, 2400);
+  }, {threshold:.25}).observe(wr);
+})();
+
+/* ============ COUNT-UP + REVENUE BARS ============ */
+(function(){
+  var reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function fmt(n){ return n.toLocaleString('vi-VN'); }
+  function countUp(el){
+    var target = parseInt(el.dataset.target, 10);
+    var suffix = el.dataset.suffix || '';
+    if(reduced){ el.textContent = fmt(target) + suffix; return; }
+    var t0 = null, DUR = 1600;
+    function frame(t){
+      if(!t0) t0 = t;
+      var p = Math.min((t - t0) / DUR, 1);
+      var eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt(Math.round(target * eased)) + suffix;
+      if(p < 1) requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  }
+  var board = document.getElementById('revBoard');
+  if(board){
+    var fired = false;
+    new IntersectionObserver(function(es, o){
+      if(!es[0].isIntersecting || fired) return;
+      fired = true; o.disconnect();
+      board.querySelectorAll('.cnt').forEach(countUp);
+      var bars = board.querySelectorAll('#revBars i');
+      bars.forEach(function(b, k){
+        var h = Math.pow((k+1)/bars.length, 1.25) * 100;   /* luỹ kế mượt 0→100% */
+        setTimeout(function(){ b.style.height = h + '%'; }, reduced ? 0 : 120*k);
+      });
+    }, {threshold:.35}).observe(board);
+  }
 })();
 
 /* ============ STICKY BAR ============ */
