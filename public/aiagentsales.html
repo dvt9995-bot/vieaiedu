@@ -89,31 +89,35 @@ h2 .g{color:var(--gold)}
 .logo b{color:var(--gold)}
 .nav .btn{padding:10px 20px;font-size:14px;border-radius:10px}
 
-/* ---------- HERO ---------- */
-.hero{padding:64px 0 70px;background:
+/* ---------- HERO ----------
+   Chuẩn bố cục: toàn bộ thông điệp + CTA + số liệu tin cậy phải nằm TRỌN màn hình đầu
+   (fold 1440×900). Chân dung crop 4:5 để khoá chiều cao hero ~800px, không kéo CTA xuống. */
+.hero{padding:44px 0 58px;background:
   radial-gradient(900px 480px at 78% -10%, rgba(245,185,66,.10) 0%, transparent 60%),
   radial-gradient(1100px 600px at 18% -20%, #16203A 0%, var(--bg) 62%)}
-.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
-.badge-live{display:inline-flex;align-items:center;gap:9px;background:rgba(245,185,66,.10);border:1px solid rgba(245,185,66,.45);color:var(--gold);font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;margin-bottom:22px}
+.hero .wrap{display:grid;grid-template-columns:1.12fr .88fr;gap:56px;align-items:center}
+.badge-live{display:inline-flex;align-items:center;gap:9px;background:rgba(245,185,66,.10);border:1px solid rgba(245,185,66,.45);color:var(--gold);font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;margin-bottom:20px}
 .badge-live .dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite}
 @keyframes blink{50%{opacity:.25}}
-h1{font-size:clamp(32px,5.6vw,54px);font-weight:900;line-height:1.13;letter-spacing:-1px;margin-bottom:18px}
+h1{font-size:clamp(30px,4.6vw,47px);font-weight:900;line-height:1.14;letter-spacing:-.8px;margin-bottom:16px}
 h1 .g{color:var(--gold)}
-.hero .lead{color:var(--dim);font-size:clamp(15.5px,2.2vw,18px);max-width:540px;margin-bottom:30px}
+.hero .lead{color:var(--dim);font-size:clamp(15px,2vw,17px);max-width:530px;margin-bottom:26px}
 .hero .lead b{color:var(--txt)}
-.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:34px}
-.trust{display:flex;gap:26px;flex-wrap:wrap}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:30px}
+.trust{display:grid;grid-template-columns:repeat(3,auto);justify-content:start;gap:36px;border-top:1px solid rgba(255,255,255,.08);padding-top:20px}
 .trust div{display:flex;flex-direction:column;gap:1px}
 .trust .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:19px;color:var(--gold)}
-.trust .l{font-size:12px;color:var(--dim2)}
+.trust .l{font-size:11.5px;color:var(--dim2);max-width:150px;line-height:1.45}
 .portrait-zone{position:relative}
 .portrait{border-radius:22px;border:1px solid rgba(245,185,66,.35);box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;overflow:hidden}
-.portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,15,23,.88) 0%,transparent 42%)}
-.portrait img{width:100%}
-.p-cap{position:absolute;left:20px;right:20px;bottom:16px;z-index:2}
-.p-cap b{display:block;font-size:16.5px}
-.p-cap span{font-size:12.5px;color:var(--dim)}
-.chat-float{position:absolute;left:-70px;bottom:118px;width:290px;background:#101828;border:1px solid var(--glass-b);border-radius:16px;padding:14px;box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:3}
+.portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,15,23,.55) 0%,transparent 30%)}
+.portrait img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 16%}
+.p-cap{margin:10px 0 0 auto;max-width:58%;text-align:right}
+.p-cap b{display:block;font-size:15.5px}
+.p-cap span{font-size:12px;color:var(--dim2)}
+.chat-float{position:absolute;left:-56px;bottom:26px;width:262px;background:#101828;border:1px solid var(--glass-b);border-radius:16px;padding:12px 14px;box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:3}
+.chat-head{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1px;color:var(--dim2);text-transform:uppercase;padding-bottom:9px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07)}
+.chat-head .on-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
 .chat-float .row{display:flex;gap:8px;margin-bottom:8px;opacity:0;transform:translateY(8px);transition:all .45s}
 .chat-float .row.show{opacity:1;transform:none}
 .bub{font-size:12.5px;line-height:1.5;padding:8px 11px;border-radius:11px;max-width:86%}
@@ -290,6 +294,9 @@ h1 .g{color:var(--gold)}
 @media(max-width:520px){
   section{padding:56px 0}
   .badge-live{font-size:11px;white-space:normal;line-height:1.5;text-align:left}
+  .trust{grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}
+  .trust .n{font-size:16px}
+  .trust .l{max-width:none;font-size:10.5px}
   .auto-grid{grid-template-columns:1fr}
   .guar{flex-direction:column;text-align:center}
   .sticky .txt{display:none}
@@ -329,6 +336,7 @@ h1 .g{color:var(--gold)}
         <div class="p-cap"><b>Long Nam</b><span>Người build hệ thống này — và đang để nó bán hàng thật mỗi ngày</span></div>
       </div>
       <div class="chat-float" id="heroChat" aria-hidden="true">
+        <div class="chat-head"><span class="on-dot"></span> AI AGENT · ĐANG LÀM VIỆC</div>
         <div class="row" data-d="400"><span class="bub u">Lên kế hoạch 7 ngày, mỗi ngày 3 bài, chạy ads 500K/ngày</span></div>
         <div class="row" data-d="1500"><span class="bub a"><b>✓</b> 21 bài đã lên lịch đăng</span></div>
         <div class="row" data-d="2400"><span class="bub a"><b>✓</b> Chiến dịch quảng cáo: ACTIVE</span></div>
