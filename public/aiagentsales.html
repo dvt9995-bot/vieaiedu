@@ -112,9 +112,9 @@ h1 .g{color:var(--gold)}
 .portrait{border-radius:22px;border:1px solid rgba(245,185,66,.35);box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;overflow:hidden}
 .portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,15,23,.55) 0%,transparent 30%)}
 .portrait img{width:100%;height:auto;aspect-ratio:4/5;object-fit:cover;object-position:50% 16%}
-.p-cap{margin:10px 0 0 auto;max-width:58%;text-align:right}
-.p-cap b{display:block;font-size:15.5px}
-.p-cap span{font-size:12px;color:var(--dim2)}
+.p-cap{position:absolute;right:14px;bottom:14px;z-index:2;max-width:50%;text-align:right;background:rgba(11,15,23,.76);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.10);border-radius:12px;padding:10px 14px}
+.p-cap b{display:block;font-size:14.5px;color:var(--gold)}
+.p-cap span{font-size:11.5px;color:var(--dim);line-height:1.5;display:block}
 .chat-float{position:absolute;left:-56px;bottom:26px;width:262px;background:#101828;border:1px solid var(--glass-b);border-radius:16px;padding:12px 14px;box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:3}
 .chat-head{display:flex;align-items:center;gap:7px;font-family:'IBM Plex Mono',monospace;font-size:10.5px;letter-spacing:1px;color:var(--dim2);text-transform:uppercase;padding-bottom:9px;margin-bottom:10px;border-bottom:1px solid rgba(255,255,255,.07)}
 .chat-head .on-dot{width:7px;height:7px;border-radius:50%;background:var(--green);box-shadow:0 0 8px var(--green)}
@@ -279,6 +279,8 @@ h1 .g{color:var(--gold)}
   .hero .wrap{grid-template-columns:1fr;gap:34px}
   .portrait-zone{max-width:430px;margin:0 auto}
   .chat-float{left:-8px}
+  /* Mobile: thẻ tên chuyển thành dải chân panel — không tranh chỗ với card chat */
+  .p-cap{position:static;max-width:none;text-align:center;background:rgba(255,255,255,.03);border:none;border-top:1px solid rgba(255,255,255,.08);border-radius:0;padding:12px 16px}
   .pain-grid{grid-template-columns:1fr}
   .dept-row.head{display:none}
   .dept-row{grid-template-columns:44px 1fr;gap:10px}
@@ -333,7 +335,7 @@ h1 .g{color:var(--gold)}
     <div class="portrait-zone rv">
       <div class="portrait">
         <img src="/aiagentsales-assets/longnam-portrait.jpg" alt="Long Nam — người xây và đang vận hành hệ thống AI Agent Sales" width="720" height="1290">
-        <div class="p-cap"><b>Long Nam</b><span>Người build hệ thống này — và đang để nó bán hàng thật mỗi ngày</span></div>
+        <div class="p-cap"><b>Long Nam</b><span>Người build hệ thống này — đang để nó bán hàng thật mỗi ngày</span></div>
       </div>
       <div class="chat-float" id="heroChat" aria-hidden="true">
         <div class="chat-head"><span class="on-dot"></span> AI AGENT · ĐANG LÀM VIỆC</div>
