@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0B0F17">
+<meta name="robots" content="noindex">
+<!-- Trang cảm ơn RIÊNG của landing AI Agent Sales — chỉ tới được sau khi thanh toán.
+     Purchase pixel bắn Ở ĐÂY DUY NHẤT (client-side), eventID = mã đơn để Meta dedupe
+     với Purchase CAPI bắn từ server (Apps Script webhook SePay). -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '600820699707738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=600820699707738&ev=PageView&noscript=1"></noscript>
+<title>Thanh toán thành công — AI Agent Sales | Long Nam</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;600;700;800;900&family=IBM+Plex+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0B0F17;--glass:rgba(255,255,255,.045);--glass-b:rgba(255,255,255,.10);
+--gold:#F5B942;--green:#34D399;--txt:#EAEFF9;--dim:#93A0C2;--dim2:#5E6A8C}
+*{margin:0;padding:0;box-sizing:border-box}
+body{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;
+background:radial-gradient(900px 500px at 50% -10%,rgba(245,185,66,.10) 0%,transparent 55%) var(--bg);
+font-family:'Be Vietnam Pro',system-ui,sans-serif;color:var(--txt);line-height:1.6}
+.card{max-width:500px;width:100%;text-align:center;padding:42px 30px;background:var(--glass);
+border:1px solid var(--glass-b);border-radius:24px;backdrop-filter:blur(12px)}
+.check{width:78px;height:78px;border-radius:50%;margin:0 auto 20px;font-size:38px;display:grid;place-items:center;
+color:#04140f;background:linear-gradient(135deg,var(--green),#22c98f);box-shadow:0 16px 40px rgba(52,211,153,.35)}
+h1{font-size:24px;font-weight:900;margin-bottom:8px}
+.lead{color:var(--dim);font-size:14.5px;margin-bottom:24px}
+.order{text-align:left;background:rgba(255,255,255,.03);border:1px solid var(--glass-b);border-radius:14px;
+padding:16px 18px;margin-bottom:22px;font-size:14px}
+.order div{display:flex;justify-content:space-between;gap:12px;padding:5px 0}
+.order span:first-child{color:var(--dim)}
+.order span:last-child{font-weight:700;text-align:right;font-family:'IBM Plex Mono',monospace;font-size:13px}
+.next{text-align:left;border:1.5px dashed var(--gold);border-radius:14px;padding:16px 18px;margin-bottom:22px;font-size:13.5px;color:var(--dim)}
+.next b{color:var(--gold)}
+.next ol{margin:8px 0 0 18px}
+.next li{margin-bottom:6px}
+.btn{display:block;width:100%;text-decoration:none;font-weight:800;font-size:15.5px;padding:15px;border-radius:14px;margin-bottom:11px;transition:transform .15s}
+.btn:hover{transform:translateY(-2px)}
+.btn-zalo{background:#0068ff;color:#fff;box-shadow:0 12px 28px rgba(0,104,255,.3)}
+.btn-gold{background:linear-gradient(135deg,#F5B942,#E8A020);color:#141005;box-shadow:0 12px 28px rgba(245,185,66,.3)}
+.btn-ghost{background:none;color:var(--dim);font-weight:600;font-size:13.5px;padding:8px}
+.note{font-size:12.5px;color:var(--dim2);margin-top:6px}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="check">✓</div>
+    <h1>Thanh toán thành công!</h1>
+    <p class="lead" id="lead">Cảm ơn bạn đã đăng ký khoá AI Agent Sales.</p>
+    <div class="order" id="orderBox" style="display:none">
+      <div><span>Gói</span><span id="oPlan">—</span></div>
+      <div><span>Số tiền</span><span id="oValue">—</span></div>
+      <div><span>Mã đơn</span><span id="oCode">—</span></div>
+    </div>
+    <div class="next">
+      <b>Chuyện gì xảy ra tiếp theo (tự động):</b>
+      <ol>
+        <li>📧 Email <b>xác nhận đơn</b> đã được gửi (kiểm tra cả mục Spam/Quảng cáo).</li>
+        <li>🎁 Email thứ hai chứa <b>tài khoản vieaiedu.vn</b> + khoá quà "Build hệ thống tạo video AI" — đăng nhập 1 chạm.</li>
+        <li id="stepPlan">👥 Team sẽ liên hệ bạn qua SĐT/Zalo để xếp lớp.</li>
+      </ol>
+    </div>
+    <a class="btn btn-zalo" id="zaloBtn" href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener">💬 Vào nhóm Zalo ngay</a>
+    <a class="btn btn-gold" href="https://vieaiedu.vn" target="_blank" rel="noopener">🎓 Mở hệ thống học vieaiedu.vn</a>
+    <a class="btn btn-ghost" href="/aiagentsales">← Về trang khoá học</a>
+    <p class="note">Cần hỗ trợ? Trả lời email xác nhận hoặc nhắn nhóm Zalo.</p>
+  </div>
+
+<script>
+(function(){
+  var q = new URLSearchParams(location.search);
+  var oc = q.get('oc') || '';                 // mã đơn / nội dung CK — eventID dedupe với CAPI
+  var p  = (q.get('p')  || '').toUpperCase(); // AGENT999 | AGENT2999 | AGENT7999
+  var v  = parseInt(q.get('v'), 10) || 0;
+  var n  = q.get('n')  || '';
+
+  var LABELS = {
+    AGENT999:'AI Agent Sales — Gói Tự Học',
+    AGENT2999:'AI Agent Sales — Lớp Zoom Trực Tiếp (12 chỗ)',
+    AGENT7999:'AI Agent Sales — Build 1:1 cùng Long Nam'
+  };
+  var label = n || LABELS[p] || 'Khoá AI Agent Sales';
+
+  var lead = document.getElementById('lead');
+  var stepPlan = document.getElementById('stepPlan');
+  if (p === 'AGENT999') {
+    lead.textContent = 'Bạn đã sở hữu ' + label + '. Tài khoản học được giao tự động qua email — bắt đầu ngay hôm nay.';
+    stepPlan.innerHTML = '🎬 Các bài học AI Agent Sales sẽ xuất hiện trong tài khoản của bạn khi phát hành — team sẽ báo qua email & Zalo.';
+  } else if (p === 'AGENT2999') {
+    lead.textContent = 'Bạn đã giữ thành công 1 trong 12 chỗ của lớp Zoom. Hẹn gặp bạn ở buổi khai giảng!';
+    stepPlan.innerHTML = '👥 Team sẽ liên hệ qua SĐT/Zalo để <b>xếp lớp</b> — khai giảng ngay khi đủ 12 học viên.';
+  } else if (p === 'AGENT7999') {
+    lead.textContent = 'Suất Build 1:1 của bạn đã được xác nhận. Long Nam sẽ gọi bạn trong hôm nay.';
+    stepPlan.innerHTML = '📞 <b>Long Nam / team gọi bạn TRONG HÔM NAY</b> để thu xếp lịch build 1:1 — học ngay, không chờ lớp.';
+  }
+
+  if (oc || v) {
+    document.getElementById('orderBox').style.display = 'block';
+    document.getElementById('oPlan').textContent  = label;
+    document.getElementById('oValue').textContent = v ? v.toLocaleString('vi-VN') + 'đ' : '—';
+    document.getElementById('oCode').textContent  = oc || '—';
+  }
+
+  /* Purchase — duy nhất tại đây (client). eventID = oc trùng với event_id CAPI server → Meta dedupe. */
+  try {
+    if (window.fbq && v > 0) {
+      fbq('track', 'Purchase', {
+        value: v, currency: 'VND',
+        content_name: label, content_category: 'AI Agent Sales',
+        content_ids: [p], order_id: oc
+      }, oc ? { eventID: oc } : undefined);
+    }
+  } catch (e) {}
+})();
+</script>
+</body>
+</html>

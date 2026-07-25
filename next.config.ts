@@ -17,6 +17,9 @@ const nextConfig: NextConfig = {
       { source: "/xaykenhai", destination: "/xaykenhai.html" },
       // Trang cảm ơn RIÊNG (URL thật) sau khi thanh toán — nơi bắn Purchase pixel chuẩn nhất
       { source: "/xaykenhai/cam-on", destination: "/xaykenhai-cam-on.html" },
+      // Landing "AI Agent Sales" (khoá bán hàng FB tự động) — cùng pattern xaykenhai
+      { source: "/aiagentsales", destination: "/aiagentsales.html" },
+      { source: "/aiagentsales/cam-on", destination: "/aiagentsales-cam-on.html" },
     ];
   },
 };

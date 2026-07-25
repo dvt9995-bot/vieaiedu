@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="color-scheme" content="dark">
+<meta name="theme-color" content="#0B0F17">
+<!-- Meta (Facebook) Pixel — phễu: PageView → ViewContent → Lead → InitiateCheckout.
+     Purchase KHÔNG bắn ở trang này — chỉ bắn ở /aiagentsales/cam-on (URL riêng) + CAPI server. -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '600820699707738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=600820699707738&ev=PageView&noscript=1"></noscript>
+<title>AI Agent Sales — Hệ thống bán hàng Facebook tự động | Long Nam</title>
+<meta name="description" content="Nhắn 1 tin — nhân viên AI viết bài, đăng bài, chạy quảng cáo, tư vấn chốt đơn, chăm sóc khách, báo cáo mỗi sáng. Xem AI làm thật trên hệ thống Long Nam đang vận hành. Lớp Zoom giới hạn 12 chỗ.">
+<meta name="robots" content="index,follow">
+<link rel="canonical" href="https://vieaiedu.vn/aiagentsales">
+<meta property="og:url" content="https://vieaiedu.vn/aiagentsales">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="vi_VN">
+<meta property="og:site_name" content="Long Nam · Magic AI">
+<meta property="og:title" content="AI Agent Sales — Hệ thống bán hàng Facebook tự động">
+<meta property="og:description" content="Nhắn 1 tin — AI viết bài, đăng bài, chạy quảng cáo, chốt đơn thay bạn. Demo thật, khách thật, hệ thống Long Nam đang chạy thật. Lớp Zoom chỉ 12 chỗ.">
+<meta property="og:image" content="https://vieaiedu.vn/aiagentsales-assets/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://vieaiedu.vn/aiagentsales-assets/og-image.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "Course",
+  "name": "AI Agent Sales — Hệ thống bán hàng Facebook tự động",
+  "description": "Khoá học build hệ thống 5 nhân viên AI bán hàng trên Facebook: content, video, quảng cáo, tư vấn chốt đơn, CSKH & báo cáo — điều khiển bằng tin nhắn tiếng Việt.",
+  "provider": { "@type": "Organization", "name": "Long Nam · Magic AI" },
+  "inLanguage": "vi",
+  "offers": [
+    { "@type": "Offer", "name": "Gói Tự Học — video quay sẵn + quà khoá video AI", "price": "999000", "priceCurrency": "VND", "category": "Paid" },
+    { "@type": "Offer", "name": "Lớp Zoom Trực Tiếp — 5 buổi, giới hạn 12 chỗ", "price": "2999000", "priceCurrency": "VND", "category": "Paid" },
+    { "@type": "Offer", "name": "Build 1:1 cùng Long Nam — học ngay không chờ lớp", "price": "7999000", "priceCurrency": "VND", "category": "Paid" }
+  ]
+}
+</script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700;800;900&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#0B0F17; --bg2:#0F1522;
+  --glass:rgba(255,255,255,.045); --glass-b:rgba(255,255,255,.10);
+  --gold:#F5B942; --gold-2:#E8A020;
+  --green:#34D399; --red:#FB4D6D; --blue:#60A5FA;
+  --txt:#EAEFF9; --dim:#93A0C2; --dim2:#5E6A8C;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--txt);font-family:'Be Vietnam Pro',system-ui,sans-serif;line-height:1.65;overflow-x:hidden}
+.mono{font-family:'IBM Plex Mono',monospace}
+img,video{max-width:100%;display:block}
+.wrap{max-width:1080px;margin:0 auto;padding:0 22px}
+section{padding:74px 0;position:relative}
+.kicker{display:inline-flex;align-items:center;gap:8px;font-family:'IBM Plex Mono',monospace;font-size:12.5px;font-weight:600;letter-spacing:1.5px;color:var(--gold);text-transform:uppercase}
+.kicker::before{content:"";width:26px;height:1px;background:var(--gold)}
+h2{font-size:clamp(26px,4.6vw,40px);font-weight:900;line-height:1.22;margin:10px 0 10px;letter-spacing:-.5px}
+h2 .g{color:var(--gold)}
+.sub{color:var(--dim);font-size:16px;max-width:640px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;font-weight:800;font-size:16.5px;padding:17px 34px;border-radius:14px;text-decoration:none;border:none;cursor:pointer;font-family:inherit;transition:transform .16s,box-shadow .16s;will-change:transform}
+.btn-gold{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#141005;box-shadow:0 14px 40px rgba(245,185,66,.30)}
+.btn-gold:hover{transform:translateY(-2px);box-shadow:0 18px 50px rgba(245,185,66,.42)}
+.btn-ghost{background:var(--glass);border:1px solid var(--glass-b);color:var(--txt);font-weight:700}
+.btn-ghost:hover{border-color:rgba(245,185,66,.5)}
+.rv{opacity:0;transform:translateY(26px);transition:opacity .7s ease,transform .7s ease}
+.rv.on{opacity:1;transform:none}
+
+/* ---------- NAV ---------- */
+.nav{position:sticky;top:0;z-index:60;background:rgba(11,15,23,.82);backdrop-filter:blur(12px);border-bottom:1px solid rgba(255,255,255,.06)}
+.nav .wrap{display:flex;align-items:center;justify-content:space-between;height:60px}
+.logo{font-weight:900;font-size:16px;letter-spacing:.5px;color:var(--txt);text-decoration:none}
+.logo b{color:var(--gold)}
+.nav .btn{padding:10px 20px;font-size:14px;border-radius:10px}
+
+/* ---------- HERO ---------- */
+.hero{padding:64px 0 70px;background:
+  radial-gradient(900px 480px at 78% -10%, rgba(245,185,66,.10) 0%, transparent 60%),
+  radial-gradient(1100px 600px at 18% -20%, #16203A 0%, var(--bg) 62%)}
+.hero .wrap{display:grid;grid-template-columns:1.15fr .85fr;gap:48px;align-items:center}
+.badge-live{display:inline-flex;align-items:center;gap:9px;background:rgba(245,185,66,.10);border:1px solid rgba(245,185,66,.45);color:var(--gold);font-weight:700;font-size:13px;padding:9px 16px;border-radius:999px;margin-bottom:22px}
+.badge-live .dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite}
+@keyframes blink{50%{opacity:.25}}
+h1{font-size:clamp(32px,5.6vw,54px);font-weight:900;line-height:1.13;letter-spacing:-1px;margin-bottom:18px}
+h1 .g{color:var(--gold)}
+.hero .lead{color:var(--dim);font-size:clamp(15.5px,2.2vw,18px);max-width:540px;margin-bottom:30px}
+.hero .lead b{color:var(--txt)}
+.hero-cta{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:34px}
+.trust{display:flex;gap:26px;flex-wrap:wrap}
+.trust div{display:flex;flex-direction:column;gap:1px}
+.trust .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:19px;color:var(--gold)}
+.trust .l{font-size:12px;color:var(--dim2)}
+.portrait-zone{position:relative}
+.portrait{border-radius:22px;border:1px solid rgba(245,185,66,.35);box-shadow:0 30px 80px rgba(0,0,0,.5);position:relative;overflow:hidden}
+.portrait::after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(11,15,23,.88) 0%,transparent 42%)}
+.portrait img{width:100%}
+.p-cap{position:absolute;left:20px;right:20px;bottom:16px;z-index:2}
+.p-cap b{display:block;font-size:16.5px}
+.p-cap span{font-size:12.5px;color:var(--dim)}
+.chat-float{position:absolute;left:-70px;bottom:-26px;width:290px;background:#101828;border:1px solid var(--glass-b);border-radius:16px;padding:14px;box-shadow:0 24px 60px rgba(0,0,0,.55);z-index:3}
+.chat-float .row{display:flex;gap:8px;margin-bottom:8px;opacity:0;transform:translateY(8px);transition:all .45s}
+.chat-float .row.show{opacity:1;transform:none}
+.bub{font-size:12.5px;line-height:1.5;padding:8px 11px;border-radius:11px;max-width:86%}
+.bub.u{background:linear-gradient(135deg,var(--gold),var(--gold-2));color:#141005;font-weight:600;margin-left:auto;border-bottom-right-radius:3px}
+.bub.a{background:rgba(255,255,255,.06);border:1px solid var(--glass-b);border-bottom-left-radius:3px}
+.bub.a b{color:var(--green)}
+
+/* ---------- PAIN ---------- */
+.pain-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:30px}
+.pain-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;padding:20px 22px;display:flex;gap:14px;align-items:flex-start}
+.pain-card .x{color:var(--red);font-weight:900;font-size:18px;line-height:1.4}
+.pain-card p{font-size:14.5px;color:var(--dim)}
+.pain-card p b{color:var(--txt)}
+.turn{margin-top:34px;text-align:center;background:linear-gradient(135deg,rgba(245,185,66,.10),rgba(245,185,66,.03));border:1px solid rgba(245,185,66,.35);border-radius:18px;padding:26px 24px}
+.turn p{font-size:clamp(17px,2.6vw,22px);font-weight:800}
+.turn p .g{color:var(--gold)}
+
+/* ---------- TEAM (5 NV) ---------- */
+.team{background:var(--bg2)}
+.dept{margin-top:34px;border:1px solid var(--glass-b);border-radius:20px;overflow:hidden}
+.dept-row{display:grid;grid-template-columns:56px 1.05fr 1.6fr .8fr;gap:16px;align-items:center;padding:19px 22px;border-bottom:1px solid rgba(255,255,255,.06);background:var(--glass)}
+.dept-row:last-child{border-bottom:none}
+.dept-row.head{background:rgba(255,255,255,.02);font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--dim2);letter-spacing:1px;text-transform:uppercase;padding:12px 22px}
+.dept-row.hot{background:rgba(245,185,66,.07);border-left:3px solid var(--gold)}
+.dept-num{width:42px;height:42px;border-radius:11px;display:grid;place-items:center;font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:17px;color:var(--gold);background:rgba(245,185,66,.12);border:1px solid rgba(245,185,66,.35)}
+.dept-role b{font-size:15.5px;display:block}
+.dept-role span{font-size:12px;color:var(--gold);font-weight:700}
+.dept-job{font-size:13.5px;color:var(--dim)}
+.dept-pay{text-align:right}
+.dept-pay .old{font-size:12px;color:var(--dim2);text-decoration:line-through;display:block}
+.dept-pay .new{font-family:'IBM Plex Mono',monospace;font-weight:600;color:var(--green);font-size:14px}
+.dept-sum{display:flex;justify-content:space-between;align-items:center;gap:14px;padding:18px 22px;background:rgba(245,185,66,.08)}
+.dept-sum p{font-size:14px;color:var(--dim)}
+.dept-sum p b{color:var(--txt)}
+.dept-sum .big{font-family:'IBM Plex Mono',monospace;color:var(--gold);font-weight:600;font-size:18px;white-space:nowrap}
+
+/* ---------- DEMO ---------- */
+.vid-frame{border-radius:20px;overflow:hidden;border:1px solid rgba(245,185,66,.35);box-shadow:0 30px 90px rgba(0,0,0,.5);margin-top:32px}
+.chips{display:flex;gap:9px;flex-wrap:wrap;margin-top:18px}
+.chips span{font-size:12.5px;font-weight:600;border:1px solid var(--glass-b);color:var(--dim);padding:8px 14px;border-radius:999px;background:var(--glass)}
+.chips span b{color:var(--gold)}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:26px}
+.stat{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;padding:20px;text-align:center}
+.stat .n{font-family:'IBM Plex Mono',monospace;font-weight:600;font-size:clamp(20px,3.4vw,28px);color:var(--gold)}
+.stat .l{font-size:12.5px;color:var(--dim2);margin-top:3px}
+.case-note{margin-top:22px;display:flex;gap:12px;align-items:flex-start;background:var(--glass);border:1px solid var(--glass-b);border-left:3px solid var(--gold);border-radius:14px;padding:16px 18px;font-size:14px;color:var(--dim)}
+.case-note b{color:var(--txt)}
+
+/* ---------- FEEDBACK ---------- */
+.fb{background:var(--bg2)}
+.quotes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:24px}
+.quote{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;padding:20px}
+.quote .qm{color:var(--gold);font-size:30px;font-weight:900;line-height:1;font-family:Georgia,serif}
+.quote p{font-size:14px;margin-top:6px}
+.quote span{display:block;margin-top:10px;font-size:12px;color:var(--dim2)}
+
+/* ---------- ROADMAP ---------- */
+.steps{margin-top:34px;position:relative;padding-left:34px}
+.steps::before{content:"";position:absolute;left:11px;top:8px;bottom:8px;width:2px;background:linear-gradient(var(--gold),rgba(245,185,66,.1))}
+.step{position:relative;padding:0 0 30px 18px}
+.step:last-child{padding-bottom:0}
+.step::before{content:"";position:absolute;left:-30px;top:5px;width:16px;height:16px;border-radius:50%;background:var(--bg);border:3px solid var(--gold)}
+.step .tag{font-family:'IBM Plex Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:1.5px}
+.step h3{font-size:17.5px;font-weight:800;margin:3px 0 4px}
+.step p{font-size:14px;color:var(--dim)}
+.step .kq{color:var(--green);font-size:13.5px;font-weight:700;margin-top:4px}
+.step.hot h3::after{content:" ⭐";font-size:14px}
+
+/* ---------- AUTO DELIVERY ---------- */
+.auto{background:var(--bg2)}
+.auto-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-top:34px}
+.auto-card{background:var(--glass);border:1px solid var(--glass-b);border-radius:16px;padding:22px 18px;position:relative}
+.auto-card .t{font-family:'IBM Plex Mono',monospace;font-size:11.5px;color:var(--gold);letter-spacing:1px;margin-bottom:8px}
+.auto-card h3{font-size:15px;font-weight:800;margin-bottom:5px}
+.auto-card p{font-size:13px;color:var(--dim)}
+.gift-band{margin-top:26px;display:flex;align-items:center;gap:18px;background:linear-gradient(135deg,rgba(245,185,66,.12),rgba(245,185,66,.03));border:1.5px dashed var(--gold);border-radius:18px;padding:22px 26px}
+.gift-band .ic{font-size:36px}
+.gift-band b{color:var(--gold)}
+.gift-band p{font-size:14.5px;color:var(--dim)}
+
+/* ---------- PRICING ---------- */
+.price-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:18px;margin-top:38px;align-items:stretch}
+.pcard{background:var(--glass);border:1px solid var(--glass-b);border-radius:22px;padding:30px 26px;display:flex;flex-direction:column;position:relative}
+.pcard.hot{border:2px solid var(--gold);background:linear-gradient(180deg,rgba(245,185,66,.07),var(--glass));box-shadow:0 0 70px rgba(245,185,66,.14);transform:scale(1.03)}
+.pcard .tag{position:absolute;top:-15px;left:50%;transform:translateX(-50%);background:linear-gradient(135deg,var(--red),#E8324F);color:#fff;font-size:12px;font-weight:800;padding:7px 18px;border-radius:999px;white-space:nowrap;box-shadow:0 8px 22px rgba(251,77,109,.4)}
+.pcard .name{font-family:'IBM Plex Mono',monospace;font-size:12px;letter-spacing:1.5px;color:var(--dim);text-transform:uppercase}
+.pcard .pr{font-size:42px;font-weight:900;margin:8px 0 2px}
+.pcard .pr small{font-size:16px;color:var(--dim2);font-weight:700}
+.pcard .for{font-size:13px;color:var(--dim2);margin-bottom:18px}
+.pcard ul{list-style:none;font-size:14px;margin-bottom:24px;flex:1}
+.pcard li{padding:8px 0;border-bottom:1px dashed rgba(255,255,255,.08);color:var(--dim)}
+.pcard li b{color:var(--txt)}
+.pcard li::before{content:"✓  ";color:var(--green);font-weight:900}
+.pcard li.gift::before{content:"🎁 "}
+.pcard .btn{width:100%}
+.slots{margin-top:26px;text-align:center;font-size:13.5px;color:var(--dim)}
+.slots b{color:var(--red)}
+
+/* ---------- GUARANTEE ---------- */
+.guar{display:flex;gap:22px;align-items:center;background:var(--glass);border:1px solid rgba(245,185,66,.4);border-radius:20px;padding:28px;margin-top:34px}
+.guar .ic{font-size:46px}
+.guar h3{font-size:19px;font-weight:900;margin-bottom:4px}
+.guar h3 .g{color:var(--gold)}
+.guar p{font-size:13.5px;color:var(--dim)}
+
+/* ---------- FAQ ---------- */
+.faq details{background:var(--glass);border:1px solid var(--glass-b);border-radius:15px;padding:18px 22px;margin-bottom:11px}
+.faq summary{font-weight:700;cursor:pointer;font-size:15.5px;list-style:none;display:flex;justify-content:space-between;align-items:center;gap:12px}
+.faq summary::after{content:"+";color:var(--gold);font-size:22px;font-weight:400;transition:transform .25s}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq p{color:var(--dim);font-size:14px;margin-top:12px}
+
+/* ---------- FINAL ---------- */
+.final{text-align:center;background:radial-gradient(700px 380px at 50% 0%,rgba(245,185,66,.12),transparent 65%)}
+.final h2{max-width:720px;margin-left:auto;margin-right:auto}
+.final .sub{margin:0 auto 30px}
+
+.foot{text-align:center;color:var(--dim2);font-size:12.5px;padding:36px 22px 110px;border-top:1px solid rgba(255,255,255,.06)}
+.foot b{color:var(--dim)}
+
+/* ---------- STICKY + ZALO ---------- */
+.sticky{position:fixed;left:0;right:0;bottom:0;z-index:70;background:rgba(11,15,23,.92);backdrop-filter:blur(12px);border-top:1px solid rgba(245,185,66,.3);padding:10px 14px;transform:translateY(110%);transition:transform .35s}
+.sticky.on{transform:none}
+.sticky .in{max-width:1080px;margin:0 auto;display:flex;align-items:center;gap:14px;justify-content:space-between}
+.sticky .txt{font-size:13.5px;color:var(--dim)}
+.sticky .txt b{color:var(--txt)}
+.sticky .btn{padding:12px 24px;font-size:14.5px;white-space:nowrap}
+.zalo-fl{position:fixed;right:18px;bottom:86px;z-index:70;width:54px;height:54px;border-radius:50%;background:#0068ff;display:grid;place-items:center;color:#fff;font-weight:800;font-size:13px;text-decoration:none;box-shadow:0 12px 30px rgba(0,104,255,.45)}
+
+/* ---------- CHECKOUT MODAL ---------- */
+.modal{position:fixed;inset:0;z-index:90;background:rgba(4,6,12,.78);backdrop-filter:blur(8px);display:none;align-items:flex-end;justify-content:center;padding:0}
+.modal.on{display:flex}
+.co{background:#0F1626;border:1px solid var(--glass-b);border-radius:22px 22px 0 0;max-width:520px;width:100%;max-height:92vh;overflow:auto;padding:28px 26px;position:relative}
+@media(min-width:640px){.modal{align-items:center;padding:24px}.co{border-radius:22px}}
+.co-x{position:absolute;top:14px;right:16px;background:var(--glass);border:1px solid var(--glass-b);color:var(--dim);width:34px;height:34px;border-radius:50%;cursor:pointer;font-size:15px}
+.co h3{font-size:20px;font-weight:900;margin-bottom:4px}
+.co-sub{font-size:13.5px;color:var(--dim);margin-bottom:20px}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:12.5px;font-weight:700;color:var(--dim);margin-bottom:6px}
+.field input{width:100%;background:rgba(255,255,255,.05);border:1px solid var(--glass-b);border-radius:11px;padding:13px 15px;font-size:15px;color:var(--txt);font-family:inherit;outline:none}
+.field input:focus{border-color:var(--gold)}
+.co-err{display:none;color:var(--red);font-size:13px;margin:4px 0 10px}
+.co-err.on{display:block}
+.co .btn{width:100%;margin-top:6px}
+.qr-wrap{display:flex;flex-direction:column;align-items:center;gap:12px;background:#fff;border-radius:16px;padding:18px;margin:16px 0}
+.qr-wrap img{width:230px;height:230px}
+.qr-note{font-size:12px;color:#334155;text-align:center}
+.pay-row{display:flex;justify-content:space-between;gap:10px;font-size:14px;padding:9px 0;border-bottom:1px dashed rgba(255,255,255,.1)}
+.pay-row span:first-child{color:var(--dim)}
+.pay-row b{text-align:right}
+.pay-row b.gold{color:var(--gold)}
+.copy-btn{background:var(--glass);border:1px solid var(--glass-b);color:var(--gold);border-radius:8px;font-size:12px;font-weight:700;padding:5px 10px;cursor:pointer;margin-left:8px}
+.waiting{display:flex;align-items:center;gap:10px;justify-content:center;margin-top:16px;font-size:13.5px;color:var(--dim)}
+.spinner{width:16px;height:16px;border:2px solid rgba(245,185,66,.25);border-top-color:var(--gold);border-radius:50%;animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ---------- RESPONSIVE ---------- */
+@media(max-width:900px){
+  .hero .wrap{grid-template-columns:1fr;gap:34px}
+  .portrait-zone{max-width:430px;margin:0 auto}
+  .chat-float{left:-8px}
+  .pain-grid{grid-template-columns:1fr}
+  .dept-row.head{display:none}
+  .dept-row{grid-template-columns:44px 1fr;gap:10px}
+  .dept-job{grid-column:2}
+  .dept-pay{grid-column:2;text-align:left}
+  .dept-pay .old{display:inline;margin-right:8px}
+  .quotes{grid-template-columns:1fr}
+  .auto-grid{grid-template-columns:1fr 1fr}
+  .price-grid{grid-template-columns:1fr;max-width:440px;margin-left:auto;margin-right:auto}
+  .pcard.hot{transform:none}
+  .stats-row{grid-template-columns:repeat(3,1fr)}
+}
+@media(max-width:520px){
+  section{padding:56px 0}
+  .badge-live{font-size:11px;white-space:normal;line-height:1.5;text-align:left}
+  .auto-grid{grid-template-columns:1fr}
+  .guar{flex-direction:column;text-align:center}
+  .sticky .txt{display:none}
+  .sticky .btn{width:100%}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="logo" href="#top">LONG NAM · <b>AI AGENT SALES</b></a>
+    <a class="btn btn-gold" href="#dang-ky">Giữ chỗ — còn 12 suất</a>
+  </div>
+</nav>
+
+<!-- ================= HERO ================= -->
+<header class="hero" id="top">
+  <div class="wrap">
+    <div>
+      <span class="badge-live"><span class="dot"></span> HỆ THỐNG ĐANG CHẠY THẬT · LỚP ZOOM CHỈ CÒN 12 CHỖ</span>
+      <h1>Nhắn 1 tin.<br>AI <span class="g">viết bài, đăng bài, chạy quảng cáo, chốt đơn</span> thay bạn.</h1>
+      <p class="lead">Không phải công cụ, không phải chatbot mẫu. Đây là <b>hệ thống 5 nhân viên AI</b> làm việc của cả phòng marketing — bạn điều khiển bằng tiếng Việt, <b>giống hệt hệ thống Long Nam đang dùng để bán hàng mỗi ngày.</b></p>
+      <div class="hero-cta">
+        <a class="btn btn-gold" href="#dang-ky" data-lead="hero">Sở hữu hệ thống — từ 999K</a>
+        <a class="btn btn-ghost" href="#demo">▶ Xem AI làm thật · 2 phút</a>
+      </div>
+      <div class="trust mono">
+        <div><span class="n">ROAS 16.1</span><span class="l">chiến dịch ads tốt nhất hệ Long Nam</span></div>
+        <div><span class="n">1.000+</span><span class="l">bài & video đã đăng tự động</span></div>
+        <div><span class="n">24/7</span><span class="l">không lương tháng, không nghỉ phép</span></div>
+      </div>
+    </div>
+    <div class="portrait-zone rv">
+      <div class="portrait">
+        <img src="/aiagentsales-assets/longnam-portrait.jpg" alt="Long Nam — người xây và đang vận hành hệ thống AI Agent Sales" width="720" height="1290">
+        <div class="p-cap"><b>Long Nam</b><span>Người build hệ thống này — và đang để nó bán hàng thật mỗi ngày</span></div>
+      </div>
+      <div class="chat-float" id="heroChat" aria-hidden="true">
+        <div class="row" data-d="400"><span class="bub u">Lên kế hoạch 7 ngày, mỗi ngày 3 bài, chạy ads 500K/ngày</span></div>
+        <div class="row" data-d="1500"><span class="bub a"><b>✓</b> 21 bài đã lên lịch đăng</span></div>
+        <div class="row" data-d="2400"><span class="bub a"><b>✓</b> Chiến dịch quảng cáo: ACTIVE</span></div>
+        <div class="row" data-d="3300"><span class="bub a"><b>✓</b> 7:00 sáng mai gửi báo cáo 📊</span></div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- ================= PAIN ================= -->
+<section id="noi-dau">
+  <div class="wrap">
+    <span class="kicker rv">Chuyện của người bán hàng một mình</span>
+    <h2 class="rv">Bạn đang làm <span class="g">nhân viên</span> cho chính mình</h2>
+    <p class="sub rv">Sản phẩm tốt không thiếu khách — thiếu người làm marketing đều tay mỗi ngày. Và người đó hiện tại là bạn.</p>
+    <div class="pain-grid">
+      <div class="pain-card rv"><span class="x">✗</span><p><b>Hết ngày mà việc chính chưa xong</b> — nghĩ bài đăng, làm ảnh, dựng video, trả lời inbox… một mình ôm hết.</p></div>
+      <div class="pain-card rv"><span class="x">✗</span><p><b>Thuê content 7–8 triệu/tháng</b> nhưng viết không đúng ý, nghỉ việc là cả kênh đứng im.</p></div>
+      <div class="pain-card rv"><span class="x">✗</span><p><b>Quảng cáo tự chạy thì đốt tiền</b>, thuê agency thì họ không hiểu sản phẩm bằng bạn.</p></div>
+      <div class="pain-card rv"><span class="x">✗</span><p><b>Khách nhắn lúc nửa đêm không ai trả lời</b> — sáng ra khách đã mua của người khác.</p></div>
+    </div>
+    <div class="turn rv">
+      <p>Từ hôm nay, đổi vai: <span class="g">bạn làm giám đốc — 5 nhân viên AI làm việc.</span><br>Giao việc bằng một tin nhắn tiếng Việt.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= TEAM ================= -->
+<section class="team" id="nhan-su">
+  <div class="wrap">
+    <span class="kicker rv">Phòng marketing của bạn</span>
+    <h2 class="rv">5 nhân viên AI — <span class="g">lương 0đ/tháng</span></h2>
+    <p class="sub rv">Đúng những vị trí một phòng marketing đầy đủ phải thuê. Khác ở chỗ: làm 24/7, không nghỉ việc, không cần quản lý.</p>
+    <div class="dept rv">
+      <div class="dept-row head"><span>#</span><span>Vị trí</span><span>Công việc mỗi ngày</span><span style="text-align:right">Chi phí</span></div>
+      <div class="dept-row">
+        <div class="dept-num">01</div>
+        <div class="dept-role"><b>NV Content</b></div>
+        <div class="dept-job">Viết bài bán hàng đúng giọng thương hiệu, tự tạo ảnh, tự lên lịch đăng cả tuần</div>
+        <div class="dept-pay"><span class="old">7–8tr/tháng</span><span class="new">0đ</span></div>
+      </div>
+      <div class="dept-row">
+        <div class="dept-num">02</div>
+        <div class="dept-role"><b>NV Video</b></div>
+        <div class="dept-job">Làm video bán hàng từ ảnh sản phẩm, tự đăng Reels · YouTube · TikTok mỗi ngày</div>
+        <div class="dept-pay"><span class="old">10–15tr/tháng</span><span class="new">0đ</span></div>
+      </div>
+      <div class="dept-row hot">
+        <div class="dept-num">03</div>
+        <div class="dept-role"><b>NV Quảng cáo</b><span>⭐ nhân viên ra đơn</span></div>
+        <div class="dept-job">Tự lên chiến dịch, tự target, đọc chỉ số mỗi ngày, tự tắt–bật tối ưu, báo cáo dễ hiểu</div>
+        <div class="dept-pay"><span class="old">15–20tr/tháng</span><span class="new">0đ</span></div>
+      </div>
+      <div class="dept-row">
+        <div class="dept-num">04</div>
+        <div class="dept-role"><b>NV Tư vấn & Chốt đơn</b></div>
+        <div class="dept-job">Trả lời inbox + comment 24/7 đúng tài liệu sản phẩm, xin SĐT, ghi đơn tự động</div>
+        <div class="dept-pay"><span class="old">6–8tr/tháng</span><span class="new">0đ</span></div>
+      </div>
+      <div class="dept-row">
+        <div class="dept-num">05</div>
+        <div class="dept-role"><b>NV CSKH & Báo cáo</b></div>
+        <div class="dept-job">Nhắn khách cũ mời mua lại; mỗi sáng gửi báo cáo đơn – tiền ads – tin nhắn</div>
+        <div class="dept-pay"><span class="old">6–7tr/tháng</span><span class="new">0đ</span></div>
+      </div>
+      <div class="dept-sum">
+        <p>Thuê đủ 5 người thật: <b>44–58 triệu/tháng</b>, chưa tính quản lý.</p>
+        <span class="big">Hệ thống AI: học 1 lần — dùng mãi</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DEMO ================= -->
+<section id="demo">
+  <div class="wrap">
+    <span class="kicker rv">Bằng chứng số 1 — không dàn dựng</span>
+    <h2 class="rv">Xem AI <span class="g">làm việc thật</span> — từ nhận diện thương hiệu đến quảng cáo</h2>
+    <p class="sub rv">Ghi hình trực tiếp buổi build cùng học viên (tua nhanh 1.25×). Đây không phải video quảng cáo — đây là hệ thống đang chạy.</p>
+    <div class="vid-frame rv">
+      <video controls preload="metadata" poster="/aiagentsales-assets/demo-poster.jpg" src="/aiagentsales-assets/demo-ads-tu-dong.mp4"></video>
+    </div>
+    <div class="chips rv">
+      <span><b>①</b> Nhắn tin giao việc — AI lên lịch đăng cả tuần</span>
+      <span><b>②</b> Quảng cáo tự target · tự tối ưu</span>
+      <span><b>③</b> AI build bộ nhận diện — khách khen "đẹp vừa khít"</span>
+      <span><b>④</b> 21/21 bài lên lịch đăng tự động</span>
+      <span><b>⑤</b> Khách tự làm 18 video trong một buổi sáng</span>
+    </div>
+    <div class="stats-row rv">
+      <div class="stat"><div class="n">ROAS 16.1</div><div class="l">chiến dịch tốt nhất hệ Long Nam đang chạy</div></div>
+      <div class="stat"><div class="n">1.000+</div><div class="l">bài & video đã đăng hoàn toàn tự động</div></div>
+      <div class="stat"><div class="n">21/21</div><div class="l">bài lên lịch tự động ngay trong buổi học</div></div>
+    </div>
+    <div class="case-note rv">
+      <span>🎯</span>
+      <p><b>Case demo xuyên suốt khoá = chính hệ thống Long Nam đang vận hành tự động 100%.</b> Học đến đâu, mở hệ thật cho xem đến đó — số liệu ads thật, đơn hàng thật, không slide lý thuyết.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEEDBACK ================= -->
+<section class="fb" id="hoc-vien">
+  <div class="wrap">
+    <span class="kicker rv">Bằng chứng số 2 — người thật nói</span>
+    <h2 class="rv">Học viên nói gì sau <span class="g">2 buổi build</span>?</h2>
+    <div class="vid-frame rv" style="max-width:760px">
+      <video controls preload="metadata" poster="/aiagentsales-assets/feedback-poster.jpg" src="/aiagentsales-assets/feedback-hoc-vien.mp4"></video>
+    </div>
+    <div class="quotes">
+      <div class="quote rv"><div class="qm">“</div><p>Setup xong cái này là chơi luôn — không mất thời gian mò.</p><span>Học viên khoá build hệ thống · ghi hình buổi 1</span></div>
+      <div class="quote rv"><div class="qm">“</div><p>Anh có 60 nhân viên — giờ triển khai được tự động là còn gì nữa.</p><span>Chủ doanh nghiệp · ghi hình buổi 2</span></div>
+      <div class="quote rv"><div class="qm">“</div><p>Ngày xưa dùng Canva sửa rất mệt — giờ nó tự động làm hết.</p><span>Học viên khoá build hệ thống · ghi hình buổi 2</span></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ROADMAP ================= -->
+<section id="lo-trinh">
+  <div class="wrap">
+    <span class="kicker rv">Lộ trình 5 buổi Zoom</span>
+    <h2 class="rv">Mỗi buổi rời lớp với <span class="g">một nhân viên AI chạy được</span></h2>
+    <p class="sub rv">Thực chiến trên hệ thống của chính bạn — không phải xem demo của người khác rồi về tự mò.</p>
+    <div class="steps">
+      <div class="step rv"><span class="tag">BUỔI 01</span><h3>Dựng "văn phòng AI" + Nhân viên Content</h3><p>Cài đặt bộ não trung tâm, nạp giọng thương hiệu, xây quy trình viết – duyệt – đăng.</p><p class="kq">✓ Rời buổi: page tự đăng bài 7 ngày liên tục</p></div>
+      <div class="step rv"><span class="tag">BUỔI 02</span><h3>Nhân viên Video</h3><p>Kích hoạt khoá quà tặng: hệ thống tự làm video từ ảnh sản phẩm, tự đăng đa nền tảng.</p><p class="kq">✓ Mỗi ngày 1–3 video tự sản xuất, tự đăng 3 nền tảng</p></div>
+      <div class="step hot rv"><span class="tag">BUỔI 03</span><h3>Nhân viên Quảng cáo — trái tim ra đơn</h3><p>AI phân tích sản phẩm, tự dựng chiến dịch, tự target, tự đọc số & tối ưu mỗi ngày.</p><p class="kq">✓ Chiến dịch đầu tiên do AI setup chạy ngay trong buổi</p></div>
+      <div class="step rv"><span class="tag">BUỔI 04</span><h3>Nhân viên Tư vấn & Chốt đơn</h3><p>Nạp tài liệu sản phẩm, dạy AI kịch bản chốt, kết nối inbox + comment.</p><p class="kq">✓ Page tự trả lời, tự chốt đơn kể cả nửa đêm</p></div>
+      <div class="step rv"><span class="tag">BUỔI 05</span><h3>Nhân viên CSKH + Báo cáo — ghép hệ hoàn chỉnh</h3><p>Tự động nhắn lại khách cũ, báo cáo mỗi sáng; tổng duyệt toàn hệ thống.</p><p class="kq">✓ Bàn giao hệ thống + lộ trình tự vận hành 30 ngày</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= AUTO DELIVERY ================= -->
+<section class="auto" id="tu-dong">
+  <div class="wrap">
+    <span class="kicker rv">Chính trang này cũng tự động</span>
+    <h2 class="rv">Thanh toán xong, <span class="g">60 giây</span> sau bạn nhận được gì?</h2>
+    <p class="sub rv">Hệ thống xác nhận – giao quyền học – gửi email hoàn toàn tự động, không chờ ai xử lý. Đó cũng chính là công nghệ bạn sắp học.</p>
+    <div class="auto-grid">
+      <div class="auto-card rv"><div class="t">NGAY LẬP TỨC</div><h3>Xác nhận thanh toán</h3><p>Chuyển khoản QR — hệ thống tự đối soát và xác nhận, trang tự chuyển sang màn hình hoàn tất.</p></div>
+      <div class="auto-card rv"><div class="t">EMAIL #1</div><h3>Email xác nhận đơn</h3><p>Mã đơn, gói học, số tiền — gửi tự động về hộp thư của bạn.</p></div>
+      <div class="auto-card rv"><div class="t">EMAIL #2</div><h3>Tài khoản học + quà</h3><p>Tài khoản vieaiedu.vn đăng nhập 1 chạm, mở sẵn khoá quà "Build hệ thống tạo video AI".</p></div>
+      <div class="auto-card rv"><div class="t">TRONG HÔM NAY</div><h3>Xếp lớp / xếp lịch</h3><p>Gói Zoom: team xếp lớp 12 chỗ. Gói 1:1: Long Nam gọi thu xếp lịch build ngay.</p></div>
+    </div>
+    <div class="gift-band rv">
+      <span class="ic">🎁</span>
+      <p><b>Quà tặng mọi gói — mở NGAY khi thanh toán:</b> trọn bộ khoá "Build hệ thống tạo video AI tự động" (đang bán 999.000đ). Nhân viên Video của bạn mạnh ngang một ekip sản xuất.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="dang-ky">
+  <div class="wrap">
+    <span class="kicker rv">Chọn cách sở hữu hệ thống</span>
+    <h2 class="rv">Một nhân viên thật <span class="g">một tháng lương</span> — hay cả phòng marketing AI <span class="g">trọn đời</span>?</h2>
+    <div class="price-grid">
+      <div class="pcard rv">
+        <div class="name">Tự học</div>
+        <div class="pr">999<small>K</small></div>
+        <div class="for">Cho người muốn tự build theo video từng bước</div>
+        <ul>
+          <li><b>Trọn bộ video quay sẵn</b> 5 buổi build</li>
+          <li>Tài liệu + prompt mẫu từng nhân viên AI</li>
+          <li>Nhóm cộng đồng hỗ trợ</li>
+          <li class="gift"><b>Quà: khoá video AI 999K</b> — mở ngay</li>
+        </ul>
+        <button class="btn btn-ghost" data-checkout="AGENT999">Chọn gói Tự học</button>
+      </div>
+      <div class="pcard hot rv">
+        <div class="tag">ĐƯỢC CHỌN NHIỀU NHẤT · CHỈ CÒN 12 CHỖ</div>
+        <div class="name">Lớp Zoom trực tiếp</div>
+        <div class="pr">2.999<small>K</small></div>
+        <div class="for">Cho người muốn build xong hệ thống trong 5 buổi có người kèm</div>
+        <ul>
+          <li><b>5 buổi Zoom trực tiếp</b> — kiến thức mới nhất</li>
+          <li>Thực chiến trên hệ thống <b>của chính bạn</b></li>
+          <li>Xem hệ Long Nam chạy thật — số liệu thật</li>
+          <li>Recording xem lại trọn đời</li>
+          <li>Khai giảng ngay khi đủ lớp</li>
+          <li class="gift"><b>Quà: khoá video AI 999K</b> — mở ngay</li>
+        </ul>
+        <button class="btn btn-gold" data-checkout="AGENT2999">Giữ 1 trong 12 chỗ</button>
+      </div>
+      <div class="pcard rv">
+        <div class="name">Build 1:1 cùng Long Nam</div>
+        <div class="pr">7.999<small>K</small></div>
+        <div class="for">Cho chủ doanh nghiệp muốn xong ngay, không chờ lớp</div>
+        <ul>
+          <li><b>Kèm 1:1 trực tiếp</b> — thu xếp học NGAY</li>
+          <li>Build trên sản phẩm thật của bạn</li>
+          <li><b>Hệ thống chạy được mới nghiệm thu</b></li>
+          <li class="gift"><b>Quà: khoá video AI 999K</b> — mở ngay</li>
+        </ul>
+        <button class="btn btn-ghost" data-checkout="AGENT7999">Đăng ký Build 1:1</button>
+      </div>
+    </div>
+    <p class="slots rv">⏳ Lớp Zoom giới hạn <b>đúng 12 học viên</b> để Long Nam kèm được từng người — đủ chỗ là đóng đăng ký, không mở thêm.</p>
+    <div class="guar rv">
+      <span class="ic">🛡️</span>
+      <div>
+        <h3>Không build được hệ thống — <span class="g">hoàn tiền 100%</span></h3>
+        <p>Cam kết duy nhất của chúng tôi là HỆ THỐNG CHẠY ĐƯỢC. Chúng tôi không cam kết doanh số hay thu nhập — kết quả bán hàng phụ thuộc sản phẩm và nỗ lực của bạn.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section class="faq" id="faq" style="background:var(--bg2)">
+  <div class="wrap" style="max-width:760px">
+    <span class="kicker rv">Trước khi quyết định</span>
+    <h2 class="rv">Câu hỏi <span class="g">thường gặp</span></h2>
+    <div class="rv">
+      <details><summary>Tôi không biết gì về công nghệ, có học được không?</summary><p>Được. Toàn bộ hệ thống điều khiển bằng TIẾNG VIỆT qua tin nhắn. Khoá trước có học viên 14 năm kinh doanh truyền thống, không rành máy tính, vẫn tự vận hành sau 2 buổi — bạn vừa xem chính họ nói trong video phía trên.</p></details>
+      <details><summary>Thanh toán thế nào? Có an toàn không?</summary><p>Bạn chuyển khoản qua mã QR ngân hàng (MB Bank — chủ TK Đặng Văn Tuấn). Hệ thống đối soát tự động: tiền vào là email xác nhận + tài khoản học được gửi ngay, không chờ ai duyệt tay. Toàn bộ giao dịch có mã đơn để tra cứu.</p></details>
+      <details><summary>Tôi cần chuẩn bị gì trước khoá?</summary><p>Một máy tính (cấu hình yếu cũng được) + các tài khoản công cụ. Có video hướng dẫn chuẩn bị từng bước gửi trước buổi học; team hỗ trợ mua tài khoản giá tốt hơn tự mua lẻ.</p></details>
+      <details><summary>Chi phí vận hành hàng tháng bao nhiêu?</summary><p>Tuỳ quy mô — cơ bản gồm tài khoản AI và công cụ đăng bài chính quy, rẻ hơn nhiều so với thuê 1 nhân viên content (7–8 triệu/tháng), trong khi làm được việc của cả phòng marketing.</p></details>
+      <details><summary>Hệ thống có an toàn cho tài khoản Facebook không?</summary><p>Khoá chỉ dạy công cụ CHÍNH QUY: API chính thức của Meta và dịch vụ đăng bài trả phí hợp lệ. Tuyệt đối không token lậu, không tool chui — thứ dễ làm bay tài khoản của bạn nhất.</p></details>
+      <details><summary>Sau khoá học có được hỗ trợ tiếp không?</summary><p>Có — nhóm cộng đồng học viên + team Long Nam hỗ trợ khi hệ thống gặp vấn đề. Gói 1:1 nghiệm thu theo tiêu chí "hệ thống chạy được".</p></details>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FINAL CTA ================= -->
+<section class="final">
+  <div class="wrap">
+    <h2 class="rv">6 tháng nữa, bạn vẫn tự tay đăng từng bài —<br>hay <span class="g">hệ thống đã bán hàng thay bạn</span> từ hôm nay?</h2>
+    <p class="sub rv" style="text-align:center">Lớp Zoom chỉ nhận 12 học viên. Quà tặng khoá video AI mở ngay khi thanh toán.</p>
+    <div class="rv" style="display:flex;gap:14px;justify-content:center;flex-wrap:wrap">
+      <a class="btn btn-gold" href="#dang-ky" data-lead="final">Giữ chỗ ngay — từ 999K</a>
+      <a class="btn btn-ghost" href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener" data-lead="zalo-final">💬 Hỏi Zalo trước khi mua</a>
+    </div>
+  </div>
+</section>
+
+<div class="foot">
+  <p><b>LONG NAM · MAGIC AI</b> — Chuyên gia triển khai hệ thống AI Agent · vieaiedu.vn</p>
+  <p style="margin-top:6px">Video demo & cảm nhận là ghi hình thật từ buổi đào tạo, sử dụng với sự đồng ý của học viên. Trang này không thuộc về Facebook/Meta.<br>Chúng tôi không cam kết doanh số/thu nhập — kết quả phụ thuộc sản phẩm và nỗ lực của mỗi người.</p>
+</div>
+
+<!-- Sticky CTA -->
+<div class="sticky" id="sticky">
+  <div class="in">
+    <span class="txt">🔥 <b>AI Agent Sales</b> — lớp Zoom chỉ còn <b>12 chỗ</b> · quà khoá video AI 999K mở ngay</span>
+    <a class="btn btn-gold" href="#dang-ky" data-lead="sticky">Giữ chỗ ngay</a>
+  </div>
+</div>
+<a class="zalo-fl" href="https://zalo.me/g/tbriir577" target="_blank" rel="noopener" aria-label="Nhắn Zalo tư vấn" data-lead="zalo-float">Zalo</a>
+
+<!-- ================= CHECKOUT MODAL ================= -->
+<div class="modal" id="coModal" role="dialog" aria-label="Đăng ký và thanh toán">
+  <div class="co">
+    <button class="co-x" id="coClose" type="button" aria-label="Đóng">✕</button>
+
+    <div id="coStep1">
+      <h3 id="coTitle">Đăng ký</h3>
+      <p class="co-sub" id="coDesc"></p>
+      <div class="field"><label for="co-name">Họ tên</label><input id="co-name" type="text" placeholder="VD: Nguyễn Văn A" autocomplete="name"></div>
+      <div class="field"><label for="co-phone">Số điện thoại (Zalo)</label><input id="co-phone" type="tel" inputmode="numeric" placeholder="VD: 09xx xxx xxx" autocomplete="tel"></div>
+      <div class="field"><label for="co-email">Email nhận tài khoản học</label><input id="co-email" type="email" placeholder="VD: ban@gmail.com" autocomplete="email"></div>
+      <p class="co-err" id="coErr">Vui lòng điền đủ họ tên, SĐT và email hợp lệ.</p>
+      <button class="btn btn-gold" id="coNext" type="button">Tiếp tục → Thanh toán</button>
+      <p class="co-sub" style="margin-top:12px;text-align:center">🛡️ Không build được hệ thống — hoàn tiền 100%</p>
+    </div>
+
+    <div id="coStep2" hidden>
+      <h3>Quét QR để thanh toán</h3>
+      <p class="co-sub">Mở app ngân hàng bất kỳ → quét mã → số tiền & nội dung đã điền sẵn. <b style="color:var(--txt)">Đừng sửa nội dung chuyển khoản.</b></p>
+      <div class="qr-wrap" id="coQrWrap">
+        <img id="coQr" alt="Mã QR thanh toán SePay" width="230" height="230">
+        <p class="qr-note">Hệ thống xác nhận TỰ ĐỘNG ngay khi tiền vào — giữ trang này mở.</p>
+      </div>
+      <div class="pay-row"><span>Số tiền</span><b class="gold" id="coAmount">—</b></div>
+      <div class="pay-row"><span>Ngân hàng</span><b id="coBank">—</b></div>
+      <div class="pay-row"><span>Số tài khoản</span><b id="coAcc">—</b></div>
+      <div class="pay-row"><span>Chủ tài khoản</span><b id="coOwner">—</b></div>
+      <div class="pay-row"><span>Nội dung CK</span><b><span id="coContent" class="mono" style="font-size:13px"></span><button class="copy-btn" id="coCopy" type="button">Sao chép</button></b></div>
+      <div class="waiting"><span class="spinner"></span> Đang chờ thanh toán — trang sẽ tự chuyển khi nhận được tiền…</div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ============ REVEAL ============ */
+(function(){
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target); } });
+  }, {threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+})();
+
+/* ============ HERO CHAT DEMO ============ */
+(function(){
+  var chat = document.getElementById('heroChat');
+  if(!chat) return;
+  var rows = chat.querySelectorAll('.row');
+  function play(){
+    rows.forEach(function(r){ r.classList.remove('show'); });
+    rows.forEach(function(r){ setTimeout(function(){ r.classList.add('show'); }, +r.dataset.d); });
+  }
+  setTimeout(play, 700);
+  setInterval(play, 9000);
+})();
+
+/* ============ STICKY BAR ============ */
+(function(){
+  var st = document.getElementById('sticky');
+  var hero = document.querySelector('.hero');
+  var price = document.getElementById('dang-ky');
+  function upd(){
+    var pastHero = window.scrollY > hero.offsetHeight - 80;
+    var r = price.getBoundingClientRect();
+    var inPrice = r.top < window.innerHeight && r.bottom > 200;
+    st.classList.toggle('on', pastHero && !inPrice);
+  }
+  window.addEventListener('scroll', upd, {passive:true}); upd();
+})();
+
+/* ============ PIXEL PHỄU + CHECKOUT SEPAY ============ */
+(function(){
+  /* Phễu: PageView (head) → ViewContent (tải xong) → Lead (mở checkout / bấm Zalo)
+     → InitiateCheckout (hiện QR) → Purchase CHỈ ở /aiagentsales/cam-on (+ CAPI server, dedupe eventID). */
+  function fbTrack(ev, params, eventID){
+    if(typeof fbq === 'undefined') return;
+    if(eventID) fbq('track', ev, params || {}, {eventID: eventID});
+    else fbq('track', ev, params || {});
+  }
+  fbTrack('ViewContent', { content_name: 'AI Agent Sales Landing', content_category: 'AI Agent Sales' });
+
+  var API_URL = 'https://script.google.com/macros/s/AKfycbzQC7S33F7eHjcn7czPbCxoAfRKugtgqMUNb3aY11XDwEzobQVgwYPs07kec7qLaB0hZA/exec';
+  var CAM_ON = '/aiagentsales/cam-on';
+  var BANK = { acc:'0868816826', bank:'MBBank', owner:'ĐẶNG VĂN TUẤN' }; // TK MB đã kết nối SePay
+  var PLANS = {
+    AGENT999:  { name:'AI Agent Sales — Gói Tự Học',              price:999000,
+      desc:'Trọn bộ video 5 buổi + tài liệu + quà khoá video AI. Nhận tài khoản học qua email ngay sau thanh toán.' },
+    AGENT2999: { name:'AI Agent Sales — Lớp Zoom Trực Tiếp',      price:2999000,
+      desc:'5 buổi Zoom, giới hạn 12 chỗ, khai giảng khi đủ lớp. Quà khoá video AI mở ngay sau thanh toán.' },
+    AGENT7999: { name:'AI Agent Sales — Build 1:1 cùng Long Nam', price:7999000,
+      desc:'Kèm 1:1, thu xếp học ngay. Long Nam/team sẽ gọi bạn trong hôm nay sau khi thanh toán.' }
+  };
+
+  var $ = function(id){ return document.getElementById(id); };
+  var vnd = function(n){ return n.toLocaleString('vi-VN') + 'đ'; };
+
+  /* UTM first-touch */
+  var UTM = (function(){
+    try{
+      var saved = JSON.parse(localStorage.getItem('ags_utm')||'null');
+      var q = new URLSearchParams(location.search);
+      var cur = { utm_source:q.get('utm_source')||'', utm_medium:q.get('utm_medium')||'', utm_campaign:q.get('utm_campaign')||'' };
+      if(cur.utm_source && (!saved || !saved.utm_source)){ localStorage.setItem('ags_utm', JSON.stringify(cur)); return cur; }
+      return saved || cur;
+    }catch(e){ return {utm_source:'',utm_medium:'',utm_campaign:''}; }
+  })();
+
+  /* fbc/fbp — đọc TƯƠI lúc gửi đơn (cookie _fbp ghi bất đồng bộ), lưu first-touch vào localStorage */
+  function getFbIds(){
+    var ck = function(n){ var m = document.cookie.match('(^|;)\\s*'+n+'\\s*=\\s*([^;]+)'); return m ? decodeURIComponent(m[2]) : ''; };
+    try{
+      var saved = JSON.parse(localStorage.getItem('ags_fbids')||'null') || {};
+      var fbclid = new URLSearchParams(location.search).get('fbclid') || '';
+      var fbc = ck('_fbc') || saved.fbc || '';
+      if(!fbc && fbclid) fbc = 'fb.1.' + Date.now() + '.' + fbclid;
+      var fbp = ck('_fbp') || saved.fbp || '';
+      var out = { fbc: fbc, fbp: fbp };
+      if(fbc || fbp) localStorage.setItem('ags_fbids', JSON.stringify(out));
+      return out;
+    }catch(e){ return { fbc:'', fbp:'' }; }
+  }
+  try{ if(new URLSearchParams(location.search).get('fbclid')) getFbIds(); }catch(e){}
+
+  var normPhone = function(p){ var d = String(p).replace(/\D/g,''); if(d.indexOf('84')===0 && d.length>10) d = '0'+d.slice(2); if(d.length===9) d = '0'+d; return d; };
+  function post(payload){
+    try{
+      fetch(API_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload)}).catch(function(){});
+    }catch(e){}
+  }
+  var jsonpN = 0;
+  function jsonp(url, cb){
+    var fn = '__ags' + (jsonpN++);
+    var s = document.createElement('script');
+    window[fn] = function(res){ cb(res); delete window[fn]; s.remove(); };
+    s.src = url + '&callback=' + fn;
+    s.onerror = function(){ delete window[fn]; s.remove(); };
+    document.body.appendChild(s);
+  }
+  function copyText(txt, btn){
+    var orig = btn.textContent;
+    var done = function(){ btn.textContent = '✔ Đã chép'; setTimeout(function(){ btn.textContent = orig; }, 2000); };
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(function(){}); }
+    else{ var ta = document.createElement('textarea'); ta.value = txt; document.body.appendChild(ta); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} ta.remove(); }
+  }
+
+  /* Lead: mọi nút CTA + Zalo */
+  document.querySelectorAll('[data-lead]').forEach(function(a){
+    a.addEventListener('click', function(){
+      fbTrack('Lead', { content_name: 'CTA ' + a.dataset.lead, content_category: 'AI Agent Sales' });
+    });
+  });
+
+  /* ---- CHECKOUT ---- */
+  var modal = $('coModal');
+  var plan = null, code = '', pollTimer = null;
+  function showStep(n){ $('coStep1').hidden = n !== 1; $('coStep2').hidden = n !== 2; }
+  function openCheckout(p){
+    plan = p; var P = PLANS[p]; if(!P) return;
+    $('coTitle').textContent = 'Đăng ký — ' + P.name.replace('AI Agent Sales — ','');
+    $('coDesc').textContent = P.desc + ' Học phí: ' + vnd(P.price) + '.';
+    $('coErr').classList.remove('on');
+    showStep(1);
+    modal.classList.add('on'); document.body.style.overflow = 'hidden';
+    fbTrack('Lead', { content_name: 'Mở form ' + p, content_category: 'AI Agent Sales', value: P.price, currency: 'VND' });
+    setTimeout(function(){ $('co-name').focus(); }, 250);
+  }
+  function closeCheckout(){
+    modal.classList.remove('on'); document.body.style.overflow = '';
+    if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+  }
+  document.querySelectorAll('[data-checkout]').forEach(function(b){
+    b.addEventListener('click', function(e){ e.preventDefault(); openCheckout(b.dataset.checkout); });
+  });
+  $('coClose').addEventListener('click', closeCheckout);
+  modal.addEventListener('click', function(e){ if(e.target === modal) closeCheckout(); });
+
+  $('coNext').addEventListener('click', function(){
+    var P = PLANS[plan];
+    var name = $('co-name').value.trim();
+    var phone = $('co-phone').value.trim();
+    var email = $('co-email').value.trim();
+    if(!name || normPhone(phone).length < 10 || !/^\S+@\S+\.\S+$/.test(email)){ $('coErr').classList.add('on'); return; }
+    $('coErr').classList.remove('on');
+
+    var phoneN = normPhone(phone);
+    code = 'MAGICAI ' + phoneN + ' ' + plan;   /* backend đối soát SĐT + gói, chặn đơn trùng */
+    post({action:'order', plan: plan, name: name, phone: phoneN, email: email,
+          source:'landing_aiagentsales', page: location.href,
+          utm_source: UTM.utm_source, utm_medium: UTM.utm_medium, utm_campaign: UTM.utm_campaign,
+          fbc: getFbIds().fbc, fbp: getFbIds().fbp});
+
+    $('coAmount').textContent = vnd(P.price);
+    $('coContent').textContent = code;
+    $('coBank').textContent = BANK.bank; $('coAcc').textContent = BANK.acc; $('coOwner').textContent = BANK.owner;
+    $('coQr').src = 'https://qr.sepay.vn/img?acc=' + encodeURIComponent(BANK.acc)
+      + '&bank=' + encodeURIComponent(BANK.bank) + '&amount=' + P.price + '&des=' + encodeURIComponent(code);
+    showStep(2);
+    fbTrack('InitiateCheckout', { value: P.price, currency: 'VND', content_name: P.name, content_category: 'AI Agent Sales', content_ids: [plan] });
+    savePending(phoneN, plan, code);
+    startPoll(phoneN, plan);
+  });
+  $('coCopy').addEventListener('click', function(){ copyText(code, this); });
+
+  /* ---- Đơn treo: khách mở app bank, tab bị kill → quay lại vẫn nhận được cam-on ---- */
+  function savePending(phoneN, planCode, orderCode){
+    try{ localStorage.setItem('ags_pending', JSON.stringify({ phone:phoneN, plan:planCode, code:orderCode, at:Date.now() })); }catch(e){}
+  }
+  function clearPending(){ try{ localStorage.removeItem('ags_pending'); }catch(e){} }
+  function goToCamOn(orderCode, planCode, price, label){
+    var params = new URLSearchParams({ oc: orderCode || '', p: planCode || '', v: price || '', n: label || '' });
+    location.href = CAM_ON + '?' + params.toString();
+  }
+  function recoverPending(){
+    var p = null;
+    try{ p = JSON.parse(localStorage.getItem('ags_pending')||'null'); }catch(e){ return; }
+    if(!p || !p.phone || !p.plan) return;
+    if(Date.now() - (p.at||0) > 7*24*60*60*1000){ clearPending(); return; }
+    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan, function(res){
+      if(res && res.status === 'paid'){
+        var P = PLANS[p.plan];
+        post({ action: 'confirm_purchase', phone: p.phone, plan: p.plan });
+        clearPending();
+        goToCamOn(p.code, p.plan, res.value || (P && P.price) || 0, P ? P.name : p.plan);
+      }
+    });
+  }
+  recoverPending();
+
+  function startPoll(phoneN, planCode){
+    if(pollTimer) clearInterval(pollTimer);
+    pollTimer = setInterval(function(){
+      jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode, function(res){
+        if(res && res.status === 'paid'){
+          clearInterval(pollTimer); pollTimer = null;
+          var P = PLANS[planCode];
+          post({ action: 'confirm_purchase', phone: phoneN, plan: planCode });
+          clearPending();
+          goToCamOn(code, planCode, res.value || P.price, P.name);
+        }
+      });
+    }, 5000);
+  }
+})();
+</script>
+</body>
+</html>

@@ -19,6 +19,11 @@ import { notifyAdmins } from "@/lib/notify";
 const PLAN_TO_SLUG: Record<string, string> = {
   COURSE: "ai-agent-builder",
   VIP: "ai-agent-builder",
+  // Khoá "AI Agent Sales" (landing /aiagentsales): quà tặng mọi gói = khoá video AI
+  // → ghi danh ai-agent-builder ngay khi thanh toán; nội dung AI Agent Sales bổ sung sau.
+  AGENT999: "ai-agent-builder",
+  AGENT2999: "ai-agent-builder",
+  AGENT7999: "ai-agent-builder",
 };
 const isEmail = (s: string) => /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s);
 
@@ -88,6 +93,12 @@ export async function POST(req: Request) {
 
   if (plan === "VIP") {
     await notifyAdmins("👑 Học viên VIP mới (Magic AI)", `${name} (${phone} · ${email}) — cần Long Nam liên hệ tư vấn 1:1.`, "/admin", { email: true });
+  }
+  if (plan === "AGENT7999") {
+    await notifyAdmins("👑 AI Agent Sales — Build 1:1 mới", `${name} (${phone} · ${email}) — cần Long Nam gọi TRONG HÔM NAY để xếp lịch build 1:1.`, "/admin", { email: true });
+  }
+  if (plan === "AGENT2999") {
+    await notifyAdmins("🎓 AI Agent Sales — giữ chỗ lớp Zoom", `${name} (${phone} · ${email}) — đã thanh toán, xếp lớp 12 chỗ.`, "/admin", { email: true });
   }
 
   return NextResponse.json({ ok: true, username: email, existing });
