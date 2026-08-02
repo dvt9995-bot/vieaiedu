@@ -126,11 +126,14 @@ h1{font-size:24px; font-weight:800; margin-bottom:8px}
   }
 
   /* Purchase — bắn DUY NHẤT tại đây trên trang cảm ơn có URL riêng, đúng chuẩn khuyến nghị
-     của Meta (landing page thật, không phải trạng thái ẩn/hiện trong popup).
+     của Meta/TikTok (landing page thật, không phải trạng thái ẩn/hiện trong popup).
+     KHÔNG điều kiện theo v>0 — trang này CHỈ có thể tới được qua redirect tự động sau khi
+     backend xác nhận thanh toán thành công (goToCamOn) hoặc link trong email xác nhận, nên
+     chỉ cần khách XEM trang là coi như đã mua — không cần điều kiện thêm.
      eventID = oc (trùng "Nội dung CK") để dedupe với Purchase server-side (CAPI) bắn từ
-     webhook SePay/Apps Script — tránh đếm 1 đơn thành 2 khi cả 2 đường cùng bắn. */
+     handleConfirmPurchase_ ngay trước lúc landing redirect sang đây — tránh đếm 1 đơn thành 2. */
   try {
-    if (window.fbq && v > 0) {
+    if (window.fbq) {
       fbq('track', 'Purchase', {
         value: v, currency: 'VND',
         content_name: label, content_category: 'AI Agent Builder',
@@ -139,7 +142,7 @@ h1{font-size:24px; font-weight:800; margin-bottom:8px}
     }
   } catch (e) {}
   try {
-    if (window.ttq && v > 0) {
+    if (window.ttq) {
       ttq.track('CompletePayment', {
         value: v, currency: 'VND',
         content_name: label, content_type: 'product',

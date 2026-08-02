@@ -127,9 +127,11 @@ padding:16px 18px;margin-bottom:22px;font-size:14px}
     document.getElementById('oCode').textContent  = oc || '—';
   }
 
-  /* Purchase — duy nhất tại đây (client). eventID = oc trùng với event_id CAPI server → Meta dedupe. */
+  /* Purchase — duy nhất tại đây (client). KHÔNG điều kiện v>0 — trang này chỉ tới được qua
+     redirect tự động sau khi thanh toán thành công hoặc link trong email, nên chỉ cần khách
+     XEM trang là coi như đã mua. eventID = oc trùng event_id CAPI server → Meta/TikTok dedupe. */
   try {
-    if (window.fbq && v > 0) {
+    if (window.fbq) {
       fbq('track', 'Purchase', {
         value: v, currency: 'VND',
         content_name: label, content_category: 'AI Agent Sales',
@@ -138,7 +140,7 @@ padding:16px 18px;margin-bottom:22px;font-size:14px}
     }
   } catch (e) {}
   try {
-    if (window.ttq && v > 0) {
+    if (window.ttq) {
       ttq.track('CompletePayment', {
         value: v, currency: 'VND',
         content_name: label, content_type: 'product',

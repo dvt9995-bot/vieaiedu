@@ -59,6 +59,10 @@
   </div>
   <script>
     (function () {
+      /* Purchase — bắn ngay khi khách XEM trang, không điều kiện gì thêm: trang này chỉ tới
+         được qua redirect tự động sau khi poll xác nhận thanh toán thành công (xem
+         /lp/ai-reels-auto-income.html), luôn kèm ?value=<số tiền thật>. Fallback 999000
+         chỉ cho trường hợp hiếm khách mở URL trần không có query string. */
       var v = parseInt(new URLSearchParams(location.search).get('value')) || 999000;
       try { if (window.fbq) fbq('track', 'Purchase', { value: v, currency: 'VND', content_name: 'AI Reels Auto Income' }); } catch (e) {}
       try { if (window.ttq) ttq.track('CompletePayment', { value: v, currency: 'VND', content_name: 'AI Reels Auto Income', content_type: 'product' }); } catch (e) {}
