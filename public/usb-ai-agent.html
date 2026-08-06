@@ -280,6 +280,13 @@ a{text-decoration:none;color:inherit}
 .waiting{display:flex;align-items:center;gap:8px;justify-content:center;font-size:12px;color:var(--tt-gray);margin-top:12px}
 .spinner{width:14px;height:14px;border:2px solid #eee;border-top-color:var(--tt-red);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== COD DEPOSIT INFO BOX ===== */
+.cod-info{background:#fff8ec;border:1.5px solid #ffe1ae;border-radius:12px;padding:12px 13px;margin-top:10px}
+.cod-info-title{font-size:13px;font-weight:800;color:#a15c00;margin-bottom:6px}
+.cod-info-line{font-size:11.5px;color:#6b5a3a;line-height:1.55;margin-bottom:8px}
+.cod-info-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:5px 0;border-top:1px dashed #ffe1ae}
+.cod-info-row b{font-weight:700}
 </style>
 </head>
 <body>
@@ -567,7 +574,14 @@ a{text-decoration:none;color:inherit}
       <div class="pay-row"><span>Số tài khoản</span><b id="coAcc">—</b></div>
       <div class="pay-row"><span>Chủ tài khoản</span><b id="coOwner">—</b></div>
       <div class="pay-row"><span>Nội dung CK</span><b><span id="coContent" class="mono" style="font-size:12px"></span><button class="copy-btn" id="coCopy" type="button" onclick="copyContent()">Sao chép</button></b></div>
-      <p id="codNote" style="display:none;font-size:11px;color:var(--tt-gray);margin-top:6px">* Đây là tiền CỌC giữ đơn 50k — phần còn lại thanh toán khi nhận hàng (COD).</p>
+      <div id="codInfoBox" class="cod-info" style="display:none">
+        <div class="cod-info-title">💰 Vì sao cần chuyển khoản cọc 50k?</div>
+        <div class="cod-info-line">Khoản cọc dùng để <b>giữ đơn hàng</b> và xác nhận bạn là người mua thật — tránh đơn ảo/bom hàng, đảm bảo USB được đóng gói và gửi đi ngay cho đúng người đã đặt.</div>
+        <div class="cod-info-row"><span>Đã cọc trước (qua QR)</span><b id="codPaidNow">50.000đ</b></div>
+        <div class="cod-info-row"><span>Thanh toán khi nhận hàng (COD)</span><b class="gold" id="codRemain">449.000đ</b></div>
+        <div class="cod-info-row"><span>Phí vận chuyển</span><b style="color:var(--ok)">Miễn phí toàn quốc (Freeship)</b></div>
+        <div class="cod-info-line" style="margin-top:6px">Shipper chỉ thu đúng số tiền còn lại ghi trên phiếu — <b>không thu thêm phí ship</b>. Bạn được kiểm tra hàng trước khi thanh toán phần còn lại.</div>
+      </div>
       <div class="waiting"><span class="spinner"></span> Đang chờ thanh toán — trang sẽ tự chuyển khi nhận được tiền…</div>
     </div>
   </div>
@@ -771,7 +785,13 @@ function submitOrder(){
   $('coBank').textContent = BANK.bank; $('coAcc').textContent = BANK.acc; $('coOwner').textContent = BANK.owner;
   $('coQr').src = 'https://qr.sepay.vn/img?acc=' + encodeURIComponent(BANK.acc)
     + '&bank=' + encodeURIComponent(BANK.bank) + '&amount=' + payAmount + '&des=' + encodeURIComponent(code);
-  $('codNote').style.display = selected.plan === 'USBAICOD' ? '' : 'none';
+  const isCod = selected.plan === 'USBAICOD';
+  $('codInfoBox').style.display = isCod ? '' : 'none';
+  if(isCod){
+    const totalPrice = parseInt(selected.price.replace(/\./g,''), 10);
+    $('codPaidNow').textContent = payAmount.toLocaleString('vi-VN') + 'đ';
+    $('codRemain').textContent = ((totalPrice - payAmount) * qty).toLocaleString('vi-VN') + 'đ';
+  }
   showStep('qr');
   savePending(phoneN, selected.plan);
   startPoll(phoneN, selected.plan);
