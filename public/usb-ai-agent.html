@@ -485,10 +485,27 @@ setInterval(updateFlashTimer, 1000);
 // gallery counter
 const track = document.getElementById('track');
 const counter = document.getElementById('counter');
+const slideCount = track.querySelectorAll('.slide').length;
 track.addEventListener('scroll', ()=>{
   const idx = Math.round(track.scrollLeft / track.clientWidth) + 1;
-  counter.textContent = idx + '/7';
+  counter.textContent = idx + '/' + slideCount;
 });
+
+// tự động chuyển ảnh mỗi 5s — tạm dừng khi khách đang tự vuốt, chạy lại sau khi khách rời tay
+let galleryTimer = null, galleryUserActive = false, galleryResumeT = null;
+function startGalleryAuto(){
+  if(galleryTimer) clearInterval(galleryTimer);
+  galleryTimer = setInterval(()=>{
+    if(galleryUserActive) return;
+    const w = track.clientWidth;
+    const cur = Math.round(track.scrollLeft / w);
+    const next = (cur + 1) % slideCount;
+    track.scrollTo({left: next * w, behavior: 'smooth'});
+  }, 5000);
+}
+track.addEventListener('touchstart', ()=>{ galleryUserActive = true; clearTimeout(galleryResumeT); });
+track.addEventListener('touchend', ()=>{ galleryResumeT = setTimeout(()=>{ galleryUserActive = false; }, 4000); });
+startGalleryAuto();
 
 // variant selection state
 let selected = {plan:'USBAICOD', price:'499.000', pay:'50.000', name:'USB video khoá học build nhân viên AI Agent'};
