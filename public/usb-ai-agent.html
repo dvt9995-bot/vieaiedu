@@ -5,6 +5,30 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 <title>USB Video Khoá Học Build Nhân Viên AI Agent - Xây Kênh Video AI Đa Nền Tảng</title>
 <meta name="description" content="USB video khoá học Build nhân viên AI Agent xây kênh video AI đa nền tảng - kiếm tiền online thụ động qua Youtube, Facebook, Affiliate TikTok và Shopee.">
+<!-- Facebook Pixel — PageView/ViewContent/Lead ở landing. Purchase CHỈ bắn ở trang cảm ơn
+     (xem usb-ai-agent-cam-on.html) — không đếm trùng lượt mua trước khi tiền thật về. -->
+<script>
+!function(f,b,e,v,n,t,s)
+{if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+n.queue=[];t=b.createElement(e);t.async=!0;
+t.src=v;s=b.getElementsByTagName(e)[0];
+s.parentNode.insertBefore(t,s)}(window, document,'script',
+'https://connect.facebook.net/en_US/fbevents.js');
+fbq('init', '600820699707738');
+fbq('track', 'PageView');
+</script>
+<noscript><img height="1" width="1" style="display:none" alt=""
+  src="https://www.facebook.com/tr?id=600820699707738&ev=PageView&noscript=1"></noscript>
+<!-- TikTok Pixel — cùng nguyên tắc: PageView/ViewContent/Lead ở landing, CompletePayment CHỈ ở trang cảm ơn. -->
+<script>
+!function (w, d, t) {
+  w.TiktokAnalyticsObject=t;var ttq=w[t]=w[t]||[];ttq.methods=["page","track","identify","instances","debug","on","off","once","ready","alias","group","enableCookie","disableCookie","holdConsent","revokeConsent","grantConsent"],ttq.setAndDefer=function(t,e){t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}};for(var i=0;i<ttq.methods.length;i++)ttq.setAndDefer(ttq,ttq.methods[i]);ttq.instance=function(t){for(var e=ttq._i[t]||[],n=0;n<ttq.methods.length;n++)ttq.setAndDefer(e,ttq.methods[n]);return e},ttq.load=function(e,n){var i="https://analytics.tiktok.com/i18n/pixel/events.js",o=n&&n.partner;ttq._i=ttq._i||{},ttq._i[e]=[],ttq._i[e]._u=i,ttq._t=ttq._t||{},ttq._t[e]=+new Date,ttq._o=ttq._o||{},ttq._o[e]=n||{};n=document.createElement("script");n.type="text/javascript",n.async=!0,n.src=i+"?sdkid="+e+"&lib="+t;e=document.getElementsByTagName("script")[0];e.parentNode.insertBefore(n,e)};
+  ttq.load('D9NGJ8BC77U1C011N2T0');
+  ttq.page();
+}(window, document, 'ttq');
+</script>
 <style>
 :root{
   --tt-red:#FE2C55;
@@ -35,6 +59,17 @@ a{text-decoration:none;color:inherit}
 .gallery .slide img{width:100%;height:100%;object-fit:cover}
 .gallery .counter{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
 .gallery .badge-live{position:absolute;left:10px;top:10px;background:linear-gradient(90deg,#FE2C55,#ff6b8a);color:#fff;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px}
+
+/* ===== FLASH SALE BANNER ===== */
+.flashsale{background:linear-gradient(90deg,#ff2c55,#ff5c3e);color:#fff;padding:9px 14px;display:flex;align-items:center;gap:10px}
+.flashsale .fs-label{display:flex;align-items:center;gap:5px;font-size:12.5px;font-weight:800;white-space:nowrap}
+.flashsale .fs-label svg{width:15px;height:15px}
+.flashsale .fs-bar{flex:1;height:6px;background:rgba(255,255,255,.35);border-radius:4px;overflow:hidden}
+.flashsale .fs-bar-fill{height:100%;background:#fff;border-radius:4px;width:78%}
+.flashsale .fs-sold{font-size:10.5px;white-space:nowrap;opacity:.95}
+.flashsale .fs-timer{display:flex;gap:3px;align-items:center;font-size:11px;font-weight:700}
+.flashsale .fs-timer span{background:rgba(0,0,0,.25);border-radius:4px;padding:2px 5px;min-width:20px;text-align:center;font-family:'Courier New',monospace}
+.flashsale .fs-timer b{font-weight:400;opacity:.8}
 
 /* ===== PRICE BLOCK ===== */
 .pricebox{padding:12px 14px 10px;background:linear-gradient(180deg,#fff0f3,#fff)}
@@ -184,6 +219,14 @@ a{text-decoration:none;color:inherit}
     <div class="icons">
       <span>🛒</span><span>⋯</span>
     </div>
+  </div>
+
+  <!-- FLASH SALE -->
+  <div class="flashsale">
+    <div class="fs-label"><svg viewBox="0 0 24 24" fill="#fff"><path d="M13 2 3 14h7l-1 8 11-14h-7l0-6z"/></svg> FLASH SALE</div>
+    <div class="fs-bar"><div class="fs-bar-fill"></div></div>
+    <div class="fs-sold">Đã bán 78%</div>
+    <div class="fs-timer">Kết thúc <span id="fsH">00</span><b>:</b><span id="fsM">00</span><b>:</b><span id="fsS">00</span></div>
   </div>
 
   <!-- GALLERY -->
@@ -380,7 +423,11 @@ a{text-decoration:none;color:inherit}
       <div class="co-field"><label for="co-name">Họ tên</label><input id="co-name" type="text" placeholder="VD: Nguyễn Văn A" autocomplete="name"></div>
       <div class="co-field"><label for="co-phone">Số điện thoại (Zalo)</label><input id="co-phone" type="tel" inputmode="numeric" placeholder="VD: 09xx xxx xxx" autocomplete="tel"></div>
       <div class="co-field"><label for="co-email">Email nhận xác nhận đơn</label><input id="co-email" type="email" placeholder="VD: ban@gmail.com" autocomplete="email"></div>
-      <p class="co-err" id="coErr">Vui lòng điền đủ họ tên, SĐT và email hợp lệ.</p>
+      <div class="co-field" id="addressField" style="display:none">
+        <label for="co-address">Địa chỉ nhận hàng (giao COD)</label>
+        <input id="co-address" type="text" placeholder="Số nhà, đường, phường/xã, quận/huyện, tỉnh/thành" autocomplete="street-address">
+      </div>
+      <p class="co-err" id="coErr">Vui lòng điền đủ thông tin bắt buộc và hợp lệ.</p>
       <button class="confirm" onclick="submitOrder()" id="coNextBtn">Thanh toán qua QR</button>
     </div>
 
@@ -406,6 +453,35 @@ a{text-decoration:none;color:inherit}
 <div class="toast" id="toast"></div>
 
 <script>
+/* ============ PIXEL PHỄU (KHÔNG bắn Purchase/CompletePayment ở đây — chỉ ở trang cảm ơn) ============ */
+function fbTrack(ev, params){ if(typeof fbq !== 'undefined') fbq('track', ev, params || {}); }
+function ttTrack(ev, params){ if(typeof ttq !== 'undefined') ttq.track(ev, params || {}); }
+window.addEventListener('load', ()=>{
+  fbTrack('ViewContent', {content_name:'USB Build AI Agent', content_category:'USB Build AI Agent', content_ids:['USBAICOD','USBAIZOOM','USBAIVIP']});
+  ttTrack('ViewContent', {content_name:'USB Build AI Agent', content_category:'USB Build AI Agent'});
+});
+document.querySelectorAll('a[href*="zalo.me"]').forEach(a=>{
+  a.addEventListener('click', ()=>{
+    fbTrack('Lead', {content_name:'Zalo click', content_category:'USB Build AI Agent'});
+    ttTrack('Lead', {content_name:'Zalo click'});
+  });
+});
+
+// flash sale countdown — đếm ngược tới 23:59:59 giờ VN mỗi ngày, tự lặp lại
+function updateFlashTimer(){
+  const now = new Date();
+  const vnNow = new Date(now.toLocaleString('en-US', {timeZone:'Asia/Ho_Chi_Minh'}));
+  const end = new Date(vnNow); end.setHours(23,59,59,999);
+  let diff = Math.max(0, end - vnNow);
+  const h = Math.floor(diff/3600000), m = Math.floor((diff%3600000)/60000), s = Math.floor((diff%60000)/1000);
+  const pad = n => String(n).padStart(2,'0');
+  document.getElementById('fsH').textContent = pad(h);
+  document.getElementById('fsM').textContent = pad(m);
+  document.getElementById('fsS').textContent = pad(s);
+}
+updateFlashTimer();
+setInterval(updateFlashTimer, 1000);
+
 // gallery counter
 const track = document.getElementById('track');
 const counter = document.getElementById('counter');
@@ -447,6 +523,7 @@ function syncSheet(){
   document.getElementById('sheetPrice').textContent = '₫' + selected.price;
   document.getElementById('sheetVariant').textContent = selected.name;
   sheetList.querySelectorAll('.vcard').forEach(c=>c.classList.toggle('active', c.dataset.plan===selected.plan));
+  document.getElementById('addressField').style.display = selected.plan === 'USBAICOD' ? '' : 'none';
 }
 
 let qty = 1;
@@ -466,6 +543,8 @@ function openSheet(mode){
   syncSheet();
   showStep('variant');
   overlay.classList.add('show'); sheet.classList.add('show');
+  fbTrack('Lead', {content_name:'Mở checkout ' + mode, content_category:'USB Build AI Agent'});
+  ttTrack('Lead', {content_name:'Mở checkout ' + mode});
 }
 function closeSheet(){
   overlay.classList.remove('show'); sheet.classList.remove('show');
@@ -519,14 +598,21 @@ function submitOrder(){
   const name = $('co-name').value.trim();
   const phone = $('co-phone').value.trim();
   const email = $('co-email').value.trim();
-  if(!name || normPhone(phone).length < 10 || !/^\S+@\S+\.\S+$/.test(email)){ $('coErr').classList.add('on'); return; }
+  const address = $('co-address').value.trim();
+  const needsAddress = selected.plan === 'USBAICOD';
+  if(!name || normPhone(phone).length < 10 || !/^\S+@\S+\.\S+$/.test(email) || (needsAddress && !address)){
+    $('coErr').textContent = needsAddress ? 'Vui lòng điền đủ họ tên, SĐT, email hợp lệ và địa chỉ nhận hàng.' : 'Vui lòng điền đủ họ tên, SĐT và email hợp lệ.';
+    $('coErr').classList.add('on'); return;
+  }
   $('coErr').classList.remove('on');
 
   const phoneN = normPhone(phone);
   const payAmount = parseInt(selected.pay.replace(/\./g,''), 10);
   code = 'MAGICAI ' + phoneN + ' ' + selected.plan;
-  post({action:'order', plan: selected.plan, name, phone: phoneN, email, qty,
+  post({action:'order', plan: selected.plan, name, phone: phoneN, email, qty, topic: address,
         source:'landing_usb_ai_agent', page: location.href});
+  fbTrack('InitiateCheckout', {value: parseInt(selected.price.replace(/\./g,''),10), currency:'VND', content_name: selected.name, content_category:'USB Build AI Agent', content_ids:[selected.plan]});
+  ttTrack('InitiateCheckout', {value: parseInt(selected.price.replace(/\./g,''),10), currency:'VND', content_name: selected.name});
 
   $('coAmount').textContent = '₫' + payAmount.toLocaleString('vi-VN');
   $('coContent').textContent = code;
