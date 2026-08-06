@@ -162,6 +162,9 @@ a{text-decoration:none;color:inherit}
 .vcard .vdesc{font-size:11.5px;color:var(--tt-gray);margin-top:3px;line-height:1.4}
 .vcard .vprice{font-size:15px;font-weight:800;color:var(--tt-red);white-space:nowrap}
 .vcard .best{position:absolute;top:-9px;left:10px;background:var(--tt-red);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px}
+.deposit-ribbon{position:absolute;top:-9px;left:10px;background:linear-gradient(90deg,#F5B942,#E8A020);color:#3a2a00;font-size:10px;font-weight:800;padding:1px 8px;border-radius:8px;box-shadow:0 2px 6px rgba(232,160,32,.4)}
+.deposit-highlight{margin-top:8px;background:#fff8ec;border:1px solid #ffe1ae;border-radius:8px;padding:8px 10px;font-size:11.5px;color:#6b5a3a;line-height:1.5}
+.deposit-highlight b{color:#a15c00}
 
 /* ===== SELLER STRIP ===== */
 .seller{padding:12px 14px;border-bottom:8px solid var(--tt-bg);display:flex;align-items:center;gap:10px}
@@ -332,7 +335,6 @@ a{text-decoration:none;color:inherit}
       <span class="price-old">₫1.290.000</span>
       <span class="price-off">-61%</span>
     </div>
-    <div class="deposit-tag">💰 Cọc chỉ 50k · COD nhận hàng thanh toán tại nhà · Freeship toàn quốc</div>
     <div class="sold-row">
       <span><b>4.9</b> <span class="stars">★★★★★</span> · 2.318 đánh giá</span>
       <span>Đã bán 6.7k+</span>
@@ -670,6 +672,18 @@ document.querySelectorAll('#variantList .vcard').forEach(el=>{
       c.classList.toggle('active', c.dataset.plan === clone.dataset.plan);
     });
   });
+  // Làm nổi bật cọc 50k CHỈ trong popup chọn sản phẩm — nhắc khéo lý do cọc,
+  // tránh khách hoang mang giữa chừng khiến đơn bị rớt/huỷ.
+  if(clone.dataset.plan === 'USBAICOD'){
+    const badge = document.createElement('span');
+    badge.className = 'deposit-ribbon';
+    badge.textContent = '💰 Chỉ cọc 50k';
+    clone.appendChild(badge);
+    const note = document.createElement('div');
+    note.className = 'deposit-highlight';
+    note.innerHTML = '💡 Cọc 50k giữ đơn giúp bạn <b>chắc suất giao hàng ưu tiên</b>, tránh trường hợp đơn bị huỷ do không xác nhận kịp — phần còn lại <b>449k thanh toán khi nhận hàng</b> (COD, freeship toàn quốc).';
+    clone.querySelector('div').appendChild(note);
+  }
   sheetList.appendChild(clone);
 });
 
