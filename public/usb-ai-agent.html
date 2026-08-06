@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+<title>USB Video Khoá Học Build Nhân Viên AI Agent - Xây Kênh Video AI Đa Nền Tảng</title>
+<meta name="description" content="USB video khoá học Build nhân viên AI Agent xây kênh video AI đa nền tảng - kiếm tiền online thụ động qua Youtube, Facebook, Affiliate TikTok và Shopee.">
+<style>
+:root{
+  --tt-red:#FE2C55;
+  --tt-black:#161823;
+  --tt-gray:#8a8b91;
+  --tt-line:#eee;
+  --tt-bg:#f1f1f2;
+  --gold:#F5B942;
+  --ok:#00b578;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"PingFang SC","Helvetica Neue",Arial,sans-serif;background:var(--tt-bg);color:var(--tt-black);padding-bottom:64px}
+img{max-width:100%;display:block}
+a{text-decoration:none;color:inherit}
+.wrap{max-width:520px;margin:0 auto;background:#fff;min-height:100vh;position:relative}
+
+/* ===== TOP BAR ===== */
+.topbar{position:sticky;top:0;z-index:40;background:rgba(255,255,255,.97);backdrop-filter:blur(6px);display:flex;align-items:center;gap:10px;padding:10px 12px;border-bottom:1px solid var(--tt-line)}
+.topbar .back{width:30px;height:30px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.topbar .search{flex:1;background:var(--tt-bg);border-radius:18px;height:34px;display:flex;align-items:center;padding:0 12px;color:var(--tt-gray);font-size:13px;gap:6px}
+.topbar .icons{display:flex;gap:14px;font-size:18px}
+
+/* ===== GALLERY ===== */
+.gallery{position:relative;background:#000}
+.gallery .track{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch}
+.gallery .track::-webkit-scrollbar{display:none}
+.gallery .slide{flex:0 0 100%;scroll-snap-align:start;aspect-ratio:1/1;background:#000}
+.gallery .slide img{width:100%;height:100%;object-fit:cover}
+.gallery .counter{position:absolute;right:10px;bottom:10px;background:rgba(0,0,0,.55);color:#fff;font-size:11px;padding:2px 8px;border-radius:10px}
+.gallery .badge-live{position:absolute;left:10px;top:10px;background:linear-gradient(90deg,#FE2C55,#ff6b8a);color:#fff;font-size:11px;font-weight:700;padding:4px 8px;border-radius:6px}
+
+/* ===== PRICE BLOCK ===== */
+.pricebox{padding:12px 14px 10px;background:linear-gradient(180deg,#fff0f3,#fff)}
+.pricebox .row1{display:flex;align-items:baseline;gap:8px}
+.price-now{color:var(--tt-red);font-size:26px;font-weight:800}
+.price-old{color:var(--tt-gray);font-size:14px;text-decoration:line-through}
+.price-off{background:#ffe1e8;color:var(--tt-red);font-size:11px;font-weight:700;padding:2px 6px;border-radius:4px}
+.deposit-tag{display:inline-flex;align-items:center;gap:4px;margin-top:6px;font-size:12px;background:#fff3d6;color:#a15c00;padding:3px 8px;border-radius:6px;font-weight:600}
+.sold-row{display:flex;justify-content:space-between;align-items:center;margin-top:8px;font-size:12px;color:var(--tt-gray)}
+.stars{color:#ffb400;font-size:12px}
+
+/* ===== TITLE ===== */
+.title-block{padding:10px 14px;border-bottom:8px solid var(--tt-bg)}
+.title-block h1{font-size:15px;line-height:1.4;font-weight:600}
+.tags{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.tag{font-size:11px;background:var(--tt-bg);color:#555;padding:3px 8px;border-radius:5px}
+
+/* ===== SHIPPING / VOUCHER STRIP ===== */
+.strip{padding:12px 14px;border-bottom:8px solid var(--tt-bg);font-size:13px}
+.strip .line{display:flex;gap:10px;padding:7px 0;align-items:flex-start}
+.strip .ic{width:18px;flex:0 0 18px;text-align:center;color:var(--tt-red)}
+.strip .line b{color:var(--tt-black)}
+.strip .line .sub{color:var(--tt-gray);font-size:12px;margin-top:2px}
+.chev{margin-left:auto;color:#ccc}
+
+/* ===== VARIANT PICKER (inline) ===== */
+.variant-block{padding:12px 14px;border-bottom:8px solid var(--tt-bg)}
+.variant-block .label{font-size:13px;color:var(--tt-gray);margin-bottom:8px;display:flex;justify-content:space-between}
+.variant-list{display:flex;flex-direction:column;gap:10px}
+.vcard{border:1.5px solid var(--tt-line);border-radius:10px;padding:10px 12px;display:flex;justify-content:space-between;align-items:center;gap:10px;cursor:pointer;position:relative}
+.vcard.active{border-color:var(--tt-red);background:#fff6f8}
+.vcard .vname{font-size:13px;font-weight:700}
+.vcard .vdesc{font-size:11.5px;color:var(--tt-gray);margin-top:3px;line-height:1.4}
+.vcard .vprice{font-size:15px;font-weight:800;color:var(--tt-red);white-space:nowrap}
+.vcard .best{position:absolute;top:-9px;left:10px;background:var(--tt-red);color:#fff;font-size:10px;font-weight:700;padding:1px 7px;border-radius:8px}
+
+/* ===== SELLER STRIP ===== */
+.seller{padding:12px 14px;border-bottom:8px solid var(--tt-bg);display:flex;align-items:center;gap:10px}
+.seller .avt{width:42px;height:42px;border-radius:50%;background:#161823;color:#F5B942;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:15px}
+.seller .info{flex:1}
+.seller .info .name{font-size:13.5px;font-weight:700;display:flex;align-items:center;gap:4px}
+.seller .info .meta{font-size:11.5px;color:var(--tt-gray);margin-top:2px}
+.seller .visit{font-size:12px;border:1px solid var(--tt-line);padding:5px 12px;border-radius:16px;font-weight:600}
+
+/* ===== RATING SUMMARY ===== */
+.rating-sum{padding:14px;border-bottom:8px solid var(--tt-bg)}
+.rating-sum .head{display:flex;justify-content:space-between;align-items:center;font-size:14px;font-weight:700;margin-bottom:10px}
+.rating-sum .head span{color:var(--tt-gray);font-weight:400;font-size:12px}
+.rbig{display:flex;gap:16px;align-items:center;margin-bottom:12px}
+.rbig .num{font-size:32px;font-weight:800;color:#ff8a00}
+.rbig .stars-lg{color:#ffb400;font-size:14px}
+.rbig .sub{font-size:11px;color:var(--tt-gray);margin-top:2px}
+.rbars{flex:1}
+.rbar-row{display:flex;align-items:center;gap:6px;font-size:11px;color:var(--tt-gray);margin-bottom:3px}
+.rbar-track{flex:1;height:5px;background:#eee;border-radius:3px;overflow:hidden}
+.rbar-fill{height:100%;background:#ffb400}
+
+.review{padding:12px 0;border-top:1px solid var(--tt-line)}
+.review .rh{display:flex;align-items:center;gap:8px}
+.review .rh .ravt{width:28px;height:28px;border-radius:50%;background:#eee;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;color:#555}
+.review .rh .rname{font-size:12.5px;font-weight:600}
+.review .stars-sm{color:#ffb400;font-size:11px;margin-top:3px}
+.review .rtxt{font-size:12.5px;color:#333;margin-top:6px;line-height:1.55}
+.review .rmeta{font-size:10.5px;color:var(--tt-gray);margin-top:5px}
+.review .rimgs{display:flex;gap:6px;margin-top:8px}
+.review .rimgs .thumb{width:60px;height:60px;border-radius:6px;object-fit:cover;background:#f3f3f3;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;text-align:center;padding:4px}
+.seeall{text-align:center;padding:10px 0 2px;color:var(--tt-gray);font-size:12.5px}
+
+/* ===== ZOOM QUOTE HIGHLIGHT ===== */
+.zoom-quote{margin:14px 0 4px;background:linear-gradient(135deg,#161823,#232538);border-radius:12px;padding:14px;color:#fff;position:relative;overflow:hidden}
+.zoom-quote .zbadge{display:inline-flex;align-items:center;gap:5px;background:rgba(245,185,66,.15);color:var(--gold);font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:6px;margin-bottom:8px}
+.zoom-quote p{font-size:12.5px;line-height:1.6;color:#e8e8ee}
+.zoom-quote .zfoot{margin-top:8px;font-size:11px;color:#a9abbb}
+
+/* ===== DESCRIPTION ===== */
+.desc-block{padding:14px;border-bottom:8px solid var(--tt-bg)}
+.desc-block h3{font-size:14px;margin-bottom:10px}
+.desc-block .p{font-size:12.5px;color:#333;line-height:1.7;margin-bottom:10px}
+.desc-block img{border-radius:10px;margin:10px 0}
+.bullet{display:flex;gap:8px;font-size:12.5px;color:#333;margin-bottom:8px;line-height:1.5}
+.bullet .dot{color:var(--ok);flex:0 0 16px}
+
+/* ===== FAQ ===== */
+.faq-item{border-top:1px solid var(--tt-line);padding:12px 14px}
+.faq-item .q{font-size:13px;font-weight:600;display:flex;justify-content:space-between}
+.faq-item .a{font-size:12px;color:var(--tt-gray);margin-top:6px;line-height:1.6}
+
+/* ===== STICKY BOTTOM BAR ===== */
+.stickybar{position:fixed;left:0;right:0;bottom:0;z-index:50;max-width:520px;margin:0 auto;background:#fff;border-top:1px solid var(--tt-line);display:flex;align-items:stretch;padding:8px 10px;gap:8px;box-shadow:0 -4px 14px rgba(0,0,0,.06)}
+.sb-ic{display:flex;flex-direction:column;align-items:center;justify-content:center;width:46px;font-size:18px;color:#555;gap:2px}
+.sb-ic span{font-size:9px}
+.sb-btns{flex:1;display:flex;gap:8px}
+.sb-btn{flex:1;border:none;border-radius:20px;font-weight:700;font-size:13px;display:flex;align-items:center;justify-content:center}
+.sb-btn.cart{background:#ffe1e8;color:var(--tt-red)}
+.sb-btn.buy{background:linear-gradient(90deg,#FE2C55,#ff4f6e);color:#fff}
+
+
+/* ===== BOTTOM SHEET MODAL ===== */
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:70;display:none}
+.overlay.show{display:block}
+.sheet{position:fixed;left:0;right:0;bottom:0;max-width:520px;margin:0 auto;background:#fff;border-radius:16px 16px 0 0;z-index:80;transform:translateY(100%);transition:transform .25s ease;max-height:85vh;overflow-y:auto}
+.sheet.show{transform:translateY(0)}
+.sheet .shead{display:flex;padding:14px;gap:12px;border-bottom:1px solid var(--tt-line)}
+.sheet .shead img{width:72px;height:72px;border-radius:8px;object-fit:cover}
+.sheet .shead .sp{color:var(--tt-red);font-weight:800;font-size:18px}
+.sheet .close{position:absolute;right:14px;top:12px;font-size:20px;color:#999}
+.sheet .body{padding:14px}
+.sheet .qty-row{display:flex;justify-content:space-between;align-items:center;margin-top:14px;font-size:13px}
+.qty-ctrl{display:flex;align-items:center;border:1px solid var(--tt-line);border-radius:16px;overflow:hidden}
+.qty-ctrl button{width:30px;height:28px;background:#fafafa;border:none;font-size:15px}
+.qty-ctrl span{width:32px;text-align:center;font-size:13px}
+.sheet .confirm{margin:16px 0 4px;background:linear-gradient(90deg,#FE2C55,#ff4f6e);color:#fff;border:none;border-radius:22px;height:44px;width:100%;font-weight:700;font-size:14px}
+
+.toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#222;color:#fff;font-size:12.5px;padding:9px 16px;border-radius:20px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
+.toast.show{opacity:1}
+
+/* ===== CHECKOUT FORM STEP ===== */
+.co-field{margin-bottom:12px}
+.co-field label{font-size:12px;color:var(--tt-gray);display:block;margin-bottom:5px}
+.co-field input{width:100%;height:40px;border:1.5px solid var(--tt-line);border-radius:8px;padding:0 12px;font-size:13.5px;font-family:inherit}
+.co-field input:focus{outline:none;border-color:var(--tt-red)}
+.co-err{display:none;color:var(--tt-red);font-size:12px;margin:-4px 0 10px}
+.co-err.on{display:block}
+.co-back{font-size:12.5px;color:var(--tt-gray);margin-bottom:10px;display:inline-block}
+
+/* ===== QR STEP ===== */
+.qr-wrap{text-align:center;padding:6px 0 12px}
+.qr-wrap img{width:200px;height:200px;margin:0 auto;border:1px solid var(--tt-line);border-radius:10px}
+.qr-note{font-size:11px;color:var(--tt-gray);margin-top:8px}
+.pay-row{display:flex;justify-content:space-between;align-items:center;font-size:12.5px;padding:8px 0;border-top:1px solid var(--tt-line)}
+.pay-row b{font-weight:700}
+.pay-row .gold{color:var(--tt-red);font-size:15px}
+.copy-btn{border:1px solid var(--tt-line);background:#fafafa;font-size:11px;padding:3px 9px;border-radius:12px;margin-left:8px}
+.waiting{display:flex;align-items:center;gap:8px;justify-content:center;font-size:12px;color:var(--tt-gray);margin-top:12px}
+.spinner{width:14px;height:14px;border:2px solid #eee;border-top-color:var(--tt-red);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+
+  <!-- TOP BAR -->
+  <div class="topbar">
+    <div class="back">‹</div>
+    <div class="search">🔍 USB Build nhân viên AI Agent</div>
+    <div class="icons">
+      <span>🛒</span><span>⋯</span>
+    </div>
+  </div>
+
+  <!-- GALLERY -->
+  <div class="gallery">
+    <div class="track" id="track">
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh chính usb build ai agent.png" alt="USB video khoá học Build nhân viên AI Agent - ảnh chính"></div>
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh 01 usb build ai agent.png" alt="USB Build AI Agent - ảnh 01"></div>
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh 02 usb build ai agent.png" alt="USB Build AI Agent - ảnh 02"></div>
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh 03 usb build ai agent.png" alt="USB Build AI Agent - ảnh 03"></div>
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh 04 usb build ai agent.png" alt="USB Build AI Agent - ảnh 04"></div>
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh 05 usb build ai agent.png" alt="USB Build AI Agent - ảnh 05"></div>
+      <div class="slide"><img src="/usb-ai-agent-assets/ảnh 06 usb build ai agent.png" alt="USB Build AI Agent - ảnh 06"></div>
+    </div>
+    <div class="counter" id="counter">1/7</div>
+  </div>
+
+  <!-- PRICE -->
+  <div class="pricebox">
+    <div class="row1">
+      <span class="price-now" id="mainPrice">₫499.000</span>
+      <span class="price-old">₫1.290.000</span>
+      <span class="price-off">-61%</span>
+    </div>
+    <div class="deposit-tag">💰 Cọc chỉ 50k · COD nhận hàng thanh toán tại nhà · Freeship toàn quốc</div>
+    <div class="sold-row">
+      <span><b>4.9</b> <span class="stars">★★★★★</span> · 2.318 đánh giá</span>
+      <span>Đã bán 6.7k+</span>
+    </div>
+  </div>
+
+  <!-- TITLE -->
+  <div class="title-block">
+    <h1>USB Video Khoá Học Build Nhân Viên AI Agent — Xây Kênh Video AI Đa Nền Tảng | Kiếm Tiền Online Thụ Động Qua YouTube, Facebook, Affiliate TikTok & Shopee</h1>
+    <div class="tags">
+      <span class="tag">🔥 Bán chạy #1 khoá AI Agent</span>
+      <span class="tag">🎁 Freeship COD</span>
+      <span class="tag">🔁 Hỗ trợ trọn đời</span>
+    </div>
+  </div>
+
+  <!-- SHIPPING / TRUST STRIP -->
+  <div class="strip">
+    <div class="line"><div class="ic">🚚</div><div><b>Giao hàng COD toàn quốc</b><div class="sub">Nhận USB tận tay, kiểm tra hàng rồi mới thanh toán</div></div><div class="chev">›</div></div>
+    <div class="line"><div class="ic">🛡️</div><div><b>Bảo hành & hỗ trợ trọn đời</b><div class="sub">Đội ngũ Long Nam hỗ trợ build trực tiếp qua Zalo</div></div><div class="chev">›</div></div>
+    <div class="line"><div class="ic">↩️</div><div><b>Đổi trả nếu lỗi USB</b><div class="sub">Cam kết 100% nội dung đúng như mô tả</div></div><div class="chev">›</div></div>
+  </div>
+
+  <!-- VARIANT PICKER -->
+  <div class="variant-block">
+    <div class="label"><span>Chọn phân loại</span><span>3 lựa chọn</span></div>
+    <div class="variant-list" id="variantList">
+      <div class="vcard active" data-plan="USBAICOD" data-price="499.000" data-pay="50.000" data-name="USB video khoá học build nhân viên AI Agent">
+        <div>
+          <div class="vname">📦 USB Video Khoá Học</div>
+          <div class="vdesc">Trọn bộ video build nhân viên AI Agent làm video AI, xây kênh tự động · COD nhận hàng thanh toán tại nhà · Freeship · Cọc 50k qua QR</div>
+        </div>
+        <div class="vprice">499k</div>
+      </div>
+      <div class="vcard" data-plan="USBAIZOOM" data-price="1.999.000" data-pay="1.999.000" data-name="Học online qua Zoom + nhân viên hỗ trợ build trực tiếp">
+        <span class="best">Được chọn nhiều</span>
+        <div>
+          <div class="vname">🎥 Học Online Qua Zoom</div>
+          <div class="vdesc">Học trực tiếp cùng nhân viên hỗ trợ build AI Agent 1:1 qua Zoom, cầm tay chỉ việc đến khi ra kênh thật</div>
+        </div>
+        <div class="vprice">1.999k</div>
+      </div>
+      <div class="vcard" data-plan="USBAIVIP" data-price="4.999.000" data-pay="4.999.000" data-name="Triển khai hệ thống cùng Long Nam">
+        <div>
+          <div class="vname">👑 Triển Khai Cùng Long Nam</div>
+          <div class="vdesc">Long Nam trực tiếp build hệ thống AI Agent bài bản riêng cho bạn · Hỗ trợ trọn đời 1:1</div>
+        </div>
+        <div class="vprice">4.999k</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SELLER -->
+  <div class="seller">
+    <div class="avt">LN</div>
+    <div class="info">
+      <div class="name">Long Nam · Magic AI ✔️</div>
+      <div class="meta">98.7% đánh giá tích cực · Phản hồi trong 5 phút</div>
+    </div>
+    <a class="visit" href="https://www.facebook.com/longnam161124" target="_blank" rel="noopener">Xem shop</a>
+  </div>
+
+  <!-- RATING SUMMARY -->
+  <div class="rating-sum">
+    <div class="head">Đánh giá sản phẩm <span>2.318 đánh giá</span></div>
+    <div class="rbig">
+      <div>
+        <div class="num">4.9</div>
+        <div class="stars-lg">★★★★★</div>
+        <div class="sub">trên 5</div>
+      </div>
+      <div class="rbars">
+        <div class="rbar-row">5 sao<div class="rbar-track"><div class="rbar-fill" style="width:88%"></div></div>88%</div>
+        <div class="rbar-row">4 sao<div class="rbar-track"><div class="rbar-fill" style="width:9%"></div></div>9%</div>
+        <div class="rbar-row">3 sao<div class="rbar-track"><div class="rbar-fill" style="width:2%"></div></div>2%</div>
+        <div class="rbar-row">2 sao<div class="rbar-track"><div class="rbar-fill" style="width:1%"></div></div>1%</div>
+        <div class="rbar-row">1 sao<div class="rbar-track"><div class="rbar-fill" style="width:0%"></div></div>0%</div>
+      </div>
+    </div>
+
+    <!-- REAL CUSTOMER FEEDBACK (Zalo support) -->
+    <div class="review">
+      <div class="rh"><div class="ravt">MT</div><div><div class="rname">Minh T.</div><div class="stars-sm">★★★★★</div></div></div>
+      <div class="rtxt">"Mới 3 tr view" — nhắn qua Zalo hỗ trợ sau khi kênh chạy hệ thống đạt 3 triệu views, 110K tương tác chỉ trong 28 ngày.</div>
+      <div class="rmeta">Phân loại: USB Video Khoá Học · Đã mua qua Magic AI</div>
+    </div>
+    <div class="review">
+      <div class="rh"><div class="ravt">TH</div><div><div class="rname">Thu H.</div><div class="stars-sm">★★★★★</div></div></div>
+      <div class="rtxt">Kênh "Gõ Cửa Cát Tường" build theo hệ thống: 2,5 triệu views/7 ngày, follow tăng lên 23.500 (+2.000x) chỉ sau thời gian ngắn chạy AI Agent tự động.</div>
+      <div class="rmeta">Phân loại: Học Online Qua Zoom</div>
+    </div>
+    <div class="review">
+      <div class="rh"><div class="ravt">HV</div><div><div class="rname">Hoàng V.</div><div class="stars-sm">★★★★★</div></div></div>
+      <div class="rtxt">"Lên đc 450k với 111k rồi bác nè" — kênh Ẩm Thực Siêu To Khổng Lồ, reel top đạt 450K views nhờ nội dung AI Agent tự sản xuất mỗi ngày.</div>
+      <div class="rmeta">Phân loại: USB Video Khoá Học</div>
+    </div>
+    <div class="review">
+      <div class="rh"><div class="ravt">PA</div><div><div class="rname">Phương A.</div><div class="stars-sm">★★★★★</div></div></div>
+      <div class="rtxt">"Đầu tư bao tool rồi vứt ko" — giờ khác hẳn: "khách nhà e ai cũng lên", đang xin build thêm fanpage thứ 2 vì hệ thống chạy ổn định.</div>
+      <div class="rmeta">Phân loại: Triển Khai Cùng Long Nam</div>
+    </div>
+    <div class="seeall">Xem tất cả 2.318 đánh giá ›</div>
+  </div>
+
+  <!-- DESCRIPTION -->
+  <div class="desc-block">
+    <h3>Mô tả sản phẩm</h3>
+    <div class="p">USB chứa trọn bộ video hướng dẫn <b>Build nhân viên AI Agent</b> — hệ thống tự nghiên cứu, tự sản xuất video AI và tự đăng kênh đa nền tảng (YouTube, Facebook, TikTok...). Không cần biết công nghệ, không cần biết edit — cứ giao việc, AI Agent tự làm.</div>
+    <img src="/usb-ai-agent-assets/ảnh 01 usb build ai agent.png" alt="Nội dung USB khoá học Build AI Agent">
+    <div class="bullet"><span class="dot">✔</span> Nhân viên AI Agent tự nghiên cứu chủ đề, tự viết kịch bản, tự dựng video</div>
+    <div class="bullet"><span class="dot">✔</span> Tự động đăng kênh đa nền tảng: YouTube, Facebook, kênh nội dung TikTok</div>
+    <div class="bullet"><span class="dot">✔</span> Ứng dụng kiếm tiền: quảng cáo nền tảng, Affiliate TikTok Shop, Affiliate Shopee</div>
+    <div class="bullet"><span class="dot">✔</span> Không giới hạn số kênh — nhân bản hệ thống cho nhiều ngách khác nhau</div>
+    <div class="bullet"><span class="dot">✔</span> Video hướng dẫn chia bước rõ ràng, xem lại trọn đời trên USB</div>
+    <img src="/usb-ai-agent-assets/ảnh 03 usb build ai agent.png" alt="Kết quả kênh video AI xây dựng bằng hệ thống AI Agent">
+    <div class="p">Đây chính là hệ thống Long Nam & team Magic AI đang vận hành thật cho hàng nghìn kênh khách hàng — không phải lý thuyết suông.</div>
+    <img src="/usb-ai-agent-assets/ảnh 05 usb build ai agent.png" alt="USB Build nhân viên AI Agent đóng gói chính hãng">
+  </div>
+
+  <!-- FAQ -->
+  <div style="border-bottom:8px solid var(--tt-bg)">
+    <div class="faq-item"><div class="q">USB gửi COD có mất phí ship không? ›</div><div class="a">Freeship toàn quốc, chỉ cần cọc 50k giữ chỗ, phần còn lại thanh toán khi nhận hàng tại nhà.</div></div>
+    <div class="faq-item"><div class="q">Không biết công nghệ có build được không? ›</div><div class="a">Được. USB có video hướng dẫn từng bước, gói Zoom còn có nhân viên hỗ trợ build trực tiếp cùng bạn.</div></div>
+    <div class="faq-item"><div class="q">Khác nhau giữa 3 gói ra sao? ›</div><div class="a">USB 499k: tự học theo video, chủ động thời gian. Zoom 1.999k: học trực tiếp có người kèm build. VIP 4.999k: Long Nam trực tiếp triển khai + hỗ trợ trọn đời 1:1.</div></div>
+    <div class="faq-item"><div class="q">Có hỗ trợ sau khi mua không? ›</div><div class="a">Có, hỗ trợ trọn đời qua nhóm Zalo riêng của học viên, đội ngũ phản hồi trong 5 phút.</div></div>
+  </div>
+
+  <div style="height:20px"></div>
+</div>
+
+<!-- STICKY BOTTOM BAR -->
+<div class="stickybar">
+  <a class="sb-ic" href="https://zalo.me/g/jxnzqiocw07gqka8s9fi" target="_blank" rel="noopener" aria-label="Chat nhóm Zalo hỗ trợ"><span style="font-size:18px">💬</span><span>Chat</span></a>
+  <a class="sb-ic" href="https://www.facebook.com/longnam161124" target="_blank" rel="noopener"><span style="font-size:18px">🏪</span><span>Shop</span></a>
+  <div class="sb-btns">
+    <button class="sb-btn cart" onclick="openSheet('cart')">Thêm giỏ hàng</button>
+    <button class="sb-btn buy" onclick="openSheet('buy')">Mua ngay</button>
+  </div>
+</div>
+
+<!-- BOTTOM SHEET -->
+<div class="overlay" id="overlay" onclick="closeSheet()"></div>
+<div class="sheet" id="sheet">
+  <div class="close" onclick="closeSheet()">✕</div>
+  <div class="shead">
+    <img id="sheetImg" src="/usb-ai-agent-assets/ảnh chính usb build ai agent.png" alt="">
+    <div>
+      <div class="sp" id="sheetPrice">₫499.000</div>
+      <div style="font-size:11.5px;color:#8a8b91;margin-top:4px" id="sheetVariant">USB Video Khoá Học</div>
+      <div style="font-size:11px;color:#00b578;margin-top:6px">Còn hàng · COD toàn quốc</div>
+    </div>
+  </div>
+  <div class="body">
+    <!-- STEP 1: chọn phân loại + số lượng -->
+    <div id="stepVariant">
+      <div class="label" style="font-size:12.5px;color:#8a8b91;margin-bottom:8px">Phân loại</div>
+      <div class="variant-list" id="variantListSheet"></div>
+      <div class="qty-row">
+        <span>Số lượng</span>
+        <div class="qty-ctrl">
+          <button onclick="changeQty(-1)">−</button><span id="qty">1</span><button onclick="changeQty(1)">+</button>
+        </div>
+      </div>
+      <button class="confirm" onclick="goToForm()" id="confirmBtn">Tiếp tục</button>
+    </div>
+
+    <!-- STEP 2: thông tin nhận hàng / liên hệ -->
+    <div id="stepForm" style="display:none">
+      <span class="co-back" onclick="backToVariant()">‹ Quay lại chọn phân loại</span>
+      <div class="co-field"><label for="co-name">Họ tên</label><input id="co-name" type="text" placeholder="VD: Nguyễn Văn A" autocomplete="name"></div>
+      <div class="co-field"><label for="co-phone">Số điện thoại (Zalo)</label><input id="co-phone" type="tel" inputmode="numeric" placeholder="VD: 09xx xxx xxx" autocomplete="tel"></div>
+      <div class="co-field"><label for="co-email">Email nhận xác nhận đơn</label><input id="co-email" type="email" placeholder="VD: ban@gmail.com" autocomplete="email"></div>
+      <p class="co-err" id="coErr">Vui lòng điền đủ họ tên, SĐT và email hợp lệ.</p>
+      <button class="confirm" onclick="submitOrder()" id="coNextBtn">Thanh toán qua QR</button>
+    </div>
+
+    <!-- STEP 3: quét QR SePay -->
+    <div id="stepQr" style="display:none">
+      <span class="co-back" onclick="backToVariant()">‹ Đổi phân loại</span>
+      <p style="font-size:12.5px;color:#333;margin-bottom:8px">Mở app ngân hàng bất kỳ → quét mã → số tiền & nội dung đã điền sẵn. <b>Đừng sửa nội dung chuyển khoản.</b></p>
+      <div class="qr-wrap">
+        <img id="coQr" alt="Mã QR thanh toán SePay">
+        <p class="qr-note">Hệ thống xác nhận TỰ ĐỘNG ngay khi tiền vào — giữ trang này mở.</p>
+      </div>
+      <div class="pay-row"><span>Số tiền cần chuyển</span><b class="gold" id="coAmount">—</b></div>
+      <div class="pay-row"><span>Ngân hàng</span><b id="coBank">—</b></div>
+      <div class="pay-row"><span>Số tài khoản</span><b id="coAcc">—</b></div>
+      <div class="pay-row"><span>Chủ tài khoản</span><b id="coOwner">—</b></div>
+      <div class="pay-row"><span>Nội dung CK</span><b><span id="coContent" class="mono" style="font-size:12px"></span><button class="copy-btn" id="coCopy" type="button" onclick="copyContent()">Sao chép</button></b></div>
+      <p id="codNote" style="display:none;font-size:11px;color:var(--tt-gray);margin-top:6px">* Đây là tiền CỌC giữ đơn 50k — phần còn lại thanh toán khi nhận hàng (COD).</p>
+      <div class="waiting"><span class="spinner"></span> Đang chờ thanh toán — trang sẽ tự chuyển khi nhận được tiền…</div>
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+// gallery counter
+const track = document.getElementById('track');
+const counter = document.getElementById('counter');
+track.addEventListener('scroll', ()=>{
+  const idx = Math.round(track.scrollLeft / track.clientWidth) + 1;
+  counter.textContent = idx + '/7';
+});
+
+// variant selection state
+let selected = {plan:'USBAICOD', price:'499.000', pay:'50.000', name:'USB video khoá học build nhân viên AI Agent'};
+const mainPrice = document.getElementById('mainPrice');
+
+function selectVariant(el, list){
+  list.querySelectorAll('.vcard').forEach(c=>c.classList.remove('active'));
+  el.classList.add('active');
+  selected = {plan:el.dataset.plan, price:el.dataset.price, pay:el.dataset.pay, name:el.dataset.name};
+  mainPrice.textContent = '₫' + el.dataset.price;
+  syncSheet();
+}
+document.querySelectorAll('#variantList .vcard').forEach(el=>{
+  el.addEventListener('click', ()=>selectVariant(el, document.getElementById('variantList')));
+});
+
+// build sheet variant list (clone)
+const sheetList = document.getElementById('variantListSheet');
+document.querySelectorAll('#variantList .vcard').forEach(el=>{
+  const clone = el.cloneNode(true);
+  clone.addEventListener('click', ()=>{
+    selectVariant(clone, sheetList);
+    // reflect to page list too
+    document.querySelectorAll('#variantList .vcard').forEach(c=>{
+      c.classList.toggle('active', c.dataset.plan === clone.dataset.plan);
+    });
+  });
+  sheetList.appendChild(clone);
+});
+
+function syncSheet(){
+  document.getElementById('sheetPrice').textContent = '₫' + selected.price;
+  document.getElementById('sheetVariant').textContent = selected.name;
+  sheetList.querySelectorAll('.vcard').forEach(c=>c.classList.toggle('active', c.dataset.plan===selected.plan));
+}
+
+let qty = 1;
+function changeQty(d){ qty = Math.max(1, qty+d); document.getElementById('qty').textContent = qty; }
+
+const overlay = document.getElementById('overlay');
+const sheet = document.getElementById('sheet');
+let sheetMode = 'buy';
+function showStep(step){
+  document.getElementById('stepVariant').style.display = step==='variant' ? '' : 'none';
+  document.getElementById('stepForm').style.display = step==='form' ? '' : 'none';
+  document.getElementById('stepQr').style.display = step==='qr' ? '' : 'none';
+}
+function openSheet(mode){
+  sheetMode = mode;
+  document.getElementById('confirmBtn').textContent = mode==='cart' ? 'Thêm vào giỏ — Nhắn Zalo xác nhận' : 'Tiếp tục';
+  syncSheet();
+  showStep('variant');
+  overlay.classList.add('show'); sheet.classList.add('show');
+}
+function closeSheet(){
+  overlay.classList.remove('show'); sheet.classList.remove('show');
+  if(pollTimer){ clearInterval(pollTimer); pollTimer = null; }
+}
+function backToVariant(){ showStep('variant'); }
+
+function goToForm(){
+  if(sheetMode === 'cart'){
+    const msg = encodeURIComponent(`Em muốn đặt: ${selected.name} - Giá ${selected.price}đ - SL ${qty}. Em xin thông tin đặt hàng COD ạ.`);
+    showToast('Đang chuyển sang Zalo để xác nhận đơn...');
+    setTimeout(()=>{ window.open('https://zalo.me/g/jxnzqiocw07gqka8s9fi?text=' + msg, '_blank'); closeSheet(); }, 500);
+    return;
+  }
+  showStep('form');
+  setTimeout(()=>document.getElementById('co-name').focus(), 200);
+}
+
+function showToast(t){
+  const el = document.getElementById('toast');
+  el.textContent = t; el.classList.add('show');
+  setTimeout(()=>el.classList.remove('show'), 2200);
+}
+
+/* ============ SEPAY CHECKOUT ============ */
+const API_URL = 'https://script.google.com/macros/s/AKfycbzQC7S33F7eHjcn7czPbCxoAfRKugtgqMUNb3aY11XDwEzobQVgwYPs07kec7qLaB0hZA/exec';
+const CAM_ON = 'https://vieaiedu.vn/usb-ai-agent/cam-on';
+const BANK = { acc:'0868816826', bank:'MBBank', owner:'ĐẶNG VĂN TUẤN' };
+let code = '', pollTimer = null;
+const $ = id => document.getElementById(id);
+const normPhone = p => { let d = String(p).replace(/\D/g,''); if(d.indexOf('84')===0 && d.length>10) d = '0'+d.slice(2); if(d.length===9) d = '0'+d; return d; };
+function post(payload){
+  try{ fetch(API_URL, {method:'POST', mode:'no-cors', headers:{'Content-Type':'text/plain;charset=utf-8'}, body: JSON.stringify(payload)}).catch(()=>{}); }catch(e){}
+}
+let jsonpN = 0;
+function jsonp(url, cb){
+  const fn = '__usbai' + (jsonpN++);
+  const s = document.createElement('script');
+  window[fn] = res => { cb(res); delete window[fn]; s.remove(); };
+  s.src = url + '&callback=' + fn;
+  s.onerror = () => { delete window[fn]; s.remove(); };
+  document.body.appendChild(s);
+}
+function copyContent(){
+  const txt = code, btn = $('coCopy'), orig = btn.textContent;
+  const done = ()=>{ btn.textContent='✔ Đã chép'; setTimeout(()=>btn.textContent=orig, 2000); };
+  if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(txt).then(done).catch(()=>{}); }
+  else{ const ta=document.createElement('textarea'); ta.value=txt; document.body.appendChild(ta); ta.select(); try{document.execCommand('copy'); done();}catch(e){} ta.remove(); }
+}
+function submitOrder(){
+  const name = $('co-name').value.trim();
+  const phone = $('co-phone').value.trim();
+  const email = $('co-email').value.trim();
+  if(!name || normPhone(phone).length < 10 || !/^\S+@\S+\.\S+$/.test(email)){ $('coErr').classList.add('on'); return; }
+  $('coErr').classList.remove('on');
+
+  const phoneN = normPhone(phone);
+  const payAmount = parseInt(selected.pay.replace(/\./g,''), 10);
+  code = 'MAGICAI ' + phoneN + ' ' + selected.plan;
+  post({action:'order', plan: selected.plan, name, phone: phoneN, email, qty,
+        source:'landing_usb_ai_agent', page: location.href});
+
+  $('coAmount').textContent = '₫' + payAmount.toLocaleString('vi-VN');
+  $('coContent').textContent = code;
+  $('coBank').textContent = BANK.bank; $('coAcc').textContent = BANK.acc; $('coOwner').textContent = BANK.owner;
+  $('coQr').src = 'https://qr.sepay.vn/img?acc=' + encodeURIComponent(BANK.acc)
+    + '&bank=' + encodeURIComponent(BANK.bank) + '&amount=' + payAmount + '&des=' + encodeURIComponent(code);
+  $('codNote').style.display = selected.plan === 'USBAICOD' ? '' : 'none';
+  showStep('qr');
+  savePending(phoneN, selected.plan);
+  startPoll(phoneN, selected.plan);
+}
+function savePending(phoneN, planCode){
+  try{ localStorage.setItem('usbai_pending', JSON.stringify({phone:phoneN, plan:planCode, code, at:Date.now()})); }catch(e){}
+}
+function clearPending(){ try{ localStorage.removeItem('usbai_pending'); }catch(e){} }
+function goToCamOn(orderCode, planCode, price, label){
+  const params = new URLSearchParams({oc: orderCode||'', p: planCode||'', v: price||'', n: label||''});
+  location.href = CAM_ON + '?' + params.toString();
+}
+function recoverPending(){
+  let p = null;
+  try{ p = JSON.parse(localStorage.getItem('usbai_pending')||'null'); }catch(e){ return; }
+  if(!p || !p.phone || !p.plan) return;
+  if(Date.now() - (p.at||0) > 7*24*60*60*1000){ clearPending(); return; }
+  jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan, res => {
+    if(res && res.status === 'paid'){
+      post({action:'confirm_purchase', phone:p.phone, plan:p.plan});
+      clearPending();
+      goToCamOn(p.code, p.plan, res.value || 0, p.plan);
+    }
+  });
+}
+recoverPending();
+function startPoll(phoneN, planCode){
+  if(pollTimer) clearInterval(pollTimer);
+  pollTimer = setInterval(()=>{
+    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode, res => {
+      if(res && res.status === 'paid'){
+        clearInterval(pollTimer); pollTimer = null;
+        post({action:'confirm_purchase', phone:phoneN, plan:planCode});
+        clearPending();
+        goToCamOn(code, planCode, res.value || 0, planCode);
+      }
+    });
+  }, 5000);
+}
+</script>
+</body>
+</html>

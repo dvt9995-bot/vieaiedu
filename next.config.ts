@@ -20,6 +20,9 @@ const nextConfig: NextConfig = {
       // Landing "AI Agent Sales" (khoá bán hàng FB tự động) — cùng pattern xaykenhai
       { source: "/aiagentsales", destination: "/aiagentsales.html" },
       { source: "/aiagentsales/cam-on", destination: "/aiagentsales-cam-on.html" },
+      // Landing "USB Build AI Agent" (TikTok Shop style) — checkout SePay QR (cọc 50k / Zoom / VIP)
+      { source: "/usb-ai-agent", destination: "/usb-ai-agent.html" },
+      { source: "/usb-ai-agent/cam-on", destination: "/usb-ai-agent-cam-on.html" },
     ];
   },
 };
