@@ -195,7 +195,14 @@ a{text-decoration:none;color:inherit}
 .review .rtxt{font-size:12.5px;color:#333;margin-top:6px;line-height:1.55}
 .review .rmeta{font-size:10.5px;color:var(--tt-gray);margin-top:5px}
 .review .rimgs{display:flex;gap:6px;margin-top:8px}
-.review .rimgs .thumb{width:60px;height:60px;border-radius:6px;object-fit:cover;background:#f3f3f3;display:flex;align-items:center;justify-content:center;font-size:10px;color:#aaa;text-align:center;padding:4px}
+.review .rimgs .thumb{width:64px;height:64px;border-radius:8px;object-fit:cover;background:#f3f3f3;cursor:pointer;border:1px solid var(--tt-line)}
+
+/* ===== LIGHTBOX ===== */
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:300;display:none;align-items:center;justify-content:center;padding:20px}
+.lightbox.show{display:flex}
+.lightbox img{max-width:100%;max-height:85vh;border-radius:8px;object-fit:contain}
+.lightbox .lb-close{position:absolute;top:18px;right:18px;width:38px;height:38px;border-radius:50%;background:rgba(255,255,255,.15);color:#fff;font-size:20px;display:flex;align-items:center;justify-content:center;cursor:pointer}
+.lightbox .lb-hint{position:absolute;bottom:22px;left:0;right:0;text-align:center;color:rgba(255,255,255,.6);font-size:12px}
 .seeall{text-align:center;padding:10px 0 2px;color:var(--tt-gray);font-size:12.5px}
 
 /* ===== ZOOM QUOTE HIGHLIGHT ===== */
@@ -436,6 +443,16 @@ a{text-decoration:none;color:inherit}
       <div class="rtxt">"Đầu tư bao tool rồi vứt ko" — giờ khác hẳn: "khách nhà e ai cũng lên", đang xin build thêm fanpage thứ 2 vì hệ thống chạy ổn định.</div>
       <div class="rmeta">Phân loại: Triển Khai Cùng Long Nam</div>
     </div>
+    <div class="review">
+      <div class="rh"><div class="ravt">PN</div><div><div class="rname">Paul Nguyen</div><div class="stars-sm">★★★★★</div></div></div>
+      <div class="rtxt">Đăng ký khoá 2.999k, học xong 2 buổi liền chủ động nâng cấp lên gói 1:1, chuyển thêm 5.000.000đ để được Long Nam kèm sát tận nơi — khách mua lại ngay trong tuần đầu.</div>
+      <div class="rmeta">Phân loại: Học Online Qua Zoom → nâng cấp Triển Khai Cùng Long Nam</div>
+      <div class="rimgs">
+        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-1.jpg" alt="Ảnh chuyển khoản thanh toán thật của khách Paul Nguyen" onclick="openLightbox('/usb-ai-agent-assets/khach-hang-1.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-2.jpg" alt="Ảnh trò chuyện hỗ trợ thật với khách Paul Nguyen" onclick="openLightbox('/usb-ai-agent-assets/khach-hang-2.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-3.jpg" alt="Ảnh khách nâng cấp gói và chuyển khoản thêm 5 triệu" onclick="openLightbox('/usb-ai-agent-assets/khach-hang-3.jpg')">
+      </div>
+    </div>
     <div class="seeall">Xem tất cả 2.318 đánh giá ›</div>
   </div>
 
@@ -590,6 +607,13 @@ a{text-decoration:none;color:inherit}
 </div>
 
 <div class="toast" id="toast"></div>
+
+<!-- LIGHTBOX xem ảnh feedback thật to -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox()">
+  <div class="lb-close" onclick="closeLightbox()">✕</div>
+  <img id="lightboxImg" src="" alt="Ảnh feedback khách hàng phóng to" onclick="event.stopPropagation()">
+  <div class="lb-hint">Chạm để đóng và quay lại trang</div>
+</div>
 
 <script>
 /* ============ PIXEL PHỄU (KHÔNG bắn Purchase/CompletePayment ở đây — chỉ ở trang cảm ơn) ============ */
@@ -748,6 +772,18 @@ function showToast(t){
   el.textContent = t; el.classList.add('show');
   setTimeout(()=>el.classList.remove('show'), 2200);
 }
+
+/* ============ LIGHTBOX ảnh feedback thật ============ */
+function openLightbox(src){
+  document.getElementById('lightboxImg').src = src;
+  document.getElementById('lightbox').classList.add('show');
+  document.body.style.overflow = 'hidden';
+}
+function closeLightbox(){
+  document.getElementById('lightbox').classList.remove('show');
+  document.body.style.overflow = '';
+}
+document.addEventListener('keydown', e=>{ if(e.key === 'Escape') closeLightbox(); });
 
 /* ============ SEPAY CHECKOUT ============ */
 const API_URL = 'https://script.google.com/macros/s/AKfycbzQC7S33F7eHjcn7czPbCxoAfRKugtgqMUNb3aY11XDwEzobQVgwYPs07kec7qLaB0hZA/exec';
