@@ -186,6 +186,15 @@ a{text-decoration:none;color:inherit}
 .toast{position:fixed;left:50%;top:14px;transform:translateX(-50%);background:#222;color:#fff;font-size:12.5px;padding:9px 16px;border-radius:20px;z-index:200;opacity:0;pointer-events:none;transition:opacity .25s}
 .toast.show{opacity:1}
 
+/* ===== ADVISOR SHEET ===== */
+.adv-card{border:1.5px solid var(--tt-line);border-radius:12px;padding:12px 13px;margin-bottom:10px;cursor:pointer;transition:border-color .15s,background .15s}
+.adv-card:active{border-color:var(--tt-red);background:#fff6f8}
+.adv-tag{display:inline-block;font-size:10.5px;font-weight:700;color:var(--tt-red);background:#ffe1e8;padding:2px 8px;border-radius:6px;margin-bottom:7px}
+.adv-title{font-size:13.5px;font-weight:700;margin-bottom:4px}
+.adv-desc{font-size:12px;color:#555;line-height:1.5;margin-bottom:8px}
+.adv-pick{font-size:12px;background:var(--tt-bg);border-radius:8px;padding:7px 10px;font-weight:600}
+.adv-pick b{color:var(--tt-red)}
+
 /* ===== CHECKOUT FORM STEP ===== */
 .co-field{margin-bottom:12px}
 .co-field label{font-size:12px;color:var(--tt-gray);display:block;margin-bottom:5px}
@@ -386,8 +395,41 @@ a{text-decoration:none;color:inherit}
   <a class="sb-ic" href="https://zalo.me/g/jxnzqiocw07gqka8s9fi" target="_blank" rel="noopener" aria-label="Chat nhóm Zalo hỗ trợ"><span style="font-size:18px">💬</span><span>Chat</span></a>
   <a class="sb-ic" href="https://www.facebook.com/longnam161124" target="_blank" rel="noopener"><span style="font-size:18px">🏪</span><span>Shop</span></a>
   <div class="sb-btns">
-    <button class="sb-btn cart" onclick="openSheet('cart')">Thêm giỏ hàng</button>
+    <button class="sb-btn cart" onclick="openAdvisor()">💡 Gợi ý mua</button>
     <button class="sb-btn buy" onclick="openSheet('buy')">Mua ngay</button>
+  </div>
+</div>
+
+<!-- ADVISOR SHEET: gợi ý chọn gói theo nhu cầu -->
+<div class="overlay" id="advisorOverlay" onclick="closeAdvisor()"></div>
+<div class="sheet" id="advisorSheet">
+  <div class="close" onclick="closeAdvisor()">✕</div>
+  <div class="body">
+    <div style="font-size:15px;font-weight:800;margin-bottom:2px">💡 Chọn gói phù hợp với bạn</div>
+    <p style="font-size:12px;color:#8a8b91;margin-bottom:14px">Trả lời đúng tình huống của bạn — hệ thống gợi ý gói phù hợp nhất, không cần đắn đo.</p>
+
+    <div class="adv-card" onclick="chooseRecommended('USBAICOD')">
+      <div class="adv-tag">📦 Có kiến thức cơ bản, muốn tiết kiệm</div>
+      <div class="adv-title">Đã biết dùng máy tính, tự học tốt</div>
+      <div class="adv-desc">Bạn thao tác máy tính/điện thoại ổn, chủ động được thời gian, chỉ cần video hướng dẫn từng bước để tự làm theo tốc độ của mình.</div>
+      <div class="adv-pick">→ Gợi ý: <b>USB Video Khoá Học — 499k</b> (cọc 50k, COD freeship)</div>
+    </div>
+
+    <div class="adv-card" onclick="chooseRecommended('USBAIZOOM')">
+      <div class="adv-tag">🎥 Yếu công nghệ, cần cầm tay chỉ việc</div>
+      <div class="adv-title">Mới bắt đầu, sợ làm sai, cần người kèm trực tiếp</div>
+      <div class="adv-desc">Bạn chưa quen thao tác kỹ thuật, tự xem video dễ bỏ cuộp giữa chừng — cần nhân viên hỗ trợ ngồi build cùng qua Zoom tới khi ra kênh thật.</div>
+      <div class="adv-pick">→ Gợi ý: <b>Học Online Qua Zoom — 1.999k</b> (hỗ trợ 1:1 trực tiếp)</div>
+    </div>
+
+    <div class="adv-card" onclick="chooseRecommended('USBAIVIP')">
+      <div class="adv-tag">👑 Muốn đồng hành phát triển lâu dài</div>
+      <div class="adv-title">Làm nghiêm túc, muốn mở rộng nhiều kênh/nguồn thu</div>
+      <div class="adv-desc">Bạn xác định đây là kênh thu nhập dài hạn hoặc mô hình kinh doanh, cần hệ thống build riêng theo đúng mục tiêu + hỗ trợ trọn đời khi mở rộng.</div>
+      <div class="adv-pick">→ Gợi ý: <b>Triển Khai Cùng Long Nam — 4.999k</b> (hỗ trợ trọn đời 1:1)</div>
+    </div>
+
+    <p style="font-size:11px;color:#8a8b91;text-align:center;margin-top:6px">Chưa chắc chọn gói nào? <a href="https://zalo.me/g/jxnzqiocw07gqka8s9fi" target="_blank" rel="noopener" style="color:var(--tt-red);font-weight:700">Nhắn Zalo để được tư vấn trực tiếp</a></p>
   </div>
 </div>
 
@@ -556,7 +598,7 @@ function showStep(step){
 }
 function openSheet(mode){
   sheetMode = mode;
-  document.getElementById('confirmBtn').textContent = mode==='cart' ? 'Thêm vào giỏ — Nhắn Zalo xác nhận' : 'Tiếp tục';
+  document.getElementById('confirmBtn').textContent = 'Tiếp tục';
   syncSheet();
   showStep('variant');
   overlay.classList.add('show'); sheet.classList.add('show');
@@ -570,14 +612,26 @@ function closeSheet(){
 function backToVariant(){ showStep('variant'); }
 
 function goToForm(){
-  if(sheetMode === 'cart'){
-    const msg = encodeURIComponent(`Em muốn đặt: ${selected.name} - Giá ${selected.price}đ - SL ${qty}. Em xin thông tin đặt hàng COD ạ.`);
-    showToast('Đang chuyển sang Zalo để xác nhận đơn...');
-    setTimeout(()=>{ window.open('https://zalo.me/g/jxnzqiocw07gqka8s9fi?text=' + msg, '_blank'); closeSheet(); }, 500);
-    return;
-  }
   showStep('form');
   setTimeout(()=>document.getElementById('co-name').focus(), 200);
+}
+
+/* ============ ADVISOR SHEET — gợi ý chọn gói theo nhu cầu ============ */
+const advisorOverlay = document.getElementById('advisorOverlay');
+const advisorSheet = document.getElementById('advisorSheet');
+function openAdvisor(){
+  advisorOverlay.classList.add('show'); advisorSheet.classList.add('show');
+  fbTrack('Lead', {content_name:'Mở gợi ý chọn gói', content_category:'USB Build AI Agent'});
+  ttTrack('Lead', {content_name:'Mở gợi ý chọn gói'});
+}
+function closeAdvisor(){
+  advisorOverlay.classList.remove('show'); advisorSheet.classList.remove('show');
+}
+function chooseRecommended(planCode){
+  const target = document.querySelector('#variantList .vcard[data-plan="' + planCode + '"]');
+  if(target) selectVariant(target, document.getElementById('variantList'));
+  closeAdvisor();
+  openSheet('buy');
 }
 
 function showToast(t){
