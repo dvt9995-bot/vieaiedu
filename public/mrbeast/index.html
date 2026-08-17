@@ -1,0 +1,958 @@
+<!DOCTYPE html><html lang="vi"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Công Thức MrBeast — Xây Kênh YouTube Kiếm Tiền Từ Con Số 0 | Long Nam</title>
+<meta name="description" content="Giải mã cẩm nang nội bộ của MrBeast thành lộ trình xây kênh YouTube kiếm tiền từ con số 0 cho người mới. Tài liệu tặng miễn phí.">
+<link href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html { background: #0B0F17; }
+.bg { position: fixed; top:-25mm; left:-25mm; right:-25mm; bottom:-25mm; background:#0B0F17; z-index:-10; }
+body {
+  font-family: "Be Vietnam Pro", -apple-system, sans-serif;
+  background: #0B0F17; color: #E8EDF5;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+  font-size: 10.8pt; line-height: 1.68;
+}
+.cover {
+  width: 100%; min-height: 78vh; margin: 0; padding: 8vh 6vw;
+  display: flex; flex-direction: column; justify-content: center;
+  position: relative; overflow: hidden; page-break-after: always;
+}
+
+section.chap > :first-child { margin-top: 0; }
+h1, h2, h3, h4 { line-height: 1.24; }
+h2 {
+  font-size: 20pt; font-weight: 800; color: #F5B942;
+  margin: 0 0 5mm 0; letter-spacing: -.01em; page-break-after: avoid;
+}
+h3 {
+  font-size: 13pt; font-weight: 700; color: #FFF;
+  margin: 7mm 0 2.5mm 0; padding-left: 4mm; border-left: 3px solid #F5B942;
+  page-break-after: avoid;
+}
+h4 { font-size: 11.2pt; font-weight: 700; color: #F5B942; margin: 5mm 0 1.5mm; page-break-after: avoid; }
+p { margin: 0 0 3mm 0; orphans: 2; widows: 2; }
+ul, ol { margin: 0 0 3.5mm 5mm; }
+li { margin-bottom: 1.6mm; }
+b, strong { color: #FFF; font-weight: 700; }
+em { color: #F5D18A; font-style: normal; font-weight: 600; }
+.kicker {
+  font-size: 8.5pt; letter-spacing: .22em; text-transform: uppercase;
+  color: #8A93A8; font-weight: 600; margin-bottom: 2mm;
+}
+.box {
+  background: rgba(245,185,66,.07); border: 1px solid rgba(245,185,66,.28);
+  border-radius: 3mm; padding: 5mm 6mm; margin: 4mm 0; page-break-inside: avoid;
+}
+.box .lbl {
+  font-size: 8.5pt; letter-spacing: .16em; text-transform: uppercase;
+  color: #F5B942; font-weight: 700; margin-bottom: 2mm;
+}
+.dark {
+  background: rgba(255,255,255,.045); border: 1px solid rgba(255,255,255,.10);
+  border-radius: 3mm; padding: 5mm 6mm; margin: 4mm 0; page-break-inside: avoid;
+}
+.warn {
+  background: rgba(224,90,70,.10); border: 1px solid rgba(224,90,70,.4);
+  border-radius: 3mm; padding: 5mm 6mm; margin: 4mm 0; page-break-inside: avoid;
+}
+.warn .lbl { color: #FF8A72; font-size: 8.5pt; letter-spacing:.16em; text-transform: uppercase; font-weight:700; margin-bottom:2mm;}
+table { width: 100%; border-collapse: collapse; margin: 4mm 0; font-size: 9.8pt; page-break-inside: avoid; }
+th {
+  background: rgba(245,185,66,.14); color: #F5B942; text-align: left;
+  padding: 2.5mm 3mm; font-weight: 700; font-size: 9.3pt;
+  border-bottom: 1px solid rgba(245,185,66,.35);
+}
+td { padding: 2.5mm 3mm; border-bottom: 1px solid rgba(255,255,255,.08); vertical-align: top; }
+tr:nth-child(even) td { background: rgba(255,255,255,.025); }
+.quote {
+  border-left: 3px solid rgba(245,185,66,.5); padding: 1mm 0 1mm 5mm;
+  color: #B9C2D4; font-style: italic; margin: 4mm 0; page-break-inside: avoid;
+}
+a.cta { text-decoration: none; display: block; }
+.cta {
+  background: linear-gradient(135deg, #F5B942, #E09B1E); color: #0B0F17;
+  border-radius: 3mm; padding: 6mm 7mm; margin: 5mm 0; text-align: center;
+  page-break-inside: avoid;
+}
+.cta .t { font-size: 15pt; font-weight: 800; margin-bottom: 2mm; }
+.cta .l { font-size: 13pt; font-weight: 800; letter-spacing: .01em; }
+.cta p { color: #2A2313; font-weight: 500; }
+.fig { margin: 5mm 0; page-break-inside: avoid; }
+.shot { margin: 5mm 0; page-break-inside: avoid; }
+.shot img { width: 100%; display: block; border-radius: 2.5mm; border: 1px solid rgba(255,255,255,.14); }
+.shot.pair { display: flex; gap: 4mm; }
+.shot.pair figure { flex: 1; margin: 0; }
+.shot.light img { background: #FFF; padding: 2mm; }
+.shot figcaption { font-size: 8.6pt; color: #7C879C; margin-top: 1.6mm;
+  border-left: 2px solid rgba(245,185,66,.35); padding-left: 3mm; }
+.shot .orig { color: #F5B942; font-weight: 700; }
+a.btn { display: inline-block; background: linear-gradient(135deg,#F5B942,#E09B1E); color: #0B0F17;
+  font-weight: 800; text-decoration: none; padding: 3.5mm 8mm; border-radius: 2.5mm; font-size: 11.5pt; }
+a.btn.ghost { background: none; border: 1px solid rgba(245,185,66,.55); color: #F5B942; }
+a.plain { color: #F5B942; text-decoration: none; font-weight: 700; }
+.ctarow { display: flex; gap: 4mm; align-items: center; margin: 4mm 0; page-break-inside: avoid; }
+.fig-svg { width: 100%; height: auto; display: block; }
+.backcover { margin-top: 8mm; border: 1px solid rgba(245,185,66,.45); border-radius: 4mm;
+  background: rgba(245,185,66,.07); padding: 12mm 10mm; text-align: center; page-break-inside: avoid; }
+.backcover .bc-k { font-size: 8.5pt; letter-spacing: .22em; text-transform: uppercase; color: #8A93A8; }
+.backcover .bc-t { font-size: 20pt; font-weight: 800; color: #FFF; margin: 4mm 0; line-height: 1.3; }
+.backcover .bc-t span { color: #F5B942; }
+.backcover .bc-p { max-width: 130mm; margin: 0 auto 6mm; color: #B9C2D4; font-size: 10.5pt; }
+.backcover .bc-l { display: inline-block; background: linear-gradient(135deg,#F5B942,#E09B1E);
+  color: #0B0F17; font-weight: 800; font-size: 14pt; padding: 4mm 10mm; border-radius: 2.5mm; }
+.backcover .bc-l { text-decoration: none; }
+.backcover .bc-z { margin-top: 5mm; font-size: 9.5pt; color: #B9C2D4; }
+.backcover .bc-f { margin-top: 6mm; font-size: 9pt; color: #7C879C; }
+.fig figcaption { font-size: 8.6pt; color: #7C879C; margin-top: 1.6mm; padding-left: 1mm;
+  border-left: 2px solid rgba(245,185,66,.35); padding-left: 3mm; }
+@media screen {
+  .anim-line { stroke-dasharray: 1; stroke-dashoffset: 1; animation: draw 1.8s ease-out forwards; }
+  @keyframes draw { to { stroke-dashoffset: 0; } }
+  .anim-area { opacity: 0; animation: fade .9s ease-out 1.2s forwards; }
+  @keyframes fade { to { opacity: .22; } }
+  .anim-grow { transform-origin: left center; transform: scaleX(0);
+    animation: grow .9s cubic-bezier(.22,1,.36,1) forwards; }
+  @keyframes grow { to { transform: scaleX(1); } }
+  .anim-pop { opacity: 0; animation: pop .5s ease-out forwards; }
+  @keyframes pop { to { opacity: 1; } }
+  .anim-flow { stroke-dasharray: 4 4; animation: flow 1s linear infinite; }
+  @keyframes flow { to { stroke-dashoffset: -8; } }
+  .fig-svg .anim-grow:nth-of-type(2n) { animation-delay: .12s }
+  .fig-svg .anim-grow:nth-of-type(3n) { animation-delay: .22s }
+  .fig-svg .anim-pop:nth-of-type(2n) { animation-delay: .15s }
+  .fig-svg .anim-pop:nth-of-type(3n) { animation-delay: .3s }
+}
+.cover { background: radial-gradient(120% 80% at 75% 15%, rgba(245,185,66,.22), rgba(11,15,23,0) 58%); }
+.cover .tag { font-size: 9pt; letter-spacing: .3em; text-transform: uppercase; color: #F5B942; font-weight: 700; }
+.cover h1 { font-size: 42pt; font-weight: 800; color: #FFF; margin: 6mm 0 4mm; letter-spacing: -.02em; }
+.cover h1 span { color: #F5B942; }
+.cover .sub { font-size: 13pt; color: #AEB8CC; max-width: 130mm; line-height: 1.6; }
+.cover .rule { width: 30mm; height: 3px; background: #F5B942; margin: 8mm 0; }
+.cover .by { font-size: 11pt; color: #E8EDF5; font-weight: 600; }
+.cover .by small { display: block; color: #7C879C; font-weight: 400; font-size: 9.5pt; margin-top: 1.5mm; }
+.cover .free { position: absolute; bottom: 6mm; left: 4mm; font-size: 9.5pt; color: #7C879C; }
+.portrait { position: absolute; right: -14mm; bottom: 0; height: 160mm; opacity: .9;
+  -webkit-mask-image: linear-gradient(to left, #000 60%, transparent 100%); }
+.toc li { margin-bottom: 2.6mm; font-size: 11pt; }
+.toc b { color: #F5B942; }
+.chapnum { font-size: 9pt; letter-spacing: .2em; color: #F5B942; font-weight: 700; text-transform: uppercase; }
+.grid2 { display: flex; gap: 5mm; }
+.grid2 > div { flex: 1; }
+.stat { text-align: center; padding: 4mm 2mm; background: rgba(255,255,255,.04); border-radius: 3mm; border:1px solid rgba(255,255,255,.08); }
+.stat .n { font-size: 20pt; font-weight: 800; color: #F5B942; line-height:1.1; }
+.stat .c { font-size: 9pt; color: #9AA5BA; margin-top: 1mm; }
+.timeline { margin: 4mm 0; }
+.tl-row { page-break-inside: avoid; }
+.tl-row { display: flex; gap: 4mm; margin-bottom: 3mm; align-items: flex-start; }
+.tl-tag { flex: 0 0 26mm; background: rgba(245,185,66,.14); color:#F5B942; font-weight:700;
+  border-radius: 2mm; padding: 2mm 2mm; text-align:center; font-size: 9.5pt; }
+.tl-body { flex: 1; font-size: 10.5pt; }
+.check { list-style: none; margin-left: 0; }
+.check li { padding-left: 7mm; position: relative; }
+.check li::before { content: "▢"; position: absolute; left: 0; color: #F5B942; font-size: 12pt; }
+.small { font-size: 9.5pt; color: #9AA5BA; }
+
+body { font-size: 16px; line-height: 1.75; }
+.wrap { max-width: 820px; margin: 0 auto; padding: 0 22px 96px; }
+section.chap { padding: 46px 0; border-top: 1px solid rgba(245,185,66,.16); }
+.cover h1 { font-size: clamp(38px, 8vw, 72px); }
+.cover .sub { font-size: clamp(15px, 2.4vw, 19px); max-width: 560px; }
+.portrait { height: 74%; right: -4%; }
+h2 { font-size: clamp(24px, 4.4vw, 34px); } h3 { font-size: 20px; } h4 { font-size: 17px; }
+table { font-size: 15px; } .fig, .shot { margin: 28px 0; }
+.stickycta { position: fixed; left: 0; right: 0; bottom: 0; z-index: 50;
+  background: linear-gradient(135deg,#F5B942,#E09B1E); color:#0B0F17; text-align:center;
+  padding: 13px 16px; font-weight: 800; text-decoration: none; display:block; font-size: 15px;
+  box-shadow: 0 -8px 30px rgba(0,0,0,.45); }
+.reveal { opacity: 0; transform: translateY(18px);
+  transition: opacity .7s ease, transform .7s cubic-bezier(.22,1,.36,1); }
+.reveal.on { opacity: 1; transform: none; }
+.fig-svg .anim-line, .fig-svg .anim-grow, .fig-svg .anim-pop { animation-play-state: paused; }
+.fig.on .fig-svg .anim-line, .fig.on .fig-svg .anim-grow, .fig.on .fig-svg .anim-pop { animation-play-state: running; }
+@media (max-width: 640px){ .portrait{ opacity:.35 } .cover{ min-height:70vh } .shot.pair{ display:block } }
+</style></head><body>
+<div class="cover">
+  <img class="portrait" src="portrait.png" alt="">
+  <div class="tag">Tài liệu nghiên cứu &middot; Tặng miễn phí</div>
+  <h1>Công Thức<br><span>MrBeast</span></h1>
+  <div class="rule"></div>
+  <div class="sub">Giải mã toàn bộ cẩm nang nội bộ của YouTuber lớn nhất hành tinh — và chuyển thành lộ trình xây kênh YouTube kiếm tiền <b>từ con số 0</b> cho người Việt mới bắt đầu.</div>
+  <div class="rule"></div>
+  <div class="by">Long Nam<small>Chuyên Gia AI &middot; vieaiedu.vn</small></div>
+  <div class="free">Không bán &middot; Không thu phí &middot; Được phép chia sẻ lại nguyên vẹn</div>
+</div>
+
+
+<div class="wrap">
+<section class="chap">
+  <div class="kicker">Lời mở đầu</div>
+  <h2>Vì sao tôi ngồi bóc tách tài liệu này</h2>
+
+  <p>Có một quyển sổ tay nội bộ mà MrBeast viết cho nhân viên mới của mình. Không phải sách bán ngoài hiệu, không phải bài phỏng vấn PR. Nó là thứ ông ấy viết để nhồi vào đầu người mới toàn bộ những gì đội ngũ đã học được sau <b>một thập kỷ</b> và <b>hàng trăm nghìn giờ</b> làm YouTube — kèm cả câu chửi thề, lỗi chính tả và những con số thật lấy từ backend kênh.</p>
+
+  <p>Tôi đọc nó không phải để thán phục. Tôi đọc để <em>đo</em>. Vì bên trong nó có thứ mà 99% người làm YouTube Việt Nam đang thiếu: <b>một hệ quy chiếu bằng số</b> để biết video của mình hỏng ở đâu, thay vì đoán mò rồi tự an ủi "chắc do thuật toán".</p>
+
+  <div class="box">
+    <div class="lbl">Tài liệu này KHÔNG phải bản dịch</div>
+    <p style="margin:0">Bản gốc viết cho một công ty sản xuất có hàng trăm nhân sự, ngân sách hàng triệu đô mỗi video, có ê-kíp quay, có talent, có đội hậu kỳ. Bạn thì không. Bạn có một cái laptop và buổi tối rảnh.</p>
+    <p style="margin:2mm 0 0">Nên việc của tôi ở đây là: <b>tách phần nguyên lý ra khỏi phần ngân sách.</b> Nguyên lý về sự chú ý của con người thì giống nhau ở mọi quy mô. Chỉ có cách thực thi là phải khác — và phần "cách thực thi cho người tay không" chính là phần tôi viết thêm, dựa trên những gì tôi và học viên của tôi đã chạy thật.</p>
+  </div>
+
+  <h3>Ba lời hứa của quyển này</h3>
+  <ol>
+    <li><b>Bạn sẽ hiểu vì sao video của bạn ít view</b> — bằng ba con số cụ thể, đo được ngay trong YouTube Studio, chứ không phải "nội dung chưa hay".</li>
+    <li><b>Bạn sẽ có bản đồ giữ chân theo từng phút</b> — biết chính xác giây thứ mấy phải xảy ra chuyện gì.</li>
+    <li><b>Bạn sẽ có lộ trình 90 ngày</b> để đi từ kênh trống trơn tới kênh đủ điều kiện bật kiếm tiền.</li>
+  </ol>
+
+  <h3>Và một sự thật tôi sẽ nói thẳng ở cuối quyển</h3>
+  <p>Công thức này <b>hoạt động</b>. Nhưng nó được thiết kế cho một <b>đội ngũ</b>. MrBeast nói rất rõ trong tài liệu gốc: "Nếu trong một ngày làm việc bạn chỉ làm một video duy nhất, ngày đó bạn đã thất bại." Ông ấy nói câu đó với người có 200 đồng nghiệp.</p>
+  <p>Bạn ngồi một mình. Đây là nút thắt thật sự — và tôi sẽ dành hẳn chương cuối để nói cách gỡ nó bằng thứ mà năm 2020 chưa có: <em>một cộng sự AI</em>.</p>
+
+  <div class="quote">"Đọc xong hãy đọc lại từ đầu, vì tôi cam đoan bạn chưa nhớ đủ." — câu cuối cùng trong tài liệu gốc của MrBeast. Tôi để nguyên câu đó ở đây, vì nó đúng.</div>
+</section><section class="chap">
+  <div class="kicker">Nội dung</div>
+  <h2>Bạn sẽ đi qua 10 chặng</h2>
+  <ol class="toc">
+    <li><b>Sự thật đầu tiên:</b> mục tiêu của bạn không phải "làm video hay"</li>
+    <li><b>Ba con số quyết định tiền:</b> CTR, AVD, AVP — và ngưỡng cần đạt</li>
+    <li><b>Tiêu đề &amp; ảnh bìa:</b> nơi 90% kênh chết trước khi có ai bấm vào</li>
+    <li><b>Bản đồ giữ chân theo phút:</b> phút 0–1, 1–3, 3–6, nửa sau, và cái kết cụt</li>
+    <li><b>Format &amp; bậc thang:</b> vì sao có kênh xem là dính, có kênh xem là thoát</li>
+    <li><b>Yếu tố "WOW":</b> thứ không đo được nhưng quyết định bạn có được nhớ</li>
+    <li><b>Sáng tạo thay tiền:</b> nguyên tắc biến ngân sách 0 đồng thành lợi thế</li>
+    <li><b>Kỷ luật sản xuất:</b> 12 quy tắc vận hành đã cứu hàng trăm video</li>
+    <li><b>Kiếm tiền thật:</b> 5 dòng tiền, thứ tự bật, và cách không giết retention</li>
+    <li><b>Lộ trình 90 ngày từ 0</b> + nút thắt cổ chai &amp; cách gỡ bằng cộng sự AI</li>
+  </ol>
+  <p class="small" style="margin-top:3mm">Khép lại bằng <b>phần tổng kết</b>: 10 việc phải làm · 10 điều đừng làm · một trang nhắc việc dán lên bàn.</p>
+  <ol style="display:none">
+  </ol>
+
+  <h3>Cách dùng quyển này cho hiệu quả</h3>
+  <p>Đừng đọc một mạch rồi cất. Hãy mở YouTube Studio của bạn ra song song. Mỗi khi tôi đưa một con số, hãy dừng lại và tìm con số tương ứng của chính bạn. Quyển này chỉ có giá trị khi nó trở thành <b>bảng chẩn đoán</b>, không phải bài đọc.</p>
+
+  <div class="dark">
+    <div class="grid2">
+      <div class="stat"><div class="n">818<span style="font-size:11pt">s</span></div><div class="c">Độ dài trung bình<br>100 video MrBeast gần nhất</div></div>
+      <div class="stat"><div class="n">21tr</div><div class="c">Lượt xem mất đi<br>chỉ trong phút đầu tiên</div></div>
+      <div class="stat"><div class="n">1'38"</div><div class="c">Chênh lệch thời lượng xem<br>giữa video 120tr và 45tr view</div></div>
+    </div>
+    <p class="small" style="margin:3mm 0 0">Ba con số này lấy nguyên từ backend kênh trong tài liệu gốc. Chúng là toàn bộ luận điểm của quyển sách: <b>khác biệt giữa video thành công và thất bại nằm ở đơn vị giây, không nằm ở đơn vị ý tưởng.</b></p>
+  </div>
+</section><section class="chap">
+  <div class="chapnum">Chặng 01</div>
+  <h2>Mục tiêu không phải "làm video hay"</h2>
+
+  <p>Câu đầu tiên MrBeast dặn nhân viên mới, và nó phá vỡ trực giác của gần như tất cả mọi người:</p>
+
+  <div class="quote">Mục tiêu của bạn là làm ra <b>video YouTube tốt nhất có thể</b>. Không phải video được sản xuất tốt nhất. Không phải video hài nhất. Không phải video đẹp nhất. Không phải video chất lượng cao nhất.</div>
+
+  <p>Nghe như chơi chữ. Nhưng đây là ranh giới sống còn. Một video "chất lượng cao" theo chuẩn điện ảnh — màu đẹp, tiết tấu chậm rãi, mở đầu xây không khí — là một video <b>chết trên YouTube</b>. Vì YouTube không chấm điểm nghệ thuật. YouTube chỉ đo một thứ: <em>bạn có giữ được người xem trên nền tảng lâu hơn không.</em></p>
+
+  <h3>Bạn không cạnh tranh với ai bạn nghĩ</h3>
+  <p>Bạn không cạnh tranh với kênh cùng chủ đề. Bạn cạnh tranh với <b>toàn bộ phần còn lại của cái điện thoại đó</b>: TikTok đang mở ở tab khác, tin nhắn vừa rung, và cái ngón tay cách nút "back" đúng 2 centimet.</p>
+
+  <div class="box">
+    <div class="lbl">Dịch sang bối cảnh của bạn</div>
+    <p style="margin:0">Người mới hay mắc kẹt ở việc mua micro xịn, học màu, học chuyển cảnh. Đó là đầu tư vào <b>chất lượng sản xuất</b>. Trong khi thứ quyết định 10 nghìn hay 10 triệu view là <b>chất lượng quyết định</b>: chọn đề tài nào, đặt tên gì, giây thứ 3 cho người ta xem cái gì.</p>
+    <p style="margin:2mm 0 0">Một video quay bằng điện thoại nhưng đúng cấu trúc sẽ đè bẹp một video quay máy 60 triệu nhưng sai cấu trúc. Tôi đã thấy điều này lặp lại đủ nhiều lần để không còn coi nó là ngoại lệ.</p>
+  </div>
+
+  <h3>Đừng bê tư duy phim ảnh vào YouTube</h3>
+  <p>Tài liệu gốc nói thẳng: "99% phim điện ảnh và series truyền hình sẽ thất bại trên YouTube." Lý do là cấu trúc kể chuyện điện ảnh cho phép <b>15 phút xây dựng</b> trước khi có cao trào. Trên YouTube, 15 phút đó là toàn bộ video — và bạn đã mất 60% khán giả từ phút thứ nhất.</p>
+
+  <h3>Ba cái bẫy của người mới, theo đúng thứ tự phổ biến</h3>
+  <table>
+    <tr><th style="width:34%">Cái bẫy</th><th>Vì sao nó giết kênh</th></tr>
+    <tr><td><b>"Cứ làm đi rồi thuật toán tìm tới"</b></td><td>Thuật toán chỉ khuếch đại tín hiệu <em>đã có</em>. Video không ai bấm vào thì không có gì để khuếch đại. Số 0 nhân bao nhiêu cũng là 0.</td></tr>
+    <tr><td><b>Đầu tư thiết bị trước, nội dung sau</b></td><td>Thiết bị nâng chất lượng lên 10%. Cấu trúc nâng kết quả lên 10 lần. Bạn đang tối ưu sai đầu.</td></tr>
+    <tr><td><b>Làm video mình thích, không phải video có người tìm</b></td><td>Đây là sở thích cá nhân, không phải kênh. Cả hai đều hợp lệ — nhưng chỉ một cái ra tiền, và bạn phải tự chọn mình đang làm cái nào.</td></tr>
+  </table>
+
+  <div class="warn">
+    <div class="lbl">Bài tập bắt buộc trước khi sang chặng 2</div>
+    <p style="margin:0">Mở 5 video gần nhất của bạn (hoặc 5 video của kênh bạn muốn giống). Với mỗi video, trả lời đúng một câu: <b>"Người ta bấm vào video này vì tò mò điều gì?"</b> Nếu bạn không trả lời được trong 5 giây, người xem cũng vậy — và họ không cố như bạn đâu.</p>
+  </div>
+</section><section class="chap">
+  <div class="chapnum">Chặng 02</div>
+  <h2>Ba con số quyết định bạn có tiền hay không</h2>
+
+  <p>MrBeast nói ông ấy đã dành khoảng <b>20.000–30.000 giờ</b> nghiên cứu tính lan truyền trên YouTube. Kết tinh lại chỉ còn ba chữ viết tắt. Ba chữ này bạn phải thuộc như thuộc tên mình, vì đây là ngôn ngữ chung của mọi người làm nghề.</p>
+
+  <h3>1. CTR — Tỷ lệ nhấp</h3>
+  <p>Bao nhiêu người <b>nhìn thấy</b> ảnh bìa của bạn, và bao nhiêu trong số đó <b>bấm vào</b>. 100 người thấy, 6 người bấm → CTR 6%.</p>
+  <p>CTR là cánh cửa. Nội dung bên trong hay tới đâu cũng vô nghĩa nếu cửa không mở. Và CTR <b>chỉ phụ thuộc vào hai thứ</b>: tiêu đề và ảnh bìa. Không phải nội dung.</p>
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 232" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="230" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Cửa vào hẹp hơn bạn tưởng</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Ví dụ một kênh mới với CTR 4% — mỗi bước là một lần bị chặn</text>
+<rect class="anim-grow" x="220" y="78" width="300.0" height="20" rx="4" fill="#8A93A8" opacity=".85"/><text x="212" y="93" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="600" text-anchor="end" letter-spacing="0">Hiển thị trong đề xuất</text><text x="528.0" y="93" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#8A93A8" font-weight="800" text-anchor="start" letter-spacing="0">100.000</text><rect class="anim-grow" x="220" y="110" width="90.0" height="20" rx="4" fill="#E08A3C" opacity=".85"/><text x="212" y="125" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="600" text-anchor="end" letter-spacing="0">Bấm vào (CTR 4%)</text><text x="318.0" y="125" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E08A3C" font-weight="800" text-anchor="start" letter-spacing="0">4.000</text><rect class="anim-grow" x="220" y="142" width="57.0" height="20" rx="4" fill="#F5B942" opacity=".85"/><text x="212" y="157" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="600" text-anchor="end" letter-spacing="0">Xem quá phút đầu</text><text x="285.0" y="157" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">2.600</text><rect class="anim-grow" x="220" y="174" width="27.0" height="20" rx="4" fill="#7ED9A6" opacity=".85"/><text x="212" y="189" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="600" text-anchor="end" letter-spacing="0">Xem tới cuối</text><text x="255.0" y="189" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#7ED9A6" font-weight="800" text-anchor="start" letter-spacing="0">1.200</text>
+<text x="24" y="218" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">CTR chỉ phụ thuộc TIÊU ĐỀ và ẢNH BÌA. Nội dung hay tới đâu cũng vô nghĩa nếu cửa không mở.</text></svg><figcaption>Phễu từ lượt hiển thị tới người xem hết video.</figcaption></figure>
+
+  <h3>2. AVD — Thời lượng xem trung bình</h3>
+  <p>Trung bình mỗi người xem video của bạn được <b>bao nhiêu phút giây</b>. Đây là chỉ số quan trọng nhất với người sản xuất, vì nó là thứ YouTube dùng để quyết định có đẩy video của bạn cho người lạ hay không.</p>
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 300" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="298" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<g><text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="14" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Thời điểm quan trọng để giữ chân khán giả</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">YouTube Studio → Số liệu phân tích → Mức độ tương tác</text>
+<rect x="24" y="64" width="150" height="1" fill="rgba(255,255,255,.09)"/>
+<text x="24" y="88" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Thời lượng xem TB</text><text x="24" y="112" font-family="Be Vietnam Pro, sans-serif" font-size="22" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">7:24</text>
+<text x="150" y="88" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">% xem trung bình</text><text x="150" y="112" font-family="Be Vietnam Pro, sans-serif" font-size="22" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">53,0%</text>
+<text x="280" y="88" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Độ dài video</text><text x="280" y="112" font-family="Be Vietnam Pro, sans-serif" font-size="22" fill="#E8EDF5" font-weight="800" text-anchor="start" letter-spacing="0">13:59</text>
+<line x1="46" y1="246" x2="594" y2="246" stroke="rgba(255,255,255,.09)"/><text x="602" y="250" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">0%</text><line x1="46" y1="196.5" x2="594" y2="196.5" stroke="rgba(255,255,255,.09)"/><text x="602" y="200.5" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">33%</text><line x1="46" y1="147.0" x2="594" y2="147.0" stroke="rgba(255,255,255,.09)"/><text x="602" y="151.0" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">66%</text><line x1="46" y1="96" x2="594" y2="96" stroke="rgba(255,255,255,.09)"/><text x="602" y="100" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">100%</text>
+<path class="anim-area" d="M46.0 96.0 L73.4 135.0 L100.8 147.0 L128.2 153.0 L155.6 156.0 L183.0 158.2 L210.4 159.8 L237.8 161.2 L265.2 162.8 L292.6 164.2 L320.0 165.8 L347.4 167.2 L374.8 168.8 L402.2 170.2 L429.6 171.8 L457.0 173.2 L484.4 174.3 L511.8 175.5 L539.2 176.7 L566.6 178.5 L594.0 201.0 L594.0 246.0 L46.0 246.0 Z" fill="url(#gA)" opacity=".22"/>
+<path class="anim-line" d="M46.0 96.0 L73.4 135.0 L100.8 147.0 L128.2 153.0 L155.6 156.0 L183.0 158.2 L210.4 159.8 L237.8 161.2 L265.2 162.8 L292.6 164.2 L320.0 165.8 L347.4 167.2 L374.8 168.8 L402.2 170.2 L429.6 171.8 L457.0 173.2 L484.4 174.3 L511.8 175.5 L539.2 176.7 L566.6 178.5 L594.0 201.0" fill="none" stroke="#5AA9E6" stroke-width="2.4"
+      stroke-linejoin="round" pathLength="1"/>
+<rect x="46" y="96" width="39.455999999999996" height="150" fill="#FF6B57" opacity=".13"/>
+<line x1="46" y1="96" x2="46" y2="246" stroke="#FF6B57" stroke-width="1.5"/>
+<text x="98" y="220" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#FF6B57" font-weight="700" text-anchor="start" letter-spacing="0">↙ 31% người xem rơi ngay trong phút đầu</text>
+<text x="46" y="264" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">0:00</text><text x="320.0" y="264" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">7:00</text>
+<text x="594" y="264" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">13:59</text>
+<text x="24" y="288" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">“69% người xem vẫn còn ở mốc 0:30” — dòng gợi ý của chính YouTube</text>
+<defs><linearGradient id="gA" x1="0" y1="0" x2="0" y2="1">
+<stop offset="0" stop-color="#5AA9E6"/><stop offset="1" stop-color="#5AA9E6" stop-opacity="0"/>
+</linearGradient></defs></g></svg><figcaption>Biểu đồ giữ chân thật của một video 13:59 — vẽ lại từ ảnh chụp backend trong tài liệu gốc.</figcaption></figure>
+  <p>Tài liệu gốc đưa một ví dụ đắt giá: hai video <b>gần như bằng nhau về độ dài</b>, cùng một kênh. Một video 120 triệu view, một video 45 triệu view. Khác biệt duy nhất trong dữ liệu giữ chân: video thắng có AVD <b>dài hơn 1 phút 38 giây</b>.</p>
+
+  <div class="box">
+    <div class="lbl">Hiểu cho đúng</div>
+    <p style="margin:0">Không phải "video hay hơn nên nhiều view hơn". Mà là: <b>người ta xem lâu hơn → YouTube thấy tín hiệu tốt → YouTube đẩy đi xa hơn → nhiều view hơn.</b> Chiều nhân quả đi từ giây xem sang lượt xem, không phải ngược lại. Nắm được chiều này là bạn ngừng làm video theo cảm tính.</p>
+  </div>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 330" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="328" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Cùng một kênh · gần như cùng độ dài · khác nhau 1 phút 38 giây</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Số liệu ngày đầu, vẽ lại từ backend trong tài liệu gốc</text>
+<g>
+<rect x="24" y="70" width="266" height="224" rx="9" fill="rgba(255,255,255,.03)"
+  stroke="rgba(255,255,255,.10)"/>
+<text x="36" y="92" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Video A — dài 11:05</text>
+<text x="36" y="120" font-family="Be Vietnam Pro, sans-serif" font-size="19" fill="#8A93A8" font-weight="800" text-anchor="start" letter-spacing="0">5:58</text><text x="36" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">thời lượng xem TB</text>
+<text x="154" y="120" font-family="Be Vietnam Pro, sans-serif" font-size="19" fill="#8A93A8" font-weight="800" text-anchor="start" letter-spacing="0">49,9%</text><text x="154" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">phần trăm xem</text>
+<line x1="32" y1="264" x2="282" y2="264" stroke="rgba(255,255,255,.09)"/><line x1="32" y1="205.0" x2="282" y2="205.0" stroke="rgba(255,255,255,.09)"/><line x1="32" y1="146" x2="282" y2="146" stroke="rgba(255,255,255,.09)"/>
+<path class="anim-line" d="M32.0 146.0 L44.5 176.7 L57.0 186.1 L69.5 190.8 L82.0 193.2 L94.5 195.0 L107.0 196.2 L119.5 197.3 L132.0 198.5 L144.5 199.7 L157.0 200.9 L169.5 202.1 L182.0 203.2 L194.5 204.4 L207.0 205.6 L219.5 206.8 L232.0 207.6 L244.5 208.5 L257.0 209.5 L269.5 210.9 L282.0 228.6" fill="none" stroke="#5AA9E6"
+   stroke-width="2.2" pathLength="1"/>
+<text x="36" y="280" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="800" text-anchor="start" letter-spacing="0">45 triệu lượt xem</text>
+</g>
+<g>
+<rect x="342" y="70" width="266" height="224" rx="9" fill="rgba(255,255,255,.03)"
+  stroke="rgba(245,185,66,.45)"/>
+<text x="354" y="92" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Video B — dài 11:09</text>
+<text x="354" y="120" font-family="Be Vietnam Pro, sans-serif" font-size="19" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">7:36</text><text x="354" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">thời lượng xem TB</text>
+<text x="472" y="120" font-family="Be Vietnam Pro, sans-serif" font-size="19" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">68,3%</text><text x="472" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">phần trăm xem</text>
+<line x1="350" y1="264" x2="600" y2="264" stroke="rgba(255,255,255,.09)"/><line x1="350" y1="205.0" x2="600" y2="205.0" stroke="rgba(255,255,255,.09)"/><line x1="350" y1="146" x2="600" y2="146" stroke="rgba(255,255,255,.09)"/>
+<path class="anim-line" d="M350.0 146.0 L362.5 164.9 L375.0 169.6 L387.5 172.6 L400.0 174.3 L412.5 176.1 L425.0 177.3 L437.5 178.4 L450.0 179.6 L462.5 180.8 L475.0 182.0 L487.5 183.2 L500.0 184.3 L512.5 185.5 L525.0 186.7 L537.5 187.9 L550.0 189.1 L562.5 190.2 L575.0 192.0 L587.5 199.1 L600.0 231.0" fill="none" stroke="#F5B942"
+   stroke-width="2.2" pathLength="1"/>
+<text x="354" y="280" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="800" text-anchor="start" letter-spacing="0">120 triệu lượt xem  ×2,7</text>
+</g>
+<text x="24" y="314" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Người ta xem lâu hơn 1’38” → YouTube đẩy đi xa hơn → gấp gần 3 lần lượt xem.</text></svg><figcaption>Hai video cùng kênh, chênh nhau 1’38” thời lượng xem → chênh gần 3 lần lượt xem.</figcaption></figure>
+  <figure class="shot "><img src="src-img/p06-0.png"><figcaption><span class="orig">Ảnh gốc</span> — ảnh chụp màn hình YouTube Studio trong tài liệu gốc — cùng bộ số em vẽ lại ở trên.</figcaption></figure>
+  <h3>3. AVP — Phần trăm xem trung bình</h3>
+  <p>Người ta xem hết <b>bao nhiêu phần trăm</b> video. Chỉ số này gắn chặt với độ dài bạn chọn: video 5 phút dễ đạt AVP cao hơn video 20 phút, nhưng AVD lại thấp hơn. Đây là bài toán đánh đổi mà bạn phải tự cân theo chủ đề.</p>
+
+  <div class="shot pair "><figure><img src="src-img/p28-0.png"></figure><figure><img src="src-img/p28-1.png"></figure></div><div class="shot"><figcaption><span class="orig">Ảnh gốc</span> — hai video thật của kênh. Trái: AVD 5:58 · 49,9%. Phải: AVD 7:36 · 68,3%. Cùng độ dài ~11 phút.</figcaption></div>
+  <h3>Ngưỡng tham chiếu cho kênh mới (thị trường Việt)</h3>
+  <table>
+    <tr><th>Chỉ số</th><th>Báo động</th><th>Chấp nhận được</th><th>Tốt</th></tr>
+    <tr><td><b>CTR</b> (video dài)</td><td>&lt; 3%</td><td>4 – 6%</td><td>&gt; 8%</td></tr>
+    <tr><td><b>AVP</b> (video 8–12 phút)</td><td>&lt; 25%</td><td>30 – 40%</td><td>&gt; 45%</td></tr>
+    <tr><td><b>AVP</b> (Shorts)</td><td>&lt; 50%</td><td>60 – 75%</td><td>&gt; 85%</td></tr>
+    <tr><td><b>Giữ chân phút đầu</b></td><td>&lt; 50%</td><td>60 – 70%</td><td>&gt; 75%</td></tr>
+  </table>
+  <p class="small">Đây là khoảng tham chiếu để tự chẩn đoán, không phải hằng số. Ngưỡng thật khác nhau theo ngách — kênh tin tức khác kênh giải trí khác kênh hướng dẫn. Cách dùng đúng: so <b>chính bạn tháng này với chính bạn tháng trước</b>, và so video này với video trước của bạn.</p>
+
+  <h3>Bảng chẩn đoán: video của bạn hỏng ở đâu?</h3>
+  <table>
+    <tr><th>Triệu chứng</th><th>Nguyên nhân gốc</th><th>Sửa ở đâu</th></tr>
+    <tr><td>Ít view, nhưng ai xem cũng xem hết</td><td>CTR thấp — cửa không mở</td><td>Tiêu đề + ảnh bìa. Nội dung đang ổn, đừng đụng vào.</td></tr>
+    <tr><td>Nhiều impression, người bấm vào rồi thoát ngay 15 giây</td><td>Sai kỳ vọng — bìa hứa một đằng, video một nẻo</td><td>15 giây đầu phải trả ngay lời hứa của ảnh bìa</td></tr>
+    <tr><td>Tụt đều từ từ suốt video</td><td>Không có cấu trúc, không có leo thang</td><td>Chặng 4 và 5 của quyển này</td></tr>
+    <tr><td>Có một vực sụt ở đúng một mốc</td><td>Đoạn đó dài dòng / quảng cáo lộ liễu / mất nhịp</td><td>Cắt thẳng đoạn đó ở video sau</td></tr>
+  </table>
+
+  <h3>Và cách cả đội chấm điểm một video: "mấy trên 10?"</h3>
+  <p>YouTube có sẵn tính năng so sánh video vừa đăng với <b>9 video trước đó</b>, xếp hạng theo lượt xem ở giờ thứ nhất, thứ hai, thứ ba… Nội bộ họ hỏi nhau đúng một câu: <em>"Video này được mấy trên 10?"</em></p>
+  <p>Ra <b>1/10 là tốt</b> — video mới đang dẫn đầu. Ra <b>10/10 là tệ</b>. Đây là thang chấm rẻ nhất và trung thực nhất mà bạn cũng dùng được ngay từ video thứ mười.</p>
+<figure class="fig"><svg class="fig-svg" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="248" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">“Video này được mấy trên 10?”</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">YouTube xếp hạng video mới so với 9 video trước — đây là cách cả đội nói chuyện với nhau</text>
+<text x="28" y="74" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">1</text><rect class="anim-grow" x="36" y="65" width="120.0" height="10" rx="2" fill="#F5B942" opacity="0.85"/><text x="168" y="74" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="start" letter-spacing="0">$456.000 Squid Game ngoài đời thật</text><text x="612" y="74" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="end" letter-spacing="0">198.5 tr</text><text x="28" y="90" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">2</text><rect class="anim-grow" x="36" y="81" width="44.19143576826196" height="10" rx="2" fill="#F5B942" opacity="0.85"/><text x="168" y="90" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Phòng thoát hiểm nguy hiểm nhất</text><text x="612" y="90" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="end" letter-spacing="0">73.1 tr</text><text x="28" y="106" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">3</text><rect class="anim-grow" x="36" y="97" width="34.458438287153655" height="10" rx="2" fill="#F5B942" opacity="0.85"/><text x="168" y="106" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">$10.000 mỗi ngày bạn sống sót trong tù</text><text x="612" y="106" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="end" letter-spacing="0">57.0 tr</text><text x="28" y="122" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">4</text><rect class="anim-grow" x="36" y="113" width="32.64483627204031" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="122" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Bơi cùng cá mập lấy $100.000</text><text x="612" y="122" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">54.0 tr</text><text x="28" y="138" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">5</text><rect class="anim-grow" x="36" y="129" width="31.97984886649874" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="138" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Trốn tìm cực đoan $1.000.000</text><text x="612" y="138" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">52.9 tr</text><text x="28" y="154" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">6</text><rect class="anim-grow" x="36" y="145" width="31.133501259445847" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="154" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Dọn bãi biển bẩn nhất thế giới</text><text x="612" y="154" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">51.5 tr</text><text x="28" y="170" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">7</text><rect class="anim-grow" x="36" y="161" width="30.83123425692695" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="170" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Tôi bị quân đội truy lùng</text><text x="612" y="170" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">51.0 tr</text><text x="28" y="186" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">8</text><rect class="anim-grow" x="36" y="177" width="30.04534005037784" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="186" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Ai buông tay cuối cùng được Lamborghini</text><text x="612" y="186" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">49.7 tr</text><text x="28" y="202" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">9</text><rect class="anim-grow" x="36" y="193" width="26.297229219143578" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="202" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Giải đấu influencer $1.000.000</text><text x="612" y="202" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">43.5 tr</text><text x="28" y="218" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">10</text><rect class="anim-grow" x="36" y="209" width="23.57682619647355" height="10" rx="2" fill="#F5B942" opacity="0.35"/><text x="168" y="218" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Ai cướp ngân hàng trước thắng $100.000</text><text x="612" y="218" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="600" text-anchor="end" letter-spacing="0">39.0 tr</text>
+<text x="24" y="244" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Ra 1/10 là tốt. Ra 10/10 là tệ. Bạn cũng nên tự chấm mỗi video theo thang này.</text></svg><figcaption>Bảng xếp hạng 10 video gần nhất — nguồn gốc của câu hỏi “mấy trên 10?”.</figcaption></figure>
+  <div class="shot pair "><figure><img src="src-img/p21-0.png"></figure><figure><img src="src-img/p22-0.png"></figure></div><div class="shot"><figcaption><span class="orig">Ảnh gốc</span> — ảnh gốc hai trường hợp: trái — video mới đứng hạng 3/10 (tốt); phải — video mới rơi xuống 10/10 (tệ).</figcaption></div>
+</section><section class="chap">
+  <div class="chapnum">Chặng 03</div>
+  <h2>Tiêu đề &amp; ảnh bìa: cánh cửa hoặc bức tường</h2>
+
+  <p>Đây là phần tài liệu gốc dạy ngắn gọn nhất nhưng có sức nặng lớn nhất. Ví dụ kinh điển:</p>
+
+  <div class="box">
+    <div class="lbl">Cùng công sức, khác 100 lần kết quả</div>
+    <p style="margin:0">❌ <b>"Tôi ở 50 tiếng trong sân trước nhà"</b> — nhạt, không ai bấm.</p>
+    <p style="margin:1.5mm 0 0">✅ <b>"Tôi ở 50 tiếng trong bồn tương cà"</b> — về thời gian và công sức thì gần như y hệt, nhưng dễ lan truyền gấp 100 lần.</p>
+    <p style="margin:2.5mm 0 0" class="small">Hình ảnh một người ngồi trong bồn đầy tương cà thú vị hơn theo cấp số nhân so với người ngồi ở sân nhà. Bài học: <b>độ khó của việc không quyết định độ hấp dẫn của hình ảnh.</b> Hãy chọn cái việc mà khi chụp lại thành một tấm hình, người ta phải dừng ngón tay.</p>
+  </div>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 235" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="233" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Cùng thời gian, cùng công sức — khác nhau 100 lần khả năng lan truyền</text>
+<rect x="28" y="46" width="260" height="100" rx="7" fill="#1A2130" stroke="#3A4152" stroke-opacity=".5"/><rect x="68" y="86" width="180" height="46" rx="4" fill="#2A3040"/><circle cx="158" cy="80" r="14" fill="#3A4152"/><rect x="346" y="46" width="260" height="100" rx="7" fill="#1A2130" stroke="#F5B942" stroke-opacity=".5"/><rect x="404" y="80" width="144" height="54" rx="8" fill="#C0392B"/><rect x="404" y="76" width="144" height="12" rx="6" fill="#E74C3C"/><circle cx="476" cy="70" r="15" fill="#F0D9B5"/>
+<text x="28" y="166" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#8A93A8" font-weight="600" text-anchor="start" letter-spacing="0">“Tôi ở 50 tiếng trong sân trước nhà”</text>
+<text x="346" y="166" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">“Tôi SỐNG SÓT 50 tiếng trong bồn tương cà”</text>
+<rect x="28" y="182" width="60" height="8" rx="4" fill="#3A4152"/>
+<rect class="anim-grow" x="346" y="182" width="240" height="8" rx="4" fill="#F5B942"/>
+<text x="28" y="208" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">CTR thấp</text><text x="346" y="208" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">CTR cao — hình ảnh phi lý, động từ mạnh, con số cụ thể</text></svg><figcaption>Cùng công sức, khác nhau ở hình ảnh và động từ.</figcaption></figure>
+  <h3>Ba đòn bẩy chỉnh tiêu đề, dùng được ngay hôm nay</h3>
+  <ol>
+    <li><b>Đổi động từ sang từ mạnh hơn.</b> "Tôi đã thử" → "Tôi <em>sống sót</em>". Cùng một nội dung, nhưng chữ "sống sót" thêm rủi ro và kịch tính. Rủi ro tạo tò mò.</li>
+    <li><b>Đẩy tới cực đoan.</b> "Tôi không thích chuối" là một câu nhận xét. "Chuối là loại thực phẩm tệ nhất Trái Đất" là một lời tuyên chiến — và người ta bấm vào để phản đối bạn. Càng cực đoan càng có nhấp.</li>
+    <li><b>Thêm con số cụ thể và cột mốc.</b> Số làm cho lời hứa trở nên đo đếm được: "50 tiếng", "100 ngày", "1 triệu đồng".</li>
+  </ol>
+
+  <div class="warn">
+    <div class="lbl">Ranh giới không được vượt</div>
+    <p style="margin:0">Cực đoan ≠ nói dối. Tài liệu gốc có một câu rất dứt khoát: <b>"Đừng bao giờ đặt tôi vào tình huống buộc phải nói dối, vì tôi sẽ không nói dối, và điều đó sẽ phá video."</b> Tiêu đề giật gân mà nội dung không trả được là con dao tự đâm: người xem thoát ra trong 20 giây, AVD sụp, và YouTube ngừng đề xuất bạn. Bạn thắng một cú bấm, thua cả cái kênh.</p>
+  </div>
+
+  <h3>Quy tắc quan trọng nhất chương này: KỲ VỌNG</h3>
+  <p>Tài liệu gốc viết hoa nguyên câu này, và tôi giữ nguyên vì nó đáng:</p>
+  <div class="quote"><b>BẠN BẮT BUỘC PHẢI BIẾT TIÊU ĐỀ VÀ ẢNH BÌA CỦA VIDEO MÌNH ĐANG LÀM!</b></div>
+
+  <p>Ví dụ họ dùng: bạn bấm vào video "Lâu đài phao lớn nhất thế giới", ảnh bìa là một lâu đài phao <b>màu vàng</b> khổng lồ đứng cạnh mấy toà nhà cao tầng. Video mở ra thì lâu đài <b>màu đỏ</b>, không phải lớn nhất thế giới, và nằm giữa một cánh đồng trống không có toà nhà nào.</p>
+  <p>Bạn không tức vì lâu đài xấu. Bạn tức vì <b>bị lừa</b>. Và bạn thoát.</p>
+
+  <div class="box">
+    <div class="lbl">Áp dụng cho người làm một mình</div>
+    <p style="margin:0">Hãy đảo ngược quy trình sản xuất của bạn. Đa số người mới làm theo thứ tự: <b>quay → dựng → nghĩ tên → làm bìa</b>. Đó là lý do bìa luôn gượng ép.</p>
+    <p style="margin:2mm 0 0">Thứ tự đúng: <b>viết tiêu đề → phác ảnh bìa → mới quay.</b> Vì tiêu đề và ảnh bìa chính là <em>bản hợp đồng</em> bạn ký với người xem. Bạn phải biết mình hứa gì trước khi đi làm cái để trả nợ lời hứa đó.</p>
+  </div>
+
+  <h3>Bài kiểm tra 3 giây</h3>
+  <p>Thu nhỏ ảnh bìa của bạn xuống bằng con tem trên màn hình điện thoại. Nhìn 3 giây. Nếu không đọc nổi chữ, không nhận ra chủ thể, hoặc không thấy có gì lạ — bìa hỏng. Làm lại. Đây là bài kiểm tra rẻ nhất và bị bỏ qua nhiều nhất.</p>
+</section><section class="chap">
+  <div class="chapnum">Chặng 04</div>
+  <h2>Bản đồ giữ chân theo từng phút</h2>
+
+  <p>Đây là phần giá trị nhất của toàn bộ tài liệu gốc, và cũng là phần gần như không ai ở Việt Nam áp dụng có kỷ luật. MrBeast chia mỗi video thành các <b>vùng thời gian</b>, mỗi vùng có một nhiệm vụ riêng. Mọi nhân sự — quay, sáng tạo, dựng — <b>bắt buộc phải biết mình đang làm phút thứ mấy</b>. Ông ấy nói: "Nếu bạn không biết, tức là bạn đang làm sai."</p>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="248" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Một video 13 phút 37 giây được chia thành 5 vùng nhiệm vụ</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Mọi bộ phận đều phải biết mình đang làm phút thứ mấy</text>
+<rect class="anim-grow" x="28" y="96" width="40.8" height="34" rx="4" fill="#E0574A" opacity=".82"/><text x="34" y="118" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#0B0F17" font-weight="800" text-anchor="start" letter-spacing="0">0–1</text><rect class="anim-grow" x="71.8" y="96" width="84.60000000000001" height="34" rx="4" fill="#E08A3C" opacity=".82"/><text x="77.8" y="118" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#0B0F17" font-weight="800" text-anchor="start" letter-spacing="0">1–3</text><rect class="anim-grow" x="159.4" y="96" width="128.4" height="34" rx="4" fill="#F5B942" opacity=".82"/><text x="165.4" y="118" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#0B0F17" font-weight="800" text-anchor="start" letter-spacing="0">3–6</text><rect class="anim-grow" x="290.8" y="96" width="277.32000000000005" height="34" rx="4" fill="#6FA8DC" opacity=".82"/><text x="296.8" y="118" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#0B0F17" font-weight="800" text-anchor="start" letter-spacing="0">6–13</text><rect class="anim-grow" x="571.12" y="96" width="37.879999999999974" height="34" rx="4" fill="#7ED9A6" opacity=".82"/><text x="577.12" y="118" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#0B0F17" font-weight="800" text-anchor="start" letter-spacing="0">kết</text><line x1="159.4" y1="80" x2="159.4" y2="138" stroke="#F5B942" stroke-dasharray="3 3"/><text x="159.4" y="74" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">tái gắn kết ①</text><line x1="290.8" y1="80" x2="290.8" y2="138" stroke="#F5B942" stroke-dasharray="3 3"/><text x="290.8" y="74" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">tái gắn kết ②</text>
+<text x="28" y="148" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">0:00</text><text x="290.8" y="148" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">6:00</text>
+<text x="612" y="148" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">13:37</text>
+<rect x="28" y="160" width="7" height="7" rx="2" fill="#E0574A"/><text x="44" y="167" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0"><tspan font-weight="700">Phút 0–1</tspan>  —  Chặn cửa thoát</text><rect x="28" y="180" width="7" height="7" rx="2" fill="#E08A3C"/><text x="44" y="187" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0"><tspan font-weight="700">Phút 1–3</tspan>  —  Hype → thực thi</text><rect x="28" y="200" width="7" height="7" rx="2" fill="#F5B942"/><text x="44" y="207" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0"><tspan font-weight="700">Phút 3–6</tspan>  —  Yêu câu chuyện</text><rect x="28" y="220" width="7" height="7" rx="2" fill="#6FA8DC"/><text x="44" y="227" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0"><tspan font-weight="700">Phút 6–13</tspan>  —  Giữ nhịp, không báo kết</text>
+<text x="400" y="167" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Độ dài trung bình 100 video gần nhất:</text>
+<text x="400" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="22" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">818 giây</text>
+<text x="400" y="212" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">= 13 phút 37 giây</text></svg><figcaption>Bản đồ nhiệm vụ theo phút của một video 13 phút 37 giây.</figcaption></figure>
+  <div class="timeline">
+    <div class="tl-row">
+      <div class="tl-tag">Phút 0–1<br><span style="font-size:8pt;font-weight:400">QUAN TRỌNG NHẤT</span></div>
+      <div class="tl-body"><b>Nhiệm vụ: trả lời lời hứa của ảnh bìa và chặn cửa thoát.</b><br>
+      Trên chính video mà tài liệu dẫn ra, kênh mất <b>21 triệu người xem</b> chỉ trong phút đầu — và đó đã là <em>trên mức trung bình</em> so với các kênh khác. Bạn hiểu quy mô của cái phễu này chưa? Bốn thứ họ bắt buộc phải có trong phút đầu: ánh sáng tốt (đã đo được: ánh sáng đầu video tốt hơn thì tỷ lệ thoát thấp hơn), khớp đúng kỳ vọng của bìa, câu mở đã soạn trước từng chữ, và <em>dồn nội dung hấp dẫn lên trước</em>.</div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-tag">Phút 1–3</div>
+      <div class="tl-body"><b>Nhiệm vụ: chuyển từ hô hào sang thực thi.</b><br>
+      Ngừng kể cho người ta nghe họ sắp được xem gì — bắt đầu cho họ xem. Kỹ thuật họ dùng gọi là <em>tiến trình điên rồ</em>: nếu video 10 phút về một người sống sót trong rừng, đừng dành 3 phút đầu cho ngày thứ nhất như một nhà làm phim tử tế. Hãy nén <b>nhiều ngày</b> vào 3 phút đầu, để người xem thấy nhân vật đã vượt qua bao nhiêu rồi và bắt đầu <em>muốn biết anh ta đi được tới đâu</em>.</div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-tag">Mốc phút 3<br><span style="font-size:8pt;font-weight:400">TÁI GẮN KẾT</span></div>
+      <div class="tl-body"><b>Nhiệm vụ: đánh một cú làm người ta phải "ồ".</b><br>
+      Gọi là <em>re-engagement</em> — một đoạn nội dung mạnh, hợp mạch chuyện, khiến người xem thật sự ấn tượng. Cách kiểm tra: đoạn này có phải kiểu <b>"chỉ kênh này mới làm được"</b> không? Đặt ở đây vì phút thứ 3 là lúc người ta bắt đầu chán mạch chuyện và tay tìm nút thoát.</div>
+    </div>
+    </div>
+  <div class="timeline">
+    <div class="tl-row">
+      <div class="tl-tag">Phút 3–6</div>
+      <div class="tl-body"><b>Nhiệm vụ: làm người ta yêu câu chuyện và nhân vật.</b><br>
+      Đây là chỗ dồn nội dung hấp dẫn nhất <em>nhưng phải đơn giản</em>. Nhiều lần đổi cảnh, kích thích liên tục, nội dung dễ hiểu bám sát mạch. Nguyên tắc bản lề: <b>giữ được người ta hết nửa đầu thì xác suất rất cao họ xem tới cuối.</b> Tới mốc phút 6, đánh cú tái gắn kết thứ hai — lần này được phép phức tạp hơn, và nó đẩy câu chuyện sang nửa sau.</div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-tag">Nửa sau</div>
+      <div class="tl-body"><b>Nhiệm vụ: giữ nhịp, không được báo hiệu sắp hết.</b><br>
+      Qua phút 6, người xem đã đầu tư vào câu chuyện và rơi vào trạng thái họ gọi là <em>"lull"</em> — xem mà không còn ý thức là mình đang xem. Đây là chỗ đặt các đoạn giải thích dài, các tình huống ngoài kế hoạch. <b>Nhưng:</b> tuyệt đối không báo hiệu video sắp kết thúc, trừ khi để dựng cao trào cho phần thưởng cuối. Câu cảnh báo trong tài liệu rất thẳng: rất nhiều video đã chết vì nửa sau làm dối.</div>
+    </div>
+    <div class="tl-row">
+      <div class="tl-tag">Kết thúc</div>
+      <div class="tl-body"><b>Nhiệm vụ: trả thưởng, rồi cắt phựt.</b><br>
+      <em>"Phần kết video luôn phải đột ngột để bảo vệ retention."</em> Không tổng kết lê thê, không "cảm ơn các bạn đã theo dõi, nhớ like và đăng ký kênh nhé" kéo 40 giây. Trả xong cái người ta chờ → dừng. Mỗi giây thừa ở cuối là một vết cắt vào AVP của bạn.</div>
+    </div>
+  </div>
+</section><section class="chap">
+  <div class="kicker">Chặng 04 (tiếp)</div>
+  <h3>Quy đổi bản đồ này cho kênh của bạn</h3>
+  <p>Bản đồ trên xây cho video trung bình <b>13 phút 37 giây</b>. Kênh bạn chưa làm được độ dài đó, nên đây là bảng quy đổi tôi dùng cho học viên:</p>
+
+  <table>
+    <tr><th>Vùng nhiệm vụ</th><th>Video dài 8 phút</th><th>Shorts / Reels 60 giây</th></tr>
+    <tr><td><b>Chặn cửa thoát</b></td><td>0 – 40 giây</td><td>0 – 3 giây</td></tr>
+    <tr><td><b>Chuyển sang thực thi</b></td><td>40s – 2 phút</td><td>3 – 8 giây</td></tr>
+    <tr><td><b>Tái gắn kết lần 1</b></td><td>~ phút 2</td><td>~ giây 15</td></tr>
+    <tr><td><b>Vùng nội dung chính</b></td><td>2 – 5 phút</td><td>8 – 45 giây</td></tr>
+    <tr><td><b>Tái gắn kết lần 2</b></td><td>~ phút 5</td><td>~ giây 40</td></tr>
+    <tr><td><b>Trả thưởng + cắt</b></td><td>7 – 8 phút</td><td>50 – 58 giây</td></tr>
+  </table>
+
+  <div class="box">
+    <div class="lbl">Với Shorts, 3 giây đầu là tất cả</div>
+    <p style="margin:0">Trên định dạng dọc, phễu mất người của "phút đầu tiên" bị nén lại còn <b>ba giây</b>. Và có một chi tiết kỹ thuật rất nhiều người bỏ sót: TikTok và Facebook thường lấy <b>khung hình ngay giây đầu</b> làm ảnh đại diện. Nghĩa là giây đầu tiên của bạn vừa là cú hook, vừa là ảnh bìa. Hãy dựng nó như một tấm poster tĩnh — chữ to, chủ thể rõ, một câu hứa hẹn — chứ đừng để nó là một khung hình mờ đang chuyển động.</p>
+  </div>
+
+  <figure class="shot light"><img src="src-img/p09-0.png"><figcaption><span class="orig">Ảnh gốc</span> — bảng đọc hình dáng đường cong của chính YouTube: đường phẳng = xem trọn · dốc đều = mất dần hứng thú · đỉnh nhô = đoạn được xem lại/chia sẻ · vực sụt = đoạn bị bỏ hoặc tua qua.</figcaption></figure>
+  <h3>Cách tự đo bản đồ này trên kênh của bạn</h3>
+  <ol>
+    <li>Vào <b>YouTube Studio → Video → Số liệu phân tích → Mức độ tương tác</b>.</li>
+    <li>Mở biểu đồ <b>Thời điểm quan trọng để giữ chân khán giả</b>. Đường cong này chính là "nhịp tim" video của bạn.</li>
+    <li>Tìm <b>vực sụt</b> — đoạn đường lao dốc hơn bình thường. Ghi lại mốc giây.</li>
+    <li>Mở video, tua đúng tới mốc đó, và xem <b>chính bạn đang làm gì</b> ở giây ấy. 90% trường hợp bạn sẽ thấy ngay: bạn đang giải thích dài dòng, đang lặp lại điều đã nói, hoặc đang câu giờ.</li>
+    <li>Ghi vào một file. Video sau, cấm mình tái phạm đúng lỗi đó.</li>
+  </ol>
+
+  <div class="warn">
+    <div class="lbl">Đây là điểm phân hoá thật sự</div>
+    <p style="margin:0">Việc soi biểu đồ giữ chân sau mỗi video và ghi lại nguyên nhân từng vực sụt — làm đều đặn trong 20 video — sẽ đưa bạn vượt xa 95% người làm YouTube ở Việt Nam. Không phải vì nó khó. Vì nó <b>chán</b>, và gần như không ai chịu làm. Đó chính xác là lý do nó còn là lợi thế.</p>
+  </div>
+</section><section class="chap">
+  <div class="chapnum">Chặng 05</div>
+  <h2>Format &amp; bậc thang: khung xương giữ người</h2>
+
+  <p>Một cách nâng retention không cần thêm một đồng ngân sách nào: chọn đúng <b>format</b> — tức là khung xương mà video bám theo.</p>
+
+  <h3>Format 1 — Trả thưởng ở cuối</h3>
+  <p>Ví dụ trong tài liệu: series "người trụ lại cuối cùng". Bạn xem, bạn đầu tư cảm xúc vào tiến trình, bạn <b>muốn biết ai là người cuối cùng</b> và ai lấy phần thưởng. Người thắng chỉ lộ diện ở cuối. Chừng nào nội dung giữa chừng không quá chán, người ta sẽ ở lại tới hết.</p>
+  <p class="small"><b>Bản 0 đồng của bạn:</b> "Tôi thử X trong 30 ngày — kết quả ở cuối video". "5 công cụ, cái tốt nhất tôi để cuối". Cấu trúc miễn phí, chỉ cần bạn giữ lời.</p>
+
+  <h3>Format 2 — Bậc thang (stair stepping)</h3>
+  <p>Đây là format MrBeast nói thẳng là ông ấy <em>rất thích</em>. Ví dụ: video pháo hoa mở màn bằng quả <b>1 đô</b>, rồi <b>10 đô</b>, rồi 50, rồi 375, rồi 1.000, rồi 10.000, chèn một đoạn nội dung, rồi 40.000, 100.000, và kết bằng <b>kỷ lục thế giới</b>.</p>
+  <div class="box">
+    <div class="lbl">Vì sao bậc thang mạnh đến vậy</div>
+    <p style="margin:0">Mỗi bậc là một lời hứa nhỏ được trả ngay, đồng thời mở ra một câu hỏi lớn hơn: "vậy bậc sau sẽ thế nào?" Người xem không cần kiên nhẫn — họ chỉ cần tò mò thêm 40 giây nữa, lặp lại 10 lần. Và format này <b>cho phép bạn chệch nhịp</b>: chỉ cần mọi thứ càng lúc càng ngầu hơn là cấu trúc vẫn đứng.</p>
+    <p style="margin:2mm 0 0" class="small"><b>Bản 0 đồng:</b> "Tôi làm video bằng AI với 0đ → 100k → 1 triệu → 10 triệu". "Bữa ăn 20k → 200k → 2 triệu". "Prompt dở nhất → prompt tốt nhất". Thang nào cũng được, miễn có leo.</p>
+  </div>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="228" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Format bậc thang — mỗi bậc trả một lời hứa nhỏ, mở một câu hỏi lớn hơn</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">“Tôi mua quả pháo hoa lớn nhất thế giới” — trật tự leo thang trong video thật</text>
+<rect class="anim-grow" x="36" y="154.1" width="62" height="21.9" rx="4" fill="rgba(245,185,66,0.28)"/><text x="67.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$1</text><rect class="anim-grow" x="101" y="145.84" width="62" height="30.16" rx="4" fill="rgba(245,185,66,0.35)"/><text x="132.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$10</text><rect class="anim-grow" x="166" y="136.4" width="62" height="39.6" rx="4" fill="rgba(245,185,66,0.42)"/><text x="197.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$50</text><rect class="anim-grow" x="231" y="124.6" width="62" height="51.4" rx="4" fill="rgba(245,185,66,0.49)"/><text x="262.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$375</text><rect class="anim-grow" x="296" y="110.44" width="62" height="65.56" rx="4" fill="rgba(245,185,66,0.56)"/><text x="327.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$1.000</text><rect class="anim-grow" x="361" y="93.91999999999999" width="62" height="82.08000000000001" rx="4" fill="rgba(245,185,66,0.63)"/><text x="392.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$10.000</text><rect class="anim-grow" x="426" y="77.4" width="62" height="98.6" rx="4" fill="rgba(245,185,66,0.70)"/><text x="457.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$40.000</text><rect class="anim-grow" x="491" y="59.7" width="62" height="116.3" rx="4" fill="rgba(245,185,66,0.77)"/><text x="522.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">$100.000</text><rect class="anim-grow" x="556" y="42.0" width="62" height="134.0" rx="4" fill="#F5B942"/><text x="587.0" y="192" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#E8EDF5" font-weight="700" text-anchor="middle" letter-spacing="0">Kỷ lục</text><text x="587.0" y="203" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#E8EDF5" font-weight="700" text-anchor="middle" letter-spacing="0">thế giới</text>
+<text x="24" y="216" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Người xem không cần kiên nhẫn — chỉ cần tò mò thêm 40 giây nữa, lặp lại 9 lần.</text></svg><figcaption>Format bậc thang trong video “quả pháo hoa lớn nhất thế giới”.</figcaption></figure>
+  <h3>Format 3 — Truy đuổi / kết quả mở</h3>
+  <p>Kiểu "bị săn đuổi": người xem không biết kết cục cho tới phút cuối. Họ có thoát được không? Có bị bắt không? <b>Phải xem tới cuối mới biết.</b> Nguyên lý giống format 1 nhưng cảm giác căng hơn vì có yếu tố rủi ro thật.</p>
+
+  <h3>Và quy tắc chống chết kênh: đừng bám mãi một format</h3>
+  <p>Tài liệu kể: có thời họ làm series tặng tiền cho streamer. Làm khoảng 12 video, khán giả mê tít, và khi dừng thì <b>vẫn xin thêm</b>. Nhưng MrBeast vẫn dừng, với lập luận trích Steve Jobs: <em>người ta không biết mình muốn gì</em>. Khán giả tưởng họ muốn một format mãi mãi, nhưng thứ họ thật sự muốn là cái mới.</p>
+  <div class="quote">"Mọi kênh cứ xào đi xào lại format trong nhiều năm thì cuối cùng đều chết."</div>
+  <p>Nguyên tắc thực hành họ dùng: <b>không để hai video cùng format nằm sát nhau</b>, luôn chèn vài video khác dạng ở giữa.</p>
+
+  <h3>Và bạn đang nói với ai?</h3>
+  <p>Tài liệu gốc có hẳn một mục đưa ảnh chụp backend về khán giả. Điều đáng học không phải các con số của họ, mà là <b>việc họ biết rõ con số của mình</b>. Nếu bạn không mô tả được người xem của mình bằng một câu, bạn đang viết nội dung cho không ai cả.</p>
+<figure class="fig"><svg class="fig-svg" viewBox="0 0 640 250" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="248" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Ai đang xem? — chân dung khán giả từ backend</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="start" letter-spacing="0">Quốc gia (28 ngày)</text><text x="330" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="start" letter-spacing="0">Độ tuổi</text>
+<text x="96" y="78" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">Hoa Kỳ</text><rect class="anim-grow" x="104" y="68" width="150.0" height="13" rx="3" fill="#9B7BE0" opacity=".85"/><text x="260.0" y="79" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">36.9%</text><text x="96" y="102" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">Anh</text><rect class="anim-grow" x="104" y="92" width="29.674796747967477" height="13" rx="3" fill="#9B7BE0" opacity=".85"/><text x="139.6747967479675" y="103" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">7.3%</text><text x="96" y="126" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">Ấn Độ</text><rect class="anim-grow" x="104" y="116" width="27.64227642276423" height="13" rx="3" fill="#9B7BE0" opacity=".85"/><text x="137.64227642276424" y="127" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">6.8%</text><text x="96" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">Philippines</text><rect class="anim-grow" x="104" y="140" width="18.69918699186992" height="13" rx="3" fill="#9B7BE0" opacity=".85"/><text x="128.6991869918699" y="151" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">4.6%</text><text x="96" y="174" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">Canada</text><rect class="anim-grow" x="104" y="164" width="14.634146341463415" height="13" rx="3" fill="#9B7BE0" opacity=".85"/><text x="124.63414634146342" y="175" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">3.6%</text>
+<text x="384" y="78" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">13–17</text><rect class="anim-grow" x="392" y="68" width="37.27544910179641" height="13" rx="3" fill="#F5B942" opacity=".85"/><text x="435.2754491017964" y="79" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">8.3%</text><text x="384" y="102" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">18–24</text><rect class="anim-grow" x="392" y="92" width="150.0" height="13" rx="3" fill="#F5B942" opacity=".85"/><text x="548.0" y="103" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">33.4%</text><text x="384" y="126" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">25–34</text><rect class="anim-grow" x="392" y="116" width="92.51497005988026" height="13" rx="3" fill="#F5B942" opacity=".85"/><text x="490.5149700598803" y="127" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">20.6%</text><text x="384" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">35–44</text><rect class="anim-grow" x="392" y="140" width="109.58083832335329" height="13" rx="3" fill="#F5B942" opacity=".85"/><text x="507.5808383233533" y="151" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">24.4%</text><text x="384" y="174" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">45–54</text><rect class="anim-grow" x="392" y="164" width="43.113772455089816" height="13" rx="3" fill="#F5B942" opacity=".85"/><text x="441.1137724550898" y="175" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">9.6%</text><text x="384" y="198" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="end" letter-spacing="0">55+</text><rect class="anim-grow" x="392" y="188" width="16.61676646706587" height="13" rx="3" fill="#F5B942" opacity=".85"/><text x="414.6167664670659" y="199" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">3.7%</text>
+<rect x="24" y="196" width="592" height="1" fill="rgba(255,255,255,.09)"/>
+<text x="24" y="220" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Nam 69,8%</text><text x="110" y="220" font-family="Be Vietnam Pro, sans-serif" font-size="12" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">· Nữ 29,6%</text>
+<text x="230" y="220" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Chân dung trung bình: một thiếu niên mê meme và game.</text>
+<text x="24" y="238" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Bài học: bạn phải biết mình đang nói với AI — trước khi nghĩ nội dung.</text></svg><figcaption>Chân dung khán giả kênh MrBeast, số liệu 28 ngày từ backend.</figcaption></figure>
+  <div class="shot pair "><figure><img src="src-img/p30-0.png"></figure><figure><img src="src-img/p31-0.png"></figure></div><div class="shot"><figcaption><span class="orig">Ảnh gốc</span> — ảnh chụp gốc hai thẻ Top geographies và Age & gender trong tài liệu.</figcaption></div>
+  <p>Câu họ tự chốt sau khi nhìn bảng này: <em>"khán giả trung bình của chúng tôi là một thiếu niên mê meme và thích game."</em> Một câu, đủ để cả trăm người trong công ty ra quyết định giống nhau. Bạn hãy viết cho được câu tương đương của kênh mình.</p>
+
+  <div class="dark">
+    <p style="margin:0"><b>Cách tôi khuyên bạn xoay:</b> giữ <b>3 format</b> luân phiên trong 3 tháng đầu. Ví dụ với kênh chia sẻ kiến thức: (1) bậc thang so sánh, (2) thử thách 7/30 ngày có kết quả cuối, (3) mổ xẻ một tình huống có thật. Xoay vòng đủ để khán giả không chán, đủ hẹp để bạn thành thạo.</p>
+  </div>
+</section><section class="chap">
+  <div class="chapnum">Chặng 06</div>
+  <h2>Yếu tố "WOW" — thứ không đo được</h2>
+
+  <p>Sau khi nói hết về số liệu, MrBeast thừa nhận có một thứ <b>không nằm trong bảng nào</b> nhưng quyết định kênh có được nhớ hay không. Ông gọi là <em>wow factor</em>.</p>
+
+  <p>Ví dụ ông đưa: video sống 100 ngày trong một vòng tròn. Thay vì đặt sẵn căn nhà trong vòng tròn từ đầu, họ <b>dùng cần cẩu thả căn nhà xuống</b> ở giây thứ 30 của video.</p>
+
+  <div class="box">
+    <div class="lbl">Nghịch lý ở đây</div>
+    <p style="margin:0">Cái cần cẩu <b>không</b> làm tiêu đề hay hơn. <b>Không</b> làm ảnh bìa đẹp hơn. Đứng ở góc dữ liệu thuần tuý thì nó <em>phi lý và tốn thời gian</em> — có cả triệu cách rẻ hơn để đặt căn nhà vào đó.</p>
+    <p style="margin:2mm 0 0">Nhưng ấn tượng nó để lại trong đầu người xem là <b>vô giá</b>. Vì lý do duy nhất: <em>"còn thằng nào trên YouTube làm được thế?"</em> Mỗi lần bạn làm một thứ không ai khác làm nổi, bạn tách mình ra khỏi đám đông trong tâm trí người xem — và họ xem nhiều video hơn, gắn bó với thương hiệu hơn.</p>
+  </div>
+
+  <h3>Nhưng bạn không có cần cẩu. Vậy WOW của bạn là gì?</h3>
+  <p>Đây là chỗ tôi phải nói rõ, vì đọc phần này xong người mới rất dễ nản: "ổng có 50 triệu đô, tôi có cái điện thoại."</p>
+  <p>Sai lầm là nghĩ WOW = tiền. Định nghĩa gốc không nhắc tới tiền một chữ nào. Định nghĩa là: <b>thứ mà không YouTuber nào khác làm được.</b> Tiền chỉ là <em>một trong nhiều</em> cách để độc quyền một thứ.</p>
+
+  <table>
+    <tr><th style="width:30%">Nguồn "độc quyền"</th><th>WOW của bạn có thể là</th></tr>
+    <tr><td><b>Quyền tiếp cận</b></td><td>Bạn vào được nơi người khác không vào được: xưởng của gia đình, phòng máy chỗ bạn làm, sau cánh gà nghề của bạn.</td></tr>
+    <tr><td><b>Sự thật trần trụi</b></td><td>Công khai doanh thu thật, thất bại thật, con số thật kèm ảnh chụp màn hình. Đa số không dám — nên nó là độc quyền.</td></tr>
+    <tr><td><b>Sức bền</b></td><td>Làm một việc lâu tới mức phi lý: 100 ngày liên tục, 1.000 lần thử. Không tốn tiền, chỉ tốn thời gian — mà thời gian thì không ai mua được của bạn.</td></tr>
+    <tr><td><b>Chuyên môn sâu</b></td><td>Bạn biết thứ mà người làm nội dung không biết, và người biết thì không làm nội dung. Đây là mỏ vàng của dân đi làm.</td></tr>
+    <tr><td><b>Công nghệ mới</b></td><td>Làm được bằng AI thứ mà năm ngoái cần cả ê-kíp. Đây là cửa sổ cơ hội đang mở — và nó sẽ không mở mãi.</td></tr>
+  </table>
+
+  <div class="quote">"Và điều quan trọng là chúng ta không bao giờ được đánh mất cái WOW của mình."</div>
+
+  <p><b>Câu hỏi bạn phải trả lời cho mỗi video:</b> trong video này, có <em>một khoảnh khắc nào</em> mà người xem sẽ nghĩ "khoan, sao ông này làm được vậy?" Nếu không có khoảnh khắc nào, video của bạn tử tế nhưng sẽ bị quên trong 10 phút.</p>
+</section><section class="chap">
+  <div class="chapnum">Chặng 07</div>
+  <h2>Sáng tạo thay tiền</h2>
+
+  <p>Có một chương trong tài liệu gốc mà tôi nghĩ người Việt mới bắt đầu cần nhất, vì nó lật ngược cái cớ phổ biến nhất: <em>"tại em không có kinh phí"</em>.</p>
+
+  <div class="quote">"Ai cũng mặc định tiền là câu trả lời, cứ chi thêm tiền là làm được điều Jimmy muốn. Sai. <b>Sáng tạo mới là câu trả lời.</b>"</div>
+
+  <h3>Ví dụ gốc: giải thưởng 20.000 đô đổi thành 1.825 đô</h3>
+  <p>Đội gaming của họ thích tặng tiền mặt mỗi video. MrBeast hỏi: cái nào nghe ngầu hơn — <b>20.000 đô</b>, hay <b>một năm ăn Doritos miễn phí</b>?</p>
+  <p>Với ông ấy, gói bim bim buồn cười hơn nhiều và khán giả sẽ thấy hài hước hơn. Rồi làm toán: định nghĩa "một năm" là 5 gói mỗi ngày × 365 ngày = <b>1.825 gói</b>. Tra Google, mỗi gói dưới 1 đô, làm tròn 1 đô. Giải thưởng từ <b>20.000 đô rơi xuống 1.825 đô</b> — mà lại <em>vui hơn</em>.</p>
+
+  <div class="box">
+    <div class="lbl">Nguyên lý rút ra</div>
+    <p style="margin:0">Giá trị cảm nhận của một phần thưởng <b>không tỉ lệ thuận</b> với giá tiền của nó. Con người phản ứng với sự <em>bất ngờ, cụ thể và buồn cười</em>, chứ không phản ứng với con số lớn. Đây là đòn bẩy mạnh nhất mà người ít vốn có trong tay.</p>
+  </div>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 200" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="198" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Sáng tạo thay tiền — cùng một giải thưởng, rẻ hơn 11 lần mà vui hơn</text>
+<rect x="28" y="60" width="270" height="96" rx="9" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)"/>
+<text x="44" y="86" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Cách mặc định</text><text x="44" y="120" font-family="Be Vietnam Pro, sans-serif" font-size="26" fill="#8A93A8" font-weight="800" text-anchor="start" letter-spacing="0">$20.000</text><text x="44" y="142" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">tiền mặt — ai cũng làm được</text>
+<rect x="342" y="60" width="270" height="96" rx="9" fill="rgba(245,185,66,.08)" stroke="rgba(245,185,66,.45)"/>
+<text x="358" y="86" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="400" text-anchor="start" letter-spacing="0">Cách sáng tạo</text><text x="358" y="120" font-family="Be Vietnam Pro, sans-serif" font-size="26" fill="#F5B942" font-weight="800" text-anchor="start" letter-spacing="0">$1.825</text>
+<text x="358" y="142" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0">“một năm ăn Doritos” = 1.825 gói</text>
+<path d="M306 108 l24 0 m-8 -6 l8 6 l-8 6" stroke="#F5B942" stroke-width="2" fill="none"/>
+<text x="24" y="186" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Giá trị cảm nhận KHÔNG tỉ lệ với giá tiền. Người ta phản ứng với bất ngờ, cụ thể và buồn cười.</text></svg><figcaption>Giải thưởng rẻ hơn 11 lần nhưng vui hơn — vì dùng sáng tạo thay tiền.</figcaption></figure>
+  <h3>Ba biến thể tôi hay dùng khi kinh phí bằng 0</h3>
+  <ul>
+    <li><b>Đổi quy mô lấy sự phi lý.</b> Không đủ tiền làm cái to nhất Việt Nam? Làm cái <em>kỳ quặc nhất</em>. "Tôi làm bàn phím bằng 500 cục kẹo" rẻ hơn nhiều và dễ lan hơn một cái bàn phím 20 triệu.</li>
+    <li><b>Đổi tiền lấy thời gian.</b> Thứ bạn có nhiều nhất khi mới bắt đầu là thời gian. "1.000 lần thử để làm được X" tốn 0 đồng và tự nó là một câu chuyện.</li>
+    <li><b>Đổi sản xuất lấy sự thật.</b> Một màn hình chụp doanh thu thật đáng giá hơn mọi hiệu ứng đồ hoạ. Bằng chứng thật luôn thắng đồ hoạ đẹp — đây là nguyên tắc tôi áp cho mọi video của mình.</li>
+  </ul>
+
+  <h3>Và nguyên tắc kỷ luật đi kèm</h3>
+  <p>Một dòng khác trong tài liệu, ngắn nhưng rất đáng chép lại: <b>"Tiền chi ra thì phải được lên hình."</b> Nếu bạn tiêu một khoản đáng kể vào thứ mà khán giả <em>không nhìn thấy</em> trong video, hãy nghiêm túc xem lại. Rất nhiều người mới đốt tiền vào micro, đèn, phần mềm — những thứ nâng chất lượng cảm nhận vài phần trăm — trong khi cùng số tiền đó chi vào một <em>thứ lên hình gây sốc</em> sẽ đổi được gấp nhiều lần lượt xem.</p>
+
+  <div class="dark">
+    <p style="margin:0"><b>Bài tập:</b> lấy ý tưởng video tiếp theo của bạn. Viết ra chi phí dự tính. Rồi tự ép mình trả lời: <em>"Nếu ngân sách chỉ còn 1/10, tôi sẽ làm cách nào?"</em> Trong 8/10 trường hợp, phương án 1/10 tiền lại là phương án <b>hay hơn</b> — vì nó buộc bạn phải sáng tạo thay vì mua.</p>
+  </div>
+</section><section class="chap">
+  <div class="chapnum">Chặng 08</div>
+  <h2>12 quy tắc vận hành đã cứu hàng trăm video</h2>
+
+  <p>Phần này trong tài liệu gốc viết cho một công ty. Nhưng khi bạn làm một mình, bạn <b>chính là</b> cả công ty đó — nên các quy tắc này vẫn áp dụng, chỉ là bạn tự áp lên chính mình.</p>
+
+  <h4>1. Quay lại mọi thứ</h4>
+  <p>Đi khảo sát bối cảnh thì <b>quay video lại</b>, đừng chỉ nhớ trong đầu. Lý do: trí nhớ một người không bằng tư liệu cả đội cùng xem được. Với bạn: quay lại địa điểm, lưu tư liệu, chụp màn hình mọi thứ. "Bạn của tuần sau" chính là đồng đội mà bạn đang giao việc cho.</p>
+
+  <h4>2. Nói ra phần tiêu cực</h4>
+  <p>Đừng chỉ báo tin tốt. Câu ví dụ trong tài liệu rất hài: <em>"TÔI ĐÃ TÌM ĐƯỢC LÂU ĐÀI CHO VIDEO! Nhưng nó kín lịch cả năm, vượt ngân sách, và tuần trước có người chết trong đó."</em> Với bạn: viết ra điểm yếu của ý tưởng <b>trước khi</b> đổ 3 ngày vào nó.</p>
+
+  <h4>3. Không giao rồi quên</h4>
+  <p>Giao việc cho ai đó (thợ, freelancer, công cụ) rồi biến mất tới ngày quay — <b>đó là lỗi của bạn</b>, không phải của họ. Nguyên văn: kiểm tra <em>hằng ngày</em>, xin video tiến độ, phát hiện vấn đề sớm. "Biết mình toang trước hàng tuần, không phải trước vài ngày."</p>
+
+  <h4>4. Xác định "thành phần sống còn"</h4>
+  <p>Là thứ mà thiếu nó thì <b>không có video</b>. Muốn tặng một hòn đảo thì hòn đảo là thành phần sống còn — mọi thứ khác hoàn hảo cũng vô nghĩa. Với bạn: mỗi video hãy chỉ ra đúng 1–2 thứ như vậy và bảo vệ chúng bằng mọi giá, luôn có phương án dự phòng. <b>Không bao giờ tung đồng xu với thành phần sống còn.</b></p>
+
+  <h4>5. Dùng chuyên gia tư vấn — "cheat code"</h4>
+  <p>Cần làm miếng bánh lớn nhất thế giới? Gọi ngay người từng làm miếng bánh lớn nhất trước đó. Họ đã thử nghiệm hàng trăm lần và tiết kiệm cho bạn hàng tuần. Tài liệu bắt người đọc nhắc lại ba lần trong đầu: <em>"Mỗi khi nhận việc, tôi sẽ luôn tìm xem có ai tư vấn được không."</em></p>
+
+  <h4>6. "Không" không có nghĩa là không</h4>
+  <p>Gọi một cửa hàng xin quay, nhân viên nói không — <b>câu đó chẳng có nghĩa gì cả</b>. Hỏi nhân viên khác, hỏi quản lý, hỏi sếp của quản lý, tìm người hâm mộ trong đó, nhắn mạng xã hội. Hết mọi cửa mới được coi là không. Và kể cả vậy thì vẫn còn chi nhánh khác.</p>
+
+  <h4>7. Đừng tin bề mặt, luôn đào sâu</h4>
+  <p>Cái gì tốt tới mức khó tin thì phải tìm hiểu vì sao. Gọi 10 nơi đều hết hàng mà nơi thứ 11 có đủ ngay — điều tra đi. Với bạn: đừng vội tin công cụ nào hứa "tự động ra 100 video/ngày". Kiểm chứng bằng một mẫu thật trước khi dựng cả quy trình lên nó.</p>
+
+  <h4>8. Chọn đúng cấp độ giao tiếp</h4>
+  <p>Việc càng phức tạp, hình thức trao đổi càng phải "cao": gặp trực tiếp &gt; gọi điện &gt; nhắn tin &gt; email. Và một câu rất đắt: <b>giao tiếp bằng chữ chỉ được tính là đã giao tiếp khi đối phương xác nhận đã đọc.</b></p>
+
+  <h4>9. Nhận lỗi</h4>
+  <p>"Sai thì không sao — đó là cách bạn học. Điều tôi xin là đừng lặp lại cùng một lỗi." Với người làm một mình: giữ một file <b>nhật ký lỗi</b>. Mỗi video sai chỗ nào, ghi lại. Đây là tài sản tích luỹ nhanh nhất của bạn.</p>
+</section><section class="chap">
+  <div class="kicker">Chặng 08 (tiếp)</div>
+
+  <h4>10. Không gì được chen ngang thứ tự ưu tiên</h4>
+  <p>Khi đã có danh sách ưu tiên, không thứ gì trên đời được xen vào giữa bạn và việc hoàn thành nó. Giúp người khác mà trễ việc của mình — <b>lỗi của bạn</b>. Với người làm một mình, cái xen ngang nguy hiểm nhất không phải đồng nghiệp, mà là <em>chính bạn</em>: đang dựng video thì nhảy sang chỉnh logo, đổi font, xem thêm một tutorial.</p>
+
+  <h4>11. Làm nhiều video mỗi ngày, đừng dồn vào một cái</h4>
+  <p>Đây là quy tắc quan trọng nhất của cả chương, và cũng là chỗ bạn sẽ vấp:</p>
+  <div class="quote">"Đừng chỉ làm một video duy nhất trong một ngày. Đó là cách bạn tụt lại ở các video sau và tạo ra vòng xoáy tồi tệ… Nếu trong một ngày bạn chỉ làm một video, ngày đó bạn đã thất bại."</div>
+  <p>Logic: dồn 3 ngày cho một video = 3 ngày các video khác đứng im. Đến lúc phải bỏ video khác để chạy theo cái trước mắt, và bạn <b>giết sạch thời gian đệm</b> của chính mình. Từ đó trở đi bạn chỉ còn chạy chữa cháy, mãi mãi.</p>
+
+  <h4>12. Chế độ ăn thông tin</h4>
+  <p>Thứ bạn tiêu thụ hằng ngày quyết định thứ bạn sáng tạo ra được. Câu chốt trong tài liệu, viết tách từng chữ cho nhớ:</p>
+  <div class="quote"><b>Bạn. Không. Thể. Lấy. Cảm. Hứng. Từ. Thứ. Bạn. Không. Biết. Là. Nó. Tồn. Tại.</b></div>
+  <p>Người viết kịch bản thì phải nạp <em>chất liệu</em>: xu hướng, meme, cái đang nổi, cái người khác đang làm. Nạp cái gì thì viết ra cái đó. Nếu 5 năm bạn chỉ xem tin tài chính, bạn sẽ không viết nổi một câu đùa.</p>
+
+  <div class="box">
+    <div class="lbl">Áp dụng: 30 phút mỗi ngày</div>
+    <p style="margin:0">Dành 30 phút mỗi ngày xem YouTube/TikTok <b>trong ngách của bạn</b> — nhưng xem như người làm nghề, không phải như khán giả. Với mỗi video nổi, ghi 3 dòng: <em>hook là gì · cấu trúc thế nào · vì sao mình xem tiếp</em>. Sau 60 ngày bạn sẽ có một thư viện mẫu trong đầu mà không khoá học nào bán được cho bạn.</p>
+  </div>
+
+  <h3>Vài dòng nhặt rời đáng chép lại</h3>
+  <ul>
+    <li><b>"Số giờ bạn làm việc là không liên quan."</b> Có ví dụ một người giải trong 30 phút vấn đề mà 5 người làm cả tuần không xong. Đây là công ty tính bằng <em>kết quả</em>.</li>
+    <li><b>"Sự cố cũng có thể thành nội dung."</b> Cây đổ đè vỡ 100 cái bình định đem tặng? Chuyện đó buồn cười, phải đưa vào video.</li>
+    <li><b>"Không có khoảnh khắc nhạt trong video."</b> Và: <b>"Không thể diễn giả cường độ."</b> Khán giả cảm được sự giả.</li>
+    <li><b>"Chúng ta không dàn dựng giả."</b> Uy tín là tài sản dài hạn duy nhất của một kênh.</li>
+    <li><b>"Đừng làm gì có thể khiến hình ảnh xấu đi."</b> Một scandal xoá sạch hai năm gây dựng.</li>
+    <li><b>Nội dung là vô hạn.</b> Nếu một ý tưởng chỉ có 50% khả năng thành công, hãy viết ý tưởng khác. Đừng lười.</li>
+  </ul>
+</section><section class="chap">
+  <div class="chapnum">Chặng 09</div>
+  <h2>Kiếm tiền thật: 5 dòng tiền và thứ tự bật</h2>
+
+  <p>Giờ tới phần bạn chờ. Tôi sẽ nói thẳng và không vẽ vời.</p>
+
+  <h3>Dòng 1 — Quảng cáo YouTube (YPP)</h3>
+  <p>Điều kiện tham gia chương trình đối tác hiện hành: <b>1.000 người đăng ký</b> cùng với <b>4.000 giờ xem trong 12 tháng</b> — hoặc <b>10 triệu lượt xem Shorts trong 90 ngày</b>. Đây là cột mốc đầu tiên, nhưng cũng là dòng tiền <em>chậm và thấp nhất</em>. Đừng lấy nó làm mục tiêu chính; hãy coi nó là <b>bằng chứng</b> rằng kênh bạn đã chạy đúng.</p>
+  <p class="small">Chính sách nền tảng có thể thay đổi — luôn kiểm tra lại điều kiện hiện hành trong YouTube Studio trước khi lên kế hoạch.</p>
+
+  <h3>Dòng 2 — Tài trợ nhãn hàng</h3>
+  <p>Đây mới là dòng tiền lớn của phần lớn kênh vừa và nhỏ. Và tài liệu gốc có một chương riêng với luận điểm rất mạnh:</p>
+  <div class="quote"><b>"TÀI TRỢ CŨNG LÀ NỘI DUNG!"</b></div>
+  <p>Họ đưa ra hai biểu đồ giữ chân: kiểu cũ — đọc kịch bản quảng cáo — tạo ra một <b>hố sâu</b> trong đường cong, người xem tua qua rồi thoát luôn khỏi video. Kiểu mới — lồng quảng cáo vào mạch nội dung — chỉ tạo một vết lõm nhẹ, chấp nhận được.</p>
+  <div class="box">
+    <div class="lbl">Con số đáng để bạn đem đi đàm phán</div>
+    <p style="margin:0">Một CEO từng tài trợ nói với họ: hiệu quả thu về gấp <b>1,7 lần</b> so với một quảng cáo phát trong trận chung kết bóng bầu dục Mỹ. Lý do: quảng cáo truyền hình cho một cú tăng vọt ngày đầu rồi biến mất vĩnh viễn. Video YouTube cho cú tăng vọt vài ngày, lắng xuống, <b>rồi tăng lại mỗi lần kênh ra video mới</b> (vì người xem mới hay xem ngược lại video cũ), và tiếp tục kéo về hàng triệu lượt xem mỗi tháng trong nhiều năm. Đó là <em>khách hàng dư âm</em>.</p>
+  </div>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 270" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="268" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Tài trợ cũng là NỘI DUNG</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Cùng một kênh, hai cách xử lý đoạn quảng cáo — nhìn vào chỗ mũi tên</text>
+<rect x="24" y="60" width="274" height="192" rx="9" fill="rgba(255,255,255,.03)" stroke="rgba(224,90,70,.45)"/><text x="36" y="82" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#FF6B57" font-weight="700" text-anchor="start" letter-spacing="0">Kiểu cũ: đọc kịch bản quảng cáo</text><line x1="36" y1="206" x2="286" y2="206" stroke="rgba(255,255,255,.09)"/><line x1="36" y1="151.0" x2="286" y2="151.0" stroke="rgba(255,255,255,.09)"/><line x1="36" y1="96" x2="286" y2="96" stroke="rgba(255,255,255,.09)"/><path class="anim-line" d="M36.0 96.0 L52.7 118.0 L69.3 126.8 L86.0 131.2 L102.7 134.5 L119.3 137.8 L136.0 168.6 L152.7 173.0 L169.3 169.7 L186.0 159.8 L202.7 157.6 L219.3 159.8 L236.0 162.0 L252.7 164.2 L269.3 167.5 L286.0 179.6" fill="none" stroke="#5AA9E6" stroke-width="2.2" pathLength="1"/><path d="M136.0 104 l0 34" stroke="#FF6B57" stroke-width="2"/><path d="M131.0 132 l5 10 l5 -10 Z" fill="#FF6B57"/><text x="36" y="230" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Hố sâu — người xem tua qua rồi thoát luôn</text>
+<rect x="342" y="60" width="274" height="192" rx="9" fill="rgba(255,255,255,.03)" stroke="rgba(245,185,66,.45)"/><text x="354" y="82" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#F5B942" font-weight="700" text-anchor="start" letter-spacing="0">Kiểu mới: lồng vào mạch nội dung</text><line x1="354" y1="206" x2="604" y2="206" stroke="rgba(255,255,255,.09)"/><line x1="354" y1="151.0" x2="604" y2="151.0" stroke="rgba(255,255,255,.09)"/><line x1="354" y1="96" x2="604" y2="96" stroke="rgba(255,255,255,.09)"/><path class="anim-line" d="M354.0 96.0 L370.7 118.0 L387.3 126.8 L404.0 131.2 L420.7 134.5 L437.3 136.7 L454.0 138.9 L470.7 140.0 L487.3 142.2 L504.0 143.3 L520.7 145.5 L537.3 147.7 L554.0 149.9 L570.7 152.1 L587.3 155.4 L604.0 168.6" fill="none" stroke="#5AA9E6" stroke-width="2.2" pathLength="1"/><path d="M454.0 104 l0 34" stroke="#F5B942" stroke-width="2"/><path d="M449.0 132 l5 10 l5 -10 Z" fill="#F5B942"/><text x="354" y="230" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Chỉ lõm nhẹ — chấp nhận được để nuôi video</text>
+<text x="24" y="258" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Một CEO từng tài trợ nói hiệu quả thu về gấp 1,7 lần một quảng cáo chung kết bóng bầu dục Mỹ.</text></svg><figcaption>Hai kiểu xử lý đoạn tài trợ — nhìn vào chỗ mũi tên.</figcaption></figure>
+  <div class="shot pair "><figure><img src="src-img/p33-0.png"></figure><figure><img src="src-img/p32-0.png"></figure></div><div class="shot"><figcaption><span class="orig">Ảnh gốc</span> — ảnh gốc hai biểu đồ giữ chân có mũi tên đỏ chỉ đúng vị trí đoạn tài trợ.</figcaption></div>
+  <h3>Dòng 3 — Tiếp thị liên kết</h3>
+  <p>Dòng tiền dễ bật nhất khi kênh còn nhỏ, vì <b>không cần đủ điều kiện gì cả</b>. Nguyên tắc: chỉ gắn thứ bạn dùng thật. Một lần giới thiệu ẩu là mất niềm tin — mà niềm tin chính là thứ duy nhất kênh nhỏ có nhiều hơn kênh lớn.</p>
+
+  <h3>Dòng 4 — Sản phẩm của chính bạn</h3>
+  <p>Khoá học, dịch vụ, tư vấn, sản phẩm số. Đây là dòng có <b>biên lợi nhuận cao nhất</b> và không phụ thuộc thuật toán. Nhưng nó chỉ chạy khi bạn đã xây được uy tín — nghĩa là phải đi qua giai đoạn cho đi trước.</p>
+
+  <h3>Dòng 5 — Quy mô hoá nội dung</h3>
+  <p>Nhiều kênh, nhiều thị trường, nhiều ngôn ngữ. MrBeast làm đúng điều này: ông có công ty riêng chuyên lồng tiếng kênh sang nhiều thứ tiếng. Đây từng là chuyện chỉ tập đoàn làm được — <b>đến năm nay thì không còn vậy nữa</b>, và tôi sẽ nói ở chương cuối.</p>
+
+  <h3>Thứ tự tôi khuyên bạn bật</h3>
+  <table>
+    <tr><th>Giai đoạn</th><th>Việc chính</th><th>Dòng tiền bật</th></tr>
+    <tr><td><b>0 → 1.000 sub</b></td><td>Ra video đều, học đọc biểu đồ giữ chân</td><td>Tiếp thị liên kết</td></tr>
+    <tr><td><b>1.000 → 10.000</b></td><td>Ổn định format, xây nhận diện</td><td>+ Quảng cáo YouTube</td></tr>
+    <tr><td><b>10.000 → 50.000</b></td><td>Chủ động liên hệ nhãn hàng</td><td>+ Tài trợ</td></tr>
+    <tr><td><b>50.000+</b></td><td>Biến khán giả thành khách hàng</td><td>+ Sản phẩm riêng</td></tr>
+  </table>
+</section><section class="chap">
+  <div class="chapnum">Chặng 10</div>
+  <h2>Lộ trình 90 ngày từ con số 0</h2>
+
+  <p>Toàn bộ những gì bạn vừa đọc, xếp thành việc phải làm theo tuần. Đây là bản tôi đưa cho học viên mới.</p>
+
+  <h4>Ngày 1–10 — Chọn ngách và định vị</h4>
+  <ul>
+    <li>Chọn <b>một</b> ngách bạn có lợi thế thật: chuyên môn, quyền tiếp cận, hoặc sức bền. Không chọn ngách chỉ vì "thấy nhiều view".</li>
+    <li>Xem <b>30 video</b> nổi nhất trong ngách. Với mỗi video ghi 3 dòng: hook · cấu trúc · lý do mình xem tiếp.</li>
+    <li>Viết một câu định vị: <em>"Kênh này giúp [ai] làm được [gì] theo cách [khác biệt gì]."</em></li>
+    <li>Lập <b>ngân hàng 30 tiêu đề</b> trước khi quay bất kỳ thứ gì. Đây là bước bị bỏ qua nhiều nhất, và là bước quyết định nhất.</li>
+  </ul>
+
+  <h4>Ngày 11–30 — 10 video đầu tiên (giai đoạn học nghề)</h4>
+  <ul>
+    <li>Mục tiêu <b>không phải</b> có view. Mục tiêu là <em>tăng tốc độ sản xuất</em> và làm quen với biểu đồ giữ chân.</li>
+    <li>Mỗi video: viết tiêu đề trước → phác ảnh bìa → mới quay. Không được đảo thứ tự.</li>
+    <li>Mỗi video xong, mở biểu đồ giữ chân, tìm vực sụt, ghi vào nhật ký lỗi.</li>
+    <li>Bắt đầu áp bản đồ theo phút: 3 giây đầu, mốc tái gắn kết, kết thúc cắt phựt.</li>
+  </ul>
+
+  <h4>Ngày 31–60 — Tìm format thắng</h4>
+  <ul>
+    <li>Chọn <b>3 format</b> và xoay vòng. Không để hai video cùng format liền nhau.</li>
+    <li>Theo dõi CTR theo tuần. CTR dưới 3% thì <b>chỉ sửa tiêu đề và ảnh bìa</b>, đừng đụng vào nội dung.</li>
+    <li>Video nào bật lên bất thường — <b>mổ xẻ nó</b> và làm biến thể, đừng vội đổi hướng.</li>
+    <li>Bắt đầu gắn liên kết tiếp thị vào các video có ý định mua rõ ràng.</li>
+  </ul>
+
+  <h4>Ngày 61–90 — Tăng sản lượng và bật dòng tiền</h4>
+  <ul>
+    <li>Nhân đôi tần suất đăng. Đây là chỗ mọi người vỡ trận, và là lý do có chương tiếp theo.</li>
+    <li>Chuẩn hoá quy trình thành checklist để không phải nghĩ lại từ đầu mỗi lần.</li>
+    <li>Chạm mốc điều kiện bật kiếm tiền, hoàn tất hồ sơ.</li>
+    <li>Chuẩn bị hồ sơ năng lực (số liệu kênh, chân dung khán giả) để chào tài trợ.</li>
+  </ul>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 210" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="208" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Lộ trình 90 ngày từ con số 0</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Bốn chặng — mỗi chặng có một việc chính, không làm cùng lúc</text>
+<rect class="anim-grow" x="28" y="96" width="140" height="8" rx="4" fill="#6FA8DC" opacity=".85"/><circle cx="36" cy="100" r="9" fill="#6FA8DC"/><text x="28" y="84" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#6FA8DC" font-weight="700" text-anchor="start" letter-spacing="0">Ngày 1–10</text><text x="28" y="130" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0">Chọn ngách</text><text x="28" y="146" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">30 tiêu đề</text><rect class="anim-grow" x="178" y="96" width="140" height="8" rx="4" fill="#E08A3C" opacity=".85"/><circle cx="186" cy="100" r="9" fill="#E08A3C"/><text x="178" y="84" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#E08A3C" font-weight="700" text-anchor="start" letter-spacing="0">Ngày 11–30</text><text x="178" y="130" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0">10 video đầu</text><text x="178" y="146" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">học đọc biểu đồ</text><rect class="anim-grow" x="328" y="96" width="140" height="8" rx="4" fill="#F5B942" opacity=".85"/><circle cx="336" cy="100" r="9" fill="#F5B942"/><text x="328" y="84" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#F5B942" font-weight="700" text-anchor="start" letter-spacing="0">Ngày 31–60</text><text x="328" y="130" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0">Xoay 3 format</text><text x="328" y="146" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">sửa CTR</text><rect class="anim-grow" x="478" y="96" width="140" height="8" rx="4" fill="#7ED9A6" opacity=".85"/><circle cx="486" cy="100" r="9" fill="#7ED9A6"/><text x="478" y="84" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#7ED9A6" font-weight="700" text-anchor="start" letter-spacing="0">Ngày 61–90</text><text x="478" y="130" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0">Nhân đôi sản lượng</text><text x="478" y="146" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">bật dòng tiền</text>
+<text x="24" y="180" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Mốc bật kiếm tiền: 1.000 người đăng ký + 4.000 giờ xem (hoặc 10 triệu view Shorts/90 ngày).</text>
+<text x="24" y="196" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Đây là BẰNG CHỨNG kênh chạy đúng, không phải đích đến.</text></svg><figcaption>Bốn chặng của 90 ngày đầu tiên.</figcaption></figure>
+  <h3>Checklist trước khi bấm đăng — dán lên màn hình</h3>
+  <ul class="check">
+    <li>Tiêu đề có chứa <b>một điều bất ngờ hoặc một con số</b>?</li>
+    <li>Ảnh bìa thu nhỏ bằng con tem vẫn <b>đọc được và hiểu được</b>?</li>
+    <li>Nội dung có <b>trả đúng lời hứa</b> của tiêu đề và ảnh bìa?</li>
+    <li><b>3 giây đầu</b> có chặn được ngón tay lướt? Giây đầu có dùng làm ảnh bìa được không?</li>
+    <li>Có <b>ít nhất một khoảnh khắc WOW</b> — thứ khiến người ta nghĩ "sao làm được vậy"?</li>
+    <li>Có đoạn nào <b>lặp lại điều đã nói</b>? Cắt.</li>
+    <li>Video <b>kết thúc đột ngột</b> sau khi trả thưởng, không lê thê?</li>
+    <li>Đã xem lại toàn bộ ở tốc độ 2× để bắt chỗ chùng nhịp?</li>
+  </ul>
+</section><section class="chap">
+  <div class="chapnum">Tổng kết</div>
+  <h2>Gấp sách lại thì làm gì?</h2>
+
+  <p>Cả quyển này chỉ có giá trị nếu nó biến thành việc bạn làm trong tuần này. Nên đây là phần rút gọn: <b>10 việc phải làm</b>, theo đúng thứ tự, và <b>10 điều đừng làm</b> — mỗi điều đều là một cái bẫy đã có người trả giá.</p>
+
+  <h3>Mười việc phải làm — theo đúng thứ tự này</h3>
+  <table>
+    <tr><th style="width:8%">#</th><th style="width:38%">Việc</th><th>Làm sao cho đúng</th></tr>
+    <tr><td><b>1</b></td><td>Chọn một ngách bạn có lợi thế thật</td><td>Lợi thế = chuyên môn · quyền tiếp cận · hoặc sức bền. Không chọn vì "thấy nhiều view".</td></tr>
+    <tr><td><b>2</b></td><td>Viết một câu định vị kênh</td><td>"Kênh này giúp [ai] làm được [gì] theo cách [khác biệt gì]." Không viết được câu này thì chưa quay.</td></tr>
+    <tr><td><b>3</b></td><td>Lập ngân hàng 30 tiêu đề</td><td>Trước khi quay bất cứ thứ gì. Mỗi tiêu đề phải trả lời được: người ta bấm vào vì tò mò điều gì?</td></tr>
+    <tr><td><b>4</b></td><td>Đảo ngược quy trình sản xuất</td><td>Tiêu đề → phác ảnh bìa → <em>mới</em> quay. Không bao giờ quay trước rồi nghĩ tên sau.</td></tr>
+    <tr><td><b>5</b></td><td>Dựng phút đầu như dựng cả video</td><td>Sáng rõ · khớp đúng lời hứa của ảnh bìa · câu mở soạn sẵn từng chữ · dồn cái hay lên trước.</td></tr>
+    <tr><td><b>6</b></td><td>Cắm hai mốc tái gắn kết</td><td>Một ở ~¼ video, một ở ~½ video. Mỗi mốc là một đoạn "chỉ mình mới làm được".</td></tr>
+    <tr><td><b>7</b></td><td>Kết thúc đột ngột sau khi trả thưởng</td><td>Không tổng kết lê thê. Mỗi giây thừa ở cuối là một vết cắt vào chỉ số.</td></tr>
+    <tr><td><b>8</b></td><td>Soi biểu đồ giữ chân sau MỖI video</td><td>Tìm vực sụt → tua tới đúng giây đó → ghi nguyên nhân vào một file. Đây là việc phân hoá lớn nhất.</td></tr>
+    <tr><td><b>9</b></td><td>Xoay 3 format, không lặp liền nhau</td><td>Format ăn khách mấy cũng phải nghỉ. Kênh xào đi xào lại một format thì chết.</td></tr>
+    <tr><td><b>10</b></td><td>Tăng tần suất trước khi tăng chất lượng</td><td>Đều đặn quan trọng hơn hoàn hảo — với điều kiện bạn giữ được nhịp. Chương sau nói cách giữ.</td></tr>
+  </table>
+
+  <h3>Mười điều đừng làm — mỗi điều là một cái bẫy có thật</h3>
+  <ul>
+    <li><b>Đừng mua thiết bị trước.</b> Thiết bị nâng chất lượng 10%; cấu trúc nâng kết quả 10 lần.</li>
+    <li><b>Đừng đặt tiêu đề mà nội dung không trả nổi.</b> Bạn thắng một cú bấm, thua cả cái kênh.</li>
+    <li><b>Đừng mở đầu bằng "xin chào các bạn, hôm nay mình sẽ…".</b> Đó là 15 giây bạn tự tay đưa cho nút back.</li>
+    <li><b>Đừng để một khoảnh khắc nhạt nào lọt vào.</b> Xem lại ở tốc độ 2× để bắt chỗ chùng nhịp.</li>
+    <li><b>Đừng báo hiệu video sắp hết</b> — trừ khi để dựng hype cho phần thưởng cuối.</li>
+    <li><b>Đừng đọc kịch bản quảng cáo.</b> Tài trợ phải là nội dung, nếu không nó tạo hố sâu trong biểu đồ.</li>
+    <li><b>Đừng dàn dựng giả.</b> Uy tín là tài sản dài hạn duy nhất của một kênh.</li>
+    <li><b>Đừng dồn cả ngày vào một video.</b> Đó là cách bạn giết sạch thời gian đệm của chính mình.</li>
+    <li><b>Đừng đổ lỗi cho thuật toán.</b> Thuật toán chỉ khuếch đại tín hiệu đã có. Số 0 nhân bao nhiêu vẫn là 0.</li>
+    <li><b>Đừng đọc xong rồi cất đi.</b> Một phép đo thật đáng giá hơn mười quyển sách — kể cả quyển này.</li>
+  </ul>
+
+  <div class="box">
+    <div class="lbl">Một trang nhắc việc — dán lên bàn</div>
+    <p style="margin:0"><b>Trước khi quay:</b> tiêu đề đã có chưa · ảnh bìa đã phác chưa · người ta bấm vào vì tò mò gì?</p>
+    <p style="margin:2mm 0 0"><b>Khi dựng:</b> đang làm phút thứ mấy · đoạn này có nhạt không · đã có khoảnh khắc WOW chưa?</p>
+    <p style="margin:2mm 0 0"><b>Sau khi đăng:</b> CTR bao nhiêu · vực sụt ở giây nào · video này mấy trên 10?</p>
+  </div>
+
+  <h3>Và đừng đi một mình cho khổ</h3>
+  <p>Ba việc khó nhất trong danh sách trên — soi số liệu, giữ nhịp đăng, và biết mình sai ở đâu — đều dễ hơn rất nhiều khi có người làm cùng và có người soi hộ. Em mở một nhóm cộng đồng để mọi người đăng số liệu thật của kênh mình lên, hỏi nhau, và nhận góp ý.</p>
+
+  <div class="ctarow">
+    <a class="btn ghost" href="https://zalo.me/g/jxnzqiocw07gqka8s9fi">Vào nhóm cộng đồng miễn phí →</a>
+    <div class="small" style="margin:0">Nhóm Zalo · hỏi đáp, soi biểu đồ giữ chân hộ nhau, chia sẻ tiêu đề &amp; ảnh bìa trước khi đăng.</div>
+  </div>
+  <p class="small">Link: <a class="plain" href="https://zalo.me/g/jxnzqiocw07gqka8s9fi">zalo.me/g/jxnzqiocw07gqka8s9fi</a></p>
+</section><section class="chap">
+  <div class="chapnum">Sự thật cuối cùng</div>
+  <h2>Bạn không thể làm việc này một mình</h2>
+
+  <p>Tôi đã đưa bạn toàn bộ công thức. Nó thật, nó đã được kiểm chứng ở quy mô hàng trăm triệu lượt xem. Nhưng bây giờ tôi phải nói phần mà không tài liệu nào nói với bạn.</p>
+
+  <p>Đọc lại quy tắc số 11 ở chặng 08:</p>
+  <div class="quote">"Nếu trong một ngày làm việc bạn chỉ làm một video duy nhất, ngày đó bạn đã thất bại."</div>
+
+  <p>Câu này viết cho người có <b>hàng trăm đồng nghiệp</b> — có đội sáng tạo viết kịch bản, đội sản xuất lo bối cảnh, đội quay, đội dựng, đội làm ảnh bìa, đội phân tích số liệu. Ở đó, một người phụ trách nhiều video cùng lúc là chuyện bình thường.</p>
+
+  <p>Còn bạn thì viết kịch bản, quay, dựng, làm bìa, đặt tiêu đề, đăng bài, trả lời bình luận, phân tích số liệu — <b>một mình</b>. Và bạn có thể còn đi làm toàn thời gian.</p>
+
+  <div class="warn">
+    <div class="lbl">Đây là chỗ 95% người bỏ cuộc</div>
+    <p style="margin:0">Không phải vì họ không biết công thức. Bạn vừa đọc xong công thức đấy thôi. Họ bỏ vì <b>không đủ sức duy trì</b>. Ra được 5 video thì kiệt. Nghỉ hai tuần. Kênh nguội. Thuật toán quên. Quay lại thì thấy như bắt đầu từ đầu — và lần này không còn hào hứng nữa.</p>
+    <p style="margin:2mm 0 0">Vấn đề của bạn <b>chưa bao giờ là thiếu kiến thức</b>. Vấn đề là <b>năng lực sản xuất</b>.</p>
+  </div>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 230" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="228" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Nút thắt không nằm ở kiến thức — nằm ở NĂNG LỰC SẢN XUẤT</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Cùng một công thức, khác nhau ở số video ra được mỗi tháng</text>
+<rect x="28" y="72" width="270" height="126" rx="9" fill="rgba(255,255,255,.03)" stroke="rgba(255,255,255,.10)"/>
+<text x="44" y="96" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#8A93A8" font-weight="700" text-anchor="start" letter-spacing="0">Bạn làm một mình</text>
+<rect class="anim-grow" x="44" y="112" width="12" height="12" rx="2" fill="#3A4152"/><rect class="anim-grow" x="60" y="112" width="12" height="12" rx="2" fill="#3A4152"/><rect class="anim-grow" x="76" y="112" width="12" height="12" rx="2" fill="#3A4152"/><rect class="anim-grow" x="92" y="112" width="12" height="12" rx="2" fill="#3A4152"/>
+<text x="44" y="146" font-family="Be Vietnam Pro, sans-serif" font-size="18" fill="#8A93A8" font-weight="800" text-anchor="start" letter-spacing="0">4 video / tháng</text>
+<text x="44" y="168" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">viết · quay · dựng · bìa · đăng · trả lời</text>
+<text x="44" y="184" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#FF6B57" font-weight="400" text-anchor="start" letter-spacing="0">→ ra 5 video là kiệt, nghỉ 2 tuần, kênh nguội</text>
+<rect x="342" y="72" width="270" height="126" rx="9" fill="rgba(245,185,66,.08)" stroke="rgba(245,185,66,.45)"/>
+<text x="358" y="96" font-family="Be Vietnam Pro, sans-serif" font-size="11" fill="#F5B942" font-weight="700" text-anchor="start" letter-spacing="0">Bạn + cộng sự AI Agent</text>
+<rect class="anim-grow" x="358" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="374" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="390" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="406" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="422" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="438" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="454" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="470" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="486" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="502" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="518" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="534" y="112" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="358" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="374" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="390" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="406" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="422" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="438" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="454" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="470" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="486" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="502" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="518" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/><rect class="anim-grow" x="534" y="128" width="12" height="12" rx="2" fill="#F5B942" opacity=".85"/>
+<text x="358" y="164" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#E8EDF5" font-weight="400" text-anchor="start" letter-spacing="0">sản lượng không còn phụ thuộc số giờ bạn rảnh</text>
+<text x="358" y="182" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#F5B942" font-weight="400" text-anchor="start" letter-spacing="0">→ bạn giữ phần quyết định: ngách · gu · số liệu</text>
+<text x="24" y="220" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="600" text-anchor="start" letter-spacing="0">Đây chính xác là chỗ 95% người bỏ cuộc — không phải vì thiếu công thức.</text></svg><figcaption>Cùng công thức, khác năng lực sản xuất.</figcaption></figure>
+  <h3>Thuê người? Bạn chưa thuê được</h3>
+  <p>Giải pháp truyền thống là thuê cộng sự. Nhưng khi kênh còn 0 đồng doanh thu, một người dựng video đã ngốn 8–15 triệu mỗi tháng. Bạn phải trả lương từ tiền túi trong nhiều tháng trước khi kênh trả lại đồng nào. Phần lớn người mới không trụ nổi phép toán đó — và tôi không khuyên bạn liều.</p>
+
+  <h3>Nên nếu bạn chỉ có một mình, tôi định hướng bạn đi đường này</h3>
+  <p><b>Làm nội dung video AI.</b> Không phải vì nó dễ, mà vì nó là con đường duy nhất tôi thấy giải được đúng cái nút thắt vừa nêu — và vì <em>video AI hiện vẫn đang rất viral và còn nhiều dư địa</em>.</p>
+
+  <div class="box">
+    <div class="lbl">Vì sao đường này giải được bài toán</div>
+    <ul style="margin:0 0 0 5mm">
+      <li>Không cần lên hình, không cần thiết bị, không cần phòng quay.</li>
+      <li>Không phụ thuộc lịch trình hay tâm trạng của bạn.</li>
+      <li>Sản lượng <b>không còn bị giới hạn bởi số giờ bạn có</b> — đây là điểm mấu chốt.</li>
+      <li>Vẫn áp được nguyên xi mọi thứ trong quyển này: CTR, bản đồ giữ chân, bậc thang, format, kết thúc cắt phựt.</li>
+    </ul>
+  </div>
+
+  <h3>Và đây là bước nhảy thật sự: bạn không dùng công cụ, bạn xây một nhân sự</h3>
+  <p>Khác biệt giữa "dùng vài công cụ AI" và điều tôi đang nói lớn hơn bạn tưởng.</p>
+  <p>Dùng công cụ nghĩa là: bạn mở phần mềm A viết kịch bản, phần mềm B tạo giọng, phần mềm C dựng hình, rồi bạn tự ghép, tự đặt tên, tự tải lên. Bạn vẫn là người làm — chỉ là làm bằng dụng cụ tốt hơn. Nút thắt vẫn nằm ở bạn.</p>
+  <p>Điều tôi muốn bạn làm là <b>xây một AI Agent — một nhân viên AI, một cộng sự AI</b> làm video cùng bạn. Nó tự lên ý tưởng theo ngách của bạn, tự viết kịch bản đúng cấu trúc giữ chân trong quyển này, tự dựng video, <b>tự đăng lên kênh</b>, tự đặt tiêu đề — mô tả — thẻ chuẩn SEO, thậm chí <b>tự tối ưu kênh</b> cho bạn theo số liệu thu về.</p>
+  <p>Lúc đó vai trò của bạn đổi hẳn: từ <em>người làm video</em> thành <em>người điều hành một xưởng nội dung</em>. Bạn giữ phần mà máy không làm thay được — chọn ngách, chốt định hướng, giữ tiêu chuẩn, đọc số liệu để ra quyết định. Đúng vai của MrBeast trong công ty của ông ấy, chỉ là ở quy mô của bạn và không tốn một đồng lương nào.</p>
+</section><section class="chap">
+  <div class="kicker">Bước tiếp theo</div>
+  <h2>Nếu bạn muốn xây cộng sự AI đó</h2>
+
+  <p>Tôi đã dựng hệ thống này cho chính mình và cho học viên. Toàn bộ quy trình — từ chọn ngách, xây agent, nối các công cụ, cho tới tự động đăng bài chuẩn SEO và tối ưu kênh — tôi gói lại thành một khoá học.</p>
+
+  <a class="cta" href="https://vieaiedu.vn/xaykenhai">
+    <div class="t">Khoá học: XÂY KÊNH AI</div>
+    <p>Xây một AI Agent làm video và vận hành kênh YouTube cùng bạn — từ con số 0, không cần lên hình, không cần thuê người.</p>
+    <div class="l">vieaiedu.vn/xaykenhai  →</div>
+  </a>
+
+  <figure class="fig"><svg class="fig-svg" viewBox="0 0 640 260" xmlns="http://www.w3.org/2000/svg" role="img"><rect x="1" y="1" width="638" height="258" rx="10" fill="#10151F" stroke="rgba(245,185,66,.20)"/>
+<text x="24" y="32" font-family="Be Vietnam Pro, sans-serif" font-size="13" fill="#E8EDF5" font-weight="700" text-anchor="start" letter-spacing="0">Cộng sự AI Agent làm gì trong khi bạn ngủ</text>
+<text x="24" y="52" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#8A93A8" font-weight="400" text-anchor="start" letter-spacing="0">Một vòng khép kín — bạn chỉ chạm vào hai đầu</text>
+<rect x="28" y="72" width="586" height="26" rx="6" fill="rgba(255,255,255,.04)"/>
+<text x="40" y="89" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#E8EDF5" font-weight="600" text-anchor="start" letter-spacing="0">BẠN: chọn ngách · chốt định hướng · giữ tiêu chuẩn · ra quyết định từ số liệu</text>
+<rect class="anim-pop" x="28" y="112" width="86" height="52" rx="8" fill="rgba(245,185,66,.10)" stroke="rgba(245,185,66,.45)"/><text x="71" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">Ý tưởng</text><text x="71" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">theo ngách</text><path class="anim-flow" d="M116 138 l10 0" stroke="#F5B942" stroke-width="2"/><path d="M122 134 l5 4 l-5 4" fill="none" stroke="#F5B942" stroke-width="1.6"/><rect class="anim-pop" x="128" y="112" width="86" height="52" rx="8" fill="rgba(245,185,66,.10)" stroke="rgba(245,185,66,.45)"/><text x="171" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">Kịch bản</text><text x="171" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">đúng cấu trúc giữ chân</text><path class="anim-flow" d="M216 138 l10 0" stroke="#F5B942" stroke-width="2"/><path d="M222 134 l5 4 l-5 4" fill="none" stroke="#F5B942" stroke-width="1.6"/><rect class="anim-pop" x="228" y="112" width="86" height="52" rx="8" fill="rgba(245,185,66,.10)" stroke="rgba(245,185,66,.45)"/><text x="271" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">Giọng + hình</text><text x="271" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">sinh bằng AI</text><path class="anim-flow" d="M316 138 l10 0" stroke="#F5B942" stroke-width="2"/><path d="M322 134 l5 4 l-5 4" fill="none" stroke="#F5B942" stroke-width="1.6"/><rect class="anim-pop" x="328" y="112" width="86" height="52" rx="8" fill="rgba(245,185,66,.10)" stroke="rgba(245,185,66,.45)"/><text x="371" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">Dựng video</text><text x="371" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">tự động</text><path class="anim-flow" d="M416 138 l10 0" stroke="#F5B942" stroke-width="2"/><path d="M422 134 l5 4 l-5 4" fill="none" stroke="#F5B942" stroke-width="1.6"/><rect class="anim-pop" x="428" y="112" width="86" height="52" rx="8" fill="rgba(245,185,66,.10)" stroke="rgba(245,185,66,.45)"/><text x="471" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">Đăng lên kênh</text><text x="471" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">tiêu đề · mô tả · thẻ</text><path class="anim-flow" d="M516 138 l10 0" stroke="#F5B942" stroke-width="2"/><path d="M522 134 l5 4 l-5 4" fill="none" stroke="#F5B942" stroke-width="1.6"/><rect class="anim-pop" x="528" y="112" width="86" height="52" rx="8" fill="rgba(245,185,66,.10)" stroke="rgba(245,185,66,.45)"/><text x="571" y="134" font-family="Be Vietnam Pro, sans-serif" font-size="10" fill="#F5B942" font-weight="700" text-anchor="middle" letter-spacing="0">Đọc số liệu</text><text x="571" y="150" font-family="Be Vietnam Pro, sans-serif" font-size="8" fill="#8A93A8" font-weight="400" text-anchor="middle" letter-spacing="0">tối ưu kênh</text>
+<path d="M614 138 l14 0 l0 46 l-600 0 l0 -46 l14 0" fill="none" stroke="#F5B942" stroke-opacity=".45"
+   stroke-dasharray="4 4"/>
+<text x="320" y="200" font-family="Be Vietnam Pro, sans-serif" font-size="9" fill="#F5B942" font-weight="600" text-anchor="middle" letter-spacing="0">vòng lặp tự chạy</text>
+<rect x="28" y="212" width="586" height="34" rx="8" fill="url(#gCTA)"/>
+<text x="320" y="234" font-family="Be Vietnam Pro, sans-serif" font-size="14" fill="#0B0F17" font-weight="800" text-anchor="middle" letter-spacing="0">vieaiedu.vn/xaykenhai</text>
+<defs><linearGradient id="gCTA" x1="0" y1="0" x2="1" y2="0">
+<stop offset="0" stop-color="#F5B942"/><stop offset="1" stop-color="#E09B1E"/></linearGradient></defs></svg><figcaption>Vòng sản xuất khép kín khi bạn có một cộng sự AI.</figcaption></figure>
+  <h3>Khoá học giải quyết đúng những gì quyển này chỉ ra</h3>
+  <table>
+    <tr><th style="width:46%">Nút thắt bạn vừa đọc</th><th>Cách khoá học gỡ</th></tr>
+    <tr><td>Không đủ sức ra video đều</td><td>Agent sản xuất chạy nền, sản lượng không còn phụ thuộc số giờ bạn rảnh</td></tr>
+    <tr><td>Chưa đủ tiền thuê cộng sự</td><td>Một cộng sự AI thay cho vị trí đầu tiên bạn định thuê</td></tr>
+    <tr><td>Không biết viết kịch bản giữ chân</td><td>Cấu trúc trong quyển này được cài thẳng vào agent</td></tr>
+    <tr><td>Ngại lên hình</td><td>Toàn bộ nội dung sinh bằng AI, bạn đứng sau vận hành</td></tr>
+    <tr><td>Đăng bài, SEO, tối ưu kênh quá mất công</td><td>Tự động đăng, tự đặt tiêu đề &mdash; mô tả &mdash; thẻ, tự tối ưu theo số liệu</td></tr>
+  </table>
+
+  <div class="dark">
+    <p style="margin:0"><b>Nói cho công bằng:</b> AI không làm thay bạn phần quyết định. Nó không chọn ngách giúp bạn, không biết khán giả của bạn là ai, không có gu thẩm mỹ của bạn. Nó gỡ cho bạn cái nút thắt <em>năng lực sản xuất</em> — cái nút đã giết 95% người bỏ cuộc. Phần đầu não vẫn là bạn, và quyển sách này chính là phần đầu não đó.</p>
+    <p style="margin:2mm 0 0" class="small">Và một lời nói thẳng nữa: không có công cụ nào bảo đảm bạn sẽ kiếm được bao nhiêu tiền. Kết quả phụ thuộc ngách bạn chọn, độ bền bạn có, và chất lượng quyết định của bạn. Tôi chỉ cam kết đưa bạn đúng phương pháp và đúng công cụ — phần đi thì bạn phải tự đi.</p>
+  </div>
+
+  <h3>Còn nếu bạn chưa muốn học gì cả</h3>
+  <p>Thì cũng không sao. Quyển này là quà, tôi tặng thật, không kèm điều kiện. Bạn được phép chia sẻ lại nguyên vẹn cho bất kỳ ai đang muốn bắt đầu.</p>
+  <p>Chỉ xin bạn một điều: <b>đừng đọc xong rồi cất đi.</b> Hãy chọn đúng <em>một</em> thứ trong quyển này và làm ngay tuần này. Tôi đề nghị thứ này: mở YouTube Studio, xem biểu đồ giữ chân của video gần nhất, tìm vực sụt, và tua tới đúng giây đó để nhìn thẳng vào chỗ mình sai.</p>
+  <p>Một phép đo thật đáng giá hơn mười quyển sách. Kể cả quyển này.</p>
+
+    <div class="backcover">
+    <div class="bc-k">Chia sẻ lại thoải mái</div>
+    <div class="bc-t">Bạn vừa có công thức.<br>Thứ còn thiếu là <span>một cộng sự</span>.</div>
+    <p class="bc-p">Nếu bạn làm một mình và muốn kênh vẫn ra video đều — hãy xây một AI Agent làm video
+    và tự đăng lên kênh cho bạn. Toàn bộ quy trình nằm ở đây:</p>
+    <a class="bc-l" href="https://vieaiedu.vn/xaykenhai">Xem khoá Xây Kênh AI  →</a>
+    <div class="bc-z">Hoặc vào nhóm cộng đồng miễn phí: <a class="plain" href="https://zalo.me/g/jxnzqiocw07gqka8s9fi">zalo.me/g/jxnzqiocw07gqka8s9fi</a></div>
+    <div class="bc-f">Long Nam &middot; Chuyên Gia AI &middot; vieaiedu.vn</div>
+  </div>
+<div style="margin-top:10mm; padding-top:5mm; border-top:1px solid rgba(245,185,66,.3)">
+    <p style="margin:0"><b style="color:#F5B942;font-size:13pt">Long Nam</b><br>
+    <span class="small">Chuyên Gia AI &middot; vieaiedu.vn<br>
+    Tài liệu nghiên cứu &mdash; biên soạn và diễn giải từ cẩm nang nội bộ "How To Succeed In MrBeast Production". Mọi trích dẫn thuộc về tác giả gốc; phần phân tích, quy đổi và lộ trình áp dụng cho người Việt mới bắt đầu là của người biên soạn.</span></p>
+  </div>
+</section>
+</div>
+<a class="stickycta" href="https://vieaiedu.vn/xaykenhai">Xây cộng sự AI làm video cho kênh của bạn → vieaiedu.vn/xaykenhai</a>
+<script>const io=new IntersectionObserver(es=>{es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('on');io.unobserve(e.target);}})},{threshold:.15});document.querySelectorAll('.wrap h2,.wrap h3,.wrap p,.wrap ul,.wrap ol,.wrap table,.box,.dark,.warn,.quote,.fig,.shot,.cta,.backcover,.ctarow').forEach(el=>{el.classList.add('reveal');io.observe(el);});</script></body></html>

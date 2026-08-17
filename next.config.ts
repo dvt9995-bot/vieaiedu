@@ -23,6 +23,9 @@ const nextConfig: NextConfig = {
       // Landing "USB Build AI Agent" (TikTok Shop style) — checkout SePay QR (cọc 50k / Zoom / VIP)
       { source: "/usb-ai-agent", destination: "/usb-ai-agent.html" },
       { source: "/usb-ai-agent/cam-on", destination: "/usb-ai-agent-cam-on.html" },
+      // Ebook tặng "Công Thức MrBeast" — bản đọc online + link tải PDF gọn
+      { source: "/mrbeast", destination: "/mrbeast/index.html" },
+      { source: "/cong-thuc-mrbeast", destination: "/mrbeast/cong-thuc-mrbeast.pdf" },
     ];
   },
 };
