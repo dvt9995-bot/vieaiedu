@@ -124,17 +124,22 @@ a.plain { color: #F5B942; text-decoration: none; font-weight: 700; }
   .fig-svg .anim-pop:nth-of-type(2n) { animation-delay: .15s }
   .fig-svg .anim-pop:nth-of-type(3n) { animation-delay: .3s }
 }
-.cover { background: radial-gradient(120% 80% at 75% 15%, rgba(245,185,66,.22), rgba(11,15,23,0) 58%); }
+.cover { display: flex; flex-direction: column; position: relative; overflow: hidden; background: #0B0F17; }
+.cv-hero { position: relative; width: 100%; height: 150mm; flex: 0 0 auto; }
+.cv-hero img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 28%; display: block; }
+.cv-fade { position: absolute; left: 0; right: 0; bottom: -1mm; height: 44mm;
+  background: linear-gradient(to bottom, rgba(11,15,23,0), #0B0F17 92%); }
+.cv-body { flex: 1; padding: 2mm 20mm 0; }
 .cover .tag { font-size: 9pt; letter-spacing: .3em; text-transform: uppercase; color: #F5B942; font-weight: 700; }
-.cover h1 { font-size: 42pt; font-weight: 800; color: #FFF; margin: 6mm 0 4mm; letter-spacing: -.02em; }
+.cover h1 { font-size: 46pt; font-weight: 800; color: #FFF; margin: 5mm 0 5mm; letter-spacing: -.02em; line-height: 1.04; }
 .cover h1 span { color: #F5B942; }
-.cover .sub { font-size: 13pt; color: #AEB8CC; max-width: 130mm; line-height: 1.6; }
-.cover .rule { width: 30mm; height: 3px; background: #F5B942; margin: 8mm 0; }
-.cover .by { font-size: 11pt; color: #E8EDF5; font-weight: 600; }
-.cover .by small { display: block; color: #7C879C; font-weight: 400; font-size: 9.5pt; margin-top: 1.5mm; }
-.cover .free { position: absolute; bottom: 6mm; left: 4mm; font-size: 9.5pt; color: #7C879C; }
-.portrait { position: absolute; right: -14mm; bottom: 0; height: 160mm; opacity: .9;
-  -webkit-mask-image: linear-gradient(to left, #000 60%, transparent 100%); }
+.cover .sub { font-size: 12.5pt; color: #AEB8CC; max-width: 152mm; line-height: 1.62; }
+.cover .rule { width: 30mm; height: 3px; background: #F5B942; margin: 0 0 6mm; }
+.cv-author { display: flex; align-items: center; gap: 5mm; margin-top: 16mm; }
+.cv-av { width: 17mm; height: 17mm; border-radius: 50%; object-fit: cover; border: 2px solid rgba(245,185,66,.75); }
+.cv-name { font-size: 13pt; font-weight: 700; color: #FFF; }
+.cv-role { font-size: 9.5pt; color: #7C879C; }
+.cover .free { position: absolute; bottom: 11mm; left: 20mm; font-size: 9pt; color: #5C6880; }
 .toc li { margin-bottom: 2.6mm; font-size: 11pt; }
 .toc b { color: #F5B942; }
 .chapnum { font-size: 9pt; letter-spacing: .2em; color: #F5B942; font-weight: 700; text-transform: uppercase; }
@@ -174,13 +179,22 @@ table { font-size: 15px; } .fig, .shot { margin: 28px 0; }
 @media (max-width: 640px){ .portrait{ opacity:.35 } .cover{ min-height:70vh } .shot.pair{ display:block } }
 </style></head><body>
 <div class="cover">
-  <img class="portrait" src="/mrbeast/portrait.png" alt="">
-  <div class="tag">Tài liệu nghiên cứu &middot; Tặng miễn phí</div>
-  <h1>Công Thức<br><span>MrBeast</span></h1>
-  <div class="rule"></div>
-  <div class="sub">Giải mã toàn bộ cẩm nang nội bộ của YouTuber lớn nhất hành tinh — và chuyển thành lộ trình xây kênh YouTube kiếm tiền <b>từ con số 0</b> cho người Việt mới bắt đầu.</div>
-  <div class="rule"></div>
-  <div class="by">Long Nam<small>Chuyên Gia AI &middot; vieaiedu.vn</small></div>
+  <div class="cv-hero">
+    <img src="/mrbeast/assets/mrbeast-hero.jpg" alt="">
+    <div class="cv-fade"></div>
+  </div>
+  <div class="cv-body">
+    <div class="tag">Tài liệu nghiên cứu &middot; Tặng miễn phí</div>
+    <h1>Công Thức<br><span>MrBeast</span></h1>
+    <div class="rule"></div>
+    <div class="sub">Giải mã toàn bộ cẩm nang nội bộ của YouTuber lớn nhất hành tinh — và chuyển thành
+    lộ trình xây kênh YouTube kiếm tiền <b>từ con số 0</b> cho người Việt mới bắt đầu.</div>
+    <div class="cv-author">
+      <img class="cv-av" src="/mrbeast/assets/longnam-avatar.jpg" alt="">
+      <div><div class="cv-name">Long Nam</div>
+      <div class="cv-role">Chuyên Gia AI &middot; vieaiedu.vn</div></div>
+    </div>
+  </div>
   <div class="free">Không bán &middot; Không thu phí &middot; Được phép chia sẻ lại nguyên vẹn</div>
 </div>
 
@@ -574,6 +588,8 @@ table { font-size: 15px; } .fig, .shot { margin: 28px 0; }
     <p style="margin:2mm 0 0">Nhưng ấn tượng nó để lại trong đầu người xem là <b>vô giá</b>. Vì lý do duy nhất: <em>"còn thằng nào trên YouTube làm được thế?"</em> Mỗi lần bạn làm một thứ không ai khác làm nổi, bạn tách mình ra khỏi đám đông trong tâm trí người xem — và họ xem nhiều video hơn, gắn bó với thương hiệu hơn.</p>
   </div>
 
+  <figure class="shot" style="max-width:78mm;margin:5mm auto"><img src="/mrbeast/assets/mrbeast-laser.jpg">
+  <figcaption>Một ảnh bìa của chính kênh đó — mê cung tia laser. Nhìn hình là biết chỉ một người làm nổi: đó chính là “WOW”.</figcaption></figure>
   <h3>Nhưng bạn không có cần cẩu. Vậy WOW của bạn là gì?</h3>
   <p>Đây là chỗ tôi phải nói rõ, vì đọc phần này xong người mới rất dễ nản: "ổng có 50 triệu đô, tôi có cái điện thoại."</p>
   <p>Sai lầm là nghĩ WOW = tiền. Định nghĩa gốc không nhắc tới tiền một chữ nào. Định nghĩa là: <b>thứ mà không YouTuber nào khác làm được.</b> Tiền chỉ là <em>một trong nhiều</em> cách để độc quyền một thứ.</p>
