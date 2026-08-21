@@ -541,6 +541,7 @@ h1 .g{color:var(--gold)}
     <span class="kicker rv">Phòng marketing của bạn</span>
     <h2 class="rv">5 nhân viên AI — <span class="g">lương 0đ/tháng</span></h2>
     <p class="sub rv">Đúng những vị trí một phòng marketing đầy đủ phải thuê. Khác ở chỗ: làm 24/7, không nghỉ việc, không cần quản lý. Đây là cách cả phòng vận hành quanh <b style="color:var(--txt)">một tin nhắn của bạn</b>:</p>
+    <p class="sub rv" style="margin-top:-8px">Mỗi nhân viên AI được dạy tính cách của một người làm marketing thực chiến: <b style="color:var(--txt)">nhanh nhưng không ẩu</b>, ưu tiên chuyển đổi hơn màu mè, rõ ràng — ngắn gọn, chủ động nhưng luôn đúng luật. Đặc biệt: <b style="color:var(--txt)">không bịa số liệu, không hứa điều không làm được</b>.</p>
 
     <!-- WAR-ROOM: mô phỏng hệ thống đang chạy — 5 NV hoạt động quanh chat lệnh -->
     <div class="wr-stage rv" id="warroom" aria-label="Mô phỏng 5 nhân viên AI đang làm việc quanh tin nhắn giao việc">
@@ -592,7 +593,7 @@ h1 .g{color:var(--gold)}
       <div class="dept-row">
         <div class="dept-num">01</div>
         <div class="dept-role"><b>NV Content</b></div>
-        <div class="dept-job">Viết bài bán hàng đúng giọng thương hiệu, tự tạo ảnh, tự lên lịch đăng cả tuần</div>
+        <div class="dept-job">Research thị trường + insight khách hàng mục tiêu, lên content calendar theo từng giai đoạn khách hàng, viết bài đúng giọng thương hiệu, tự tạo ảnh, tự lên lịch đăng cả tuần</div>
         <div class="dept-pay"><span class="old">7–8tr/tháng</span><span class="new">0đ</span></div>
       </div>
       <div class="dept-row">
@@ -604,7 +605,7 @@ h1 .g{color:var(--gold)}
       <div class="dept-row hot">
         <div class="dept-num">03</div>
         <div class="dept-role"><b>NV Quảng cáo</b><span>⭐ nhân viên ra đơn</span></div>
-        <div class="dept-job">Tự lên chiến dịch, tự target, đọc chỉ số mỗi ngày, tự tắt–bật tối ưu, báo cáo dễ hiểu</div>
+        <div class="dept-job">Đề xuất cấu trúc chiến dịch, tự target, tự lên chiến dịch, đọc chỉ số mỗi ngày, tự tắt–bật tối ưu chi phí – chuyển đổi – thông điệp, báo cáo dễ hiểu</div>
         <div class="dept-pay"><span class="old">15–20tr/tháng</span><span class="new">0đ</span></div>
       </div>
       <div class="dept-row">
@@ -616,12 +617,19 @@ h1 .g{color:var(--gold)}
       <div class="dept-row">
         <div class="dept-num">05</div>
         <div class="dept-role"><b>NV CSKH & Báo cáo</b></div>
-        <div class="dept-job">Nhắn khách cũ mời mua lại; mỗi sáng gửi báo cáo đơn – tiền ads – tin nhắn</div>
+        <div class="dept-job">Nhắn khách cũ mời mua lại; mỗi sáng gửi báo cáo số lượng lead, tỷ lệ phản hồi, hiệu quả nội dung & quảng cáo, kèm đề xuất tối ưu</div>
         <div class="dept-pay"><span class="old">6–7tr/tháng</span><span class="new">0đ</span></div>
       </div>
       <div class="dept-sum">
         <p>Thuê đủ 5 người thật: <b>44–58 triệu/tháng</b>, chưa tính quản lý.</p>
         <span class="big">Hệ thống AI: học 1 lần — dùng mãi</span>
+      </div>
+    </div>
+
+    <div class="dept rv" style="margin-top:18px;padding:18px 20px">
+      <p style="margin:0 0 10px;font-size:14px;color:var(--muted,#9aa4b2)">Cả phòng làm việc trực tiếp trên công cụ thật bạn đang dùng — không cần dán link, không cần copy-paste tay:</p>
+      <div class="chips">
+        <span>Facebook cá nhân</span><span>Fanpage</span><span>YouTube</span><span>Facebook Ads</span><span>Google Drive</span><span>Google Sheet</span><span>Zalo</span><span>Telegram</span>
       </div>
     </div>
   </div>
@@ -1122,10 +1130,15 @@ h1 .g{color:var(--gold)}
 
     var phoneN = normPhone(phone);
     code = 'MAGICAI ' + phoneN + ' ' + plan;   /* backend đối soát SĐT + gói, chặn đơn trùng */
+    // orderId: khoá riêng cho LƯỢT CHECKOUT NÀY (tách biệt khỏi `code` dùng làm Nội dung CK cho
+    // ngân hàng đối soát). Không có khoá riêng thì backend chỉ khớp theo SĐT+gói — khách CHƯA
+    // trả tiền có thể "ăn ké" trạng thái đã thanh toán của một đơn KHÁC cùng SĐT+gói → Purchase
+    // ghi nhận sai (đã vá cùng lỗi này ở landing usb-ai-agent — xem magic-ai-backend.gs).
+    var orderId = (window.crypto && crypto.randomUUID) ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2));
     post({action:'order', plan: plan, name: name, phone: phoneN, email: email,
           source:'landing_aiagentsales', page: location.href,
           utm_source: UTM.utm_source, utm_medium: UTM.utm_medium, utm_campaign: UTM.utm_campaign,
-          fbc: getFbIds().fbc, fbp: getFbIds().fbp});
+          fbc: getFbIds().fbc, fbp: getFbIds().fbp, orderId: orderId});
 
     $('coAmount').textContent = vnd(P.price);
     $('coContent').textContent = code;
@@ -1134,14 +1147,14 @@ h1 .g{color:var(--gold)}
       + '&bank=' + encodeURIComponent(BANK.bank) + '&amount=' + P.price + '&des=' + encodeURIComponent(code);
     showStep(2);
     fbTrack('InitiateCheckout', { value: P.price, currency: 'VND', content_name: P.name, content_category: 'AI Agent Sales', content_ids: [plan] });
-    savePending(phoneN, plan, code);
-    startPoll(phoneN, plan);
+    savePending(phoneN, plan, code, orderId);
+    startPoll(phoneN, plan, orderId);
   });
   $('coCopy').addEventListener('click', function(){ copyText(code, this); });
 
   /* ---- Đơn treo: khách mở app bank, tab bị kill → quay lại vẫn nhận được cam-on ---- */
-  function savePending(phoneN, planCode, orderCode){
-    try{ localStorage.setItem('ags_pending', JSON.stringify({ phone:phoneN, plan:planCode, code:orderCode, at:Date.now() })); }catch(e){}
+  function savePending(phoneN, planCode, orderCode, orderId){
+    try{ localStorage.setItem('ags_pending', JSON.stringify({ phone:phoneN, plan:planCode, code:orderCode, orderId:orderId, at:Date.now() })); }catch(e){}
   }
   function clearPending(){ try{ localStorage.removeItem('ags_pending'); }catch(e){} }
   function goToCamOn(orderCode, planCode, price, label){
@@ -1153,10 +1166,14 @@ h1 .g{color:var(--gold)}
     try{ p = JSON.parse(localStorage.getItem('ags_pending')||'null'); }catch(e){ return; }
     if(!p || !p.phone || !p.plan) return;
     if(Date.now() - (p.at||0) > 7*24*60*60*1000){ clearPending(); return; }
-    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan, function(res){
+    // oid=p.orderId khoá đúng đơn của phiên bị bỏ dở này — tránh "ăn ké" trạng thái paid của
+    // một đơn KHÁC cùng SĐT+gói đã thanh toán sau đó. Phiên tạo trước khi vá lỗi (không có
+    // orderId đã lưu) tự dùng fallback SĐT+gói phía backend như cũ.
+    var oidParam = p.orderId ? ('&oid=' + encodeURIComponent(p.orderId)) : '';
+    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan + oidParam, function(res){
       if(res && res.status === 'paid'){
         var P = PLANS[p.plan];
-        post({ action: 'confirm_purchase', phone: p.phone, plan: p.plan });
+        post({ action: 'confirm_purchase', phone: p.phone, plan: p.plan, orderId: p.orderId });
         clearPending();
         goToCamOn(p.code, p.plan, res.value || (P && P.price) || 0, P ? P.name : p.plan);
       }
@@ -1164,14 +1181,15 @@ h1 .g{color:var(--gold)}
   }
   recoverPending();
 
-  function startPoll(phoneN, planCode){
+  function startPoll(phoneN, planCode, orderId){
     if(pollTimer) clearInterval(pollTimer);
+    var oidParam = orderId ? ('&oid=' + encodeURIComponent(orderId)) : '';
     pollTimer = setInterval(function(){
-      jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode, function(res){
+      jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode + oidParam, function(res){
         if(res && res.status === 'paid'){
           clearInterval(pollTimer); pollTimer = null;
           var P = PLANS[planCode];
-          post({ action: 'confirm_purchase', phone: phoneN, plan: planCode });
+          post({ action: 'confirm_purchase', phone: phoneN, plan: planCode, orderId: orderId });
           clearPending();
           goToCamOn(code, planCode, res.value || P.price, P.name);
         }
