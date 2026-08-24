@@ -292,6 +292,55 @@ a{text-decoration:none;color:inherit}
 .spinner{width:14px;height:14px;border:2px solid #eee;border-top-color:var(--tt-red);border-radius:50%;animation:spin .8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* ===== VALUE STACK: khách nhận được gì sau khi mua — đặt sau khối giá/trust strip, trước
+   Người bán/đánh giá, để "chốt giá trị" trước khi social proof củng cố quyết định. ===== */
+.value-stack{padding:16px 14px 18px;border-bottom:8px solid var(--tt-bg);background:linear-gradient(180deg,#fff,#fffaf5)}
+.value-stack .vs-badge{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.02em;color:var(--tt-red);background:#ffe1e8;padding:4px 10px;border-radius:20px;margin-bottom:10px}
+.value-stack h3{font-size:15.5px;line-height:1.4;margin-bottom:4px}
+.value-stack .vs-sub{font-size:12px;color:var(--tt-gray);margin-bottom:14px}
+.vs-list{display:flex;flex-direction:column;gap:0}
+.vs-item{display:flex;gap:12px;padding:11px 0;border-top:1px solid var(--tt-line)}
+.vs-item:first-child{border-top:none}
+.vs-ic{flex:0 0 34px;width:34px;height:34px;border-radius:10px;background:#fff0f3;display:flex;align-items:center;justify-content:center;font-size:16px}
+.vs-item b{font-size:13px;display:block;margin-bottom:2px}
+.vs-item .vs-desc{font-size:12px;color:var(--tt-gray);line-height:1.5}
+.vs-total{margin-top:14px;background:linear-gradient(135deg,var(--tt-black),#2a2c3d);border-radius:12px;padding:14px 16px;display:flex;align-items:center;justify-content:space-between;gap:10px}
+.vs-total .vt-label{font-size:12px;color:#c7c9d6}
+.vs-total .vt-price{font-size:20px;font-weight:800;color:#fff}
+.vs-total .vt-old{font-size:11.5px;color:#8a8b91;text-decoration:line-through;margin-left:6px}
+
+/* ===== CROSS-SELL: AI Agent Sales — dùng chung bảng màu thương hiệu (đỏ/gold) ===== */
+.crosssell{padding:16px 14px 18px;border-bottom:8px solid var(--tt-bg);background:linear-gradient(180deg,#fff,#fff7f2)}
+.crosssell .cs-eyebrow{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.02em;color:#a15c00;background:#fff3d6;padding:4px 10px;border-radius:20px;margin-bottom:10px}
+.crosssell h3{font-size:15px;line-height:1.4;margin-bottom:6px}
+.crosssell .cs-sub{font-size:12.5px;color:#555;line-height:1.6;margin-bottom:12px}
+.crosssell .cs-banner{position:relative;border-radius:12px;overflow:hidden;box-shadow:0 4px 18px rgba(254,44,85,.18);margin-bottom:12px}
+.crosssell .cs-banner img{width:100%;display:block}
+.crosssell .cs-points{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.crosssell .cs-point{display:flex;gap:8px;font-size:12.5px;color:#333;line-height:1.5}
+.crosssell .cs-point .dot{color:var(--tt-red);flex:0 0 16px;font-weight:800}
+.cs-cta{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;border:none;border-radius:22px;height:46px;font-weight:800;font-size:14px;color:#fff;background:linear-gradient(90deg,#FE2C55,#ff4f6e);box-shadow:0 6px 16px rgba(254,44,85,.35)}
+.cs-cta .arrow{transition:transform .15s}
+.cs-cta:active .arrow{transform:translateX(3px)}
+.crosssell .cs-note{text-align:center;font-size:11px;color:#8a8b91;margin-top:8px}
+
+/* ===== CROSS-SELL card bên trong popup Mua ngay ===== */
+.cs-sheet-card{display:flex;align-items:center;gap:10px;border:1.5px dashed #ffcf9e;background:#fff8ec;border-radius:10px;padding:10px 12px;margin-top:10px}
+.cs-sheet-card .csc-ic{font-size:20px;flex:0 0 auto}
+.cs-sheet-card .csc-txt{flex:1;font-size:12px;color:#6b5a3a;line-height:1.5}
+.cs-sheet-card .csc-txt b{color:#a15c00;display:block;font-size:12.5px;margin-bottom:2px}
+.cs-sheet-card .csc-go{flex:0 0 auto;font-size:11.5px;font-weight:800;color:var(--tt-red);white-space:nowrap;display:flex;align-items:center;gap:3px}
+
+/* ===== INLINE CTA (đặt sớm trong trang + lặp lại giữa trang) — bổ trợ sticky bar để bắt được
+   nhóm khách xem 1 lần rồi rời trang trước khi cuộn tới sticky bar, không thay thế popup Mua
+   ngay (vẫn mở đúng 2 bước cũ). Đặt ngay sau trust-strip (gần đầu trang, trong tầm nhìn đầu
+   tiên) và lặp lại sau value-stack (điểm khách vừa "chốt giá trị" — đúng lúc ý định mua cao
+   nhất) để giảm thất thoát Landing Page View → Initiate Checkout. ===== */
+.inline-cta{margin:14px 14px 4px;border:none;border-radius:14px;padding:14px 16px;width:calc(100% - 28px);display:flex;align-items:center;justify-content:center;gap:8px;background:linear-gradient(90deg,#FE2C55,#ff4f6e);color:#fff;font-weight:800;font-size:14.5px;box-shadow:0 8px 20px rgba(254,44,85,.32)}
+.inline-cta .ic-sub{display:block;font-weight:600;font-size:11px;opacity:.92;margin-top:2px}
+.inline-cta-wrap{text-align:center;padding-bottom:14px}
+.inline-cta-note{font-size:11px;color:var(--tt-gray);margin-top:7px}
+
 /* ===== COD DEPOSIT INFO BOX ===== */
 .cod-info{background:#fff8ec;border:1.5px solid #ffe1ae;border-radius:12px;padding:12px 13px;margin-top:10px}
 .cod-info-title{font-size:13px;font-weight:800;color:#a15c00;margin-bottom:6px}
@@ -367,6 +416,41 @@ a{text-decoration:none;color:inherit}
     <div class="line"><div class="ic">↩️</div><div><b>Đổi trả nếu lỗi USB</b><div class="sub">Cam kết 100% nội dung đúng như mô tả</div></div><div class="chev">›</div></div>
   </div>
 
+  <!-- INLINE CTA #1 — gần đầu trang, bắt khách xem nhanh trước khi cuộn xa -->
+  <div class="inline-cta-wrap">
+    <button class="inline-cta" onclick="openSheet('buy')">
+      <span>🔥 Mua ngay — chỉ cọc 50k giữ đơn<span class="ic-sub">Còn lại thanh toán khi nhận hàng · Freeship toàn quốc</span></span>
+    </button>
+    <div class="inline-cta-note">Đã bán 6.7k+ · Đang flash sale -61%</div>
+  </div>
+
+  <!-- VALUE STACK -->
+  <div class="value-stack">
+    <div class="vs-badge">🎁 Bạn nhận được gì khi đặt hàng</div>
+    <h3>Trọn gói xây kênh AI — không chỉ là 1 chiếc USB</h3>
+    <div class="vs-sub">Đầy đủ mọi thứ cần để bắt đầu, không phát sinh thêm chi phí nào khác</div>
+    <div class="vs-list">
+      <div class="vs-item"><div class="vs-ic">🎥</div><div><b>Trọn bộ video hướng dẫn build nhân viên AI Agent làm video AI xây kênh tự động thay bạn hằng ngày</b><div class="vs-desc">Chia bước rõ ràng, xem lại trọn đời ngay trên USB — không cần mạng, không giới hạn số lần xem</div></div></div>
+      <div class="vs-item"><div class="vs-ic">🤖</div><div><b>Cách dựng 1 AI Agent hoàn chỉnh</b><div class="vs-desc">Tự nghiên cứu chủ đề, tự viết kịch bản, tự dựng video — bạn chỉ cần giao việc</div></div></div>
+      <div class="vs-item"><div class="vs-ic">⏱️</div><div><b>Tiết kiệm thời gian, tiết kiệm tiền bạc</b><div class="vs-desc">Làm được nhiều dạng video gần như miễn phí, tối ưu chi phí sản xuất — kể cả video dài 1-2 tiếng</div></div></div>
+      <div class="vs-item"><div class="vs-ic">📤</div><div><b>Hướng dẫn tự động đăng đa nền tảng</b><div class="vs-desc">Thiết lập 1 lần, kênh tự đăng đúng lịch trên YouTube, Facebook, TikTok</div></div></div>
+      <div class="vs-item"><div class="vs-ic">📈</div><div><b>Xây hệ thống kênh tự động</b><div class="vs-desc">Nền tảng để phát triển Affiliate TikTok Shop, Shopee và lượt xem trên YouTube, Facebook...</div></div></div>
+      <div class="vs-item"><div class="vs-ic">♾️</div><div><b>Không giới hạn số kênh</b><div class="vs-desc">Nhân bản hệ thống cho nhiều ngách khác nhau, không tính thêm phí</div></div></div>
+      <div class="vs-item"><div class="vs-ic">💬</div><div><b>Nhóm Zalo hỗ trợ riêng — trọn đời</b><div class="vs-desc">Đội ngũ phản hồi trong 5 phút, đồng hành cùng bạn suốt quá trình build kênh</div></div></div>
+    </div>
+    <div class="vs-total">
+      <div><div class="vt-label">Tổng giá trị trọn gói</div><div class="vt-price">Chỉ 499.000đ<span class="vt-old">1.290.000đ</span></div></div>
+      <div style="font-size:22px">🔥</div>
+    </div>
+  </div>
+
+  <!-- INLINE CTA #2 — ngay sau khi khách vừa "chốt giá trị" trọn gói, đúng lúc ý định mua cao nhất -->
+  <div class="inline-cta-wrap" style="padding-top:2px">
+    <button class="inline-cta" onclick="openSheet('buy')">
+      <span>✅ Chốt đơn ngay — cọc 50k giữ chỗ<span class="ic-sub">Nhận hàng mới thanh toán phần còn lại (COD)</span></span>
+    </button>
+  </div>
+
   <!-- VARIANT PICKER (nguồn dữ liệu cho popup Mua ngay + Gợi ý mua — ẩn khỏi trang chính vì đã trùng lặp) -->
   <div class="variant-block" style="display:none">
     <div class="label"><span>Chọn phân loại</span><span>3 lựa chọn</span></div>
@@ -430,9 +514,9 @@ a{text-decoration:none;color:inherit}
       <div class="rtxt">Kênh Reel đạt 2 triệu lượt xem · 34K cảm xúc. Kênh khác đang chạy affiliate Shopee "gần 10tr" tiền hoa hồng. Sang app đối soát TikTok Shop báo giá trị thanh toán 8.325.688đ — "này là đã nhận".</div>
       <div class="rmeta">Phân loại: USB Video Khoá Học · Affiliate TikTok Shop &amp; Shopee</div>
       <div class="rimgs">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-so-1.png" alt="Reel Facebook đạt 2 triệu lượt xem, 34K cảm xúc từ kênh build bằng AI Agent" onclick="openLightbox('/usb-ai-agent-assets/feedback-so-1.png')">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-so-2.png" alt="Khách nhắn đã kiếm gần 10 triệu tiền hoa hồng affiliate Shopee trên kênh" onclick="openLightbox('/usb-ai-agent-assets/feedback-so-2.png')">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-so-3.png" alt="Ảnh bảng kê thanh toán TikTok Shop thực nhận 8.325.688đ" onclick="openLightbox('/usb-ai-agent-assets/feedback-so-3.png')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-so-1.png" alt="Reel Facebook đạt 2 triệu lượt xem, 34K cảm xúc từ kênh build bằng AI Agent" onclick="openLightbox('feedback-so-1.png')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-so-2.png" alt="Khách nhắn đã kiếm gần 10 triệu tiền hoa hồng affiliate Shopee trên kênh" onclick="openLightbox('feedback-so-2.png')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-so-3.png" alt="Ảnh bảng kê thanh toán TikTok Shop thực nhận 8.325.688đ" onclick="openLightbox('feedback-so-3.png')">
       </div>
     </div>
     <div class="review">
@@ -440,9 +524,9 @@ a{text-decoration:none;color:inherit}
       <div class="rtxt">Kênh Phật pháp build bằng hệ thống AI Agent — "toàn mấy trăm nghìn view luôn", video cao nhất 406,7K lượt xem. Video đầu tay từng mất 2 ngày, giờ chỉ còn khoảng 2 tiếng là có video đăng YouTube.</div>
       <div class="rmeta">Phân loại: USB Video Khoá Học · Nhóm học viên Magic AI K01</div>
       <div class="rimgs">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-hai-1.jpg" alt="Kênh TikTok Phật pháp build bằng AI Agent, video cao nhất 406.7K view" onclick="openLightbox('/usb-ai-agent-assets/feedback-hai-1.jpg')">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-hai-2.jpg" alt="Khách nhận video thứ 2 từ hệ thống AI Agent, nhận xét ngon luôn" onclick="openLightbox('/usb-ai-agent-assets/feedback-hai-2.jpg')">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-hai-3-hieuqua.jpg" alt="Chia sẻ trong nhóm: video đầu tay từ 2 ngày rút xuống còn khoảng 2 tiếng" onclick="openLightbox('/usb-ai-agent-assets/feedback-hai-3-hieuqua.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-hai-1.jpg" alt="Kênh TikTok Phật pháp build bằng AI Agent, video cao nhất 406.7K view" onclick="openLightbox('feedback-hai-1.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-hai-2.jpg" alt="Khách nhận video thứ 2 từ hệ thống AI Agent, nhận xét ngon luôn" onclick="openLightbox('feedback-hai-2.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-hai-3-hieuqua.jpg" alt="Chia sẻ trong nhóm: video đầu tay từ 2 ngày rút xuống còn khoảng 2 tiếng" onclick="openLightbox('feedback-hai-3-hieuqua.jpg')">
       </div>
     </div>
     <div class="review">
@@ -450,7 +534,7 @@ a{text-decoration:none;color:inherit}
       <div class="rtxt">"Chiều vừa được kèm build AI Agent cùng Magic Solutions và xây luôn kênh, video vừa đăng đã có 142 view, 10 người theo dõi, 8 like, 1 comment — thành quả đầu ngay buổi học đầu tiên. Tks Nam Long."</div>
       <div class="rmeta">Phân loại: Học Online Qua Zoom · Nhóm học viên Magic AI K01</div>
       <div class="rimgs">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-huytruong-group.jpg" alt="Học viên Huy Trường chia sẻ kết quả buổi học đầu tiên trong nhóm Magic AI K01" onclick="openLightbox('/usb-ai-agent-assets/feedback-huytruong-group.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-huytruong-group.jpg" alt="Học viên Huy Trường chia sẻ kết quả buổi học đầu tiên trong nhóm Magic AI K01" onclick="openLightbox('feedback-huytruong-group.jpg')">
       </div>
     </div>
     <div class="review">
@@ -458,7 +542,7 @@ a{text-decoration:none;color:inherit}
       <div class="rtxt">Học viên trong nhóm, ứng dụng hệ thống sang ngách review mỹ phẩm — tự build video giới thiệu sản phẩm rồi đăng nhóm xin góp ý, cho thấy hệ thống dùng được cho nhiều ngách khác nhau, không chỉ nội dung tin tức/kiến thức.</div>
       <div class="rmeta">Phân loại: Học Online Qua Zoom · Nhóm học viên Magic AI K01</div>
       <div class="rimgs">
-        <img class="thumb" src="/usb-ai-agent-assets/feedback-ngan-mypham.jpg" alt="Học viên Ngân Hồng Tô chia sẻ video review mỹ phẩm tự build trong nhóm" onclick="openLightbox('/usb-ai-agent-assets/feedback-ngan-mypham.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/feedback-ngan-mypham.jpg" alt="Học viên Ngân Hồng Tô chia sẻ video review mỹ phẩm tự build trong nhóm" onclick="openLightbox('feedback-ngan-mypham.jpg')">
       </div>
     </div>
     <div class="review">
@@ -466,9 +550,9 @@ a{text-decoration:none;color:inherit}
       <div class="rtxt">Đăng ký khoá 2.999k, học xong 2 buổi liền chủ động nâng cấp lên gói 1:1, chuyển thêm 5.000.000đ để được Long Nam kèm sát tận nơi — khách mua lại ngay trong tuần đầu.</div>
       <div class="rmeta">Phân loại: Học Online Qua Zoom → nâng cấp Triển Khai Cùng Long Nam</div>
       <div class="rimgs">
-        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-1.jpg" alt="Ảnh chuyển khoản thanh toán thật của khách Paul Nguyen" onclick="openLightbox('/usb-ai-agent-assets/khach-hang-1.jpg')">
-        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-2.jpg" alt="Ảnh trò chuyện hỗ trợ thật với khách Paul Nguyen" onclick="openLightbox('/usb-ai-agent-assets/khach-hang-2.jpg')">
-        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-3.jpg" alt="Ảnh khách nâng cấp gói và chuyển khoản thêm 5 triệu" onclick="openLightbox('/usb-ai-agent-assets/khach-hang-3.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-1.jpg" alt="Ảnh chuyển khoản thanh toán thật của khách Paul Nguyen" onclick="openLightbox('khach-hang-1.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-2.jpg" alt="Ảnh trò chuyện hỗ trợ thật với khách Paul Nguyen" onclick="openLightbox('khach-hang-2.jpg')">
+        <img class="thumb" src="/usb-ai-agent-assets/khach-hang-3.jpg" alt="Ảnh khách nâng cấp gói và chuyển khoản thêm 5 triệu" onclick="openLightbox('khach-hang-3.jpg')">
       </div>
     </div>
     <div class="seeall">Xem tất cả 2.318 đánh giá ›</div>
@@ -510,6 +594,28 @@ a{text-decoration:none;color:inherit}
     <div class="faq-item"><div class="q">Không biết công nghệ có build được không? ›</div><div class="a">Được. USB có video hướng dẫn từng bước, gói Zoom còn có nhân viên hỗ trợ build trực tiếp cùng bạn.</div></div>
     <div class="faq-item"><div class="q">Khác nhau giữa 3 gói ra sao? ›</div><div class="a">USB 499k: tự học theo video, chủ động thời gian. Zoom 1.999k: học trực tiếp có người kèm build. VIP 4.999k: Long Nam trực tiếp triển khai + hỗ trợ trọn đời 1:1.</div></div>
     <div class="faq-item"><div class="q">Có hỗ trợ sau khi mua không? ›</div><div class="a">Có, hỗ trợ trọn đời qua nhóm Zalo riêng của học viên, đội ngũ phản hồi trong 5 phút.</div></div>
+  </div>
+
+  <!-- CROSS-SELL: AI Agent Sales — đặt SAU khi khách đã xem hết giá trị (mô tả, cách dùng,
+       feedback, FAQ) để không phân tán quyết định mua USB, nhưng vẫn NẰM TRƯỚC sticky bar/nút
+       mua để bắt được khách đã cuộn hết trang (nhóm đọc kỹ nhất, có nhu cầu tìm hiểu sâu nhất)
+       trước khi họ rời trang. Định vị là bước NÂNG CẤP tự nhiên: USB đã giải quyết khâu TẠO
+       NỘI DUNG, còn AI Agent Sales giải quyết khâu BÁN HÀNG — không cạnh tranh, mà bổ trợ, nên
+       không làm khách phân vân "chọn cái nào" mà gợi mở "còn thiếu mảnh nào nữa". -->
+  <div class="crosssell">
+    <div class="cs-eyebrow">🔥 Khoá học khác đang được quan tâm nhiều</div>
+    <h3>Có thể bạn cũng đang quan tâm: xây dựng hệ thống kinh doanh 1 người, tự động hoá luôn khâu bán hàng với nhân viên AI Agent</h3>
+    <div class="cs-sub">USB Build AI Agent vừa giúp bạn <b>tự động hoá khâu tạo nội dung</b> — kênh tự ra video, tự đăng bài mỗi ngày. Nhưng có video, có view rồi thì <b>ai trả lời khách, ai tư vấn, ai chốt đơn lúc 2 giờ sáng?</b> Đó là mảnh còn thiếu để biến 1 kênh video thành 1 hệ thống kinh doanh 1 người vận hành 24/7.</div>
+    <a class="cs-banner" href="https://vieaiedu.vn/aiagentsales" onclick="trackCrossSellClick()">
+      <img src="/usb-ai-agent-assets/kinh doanh 1 người với AI Agnent.png" alt="Xây dựng hệ thống kinh doanh 1 người tự động hoá 100% với đội ngũ 7 nhân viên AI Agent — nghiên cứu thị trường, chiến lược, nội dung, video, quảng cáo, tư vấn chốt đơn, CSKH">
+    </a>
+    <div class="cs-points">
+      <div class="cs-point"><span class="dot">✔</span>Đội ngũ 7 nhân viên AI Agent: nghiên cứu thị trường → chiến lược → nội dung → video → quảng cáo → tư vấn chốt đơn → CSKH &amp; báo cáo</div>
+      <div class="cs-point"><span class="dot">✔</span>AI Agent tư vấn khách 24/7, trả lời tự động thông minh, chốt đơn &amp; upsell không cần bạn túc trực</div>
+      <div class="cs-point"><span class="dot">✔</span>Học 1 lần — sở hữu trọn đời — làm chủ một hệ thống kinh doanh 1 người hoàn chỉnh, không chỉ dừng ở khâu làm nội dung</div>
+    </div>
+    <a class="cs-cta" href="https://vieaiedu.vn/aiagentsales" onclick="trackCrossSellClick()">Khám phá AI Agent Sales <span class="arrow">→</span></a>
+    <div class="cs-note">Học viên USB Build AI Agent được ưu đãi riêng khi đăng ký thêm AI Agent Sales</div>
   </div>
 
   <div style="height:20px"></div>
@@ -575,6 +681,11 @@ a{text-decoration:none;color:inherit}
     <div id="stepVariant">
       <div class="label" style="font-size:12.5px;color:#8a8b91;margin-bottom:8px">Phân loại</div>
       <div class="variant-list" id="variantListSheet"></div>
+      <a class="cs-sheet-card" href="https://vieaiedu.vn/aiagentsales" onclick="trackCrossSellClick()">
+        <span class="csc-ic">🔥</span>
+        <span class="csc-txt"><b>Muốn tự động hoá luôn khâu bán hàng?</b>Tham khảo khoá AI Agent Sales — khoá học khác đang được quan tâm nhiều</span>
+        <span class="csc-go">Xem ngay ›</span>
+      </a>
       <div class="qty-row">
         <span>Số lượng</span>
         <div class="qty-ctrl">
@@ -647,6 +758,12 @@ document.querySelectorAll('a[href*="zalo.me"]').forEach(a=>{
     ttTrack('Lead', {content_name:'Zalo click'});
   });
 });
+// Cross-sell sang AI Agent Sales — track riêng để đo % khách USB quan tâm sản phẩm bán hàng,
+// tách biệt với Lead của Zalo/checkout để không làm loãng số liệu ý định mua USB.
+function trackCrossSellClick(){
+  fbTrack('Lead', {content_name:'Click cross-sell AI Agent Sales', content_category:'USB Build AI Agent'});
+  ttTrack('Lead', {content_name:'Click cross-sell AI Agent Sales'});
+}
 
 // flash sale countdown — đếm ngược tới 23:59:59 giờ VN mỗi ngày, tự lặp lại
 function updateFlashTimer(){
@@ -843,8 +960,15 @@ function submitOrder(){
   const phoneN = normPhone(phone);
   const payAmount = parseInt(selected.pay.replace(/\./g,''), 10);
   code = 'MAGICAI ' + phoneN + ' ' + selected.plan;
+  // orderId: khoá riêng cho LƯỢT CHECKOUT NÀY, tách biệt khỏi `code` (dùng làm Nội dung CK cho
+  // ngân hàng đối soát, không đổi được vì bank cần nội dung ngắn/khớp mẫu). Nếu không có khoá
+  // riêng, backend chỉ khớp theo SĐT+gói — khách CHƯA trả tiền có thể bị "ăn ké" trạng thái đã
+  // thanh toán của một đơn KHÁC cùng SĐT+gói (VD đơn cũ bỏ dở của chính họ, đơn của người khác
+  // trùng 9 số cuối SĐT...) → sự kiện Purchase ghi nhận sai. Xem sửa lỗi tương ứng phía backend
+  // (COL_ORDER_ID trong magic-ai-backend.gs).
+  const orderId = (crypto.randomUUID ? crypto.randomUUID() : (Date.now() + '-' + Math.random().toString(36).slice(2)));
   post({action:'order', plan: selected.plan, name, phone: phoneN, email, qty, topic: address,
-        source:'landing_usb_ai_agent', page: location.href});
+        source:'landing_usb_ai_agent', page: location.href, orderId});
   fbTrack('InitiateCheckout', {value: parseInt(selected.price.replace(/\./g,''),10), currency:'VND', content_name: selected.name, content_category:'USB Build AI Agent', content_ids:[selected.plan]});
   ttTrack('InitiateCheckout', {value: parseInt(selected.price.replace(/\./g,''),10), currency:'VND', content_name: selected.name});
 
@@ -861,11 +985,11 @@ function submitOrder(){
     $('codRemain').textContent = ((totalPrice - payAmount) * qty).toLocaleString('vi-VN') + 'đ';
   }
   showStep('qr');
-  savePending(phoneN, selected.plan);
-  startPoll(phoneN, selected.plan);
+  savePending(phoneN, selected.plan, orderId);
+  startPoll(phoneN, selected.plan, orderId);
 }
-function savePending(phoneN, planCode){
-  try{ localStorage.setItem('usbai_pending', JSON.stringify({phone:phoneN, plan:planCode, code, at:Date.now()})); }catch(e){}
+function savePending(phoneN, planCode, orderId){
+  try{ localStorage.setItem('usbai_pending', JSON.stringify({phone:phoneN, plan:planCode, code, orderId, at:Date.now()})); }catch(e){}
 }
 function clearPending(){ try{ localStorage.removeItem('usbai_pending'); }catch(e){} }
 function goToCamOn(orderCode, planCode, price, label){
@@ -877,22 +1001,27 @@ function recoverPending(){
   try{ p = JSON.parse(localStorage.getItem('usbai_pending')||'null'); }catch(e){ return; }
   if(!p || !p.phone || !p.plan) return;
   if(Date.now() - (p.at||0) > 7*24*60*60*1000){ clearPending(); return; }
-  jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan, res => {
+  // oid=p.orderId khoá đúng đơn của phiên bị bỏ dở này — nếu để trống, phiên cũ có thể "nhìn
+  // thấy" trạng thái paid của một đơn KHÁC cùng SĐT+gói đã thanh toán sau đó. Phiên tạo TRƯỚC
+  // khi vá lỗi này (không có orderId đã lưu) sẽ tự dùng fallback SĐT+gói phía backend như cũ.
+  const oidParam = p.orderId ? ('&oid=' + encodeURIComponent(p.orderId)) : '';
+  jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(p.phone) + '&plan=' + p.plan + oidParam, res => {
     if(res && res.status === 'paid'){
-      post({action:'confirm_purchase', phone:p.phone, plan:p.plan});
+      post({action:'confirm_purchase', phone:p.phone, plan:p.plan, orderId:p.orderId});
       clearPending();
       goToCamOn(p.code, p.plan, res.value || 0, p.plan);
     }
   });
 }
 recoverPending();
-function startPoll(phoneN, planCode){
+function startPoll(phoneN, planCode, orderId){
   if(pollTimer) clearInterval(pollTimer);
+  const oidParam = orderId ? ('&oid=' + encodeURIComponent(orderId)) : '';
   pollTimer = setInterval(()=>{
-    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode, res => {
+    jsonp(API_URL + '?action=check&phone=' + encodeURIComponent(phoneN) + '&plan=' + planCode + oidParam, res => {
       if(res && res.status === 'paid'){
         clearInterval(pollTimer); pollTimer = null;
-        post({action:'confirm_purchase', phone:phoneN, plan:planCode});
+        post({action:'confirm_purchase', phone:phoneN, plan:planCode, orderId});
         clearPending();
         goToCamOn(code, planCode, res.value || 0, planCode);
       }
