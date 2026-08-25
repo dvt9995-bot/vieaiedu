@@ -26,6 +26,8 @@ const nextConfig: NextConfig = {
       // Ebook tặng "Công Thức MrBeast" — bản đọc online + link tải PDF gọn
       { source: "/mrbeast", destination: "/mrbeast/index.html" },
       { source: "/cong-thuc-mrbeast", destination: "/mrbeast/cong-thuc-mrbeast.pdf" },
+      // Tài liệu thực hành đi kèm video "Setup AI Agent Dựng Video Tự Động" (kênh Long Nam AI)
+      { source: "/checklist-setup-agent", destination: "/setup-khach/tai-lieu-thuc-hanh.pdf" },
     ];
   },
 };
